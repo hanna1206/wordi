@@ -1,0 +1,26 @@
+{
+  "fileExtensions": [
+    "ts",
+    "tsx",
+    "js",
+    "jsx"
+  ],
+  "fontSize": "10px",
+  "graphVizOptions": {
+    "G": {
+      "rankdir": "LR"
+    }
+  },
+  "tsConfig": "./tsconfig.json",
+  "includeNpm": false,
+  "warning": true,
+  "skipUnresolved": false,
+  "detectiveOptions": {
+    "ts": {
+      "skipTypeImports": true
+    },
+    "tsx": {
+      "skipTypeImports": true
+    }
+  }
+}

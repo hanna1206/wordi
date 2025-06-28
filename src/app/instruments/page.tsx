@@ -2,9 +2,9 @@ import { createClient } from '@/utils/supabase/server';
 
 const Instruments = async () => {
   const supabase = await createClient();
-  const { data: instruments, error } = await supabase.from("instruments").select();
+  const { data: instruments } = await supabase.from('instruments').select();
 
-  return <pre>{JSON.stringify(instruments, null, 2)}</pre>
-}
+  return <pre>{JSON.stringify(instruments, null, 2)}</pre>;
+};
 
 export default Instruments;
