@@ -1,7 +1,6 @@
 import { login, signup } from './actions'
 
-export default function LoginPage() {
-  return (
+const LoginPage = () => (
     <form>
       <label htmlFor="email">Email:</label>
       <input id="email" name="email" type="email" required />
@@ -10,5 +9,6 @@ export default function LoginPage() {
       <button formAction={login}>Log in</button>
       <button formAction={signup}>Sign up</button>
     </form>
-  )
-}
+  );
+
+export default LoginPage;
