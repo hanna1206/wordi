@@ -1,29 +1,106 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-// import { redirect } from 'next/navigation';
+import { withAuth } from '@/modules/auth/utils/with-auth';
+import { getLanguageName } from '@/modules/user-settings/utils/get-language-name';
+import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
+import { openAiClient } from '@/services/openai/openai-client';
+import type { ActionResult } from '@/shared-types';
 
-export const generateWordCard = async (formData: FormData) => {
-  const word = formData.get('word') as string;
+interface TranslationResult {
+  translation: string;
+}
 
-  if (!word || !word.trim()) {
-    // Could redirect to an error page or handle validation differently
-    return;
-  }
+export const translateWord = withUserSettings<string, TranslationResult>(
+  async (context, word): Promise<ActionResult<TranslationResult>> => {
+    // Validate input
+    if (!word?.trim()) {
+      return {
+        success: false,
+        error: 'Word is required',
+      };
+    }
 
-  // TODO: Implement actual word card generation logic
-  // This could involve:
-  // - Calling an AI API (OpenAI, Anthropic, etc.)
-  // - Fetching data from a German dictionary API
-  // - Storing the generated card in a database
+    const { userSettings } = context;
+    const targetLanguage = getLanguageName(userSettings.native_language!);
 
-  console.log('Generating card for word:', word.trim());
+    // Create OpenAI prompt for translation
+    const prompt = `Translate the German word "${word.trim()}" to ${targetLanguage}. 
+    Provide a concise, accurate translation. If the word has multiple meanings, provide the most common one.
+    Respond with just the translation, no additional explanation.`;
 
-  // Simulate processing time
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      // Call OpenAI for translation
+      const response = await openAiClient.invoke(prompt);
 
-  // For now, we'll just log and redirect back
-  // In a real implementation, you might redirect to a card view page
-  revalidatePath('/words/create');
-  // redirect('/words/card/[id]'); // Redirect to the generated card
-};
+      if (!response?.content) {
+        return {
+          success: false,
+          error: 'Translation service unavailable',
+        };
+      }
+
+      const content =
+        typeof response.content === 'string'
+          ? response.content
+          : response.content.toString();
+
+      return {
+        success: true,
+        data: {
+          translation: content.trim(),
+        },
+      };
+    } catch (error) {
+      console.error('OpenAI translation error:', error);
+      return {
+        success: false,
+        error: 'Translation service failed',
+      };
+    }
+  },
+);
+
+// Пример: простой action для получения списка изученных слов пользователя
+interface UserWord {
+  id: string;
+  word: string;
+  translation: string;
+  created_at: string;
+}
+
+export const getUserWords = withAuth<void, UserWord[]>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (_context): Promise<ActionResult<UserWord[]>> => {
+    // Примечание: здесь будет реальная логика получения слов из БД
+    // Пока возвращаем mock данные для демонстрации
+
+    try {
+      // TODO: заменить на реальный запрос к базе данных
+      const mockWords: UserWord[] = [
+        {
+          id: '1',
+          word: 'das Buch',
+          translation: 'книга',
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: '2',
+          word: 'lernen',
+          translation: 'изучать',
+          created_at: new Date().toISOString(),
+        },
+      ];
+
+      return {
+        success: true,
+        data: mockWords,
+      };
+    } catch (error) {
+      console.error('Error fetching user words:', error);
+      return {
+        success: false,
+        error: 'Failed to load your words',
+      };
+    }
+  },
+);

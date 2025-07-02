@@ -1,9 +1,11 @@
 import { Card, Text, VStack } from '@chakra-ui/react';
 
-import { getCurrentUser } from '../user.actions';
+import { getAuthenticatedUser } from '@/modules/auth/auth.service';
 
-export const UserProfile = async () => {
-  const user = await getCurrentUser();
+import { getUserSettings } from '../user-settings.service';
+
+export const UserSettings = async () => {
+  const { user } = await getAuthenticatedUser();
 
   if (!user) {
     return (
@@ -15,10 +17,22 @@ export const UserProfile = async () => {
     );
   }
 
+  const { data: userSettings } = await getUserSettings(user.id);
+
+  if (!userSettings) {
+    return (
+      <Card.Root>
+        <Card.Body>
+          <Text>User settings not found</Text>
+        </Card.Body>
+      </Card.Root>
+    );
+  }
+
   return (
     <Card.Root>
       <Card.Header>
-        <Card.Title>User profile</Card.Title>
+        <Card.Title>User settings</Card.Title>
       </Card.Header>
       <Card.Body>
         <VStack align="start" gap={2}>
@@ -34,7 +48,7 @@ export const UserProfile = async () => {
           </Text>
           <Text>
             <strong>Updated:</strong>{' '}
-            {new Date(user.updated_at).toLocaleDateString()}
+            {new Date(userSettings.updated_at).toLocaleDateString()}
           </Text>
         </VStack>
       </Card.Body>
