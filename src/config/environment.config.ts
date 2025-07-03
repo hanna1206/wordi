@@ -8,6 +8,5 @@ export const environment = {
   langSmithApiKey: process.env.LANGSMITH_API_KEY,
   langSmithProject: process.env.LANGSMITH_PROJECT,
   // OpenAI configuration
-  openAiApiKey: process.env.OPENAI_API_KEY,
-  openAiModel: process.env.OPENAI_MODEL,
+  openAIApiKey: process.env.OPENAI_API_KEY,
 };

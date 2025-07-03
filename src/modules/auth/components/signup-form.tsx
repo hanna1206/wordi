@@ -95,12 +95,16 @@ export const SignupForm = ({ onSwitchToLogin }: SignupFormProps) => {
         },
       });
 
+      // eslint-disable-next-line no-console
+      console.log('error', error);
+
       if (error) {
         setSubmitError(error.message);
       } else {
         window.location.href = '/';
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Signup error:', error);
       setSubmitError('Something went wrong. Please try again.');
     } finally {

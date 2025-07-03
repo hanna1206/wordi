@@ -10,24 +10,26 @@ import {
 
 import {
   Button,
-  Dialog,
   Heading,
   HStack,
   IconButton,
   Input,
-  Portal,
-  Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
 
 import { translateWord } from '@/modules/words/words.actions';
+import type { TranslationResult } from '@/modules/words/words.types';
+
+import { TranslationModal } from './translation-modal';
 
 export const CreateWordForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [word, setWord] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [translation, setTranslation] = useState<string | null>(null);
+  const [translation, setTranslation] = useState<TranslationResult | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (wordToTranslate: string) => {
@@ -41,13 +43,14 @@ export const CreateWordForm = () => {
 
     try {
       const result = await translateWord(wordToTranslate.trim());
-      if (result.success && result.data?.translation) {
-        setTranslation(result.data.translation);
+      if (result.success && result.data) {
+        setTranslation(result.data);
       } else {
         setError(result.error || 'Failed to translate word');
       }
     } catch (err) {
       setError('An unexpected error occurred');
+      // eslint-disable-next-line no-console
       console.error('Translation error:', err);
     } finally {
       setIsLoading(false);
@@ -254,52 +257,14 @@ export const CreateWordForm = () => {
       </VStack>
 
       {/* Translation Modal */}
-      <Dialog.Root open={isOpen} onOpenChange={(e) => setIsOpen(e.open)}>
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Positioner>
-            <Dialog.Content maxW="md" mx="auto">
-              <Dialog.Header>
-                <Dialog.Title>Translating &quot;{word}&quot;</Dialog.Title>
-              </Dialog.Header>
-              <Dialog.Body>
-                {isLoading ? (
-                  <VStack gap={4} py={8}>
-                    <Spinner size="lg" color="blue.500" />
-                    <Text color="gray.500" _dark={{ color: 'gray.400' }}>
-                      Getting translation...
-                    </Text>
-                  </VStack>
-                ) : error ? (
-                  <VStack gap={4} py={4}>
-                    <Text color="red.500" textAlign="center">
-                      {error}
-                    </Text>
-                  </VStack>
-                ) : translation ? (
-                  <VStack gap={4} py={4}>
-                    <Text fontSize="lg" fontWeight="medium" textAlign="center">
-                      {translation}
-                    </Text>
-                  </VStack>
-                ) : null}
-              </Dialog.Body>
-              <Dialog.Footer>
-                <Dialog.ActionTrigger asChild>
-                  <Button variant="outline" onClick={onClose}>
-                    Close
-                  </Button>
-                </Dialog.ActionTrigger>
-                {translation && (
-                  <Button colorScheme="blue" ml={3}>
-                    Save to Collection
-                  </Button>
-                )}
-              </Dialog.Footer>
-            </Dialog.Content>
-          </Dialog.Positioner>
-        </Portal>
-      </Dialog.Root>
+      <TranslationModal
+        isOpen={isOpen}
+        word={word}
+        isLoading={isLoading}
+        error={error}
+        translation={translation}
+        onClose={onClose}
+      />
     </>
   );
 };

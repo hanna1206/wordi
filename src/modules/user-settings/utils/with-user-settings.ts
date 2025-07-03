@@ -28,6 +28,7 @@ export const withUserSettings = <TInput, TOutput>(
     try {
       return await handler(nextContext, input);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Action error:', error);
       return {
         success: false,
