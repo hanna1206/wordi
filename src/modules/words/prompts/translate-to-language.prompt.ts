@@ -31,13 +31,25 @@ export const outputStructure = z.object({
       which have either idiomatic meaning, special context, or are important 
       for natural communication. Exclude generic combinations like "big <word>" or "nice <word>". 
       Each collocation should have a translation into {targetLanguage} 
-      like this: "zu einer Meinung halten - to hold an opinion"`,
+      in the following format: "<collocation> - <translation into {targetLanguage}>"`,
   ),
   synonyms: z.array(z.string()).describe('Synonyms of the word in German'),
   gender: z
     .string()
     .nullable()
     .describe(
-      'The grammatical gender of the word in English (masculine, feminine, neuter), only if the word is a noun. Otherwise, return null.',
+      'The grammatical gender of the German word written in English (masculine, feminine, neuter), only if the word is a noun. Otherwise, return null.',
+    ),
+  pluralForm: z
+    .string()
+    .nullable()
+    .describe(
+      'The plural form of the German word, only if the word is a noun. Otherwise, return null.',
+    ),
+  singularForm: z
+    .string()
+    .nullable()
+    .describe(
+      'The singular form of the German word, only if the word is a noun. Otherwise, return null.',
     ),
 });

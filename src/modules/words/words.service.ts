@@ -1,19 +1,68 @@
 import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
 
 import {
-  outputStructure,
+  normalizeWordPrompt,
+  outputStructure as normalizeWordOutputStructure,
+} from './prompts/normalize-word.prompt';
+import {
+  nounInfoPrompt,
+  outputStructure as nounInfoOutputStructure,
+} from './prompts/noun-info.prompt';
+import {
+  outputStructure as translateToLanguageOutputStructure,
   translateToLanguagePrompt,
-} from './prompts/translate-to-language';
+} from './prompts/translate-to-language.prompt';
 
-export const translateWord = async (word: string, targetLanguage: string) => {
-  const structuredLlm = gpt41MiniModel.withStructuredOutput(outputStructure);
+export const getWordInfo = async (word: string, targetLanguage: string) => {
+  const translateWordLlm = gpt41MiniModel.withStructuredOutput(
+    translateToLanguageOutputStructure,
+  );
+  const translateWordChain = translateToLanguagePrompt.pipe(translateWordLlm);
 
-  const chain = translateToLanguagePrompt.pipe(structuredLlm);
+  const normalizeWordLlm = gpt41MiniModel.withStructuredOutput(
+    normalizeWordOutputStructure,
+  );
+  const normalizeWordChain = normalizeWordPrompt.pipe(normalizeWordLlm);
 
-  const response = await chain.invoke({
+  const nounInfoLlm = gpt41MiniModel.withStructuredOutput(
+    nounInfoOutputStructure,
+  );
+  const nounInfoChain = nounInfoPrompt.pipe(nounInfoLlm);
+
+  const { normalizedWord, partOfSpeech } = await normalizeWordChain.invoke({
     word,
-    targetLanguage,
   });
 
-  return response;
+  const {
+    mainTranslation,
+    additionalTranslations,
+    exampleSentences,
+    collocations,
+    synonyms,
+  } = await translateWordChain.invoke({
+    word: normalizedWord,
+    targetLanguage,
+  });
+  let posSpecifics = {};
+
+  if (partOfSpeech.includes('noun')) {
+    const { gender, pluralForm } = await nounInfoChain.invoke({
+      word: normalizedWord,
+    });
+    posSpecifics = {
+      gender,
+      pluralForm,
+    };
+  }
+
+  return {
+    normalizedWord,
+    partOfSpeech,
+    mainTranslation,
+    additionalTranslations,
+    exampleSentences,
+    collocations,
+    synonyms,
+    ...posSpecifics,
+  };
 };
