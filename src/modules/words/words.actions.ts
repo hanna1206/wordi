@@ -4,14 +4,14 @@ import { getLanguageName } from '@/modules/user-settings/utils/get-language-name
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
 
-import { translateWord as translateWordService } from './words.service';
+import { getWordInfo as wordInfoService } from './words.service';
 import type { TranslationResult } from './words.types';
 
 export const translateWord = withUserSettings<string, TranslationResult>(
   async (context, word): Promise<ActionResult<TranslationResult>> => {
-    const normalizedWord = word.trim().toLowerCase();
+    const serializedWord = word.trim().toLowerCase();
     // Validate input
-    if (!normalizedWord) {
+    if (!serializedWord) {
       return {
         success: false,
         error: 'Word is required',
@@ -23,10 +23,7 @@ export const translateWord = withUserSettings<string, TranslationResult>(
 
     try {
       // Call OpenAI for translation
-      const response = await translateWordService(
-        normalizedWord,
-        targetLanguage,
-      );
+      const response = await wordInfoService(serializedWord, targetLanguage);
 
       if (!response) {
         return {

@@ -18,10 +18,9 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
+import { TranslationModal } from '@/modules/words/components/translation-modal';
 import { translateWord } from '@/modules/words/words.actions';
 import type { TranslationResult } from '@/modules/words/words.types';
-
-import { TranslationModal } from './translation-modal';
 
 export const CreateWordForm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,11 +72,11 @@ export const CreateWordForm = () => {
 
   return (
     <>
-      <VStack gap={12} align="stretch" py={8}>
+      <VStack gap={{ base: 6, md: 12 }} align="stretch" py={{ base: 4, md: 8 }}>
         {/* Main heading */}
         <VStack gap={3} textAlign="center">
           <Heading
-            size="3xl"
+            fontSize={{ base: '2xl', md: '3xl', lg: '4xl' }}
             fontWeight="500"
             color="gray.800"
             letterSpacing="-0.02em"
@@ -89,16 +88,16 @@ export const CreateWordForm = () => {
 
         {/* Input form */}
         <form onSubmit={onFormSubmit}>
-          <VStack gap={6}>
+          <VStack gap={{ base: 3, md: 6 }}>
             <HStack
               w="full"
-              maxW="2xl"
+              maxW={{ base: '100%', md: '2xl' }}
               mx="auto"
               bg="white"
               border="1px"
               borderColor="gray.200"
-              borderRadius="2xl"
-              p={2}
+              borderRadius={{ base: 'lg', md: '2xl' }}
+              p={{ base: 1, md: 2 }}
               shadow="sm"
               transition="all 0.2s"
               _dark={{
@@ -114,16 +113,19 @@ export const CreateWordForm = () => {
                 shadow: 'lg',
                 borderColor: 'blue.400',
               }}
+              alignItems="center"
+              flexDirection="row"
+              gap={2}
             >
               <Input
                 name="word"
                 placeholder="Enter any German word..."
-                size="lg"
-                fontSize="lg"
+                size={{ base: 'md', md: 'lg' }}
+                fontSize={{ base: 'md', md: 'lg' }}
                 border="none"
                 outline="none"
-                px={4}
-                py={3}
+                px={{ base: 2, md: 4 }}
+                py={{ base: 2, md: 3 }}
                 required
                 flex={1}
                 _placeholder={{
@@ -131,6 +133,7 @@ export const CreateWordForm = () => {
                   _dark: { color: 'gray.500' },
                 }}
                 _focus={{ boxShadow: 'none' }}
+                w="100%"
               />
               <IconButton
                 type="submit"
@@ -138,7 +141,7 @@ export const CreateWordForm = () => {
                 bg="blue.500"
                 color="white"
                 borderRadius="xl"
-                size="lg"
+                size={{ base: 'md', md: 'lg' }}
                 transition="all 0.15s"
                 _hover={{
                   bg: 'blue.600',
@@ -147,27 +150,29 @@ export const CreateWordForm = () => {
                 _active={{
                   transform: 'scale(0.95)',
                 }}
+                w={12}
+                h={12}
               >
                 <LuArrowRight />
               </IconButton>
             </HStack>
 
             {/* Quick action chips */}
-            <VStack gap={4} mt={4}>
+            <VStack gap={{ base: 2, md: 4 }} mt={4}>
               <Text
-                fontSize="sm"
+                fontSize={{ base: 'xs', md: 'sm' }}
                 color="gray.500"
                 fontWeight="medium"
                 _dark={{ color: 'gray.400' }}
               >
                 Try these
               </Text>
-              <HStack gap={3} flexWrap="wrap" justify="center">
+              <HStack gap={{ base: 1, md: 3 }} flexWrap="wrap" justify="center">
                 <Button
                   type="button"
                   onClick={() => handleSubmit('das Buch')}
                   variant="outline"
-                  size="sm"
+                  size={{ base: 'xs', md: 'sm' }}
                   borderRadius="full"
                   borderColor="gray.200"
                   color="gray.600"
@@ -196,7 +201,7 @@ export const CreateWordForm = () => {
                   type="button"
                   onClick={() => handleSubmit('lernen')}
                   variant="outline"
-                  size="sm"
+                  size={{ base: 'xs', md: 'sm' }}
                   borderRadius="full"
                   borderColor="gray.200"
                   color="gray.600"
@@ -225,7 +230,7 @@ export const CreateWordForm = () => {
                   type="button"
                   onClick={() => handleSubmit('wunderbar')}
                   variant="outline"
-                  size="sm"
+                  size={{ base: 'xs', md: 'sm' }}
                   borderRadius="full"
                   borderColor="gray.200"
                   color="gray.600"
