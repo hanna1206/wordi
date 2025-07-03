@@ -25,6 +25,7 @@ export const withAuth = <TInput, TOutput>(
     try {
       return await handler(context, input);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Action error:', error);
       return {
         success: false,

@@ -29,6 +29,7 @@ export const getAuthenticatedUser = async (): Promise<AuthResult> => {
       user,
     };
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Auth error:', error);
     return {
       success: false,

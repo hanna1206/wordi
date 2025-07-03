@@ -1,19 +1,17 @@
 'use server';
 
-import { withAuth } from '@/modules/auth/utils/with-auth';
 import { getLanguageName } from '@/modules/user-settings/utils/get-language-name';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
-import { openAiClient } from '@/services/openai/openai-client';
 import type { ActionResult } from '@/shared-types';
 
-interface TranslationResult {
-  translation: string;
-}
+import { translateWord as translateWordService } from './words.service';
+import type { TranslationResult } from './words.types';
 
 export const translateWord = withUserSettings<string, TranslationResult>(
   async (context, word): Promise<ActionResult<TranslationResult>> => {
+    const normalizedWord = word.trim().toLowerCase();
     // Validate input
-    if (!word?.trim()) {
+    if (!normalizedWord) {
       return {
         success: false,
         error: 'Word is required',
@@ -23,34 +21,26 @@ export const translateWord = withUserSettings<string, TranslationResult>(
     const { userSettings } = context;
     const targetLanguage = getLanguageName(userSettings.native_language!);
 
-    // Create OpenAI prompt for translation
-    const prompt = `Translate the German word "${word.trim()}" to ${targetLanguage}. 
-    Provide a concise, accurate translation. If the word has multiple meanings, provide the most common one.
-    Respond with just the translation, no additional explanation.`;
-
     try {
       // Call OpenAI for translation
-      const response = await openAiClient.invoke(prompt);
+      const response = await translateWordService(
+        normalizedWord,
+        targetLanguage,
+      );
 
-      if (!response?.content) {
+      if (!response) {
         return {
           success: false,
           error: 'Translation service unavailable',
         };
       }
 
-      const content =
-        typeof response.content === 'string'
-          ? response.content
-          : response.content.toString();
-
       return {
         success: true,
-        data: {
-          translation: content.trim(),
-        },
+        data: response,
       };
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('OpenAI translation error:', error);
       return {
         success: false,
@@ -60,47 +50,47 @@ export const translateWord = withUserSettings<string, TranslationResult>(
   },
 );
 
-// Пример: простой action для получения списка изученных слов пользователя
-interface UserWord {
-  id: string;
-  word: string;
-  translation: string;
-  created_at: string;
-}
+// // Пример: простой action для получения списка изученных слов пользователя
+// interface UserWord {
+//   id: string;
+//   word: string;
+//   translation: string;
+//   created_at: string;
+// }
 
-export const getUserWords = withAuth<void, UserWord[]>(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async (_context): Promise<ActionResult<UserWord[]>> => {
-    // Примечание: здесь будет реальная логика получения слов из БД
-    // Пока возвращаем mock данные для демонстрации
+// export const getUserWords = withAuth<void, UserWord[]>(
+//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//   async (_context): Promise<ActionResult<UserWord[]>> => {
+//     // Примечание: здесь будет реальная логика получения слов из БД
+//     // Пока возвращаем mock данные для демонстрации
 
-    try {
-      // TODO: заменить на реальный запрос к базе данных
-      const mockWords: UserWord[] = [
-        {
-          id: '1',
-          word: 'das Buch',
-          translation: 'книга',
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: '2',
-          word: 'lernen',
-          translation: 'изучать',
-          created_at: new Date().toISOString(),
-        },
-      ];
+//     try {
+//       // TODO: заменить на реальный запрос к базе данных
+//       const mockWords: UserWord[] = [
+//         {
+//           id: '1',
+//           word: 'das Buch',
+//           translation: 'книга',
+//           created_at: new Date().toISOString(),
+//         },
+//         {
+//           id: '2',
+//           word: 'lernen',
+//           translation: 'изучать',
+//           created_at: new Date().toISOString(),
+//         },
+//       ];
 
-      return {
-        success: true,
-        data: mockWords,
-      };
-    } catch (error) {
-      console.error('Error fetching user words:', error);
-      return {
-        success: false,
-        error: 'Failed to load your words',
-      };
-    }
-  },
-);
+//       return {
+//         success: true,
+//         data: mockWords,
+//       };
+//     } catch (error) {
+//       console.error('Error fetching user words:', error);
+//       return {
+//         success: false,
+//         error: 'Failed to load your words',
+//       };
+//     }
+//   },
+// );

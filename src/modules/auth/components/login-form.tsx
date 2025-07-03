@@ -67,6 +67,7 @@ export const LoginForm = ({ onSwitchToSignup }: LoginFormProps) => {
         window.location.href = '/';
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Login error:', error);
       setSubmitError('Something went wrong. Please try again.');
     } finally {
