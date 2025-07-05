@@ -7,6 +7,7 @@ import type { TranslationResult } from '@/modules/words/words.types';
 import { AdditionalSections } from './additional-sections';
 import { MainWordBlock } from './main-word-block';
 import { NounSections } from './noun-sections';
+import { VerbSections } from './verb-sections';
 
 interface TranslationContentProps {
   translation: TranslationResult;
@@ -22,6 +23,9 @@ export const TranslationContent: React.FC<TranslationContentProps> = ({
 
       {/* Noun-specific sections */}
       <NounSections translation={translation} />
+
+      {/* Verb-specific sections */}
+      <VerbSections translation={translation} />
 
       {/* Divider */}
       <Box h="1px" bg="gray.200" my={2} />
