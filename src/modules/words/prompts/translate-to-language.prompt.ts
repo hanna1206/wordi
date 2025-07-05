@@ -31,25 +31,10 @@ export const outputStructure = z.object({
       which have either idiomatic meaning, special context, or are important 
       for natural communication. Exclude generic combinations like "big <word>" or "nice <word>". 
       Each collocation should have a translation into {targetLanguage} 
-      in the following format: "<collocation> - <translation into {targetLanguage}>"`,
+      in the following format: "<collocation> - <translation into {targetLanguage}>".
+      Important note: do not return, please, word, that are composed using {word}. 
+      Only collocations with this word, not word created with its root.`,
   ),
-  synonyms: z.array(z.string()).describe('Synonyms of the word in German'),
-  gender: z
-    .string()
-    .nullable()
-    .describe(
-      'The grammatical gender of the German word written in English (masculine, feminine, neuter), only if the word is a noun. Otherwise, return null.',
-    ),
-  pluralForm: z
-    .string()
-    .nullable()
-    .describe(
-      'The plural form of the German word, only if the word is a noun. Otherwise, return null.',
-    ),
-  singularForm: z
-    .string()
-    .nullable()
-    .describe(
-      'The singular form of the German word, only if the word is a noun. Otherwise, return null.',
-    ),
+  synonyms: z.array(z.string()).describe(`Synonyms of the word in German. 
+    If they are nouns - add article. For example: "das Buch".`),
 });

@@ -11,12 +11,12 @@ export interface TranslationBasicResult {
 export interface TranslationNounResult extends TranslationBasicResult {
   gender: string;
   pluralForm: string;
-  prepositions: string[];
+  prepositions: string[] | null;
 }
 
 export interface TranslationVerbResult extends TranslationBasicResult {
   regular: 'regular' | 'irregular';
-  prepositions: string[];
+  prepositions: string[] | null;
   conjugation: string;
 }
 
