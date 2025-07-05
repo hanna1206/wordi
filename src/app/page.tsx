@@ -1,3 +1,3 @@
-import { HomePage } from '@/modules/home/pages/home.page';
+import { CreateWordPage } from '@/modules/words/pages/create-word-page';
 
-export default HomePage;
+export default CreateWordPage;
