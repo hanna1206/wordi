@@ -12,6 +12,10 @@ import {
   outputStructure as translateToLanguageOutputStructure,
   translateToLanguagePrompt,
 } from './prompts/translate-to-language.prompt';
+import {
+  outputStructure as verbInfoOutputStructure,
+  verbInfoPrompt,
+} from './prompts/verb-info-prompt';
 
 export const getWordInfo = async (word: string, targetLanguage: string) => {
   const translateWordLlm = gpt41MiniModel.withStructuredOutput(
@@ -28,6 +32,11 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
     nounInfoOutputStructure,
   );
   const nounInfoChain = nounInfoPrompt.pipe(nounInfoLlm);
+
+  const verbInfoLlm = gpt41MiniModel.withStructuredOutput(
+    verbInfoOutputStructure,
+  );
+  const verbInfoChain = verbInfoPrompt.pipe(verbInfoLlm);
 
   const { normalizedWord, partOfSpeech } = await normalizeWordChain.invoke({
     word,
@@ -46,13 +55,19 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
   let posSpecifics = {};
 
   if (partOfSpeech.includes('noun')) {
-    const { gender, pluralForm } = await nounInfoChain.invoke({
+    const response = await nounInfoChain.invoke({
       word: normalizedWord,
+      targetLanguage,
     });
-    posSpecifics = {
-      gender,
-      pluralForm,
-    };
+    posSpecifics = response;
+  }
+
+  if (partOfSpeech.includes('verb')) {
+    const response = await verbInfoChain.invoke({
+      word: normalizedWord,
+      targetLanguage,
+    });
+    posSpecifics = response;
   }
 
   return {

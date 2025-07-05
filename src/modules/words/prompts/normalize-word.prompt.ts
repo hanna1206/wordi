@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export const normalizeWordPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to provide the normalized form of a given word as it usually appears in dictionaries.
+  Normalized form of word should be in German language.
 
 - If the word is a noun, return it in the singular nominative form (for example, "house") with its definite article (for example, "der Haus").
 - If the word is a verb, return its infinitive form (for example, "to go").
