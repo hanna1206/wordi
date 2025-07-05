@@ -2,14 +2,18 @@ import React from 'react';
 
 import { HStack, Text, VStack } from '@chakra-ui/react';
 
-import type { TranslationResult } from '@/modules/words/words.types';
-
-interface MainWordBlockProps {
-  translation: TranslationResult;
+interface WordHeaderProps {
+  normalizedWord: string;
+  mainTranslation: string;
+  partOfSpeech?: string[];
+  additionalInfo?: string; // For verb regular/irregular info
 }
 
-export const MainWordBlock: React.FC<MainWordBlockProps> = ({
-  translation,
+export const WordHeader: React.FC<WordHeaderProps> = ({
+  normalizedWord,
+  mainTranslation,
+  partOfSpeech,
+  additionalInfo,
 }) => {
   return (
     <VStack gap={2} align="start">
@@ -19,16 +23,17 @@ export const MainWordBlock: React.FC<MainWordBlockProps> = ({
           color="gray.800"
           fontWeight="semibold"
         >
-          {translation.normalizedWord}
+          {normalizedWord}
         </Text>
-        {translation.partOfSpeech && translation.partOfSpeech.length > 0 && (
+        {partOfSpeech && partOfSpeech.length > 0 && (
           <Text
             as="span"
             fontSize={{ base: 'sm', md: 'md' }}
             color="gray.500"
             fontStyle="italic"
           >
-            {translation.partOfSpeech.join(', ')}
+            {partOfSpeech.join(', ')}
+            {additionalInfo && ` / ${additionalInfo}`}
           </Text>
         )}
       </HStack>
@@ -37,7 +42,7 @@ export const MainWordBlock: React.FC<MainWordBlockProps> = ({
         fontWeight="bold"
         color="blue.600"
       >
-        {translation.mainTranslation}
+        {mainTranslation}
       </Text>
     </VStack>
   );

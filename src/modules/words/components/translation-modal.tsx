@@ -2,12 +2,11 @@ import React from 'react';
 
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
+import { TranslationLoading } from '@/modules/words/components/generate-word-modal/generate-loading';
+import { TranslationError } from '@/modules/words/components/generate-word-modal/generate-word-error';
+import { TranslationContent } from '@/modules/words/components/generate-word-modal/generate-word-loaded';
 import { getGenderBgColor } from '@/modules/words/utils/get-gender-bg-color';
 import type { TranslationResult } from '@/modules/words/words.types';
-
-import { TranslationContent } from './translation-modal/translation-content';
-import { TranslationError } from './translation-modal/translation-error';
-import { TranslationLoading } from './translation-modal/translation-loading';
 
 interface TranslationModalProps {
   isOpen: boolean;

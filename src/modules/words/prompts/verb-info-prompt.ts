@@ -27,11 +27,11 @@ export const outputStructure = z.object({
     .array(z.string())
     .nullable()
     .describe(
-      `For the given German verb, list only the prepositions that are commonly 
-      used with it along with the required cases (if any). 
-      Format: "<preposition> + case — example sentence - translation of the example sentence in {targetLanguage}"
-      
-      If there are no specific prepositions used with this noun, 
-      do not return null and do not add any explanations.`,
+      `For the given German verb, list only the *specific* prepositions that are strongly and idiomatically connected to it, 
+      requiring a particular case, and which form fixed expressions or established grammatical constructions.
+      Format: """<preposition> + case — example sentence — translation of the example sentence in {targetLanguage}"""
+      Do NOT include common, general prepositions that can combine freely with many verbs (such as mit, für, ohne) 
+      unless they form a fixed or idiomatic phrase.
+      If there are no such specific prepositions for this verb, return null without any explanations.`,
     ),
 });
