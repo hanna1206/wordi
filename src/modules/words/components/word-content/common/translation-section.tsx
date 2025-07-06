@@ -60,6 +60,12 @@ export const TranslationSection: React.FC<TranslationSectionProps> = ({
                   key={index}
                   templateColumns={`repeat(${headers.length}, 1fr)`}
                   gap={4}
+                  py={2}
+                  px={3}
+                  borderRadius="md"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  _dark={{ borderColor: 'gray.600' }}
                 >
                   {headers.map((header) => (
                     <Text
@@ -79,9 +85,9 @@ export const TranslationSection: React.FC<TranslationSectionProps> = ({
       case 'tags':
         return (
           <HStack wrap="wrap" gap={2} pl={6}>
-            {(items as string[]).map((item) => (
+            {(items as string[]).map((item, index) => (
               <Text
-                key={item}
+                key={item + index}
                 fontSize="sm"
                 px={2.5}
                 py={1}

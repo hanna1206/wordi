@@ -8,6 +8,11 @@ export type Preposition = {
   exampleSentence: string;
   translation: string;
 };
+export type ReflexiveVerb = 'reflexive' | 'non-reflexive' | 'both';
+export type SichUsage = {
+  withSich: string;
+  withoutSich: string;
+};
 
 export interface TranslationBasicResult {
   normalizedWord: string;
@@ -28,6 +33,9 @@ export interface TranslationNounResult extends TranslationBasicResult {
 export interface TranslationVerbResult extends TranslationBasicResult {
   regular: 'regular' | 'irregular';
   prepositions: Preposition[] | null;
+  isReflexive: ReflexiveVerb;
+  sichUsage: SichUsage | null;
+  separablePrefix: string | null;
   conjugation: string;
 }
 
