@@ -1,6 +1,10 @@
 import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
 
 import {
+  adjectiveInfoPrompt,
+  outputStructure as adjectiveInfoOutputStructure,
+} from './prompts/adjective-info-prompt';
+import {
   normalizeWordPrompt,
   outputStructure as normalizeWordOutputStructure,
 } from './prompts/normalize-word.prompt';
@@ -38,6 +42,11 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
   );
   const verbInfoChain = verbInfoPrompt.pipe(verbInfoLlm);
 
+  const adjectiveInfoLlm = gpt41MiniModel.withStructuredOutput(
+    adjectiveInfoOutputStructure,
+  );
+  const adjectiveInfoChain = adjectiveInfoPrompt.pipe(adjectiveInfoLlm);
+
   const { normalizedWord, partOfSpeech } = await normalizeWordChain.invoke({
     word,
   });
@@ -64,6 +73,14 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
 
   if (partOfSpeech.includes('verb')) {
     const response = await verbInfoChain.invoke({
+      word: normalizedWord,
+      targetLanguage,
+    });
+    posSpecifics = response;
+  }
+
+  if (partOfSpeech.includes('adjective')) {
+    const response = await adjectiveInfoChain.invoke({
       word: normalizedWord,
       targetLanguage,
     });
