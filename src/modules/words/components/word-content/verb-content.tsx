@@ -15,13 +15,11 @@ import { CardDivider, CardLayout } from './common/card-layout';
 import { TranslationSection } from './common/translation-section';
 import { WordHeader } from './common/word-header';
 
-interface VerbCardContentProps {
+interface VerbContentProps {
   translation: TranslationVerbResult;
 }
 
-export const VerbCardContent: React.FC<VerbCardContentProps> = ({
-  translation,
-}) => {
+export const VerbContent: React.FC<VerbContentProps> = ({ translation }) => {
   const prepositions = translation.prepositions || [];
   const conjugationAsArray = translation.conjugation.split(', ');
   const conjugationText =

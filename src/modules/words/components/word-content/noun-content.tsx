@@ -17,13 +17,11 @@ import { CardDivider, CardLayout } from './common/card-layout';
 import { TranslationSection } from './common/translation-section';
 import { WordHeader } from './common/word-header';
 
-interface NounCardContentProps {
+interface NounContentProps {
   translation: TranslationNounResult;
 }
 
-export const NounCardContent: React.FC<NounCardContentProps> = ({
-  translation,
-}) => {
+export const NounContent: React.FC<NounContentProps> = ({ translation }) => {
   const isNoun = translation.partOfSpeech?.includes('noun');
   const hasPluralForm = 'pluralForm' in translation && !!translation.pluralForm;
   const hasPrepositions =

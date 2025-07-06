@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { GeneralCardContent } from '@/modules/words/components/word-content/general-content';
-import { NounCardContent } from '@/modules/words/components/word-content/noun-content';
-import { VerbCardContent } from '@/modules/words/components/word-content/verb-content';
+import { GeneralContent } from '@/modules/words/components/word-content/general-content';
+import { NounContent } from '@/modules/words/components/word-content/noun-content';
+import { VerbContent } from '@/modules/words/components/word-content/verb-content';
 import type {
   TranslationNounResult,
   TranslationResult,
@@ -20,17 +20,13 @@ export const TranslationContent: React.FC<TranslationContentProps> = ({
   const partOfSpeech = translation.partOfSpeech || [];
 
   if (partOfSpeech.includes('noun')) {
-    return (
-      <NounCardContent translation={translation as TranslationNounResult} />
-    );
+    return <NounContent translation={translation as TranslationNounResult} />;
   }
 
   if (partOfSpeech.includes('verb')) {
-    return (
-      <VerbCardContent translation={translation as TranslationVerbResult} />
-    );
+    return <VerbContent translation={translation as TranslationVerbResult} />;
   }
 
   // For all other parts of speech (adjective, adverb, etc.)
-  return <GeneralCardContent translation={translation} />;
+  return <GeneralContent translation={translation} />;
 };

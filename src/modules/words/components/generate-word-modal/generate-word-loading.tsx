@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Spinner, Text, VStack } from '@chakra-ui/react';
 
-interface TranslationLoadingProps {
+interface GenerateWordLoadingProps {
   word: string;
 }
 
-export const TranslationLoading: React.FC<TranslationLoadingProps> = ({
+export const GenerateWordLoading: React.FC<GenerateWordLoadingProps> = ({
   word,
 }) => {
   return (
