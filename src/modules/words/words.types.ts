@@ -13,6 +13,12 @@ export type SichUsage = {
   withSich: string;
   withoutSich: string;
 };
+export type AdjectiveType = 'qualitative' | 'relative';
+export type ComparisonForms = {
+  positive: string;
+  comparative: string | null;
+  superlative: string | null;
+};
 
 export interface TranslationBasicResult {
   normalizedWord: string;
@@ -39,7 +45,14 @@ export interface TranslationVerbResult extends TranslationBasicResult {
   conjugation: string;
 }
 
+export interface TranslationAdjectiveResult extends TranslationBasicResult {
+  type: AdjectiveType;
+  comparisonForms: ComparisonForms | null;
+  prepositions: Preposition[] | null;
+}
+
 export type TranslationResult =
   | TranslationBasicResult
   | TranslationNounResult
-  | TranslationVerbResult;
+  | TranslationVerbResult
+  | TranslationAdjectiveResult;
