@@ -5,11 +5,11 @@ const config = defineConfig({
     tokens: {
       fonts: {
         body: {
-          value: 'Outfit, sans-serif',
+          value: 'Onest, sans-serif',
         },
-        heading: {
-          value: 'Outfit, sans-serif',
-        },
+        // heading: {
+        //   value: 'Outfit, sans-serif',
+        // },
       },
       radii: {
         md: { value: '0.5rem' },

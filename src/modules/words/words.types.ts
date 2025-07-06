@@ -1,3 +1,9 @@
+export type Gender = 'masculine' | 'feminine' | 'neuter';
+export type Collocation = {
+  collocation: string;
+  translation: string;
+};
+
 export interface TranslationBasicResult {
   normalizedWord: string;
   mainTranslation: string;
@@ -5,11 +11,11 @@ export interface TranslationBasicResult {
   partOfSpeech: string[];
   exampleSentences: string[];
   synonyms: string[];
-  collocations: string[];
+  collocations: Collocation[];
 }
 
 export interface TranslationNounResult extends TranslationBasicResult {
-  gender: string;
+  gender: Gender;
   pluralForm: string;
   prepositions: string[] | null;
 }

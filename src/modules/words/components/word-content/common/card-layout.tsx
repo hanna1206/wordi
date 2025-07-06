@@ -1,16 +1,30 @@
 import React from 'react';
 
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, HStack, VStack } from '@chakra-ui/react';
 
 interface CardLayoutProps {
   children: React.ReactNode;
+  genderColor?: string;
 }
 
-export const CardLayout: React.FC<CardLayoutProps> = ({ children }) => {
+export const CardLayout: React.FC<CardLayoutProps> = ({
+  children,
+  genderColor,
+}) => {
   return (
-    <VStack gap={{ base: 4, md: 6 }} py={{ base: 2, md: 4 }} align="stretch">
-      {children}
-    </VStack>
+    <HStack align="stretch" gap={4}>
+      {genderColor && (
+        <Box w="4px" bg={genderColor} borderRadius="full" flexShrink={0} />
+      )}
+      <VStack
+        gap={{ base: 4, md: 6 }}
+        py={{ base: 2, md: 4 }}
+        align="stretch"
+        w="full"
+      >
+        {children}
+      </VStack>
+    </HStack>
   );
 };
 

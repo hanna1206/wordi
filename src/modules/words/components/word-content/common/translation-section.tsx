@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { SectionHeader } from './section-header';
 
 interface TranslationSectionProps {
   icon: React.ElementType;
   title: string;
-  items: string[];
-  renderMode?: 'list' | 'tags' | 'quotes' | 'text';
+  items: string[] | Record<string, string | number>[];
+  renderMode?: 'list' | 'tags' | 'quotes' | 'text' | 'table';
   show?: boolean;
 }
 
@@ -25,10 +25,61 @@ export const TranslationSection: React.FC<TranslationSectionProps> = ({
 
   const renderContent = () => {
     switch (renderMode) {
+      case 'table':
+        const tableItems = items as Record<string, string | number>[];
+        if (tableItems.length === 0) return null;
+
+        // Get column headers from the first object's keys
+        const headers = Object.keys(tableItems[0]);
+
+        return (
+          <Box pl={6}>
+            {/* Header row */}
+            {/* <Grid
+              templateColumns={`repeat(${headers.length}, 1fr)`}
+              gap={4}
+              mb={2}
+            >
+              {headers.map((header) => (
+                <Text
+                  key={header}
+                  fontSize="sm"
+                  fontWeight="bold"
+                  textTransform="capitalize"
+                  color="gray.600"
+                  _dark={{ color: 'gray.400' }}
+                >
+                  {header}
+                </Text>
+              ))}
+            </Grid> */}
+            {/* Data rows */}
+            <VStack gap={1} align="stretch">
+              {tableItems.map((item, index) => (
+                <Grid
+                  key={index}
+                  templateColumns={`repeat(${headers.length}, 1fr)`}
+                  gap={4}
+                >
+                  {headers.map((header) => (
+                    <Text
+                      key={header}
+                      fontSize="sm"
+                      color="gray.700"
+                      _dark={{ color: 'gray.300' }}
+                    >
+                      {item[header]}
+                    </Text>
+                  ))}
+                </Grid>
+              ))}
+            </VStack>
+          </Box>
+        );
       case 'tags':
         return (
           <HStack wrap="wrap" gap={2} pl={6}>
-            {items.map((item) => (
+            {(items as string[]).map((item) => (
               <Text
                 key={item}
                 fontSize="sm"
@@ -47,7 +98,7 @@ export const TranslationSection: React.FC<TranslationSectionProps> = ({
       case 'quotes':
         return (
           <VStack align="start" pl={6} gap={1}>
-            {items.map((item) => (
+            {(items as string[]).map((item) => (
               <Text
                 key={item}
                 fontSize="sm"
@@ -62,15 +113,15 @@ export const TranslationSection: React.FC<TranslationSectionProps> = ({
       case 'text':
         return (
           <Text pl={6} fontSize="md">
-            {items.join(', ')}
+            {(items as string[]).join(', ')}
           </Text>
         );
       case 'list':
       default:
         return (
           <VStack align="start" pl={6} gap={0}>
-            {items.map((item) => (
-              <Text key={item} fontSize="md" color="gray.700">
+            {(items as string[]).map((item, index) => (
+              <Text key={item + index} fontSize="md" color="gray.700">
                 • {item}
               </Text>
             ))}

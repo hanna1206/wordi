@@ -5,7 +5,6 @@ import { Button, Dialog, Portal } from '@chakra-ui/react';
 import { TranslationLoading } from '@/modules/words/components/generate-word-modal/generate-loading';
 import { TranslationError } from '@/modules/words/components/generate-word-modal/generate-word-error';
 import { TranslationContent } from '@/modules/words/components/generate-word-modal/generate-word-loaded';
-import { getGenderBgColor } from '@/modules/words/utils/get-gender-bg-color';
 import type { TranslationResult } from '@/modules/words/words.types';
 
 interface TranslationModalProps {
@@ -25,11 +24,6 @@ export const TranslationModal: React.FC<TranslationModalProps> = ({
   translation,
   onClose,
 }) => {
-  const bgColor =
-    translation && 'gender' in translation
-      ? getGenderBgColor(translation)
-      : undefined;
-
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Portal>
@@ -40,7 +34,6 @@ export const TranslationModal: React.FC<TranslationModalProps> = ({
             mx="auto"
             px={{ base: 4, md: 6 }}
             py={{ base: 4, md: 6 }}
-            {...(bgColor ? { bg: bgColor } : {})}
           >
             <Dialog.Body>
               {isLoading ? (
@@ -72,6 +65,7 @@ export const TranslationModal: React.FC<TranslationModalProps> = ({
                   colorScheme="blue"
                   ml={{ base: 0, md: 3 }}
                   w={{ base: '100%', md: 'auto' }}
+                  bg="blue.500"
                 >
                   Save to Collection
                 </Button>
