@@ -5,15 +5,23 @@ export const normalizeWordPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to provide the normalized form of a given word as it usually appears in dictionaries.
   Normalized form of word should be in German language.
 
-- If the word is a noun, return it in the singular nominative form (for example, "house") with its definite article (for example, "der Haus").
-- If the word is a verb, return its infinitive form (for example, "to go").
-- If the word is an adjective, return its base form (for example, "beautiful").
+IMPORTANT RULES:
+- Preserve the original part of speech unless the capitalization clearly indicates otherwise
+- If the word starts with a lowercase letter and is a verb, keep it as a verb (infinitive form)
+- If the word starts with an uppercase letter and could be a substantivized verb, treat it as a noun
+- Do NOT convert verbs to nouns unless the input word is capitalized
+
+- If the word is a noun, return it in the singular nominative form with its definite article (for example, "der Haus").
+- If the word is a verb, return its infinitive form without "zu" (for example, "lernen", not "das Lernen").
+- If the word is an adjective, return its base form (for example, "schön").
 - If it is another part of speech, return the word unchanged.
 
 Examples:  
-Input: "houses" → Output: "house" (noun, singular)  
-Input: "went" → Output: "go" (verb, infinitive)  
-Input: "beautiful" (inflected as "beautifully") → Output: "beautiful" (adjective, base)
+Input: "lernen" → Output: "lernen" (verb, infinitive - keep as verb because lowercase)
+Input: "Lernen" → Output: "das Lernen" (noun, because capitalized)
+Input: "lerne" → Output: "lernen" (verb, infinitive form)
+Input: "Häuser" → Output: "das Haus" (noun, singular with article)
+Input: "schöne" → Output: "schön" (adjective, base form)
 
 The word is "{word}"
 `,
