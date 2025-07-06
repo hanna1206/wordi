@@ -62,7 +62,7 @@ export const NounCardContent: React.FC<NounCardContentProps> = ({
         icon={LuBinary}
         title="Prepositions"
         items={prepositions}
-        renderMode="list"
+        renderMode="table"
         show={hasPrepositions}
       />
 

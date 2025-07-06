@@ -3,6 +3,11 @@ export type Collocation = {
   collocation: string;
   translation: string;
 };
+export type Preposition = {
+  rule: string;
+  exampleSentence: string;
+  translation: string;
+};
 
 export interface TranslationBasicResult {
   normalizedWord: string;
@@ -17,12 +22,12 @@ export interface TranslationBasicResult {
 export interface TranslationNounResult extends TranslationBasicResult {
   gender: Gender;
   pluralForm: string;
-  prepositions: string[] | null;
+  prepositions: Preposition[] | null;
 }
 
 export interface TranslationVerbResult extends TranslationBasicResult {
   regular: 'regular' | 'irregular';
-  prepositions: string[] | null;
+  prepositions: Preposition[] | null;
   conjugation: string;
 }
 

@@ -23,10 +23,11 @@ export const VerbCardContent: React.FC<VerbCardContentProps> = ({
   translation,
 }) => {
   const prepositions = translation.prepositions || [];
+  const conjugationAsArray = translation.conjugation.split(', ');
   const conjugationText =
     translation.regular === 'regular'
-      ? translation.conjugation[translation.conjugation.length - 1]
-      : translation.conjugation;
+      ? conjugationAsArray[conjugationAsArray.length - 1]
+      : conjugationAsArray.join(', ');
 
   return (
     <CardLayout>
@@ -48,7 +49,7 @@ export const VerbCardContent: React.FC<VerbCardContentProps> = ({
         icon={LuBinary}
         title="Prepositions"
         items={prepositions}
-        renderMode="list"
+        renderMode="table"
         show={prepositions.length > 0}
       />
 
@@ -77,7 +78,7 @@ export const VerbCardContent: React.FC<VerbCardContentProps> = ({
         icon={LuLink2}
         title="Collocations"
         items={translation.collocations}
-        renderMode="list"
+        renderMode="table"
       />
     </CardLayout>
   );

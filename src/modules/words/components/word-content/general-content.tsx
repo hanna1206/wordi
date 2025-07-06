@@ -49,7 +49,7 @@ export const GeneralCardContent: React.FC<GeneralCardContentProps> = ({
         icon={LuLink2}
         title="Collocations"
         items={translation.collocations}
-        renderMode="list"
+        renderMode="table"
       />
     </CardLayout>
   );
