@@ -1,4 +1,4 @@
-import type { Gender } from '@/modules/words/words.types';
+import { Gender } from '@/modules/words/words.const';
 
 const GENDER_PROPERTIES: Record<
   Gender,

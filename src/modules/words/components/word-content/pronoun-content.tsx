@@ -1,0 +1,76 @@
+import React from 'react';
+import { LuLayers, LuLink2, LuQuote, LuReplace, LuTable } from 'react-icons/lu';
+
+import { Text } from '@chakra-ui/react';
+
+import type { TranslationPronounResult } from '@/modules/words/words.types';
+
+import { CardDivider, CardLayout } from './common/card-layout';
+import { TranslationSection } from './common/translation-section';
+import { WordHeader } from './common/word-header';
+
+interface PronounContentProps {
+  translation: TranslationPronounResult;
+}
+
+export const PronounContent: React.FC<PronounContentProps> = ({
+  translation,
+}) => {
+  const hasDeclensions =
+    translation.declensions && translation.declensions.length > 0;
+
+  return (
+    <CardLayout>
+      <WordHeader
+        normalizedWord={translation.normalizedWord}
+        mainTranslation={translation.mainTranslation}
+        partOfSpeech={translation.partOfSpeech}
+      />
+
+      {/* Pronoun Type */}
+      <Text fontSize="md" color="gray.700" _dark={{ color: 'gray.300' }}>
+        {translation.pronounType}
+      </Text>
+
+      <CardDivider />
+
+      {/* Case Declensions */}
+      {hasDeclensions && (
+        <TranslationSection
+          icon={LuTable}
+          title="Case Declensions"
+          items={translation.declensions}
+          renderMode="table"
+        />
+      )}
+
+      <TranslationSection
+        icon={LuLayers}
+        title="Also means"
+        items={translation.additionalTranslations}
+        renderMode="list"
+      />
+
+      <TranslationSection
+        icon={LuQuote}
+        title="Usage examples"
+        items={translation.exampleSentences}
+        renderMode="quotes"
+      />
+
+      <TranslationSection
+        icon={LuReplace}
+        title="Synonyms"
+        items={translation.synonyms}
+        renderMode="tags"
+      />
+
+      <TranslationSection
+        icon={LuLink2}
+        title="Collocations"
+        items={translation.collocations}
+        renderMode="table"
+      />
+    </CardLayout>
+  );
+};

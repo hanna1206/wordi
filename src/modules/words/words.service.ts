@@ -13,6 +13,10 @@ import {
   outputStructure as nounInfoOutputStructure,
 } from './prompts/noun-info.prompt';
 import {
+  outputStructure as pronounInfoOutputStructure,
+  pronounInfoPrompt,
+} from './prompts/pronoun-info-prompt';
+import {
   outputStructure as translateToLanguageOutputStructure,
   translateToLanguagePrompt,
 } from './prompts/translate-to-language.prompt';
@@ -20,6 +24,7 @@ import {
   outputStructure as verbInfoOutputStructure,
   verbInfoPrompt,
 } from './prompts/verb-info-prompt';
+import { PartOfSpeech } from './words.const';
 
 export const getWordInfo = async (word: string, targetLanguage: string) => {
   const translateWordLlm = gpt41MiniModel.withStructuredOutput(
@@ -47,6 +52,11 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
   );
   const adjectiveInfoChain = adjectiveInfoPrompt.pipe(adjectiveInfoLlm);
 
+  const pronounInfoLlm = gpt41MiniModel.withStructuredOutput(
+    pronounInfoOutputStructure,
+  );
+  const pronounInfoChain = pronounInfoPrompt.pipe(pronounInfoLlm);
+
   const { normalizedWord, partOfSpeech } = await normalizeWordChain.invoke({
     word,
   });
@@ -63,7 +73,7 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
   });
   let posSpecifics = {};
 
-  if (partOfSpeech.includes('noun')) {
+  if (partOfSpeech.includes(PartOfSpeech.NOUN)) {
     const response = await nounInfoChain.invoke({
       word: normalizedWord,
       targetLanguage,
@@ -71,7 +81,7 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
     posSpecifics = response;
   }
 
-  if (partOfSpeech.includes('verb')) {
+  if (partOfSpeech.includes(PartOfSpeech.VERB)) {
     const response = await verbInfoChain.invoke({
       word: normalizedWord,
       targetLanguage,
@@ -79,8 +89,16 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
     posSpecifics = response;
   }
 
-  if (partOfSpeech.includes('adjective')) {
+  if (partOfSpeech.includes(PartOfSpeech.ADJECTIVE)) {
     const response = await adjectiveInfoChain.invoke({
+      word: normalizedWord,
+      targetLanguage,
+    });
+    posSpecifics = response;
+  }
+
+  if (partOfSpeech.includes(PartOfSpeech.PERSONAL_PRONOUN)) {
+    const response = await pronounInfoChain.invoke({
       word: normalizedWord,
       targetLanguage,
     });

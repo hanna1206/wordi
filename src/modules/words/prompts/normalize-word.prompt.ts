@@ -1,6 +1,8 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
+import { PartOfSpeech } from '@/modules/words/words.const';
+
 export const normalizeWordPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to provide the normalized form of a given word as it usually appears in dictionaries.
   Normalized form of word should be in German language.
@@ -29,7 +31,7 @@ The word is "{word}"
 
 export const outputStructure = z.object({
   normalizedWord: z.string().describe('The normalized form of the word'),
-  partOfSpeech: z.array(z.string()).describe(
+  partOfSpeech: z.array(z.nativeEnum(PartOfSpeech)).describe(
     `The part of speech of the word in English, e.g. noun, verb, adjective, adverb, etc. 
       Return an array of parts of speech, if a word can be used as different parts of speech, 
       like this: ["noun", "verb", "adjective", "adverb"]. If word can be used as only one part of speech, 
