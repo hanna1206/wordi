@@ -10,6 +10,7 @@ export type Collocation = {
   collocation: string;
   translation: string;
 };
+
 export type Preposition = {
   rule: string;
   exampleSentence: string;
@@ -26,17 +27,27 @@ export type ComparisonForms = {
   comparative: string | null;
   superlative: string | null;
 };
+
 export type PronounCase = {
   nominativ: string;
   akkusativ: string;
   dativ: string;
   genitiv: string;
 };
+
 export type PronounDeclension = {
   case: string;
   form: string;
   translation: string;
   example: string;
+};
+
+export type DemonstrativeDeclension = {
+  case: string;
+  masculine: string;
+  feminine: string;
+  neuter: string;
+  plural: string;
 };
 
 export interface TranslationBasicResult {
@@ -75,9 +86,17 @@ export interface TranslationPronounResult extends TranslationBasicResult {
   pronounType: string;
 }
 
+export interface TranslationDemonstrativePronounResult
+  extends TranslationBasicResult {
+  declensions: DemonstrativeDeclension[];
+  pronounType: string;
+  baseForm: string;
+}
+
 export type TranslationResult =
   | TranslationBasicResult
   | TranslationNounResult
   | TranslationVerbResult
   | TranslationAdjectiveResult
-  | TranslationPronounResult;
+  | TranslationPronounResult
+  | TranslationDemonstrativePronounResult;
