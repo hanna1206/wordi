@@ -33,7 +33,7 @@ export const VerbContent: React.FC<VerbContentProps> = ({ translation }) => {
         normalizedWord={translation.normalizedWord}
         mainTranslation={translation.mainTranslation}
         partOfSpeech={translation.partOfSpeech}
-        regularOtIregularVerb={translation.regular}
+        regularOrIrregularVerb={translation.regular}
         isReflexiveVerb={translation.isReflexive}
         separablePrefix={translation.separablePrefix}
       />
