@@ -5,6 +5,10 @@ import {
   outputStructure as adjectiveInfoOutputStructure,
 } from './prompts/adjective-info-prompt';
 import {
+  demonstrativePronounInfoPrompt,
+  outputStructure as demonstrativePronounInfoOutputStructure,
+} from './prompts/demonstrative-pronoun-info-prompt';
+import {
   normalizeWordPrompt,
   outputStructure as normalizeWordOutputStructure,
 } from './prompts/normalize-word.prompt';
@@ -57,6 +61,13 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
   );
   const pronounInfoChain = pronounInfoPrompt.pipe(pronounInfoLlm);
 
+  const demonstrativePronounInfoLlm = gpt41MiniModel.withStructuredOutput(
+    demonstrativePronounInfoOutputStructure,
+  );
+  const demonstrativePronounInfoChain = demonstrativePronounInfoPrompt.pipe(
+    demonstrativePronounInfoLlm,
+  );
+
   const { normalizedWord, partOfSpeech } = await normalizeWordChain.invoke({
     word,
   });
@@ -99,6 +110,14 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
 
   if (partOfSpeech.includes(PartOfSpeech.PERSONAL_PRONOUN)) {
     const response = await pronounInfoChain.invoke({
+      word: normalizedWord,
+      targetLanguage,
+    });
+    posSpecifics = response;
+  }
+
+  if (partOfSpeech.includes(PartOfSpeech.DEMONSTRATIVE_PRONOUN)) {
+    const response = await demonstrativePronounInfoChain.invoke({
       word: normalizedWord,
       targetLanguage,
     });

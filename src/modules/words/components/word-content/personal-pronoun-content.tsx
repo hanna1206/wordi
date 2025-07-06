@@ -9,11 +9,11 @@ import { CardDivider, CardLayout } from './common/card-layout';
 import { TranslationSection } from './common/translation-section';
 import { WordHeader } from './common/word-header';
 
-interface PronounContentProps {
+interface PersonalPronounContentProps {
   translation: TranslationPronounResult;
 }
 
-export const PronounContent: React.FC<PronounContentProps> = ({
+export const PersonalPronounContent: React.FC<PersonalPronounContentProps> = ({
   translation,
 }) => {
   const hasDeclensions =

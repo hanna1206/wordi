@@ -1,13 +1,15 @@
 import React from 'react';
 
 import { AdjectiveContent } from '@/modules/words/components/word-content/adjective-content';
+import { DemonstrativePronounContent } from '@/modules/words/components/word-content/demonstrative-pronoun-content';
 import { GeneralContent } from '@/modules/words/components/word-content/general-content';
 import { NounContent } from '@/modules/words/components/word-content/noun-content';
-import { PronounContent } from '@/modules/words/components/word-content/pronoun-content';
+import { PersonalPronounContent } from '@/modules/words/components/word-content/personal-pronoun-content';
 import { VerbContent } from '@/modules/words/components/word-content/verb-content';
 import { PartOfSpeech } from '@/modules/words/words.const';
 import type {
   TranslationAdjectiveResult,
+  TranslationDemonstrativePronounResult,
   TranslationNounResult,
   TranslationPronounResult,
   TranslationResult,
@@ -42,7 +44,17 @@ export const GenerateWordLoaded: React.FC<GenerateWordLoadedProps> = ({
 
   if (partOfSpeech.includes(PartOfSpeech.PERSONAL_PRONOUN)) {
     return (
-      <PronounContent translation={translation as TranslationPronounResult} />
+      <PersonalPronounContent
+        translation={translation as TranslationPronounResult}
+      />
+    );
+  }
+
+  if (partOfSpeech.includes(PartOfSpeech.DEMONSTRATIVE_PRONOUN)) {
+    return (
+      <DemonstrativePronounContent
+        translation={translation as TranslationDemonstrativePronounResult}
+      />
     );
   }
 
