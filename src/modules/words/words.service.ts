@@ -89,7 +89,7 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
       word: normalizedWord,
       targetLanguage,
     });
-    posSpecifics = response;
+    posSpecifics = { ...posSpecifics, ...response };
   }
 
   if (partOfSpeech.includes(PartOfSpeech.VERB)) {
@@ -97,7 +97,7 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
       word: normalizedWord,
       targetLanguage,
     });
-    posSpecifics = response;
+    posSpecifics = { ...posSpecifics, ...response };
   }
 
   if (partOfSpeech.includes(PartOfSpeech.ADJECTIVE)) {
@@ -105,7 +105,7 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
       word: normalizedWord,
       targetLanguage,
     });
-    posSpecifics = response;
+    posSpecifics = { ...posSpecifics, ...response };
   }
 
   if (partOfSpeech.includes(PartOfSpeech.PERSONAL_PRONOUN)) {
@@ -113,7 +113,7 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
       word: normalizedWord,
       targetLanguage,
     });
-    posSpecifics = response;
+    posSpecifics = { ...posSpecifics, ...response };
   }
 
   if (partOfSpeech.includes(PartOfSpeech.DEMONSTRATIVE_PRONOUN)) {
@@ -121,7 +121,7 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
       word: normalizedWord,
       targetLanguage,
     });
-    posSpecifics = response;
+    posSpecifics = { ...posSpecifics, ...response };
   }
 
   return {
