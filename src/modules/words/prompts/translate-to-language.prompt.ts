@@ -24,17 +24,26 @@ export const outputStructure = z.object({
     `Example of how this German word is used in a German sentence. 
       There should be at least 3 example sentences in German language.`,
   ),
-  collocations: z.array(z.string()).describe(
-    `5-8 most useful and typical collocations with this word in German language 
+  collocations: z
+    .array(
+      z.object({
+        collocation: z.string().describe('The collocation in German'),
+        translation: z
+          .string()
+          .describe('The translation of the collocation into {targetLanguage}'),
+      }),
+    )
+    .describe(
+      `5-8 most useful and typical collocations with this word in German language 
       and set expressions for a language learner at level B2. 
       Focus only on authentical combinations used by native speakers, 
       which have either idiomatic meaning, special context, or are important 
       for natural communication. Exclude generic combinations like "big <word>" or "nice <word>". 
-      Each collocation should have a translation into {targetLanguage} 
-      in the following format: "<collocation> - <translation into {targetLanguage}>".
+      Each collocation should be an object with "collocation" field containing the German collocation 
+      and "translation" field containing the translation into {targetLanguage}.
       Important note: do not return, please, word, that are composed using {word}. 
       Only collocations with this word, not word created with its root.`,
-  ),
+    ),
   synonyms: z.array(z.string()).describe(`Synonyms of the word in German. 
     If they are nouns - add article. For example: "das Buch".`),
 });

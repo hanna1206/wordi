@@ -7,34 +7,43 @@ import {
   LuReplace,
 } from 'react-icons/lu';
 
-import type { TranslationResult } from '@/modules/words/words.types';
+import { getGenderProperties } from '@/modules/words/utils/get-gender-properties';
+import type {
+  Gender,
+  TranslationNounResult,
+} from '@/modules/words/words.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
 import { TranslationSection } from './common/translation-section';
 import { WordHeader } from './common/word-header';
 
 interface NounCardContentProps {
-  translation: TranslationResult;
+  translation: TranslationNounResult;
 }
 
 export const NounCardContent: React.FC<NounCardContentProps> = ({
   translation,
 }) => {
   const isNoun = translation.partOfSpeech?.includes('noun');
-  const hasPluralForm = 'pluralForm' in translation && translation.pluralForm;
+  const hasPluralForm = 'pluralForm' in translation && !!translation.pluralForm;
   const hasPrepositions =
-    'prepositions' in translation && translation.prepositions;
+    'prepositions' in translation && !!translation.prepositions;
 
   // Extract plural form and prepositions safely
   const pluralForm = hasPluralForm ? translation.pluralForm : '';
   const prepositions = hasPrepositions ? translation.prepositions || [] : [];
+  const genderProps = getGenderProperties(translation.gender);
+  const genderColor = genderProps
+    ? `${genderProps.colorScheme}.400`
+    : undefined;
 
   return (
-    <CardLayout>
+    <CardLayout genderColor={genderColor}>
       <WordHeader
         normalizedWord={translation.normalizedWord}
         mainTranslation={translation.mainTranslation}
         partOfSpeech={translation.partOfSpeech}
+        gender={translation.gender as Gender}
       />
 
       {/* Plural */}
@@ -54,7 +63,7 @@ export const NounCardContent: React.FC<NounCardContentProps> = ({
         title="Prepositions"
         items={prepositions}
         renderMode="list"
-        show={Boolean(hasPrepositions)}
+        show={hasPrepositions}
       />
 
       <TranslationSection
@@ -82,7 +91,7 @@ export const NounCardContent: React.FC<NounCardContentProps> = ({
         icon={LuLink2}
         title="Collocations"
         items={translation.collocations}
-        renderMode="list"
+        renderMode="table"
       />
     </CardLayout>
   );

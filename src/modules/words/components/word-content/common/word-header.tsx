@@ -2,11 +2,14 @@ import React from 'react';
 
 import { HStack, Text, VStack } from '@chakra-ui/react';
 
+import type { Gender } from '@/modules/words/words.types';
+
 interface WordHeaderProps {
   normalizedWord: string;
   mainTranslation: string;
   partOfSpeech?: string[];
   additionalInfo?: string; // For verb regular/irregular info
+  gender?: Gender;
 }
 
 export const WordHeader: React.FC<WordHeaderProps> = ({

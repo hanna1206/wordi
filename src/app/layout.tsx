@@ -1,6 +1,12 @@
 import type { Metadata } from 'next';
+import { Onest } from 'next/font/google';
 
 import { Provider } from '@/chakra/ui/provider';
+
+const onest = Onest({
+  subsets: ['latin', 'cyrillic'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Hello World!',
@@ -14,7 +20,7 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className={onest.className}>
         <Provider>{children}</Provider>
       </body>
     </html>

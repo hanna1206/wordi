@@ -11,7 +11,7 @@ export const nounInfoPrompt = PromptTemplate.fromTemplate(
 
 export const outputStructure = z.object({
   gender: z
-    .string()
+    .enum(['masculine', 'feminine', 'neuter'])
     .nullable()
     .describe(
       'The grammatical gender of the German word written in English (masculine, feminine, neuter), only if the word is a noun. Otherwise, return null.',
