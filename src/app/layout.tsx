@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Onest } from 'next/font/google';
 
+import { CookieConsent } from '@/chakra/ui/cookie-consent';
 import { Provider } from '@/chakra/ui/provider';
 
 const onest = Onest({
@@ -21,7 +22,10 @@ const RootLayout = ({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={onest.className}>
-        <Provider>{children}</Provider>
+        <Provider>
+          {children}
+          <CookieConsent />
+        </Provider>
       </body>
     </html>
   );
