@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Text, VStack } from '@chakra-ui/react';
 
-interface TranslationErrorProps {
+interface GenerateWordErrorProps {
   error: string;
 }
 
-export const TranslationError: React.FC<TranslationErrorProps> = ({
+export const GenerateWordError: React.FC<GenerateWordErrorProps> = ({
   error,
 }) => {
   return (

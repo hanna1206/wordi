@@ -7,11 +7,11 @@ import { CardDivider, CardLayout } from './common/card-layout';
 import { TranslationSection } from './common/translation-section';
 import { WordHeader } from './common/word-header';
 
-interface GeneralCardContentProps {
+interface GeneralContentProps {
   translation: TranslationResult;
 }
 
-export const GeneralCardContent: React.FC<GeneralCardContentProps> = ({
+export const GeneralContent: React.FC<GeneralContentProps> = ({
   translation,
 }) => {
   return (

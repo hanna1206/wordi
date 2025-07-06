@@ -1,24 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  LuArrowRight,
-  LuBook,
-  LuGraduationCap,
-  LuSparkles,
-} from 'react-icons/lu';
+import { LuArrowRight } from 'react-icons/lu';
 
-import {
-  Button,
-  Heading,
-  HStack,
-  IconButton,
-  Input,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 
-import { TranslationModal } from '@/modules/words/components/translation-modal';
+import { ExampleWords } from '@/modules/words/components/example-words';
+import { GenerateWordModal } from '@/modules/words/components/generate-word-modal';
 import { translateWord } from '@/modules/words/words.actions';
 import type { TranslationResult } from '@/modules/words/words.types';
 
@@ -157,112 +145,13 @@ export const CreateWordForm = () => {
               </IconButton>
             </HStack>
 
-            {/* Quick action chips */}
-            <VStack gap={{ base: 2, md: 4 }} mt={4}>
-              <Text
-                fontSize={{ base: 'xs', md: 'sm' }}
-                color="gray.500"
-                fontWeight="medium"
-                _dark={{ color: 'gray.400' }}
-              >
-                Try these
-              </Text>
-              <HStack gap={{ base: 1, md: 3 }} flexWrap="wrap" justify="center">
-                <Button
-                  type="button"
-                  onClick={() => handleSubmit('das Buch')}
-                  variant="outline"
-                  size={{ base: 'xs', md: 'sm' }}
-                  borderRadius="full"
-                  borderColor="gray.200"
-                  color="gray.600"
-                  bg="white"
-                  display="flex"
-                  alignItems="center"
-                  gap={2}
-                  _dark={{
-                    borderColor: 'gray.600',
-                    color: 'gray.300',
-                    bg: 'gray.800',
-                  }}
-                  _hover={{
-                    bg: 'gray.50',
-                    borderColor: 'gray.300',
-                    _dark: {
-                      bg: 'gray.700',
-                      borderColor: 'gray.500',
-                    },
-                  }}
-                >
-                  <LuBook size={14} />
-                  das Buch
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => handleSubmit('lernen')}
-                  variant="outline"
-                  size={{ base: 'xs', md: 'sm' }}
-                  borderRadius="full"
-                  borderColor="gray.200"
-                  color="gray.600"
-                  bg="white"
-                  display="flex"
-                  alignItems="center"
-                  gap={2}
-                  _dark={{
-                    borderColor: 'gray.600',
-                    color: 'gray.300',
-                    bg: 'gray.800',
-                  }}
-                  _hover={{
-                    bg: 'gray.50',
-                    borderColor: 'gray.300',
-                    _dark: {
-                      bg: 'gray.700',
-                      borderColor: 'gray.500',
-                    },
-                  }}
-                >
-                  <LuGraduationCap size={14} />
-                  lernen
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => handleSubmit('wunderbar')}
-                  variant="outline"
-                  size={{ base: 'xs', md: 'sm' }}
-                  borderRadius="full"
-                  borderColor="gray.200"
-                  color="gray.600"
-                  bg="white"
-                  display="flex"
-                  alignItems="center"
-                  gap={2}
-                  _dark={{
-                    borderColor: 'gray.600',
-                    color: 'gray.300',
-                    bg: 'gray.800',
-                  }}
-                  _hover={{
-                    bg: 'gray.50',
-                    borderColor: 'gray.300',
-                    _dark: {
-                      bg: 'gray.700',
-                      borderColor: 'gray.500',
-                    },
-                  }}
-                >
-                  <LuSparkles size={14} />
-                  wunderbar
-                </Button>
-              </HStack>
-            </VStack>
+            {/* Example Words Component */}
+            <ExampleWords onWordSelect={handleSubmit} />
           </VStack>
         </form>
       </VStack>
 
-      {/* Translation Modal */}
-      <TranslationModal
+      <GenerateWordModal
         isOpen={isOpen}
         word={word}
         isLoading={isLoading}

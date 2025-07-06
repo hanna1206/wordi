@@ -2,12 +2,12 @@ import React from 'react';
 
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
-import { TranslationLoading } from '@/modules/words/components/generate-word-modal/generate-loading';
-import { TranslationError } from '@/modules/words/components/generate-word-modal/generate-word-error';
-import { TranslationContent } from '@/modules/words/components/generate-word-modal/generate-word-loaded';
+import { GenerateWordError } from '@/modules/words/components/generate-word-modal/generate-word-error';
+import { GenerateWordLoaded } from '@/modules/words/components/generate-word-modal/generate-word-loaded';
+import { GenerateWordLoading } from '@/modules/words/components/generate-word-modal/generate-word-loading';
 import type { TranslationResult } from '@/modules/words/words.types';
 
-interface TranslationModalProps {
+interface GenerateWordModalProps {
   isOpen: boolean;
   word: string;
   isLoading: boolean;
@@ -16,7 +16,7 @@ interface TranslationModalProps {
   onClose: () => void;
 }
 
-export const TranslationModal: React.FC<TranslationModalProps> = ({
+export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
   isOpen,
   word,
   isLoading,
@@ -37,11 +37,11 @@ export const TranslationModal: React.FC<TranslationModalProps> = ({
           >
             <Dialog.Body>
               {isLoading ? (
-                <TranslationLoading word={word} />
+                <GenerateWordLoading word={word} />
               ) : error ? (
-                <TranslationError error={error} />
+                <GenerateWordError error={error} />
               ) : translation ? (
-                <TranslationContent translation={translation} />
+                <GenerateWordLoaded translation={translation} />
               ) : null}
             </Dialog.Body>
             <Dialog.Footer
@@ -60,7 +60,7 @@ export const TranslationModal: React.FC<TranslationModalProps> = ({
                   Close
                 </Button>
               </Dialog.ActionTrigger>
-              {translation && (
+              {/* {translation && (
                 <Button
                   colorScheme="blue"
                   ml={{ base: 0, md: 3 }}
@@ -69,7 +69,7 @@ export const TranslationModal: React.FC<TranslationModalProps> = ({
                 >
                   Save to Collection
                 </Button>
-              )}
+              )} */}
             </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Positioner>
