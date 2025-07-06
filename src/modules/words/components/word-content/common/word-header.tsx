@@ -13,7 +13,7 @@ interface WordHeaderProps {
   normalizedWord: string;
   mainTranslation: string;
   partOfSpeech?: PartOfSpeech[];
-  regularOtIregularVerb?: Regularity; // For verb regular/irregular info
+  regularOrIrregularVerb?: Regularity; // For verb regular/irregular info
   gender?: Gender;
   isReflexiveVerb?: ReflexiveVerb;
   separablePrefix?: string | null;
@@ -23,7 +23,7 @@ export const WordHeader: React.FC<WordHeaderProps> = ({
   normalizedWord,
   mainTranslation,
   partOfSpeech,
-  regularOtIregularVerb,
+  regularOrIrregularVerb,
   isReflexiveVerb,
   separablePrefix,
 }) => {
@@ -63,7 +63,7 @@ export const WordHeader: React.FC<WordHeaderProps> = ({
             fontStyle="italic"
           >
             {partOfSpeech.join(', ')}
-            {regularOtIregularVerb && ` / ${regularOtIregularVerb}`}
+            {regularOrIrregularVerb && ` / ${regularOrIrregularVerb}`}
           </Text>
         )}
       </HStack>
