@@ -30,44 +30,44 @@ import {
 } from './prompts/verb-info-prompt';
 import { PartOfSpeech } from './words.const';
 
+const translateWordLlm = gpt41MiniModel.withStructuredOutput(
+  translateToLanguageOutputStructure,
+);
+const translateWordChain = translateToLanguagePrompt.pipe(translateWordLlm);
+
+const normalizeWordLlm = gpt41MiniModel.withStructuredOutput(
+  normalizeWordOutputStructure,
+);
+const normalizeWordChain = normalizeWordPrompt.pipe(normalizeWordLlm);
+
+const nounInfoLlm = gpt41MiniModel.withStructuredOutput(
+  nounInfoOutputStructure,
+);
+const nounInfoChain = nounInfoPrompt.pipe(nounInfoLlm);
+
+const verbInfoLlm = gpt41MiniModel.withStructuredOutput(
+  verbInfoOutputStructure,
+);
+const verbInfoChain = verbInfoPrompt.pipe(verbInfoLlm);
+
+const adjectiveInfoLlm = gpt41MiniModel.withStructuredOutput(
+  adjectiveInfoOutputStructure,
+);
+const adjectiveInfoChain = adjectiveInfoPrompt.pipe(adjectiveInfoLlm);
+
+const pronounInfoLlm = gpt41MiniModel.withStructuredOutput(
+  pronounInfoOutputStructure,
+);
+const pronounInfoChain = pronounInfoPrompt.pipe(pronounInfoLlm);
+
+const demonstrativePronounInfoLlm = gpt41MiniModel.withStructuredOutput(
+  demonstrativePronounInfoOutputStructure,
+);
+const demonstrativePronounInfoChain = demonstrativePronounInfoPrompt.pipe(
+  demonstrativePronounInfoLlm,
+);
+
 export const getWordInfo = async (word: string, targetLanguage: string) => {
-  const translateWordLlm = gpt41MiniModel.withStructuredOutput(
-    translateToLanguageOutputStructure,
-  );
-  const translateWordChain = translateToLanguagePrompt.pipe(translateWordLlm);
-
-  const normalizeWordLlm = gpt41MiniModel.withStructuredOutput(
-    normalizeWordOutputStructure,
-  );
-  const normalizeWordChain = normalizeWordPrompt.pipe(normalizeWordLlm);
-
-  const nounInfoLlm = gpt41MiniModel.withStructuredOutput(
-    nounInfoOutputStructure,
-  );
-  const nounInfoChain = nounInfoPrompt.pipe(nounInfoLlm);
-
-  const verbInfoLlm = gpt41MiniModel.withStructuredOutput(
-    verbInfoOutputStructure,
-  );
-  const verbInfoChain = verbInfoPrompt.pipe(verbInfoLlm);
-
-  const adjectiveInfoLlm = gpt41MiniModel.withStructuredOutput(
-    adjectiveInfoOutputStructure,
-  );
-  const adjectiveInfoChain = adjectiveInfoPrompt.pipe(adjectiveInfoLlm);
-
-  const pronounInfoLlm = gpt41MiniModel.withStructuredOutput(
-    pronounInfoOutputStructure,
-  );
-  const pronounInfoChain = pronounInfoPrompt.pipe(pronounInfoLlm);
-
-  const demonstrativePronounInfoLlm = gpt41MiniModel.withStructuredOutput(
-    demonstrativePronounInfoOutputStructure,
-  );
-  const demonstrativePronounInfoChain = demonstrativePronounInfoPrompt.pipe(
-    demonstrativePronounInfoLlm,
-  );
-
   const { normalizedWord, partOfSpeech } = await normalizeWordChain.invoke({
     word,
   });
