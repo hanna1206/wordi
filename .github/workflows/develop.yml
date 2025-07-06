@@ -1,4 +1,4 @@
-name: Test and Lint
+name: Perform checks
 on:
   push:
     branches:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   test-and-lint:
-    name: Run tests, Build app
+    name: Run linters, check build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
