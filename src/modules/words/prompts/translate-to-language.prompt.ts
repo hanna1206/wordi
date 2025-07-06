@@ -2,7 +2,9 @@ import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
 export const translateToLanguagePrompt = PromptTemplate.fromTemplate(
-  `Translate the German word "{word}" to {targetLanguage} and provide additional info about this word. If the word is a noun, also provide its grammatical gender in English (masculine, feminine, neuter).`,
+  `Translate the German word "{word}" to {targetLanguage} and provide additional info about this word. If the word is a noun, also provide its grammatical gender in English (masculine, feminine, neuter).
+
+IMPORTANT: Only provide synonyms for nouns, adjectives, and verbs. For pronouns and other parts of speech, return an empty array for synonyms.`,
 );
 
 export const outputStructure = z.object({
@@ -45,5 +47,7 @@ export const outputStructure = z.object({
       Only collocations with this word, not word created with its root.`,
     ),
   synonyms: z.array(z.string()).describe(`Synonyms of the word in German. 
-    If they are nouns - add article. For example: "das Buch".`),
+    If they are nouns - add article. For example: "das Buch".
+    IMPORTANT: Only provide synonyms if the word is a noun, adjective, or verb. 
+    For pronouns and other parts of speech, return an empty array [].`),
 });
