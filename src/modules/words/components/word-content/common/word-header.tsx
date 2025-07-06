@@ -2,22 +2,44 @@ import React from 'react';
 
 import { HStack, Text, VStack } from '@chakra-ui/react';
 
-import type { Gender } from '@/modules/words/words.types';
+import type { Gender, ReflexiveVerb } from '@/modules/words/words.types';
 
 interface WordHeaderProps {
   normalizedWord: string;
   mainTranslation: string;
   partOfSpeech?: string[];
-  additionalInfo?: string; // For verb regular/irregular info
+  regularOtIregularVerb?: string; // For verb regular/irregular info
   gender?: Gender;
+  isReflexiveVerb?: ReflexiveVerb;
+  separablePrefix?: string | null;
 }
 
 export const WordHeader: React.FC<WordHeaderProps> = ({
   normalizedWord,
   mainTranslation,
   partOfSpeech,
-  additionalInfo,
+  regularOtIregularVerb,
+  isReflexiveVerb,
+  separablePrefix,
 }) => {
+  const reflexivePronoun =
+    isReflexiveVerb === 'reflexive'
+      ? 'sich'
+      : isReflexiveVerb === 'both'
+        ? '(sich)'
+        : '';
+  const separablePrefixString = separablePrefix ? separablePrefix : '';
+  const normalizedWordWithoutPrefix = normalizedWord.split(
+    separablePrefixString,
+  )[1];
+  const normalizedWordWithPrefix = separablePrefix
+    ? '[' + separablePrefixString + ']' + normalizedWordWithoutPrefix
+    : normalizedWord;
+
+  const normalizedWordWithReflexivePronounAndPrefix = reflexivePronoun
+    ? reflexivePronoun + ' ' + normalizedWordWithPrefix
+    : normalizedWordWithPrefix;
+
   return (
     <VStack gap={2} align="start">
       <HStack gap={2} align="baseline">
@@ -26,7 +48,7 @@ export const WordHeader: React.FC<WordHeaderProps> = ({
           color="gray.800"
           fontWeight="semibold"
         >
-          {normalizedWord}
+          {normalizedWordWithReflexivePronounAndPrefix}
         </Text>
         {partOfSpeech && partOfSpeech.length > 0 && (
           <Text
@@ -36,7 +58,7 @@ export const WordHeader: React.FC<WordHeaderProps> = ({
             fontStyle="italic"
           >
             {partOfSpeech.join(', ')}
-            {additionalInfo && ` / ${additionalInfo}`}
+            {regularOtIregularVerb && ` / ${regularOtIregularVerb}`}
           </Text>
         )}
       </HStack>

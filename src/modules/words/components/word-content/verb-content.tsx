@@ -33,7 +33,9 @@ export const VerbContent: React.FC<VerbContentProps> = ({ translation }) => {
         normalizedWord={translation.normalizedWord}
         mainTranslation={translation.mainTranslation}
         partOfSpeech={translation.partOfSpeech}
-        additionalInfo={translation.regular}
+        regularOtIregularVerb={translation.regular}
+        isReflexiveVerb={translation.isReflexive}
+        separablePrefix={translation.separablePrefix}
       />
 
       {/* Conjugation */}
@@ -42,6 +44,24 @@ export const VerbContent: React.FC<VerbContentProps> = ({ translation }) => {
       </Text>
 
       <CardDivider />
+
+      {translation.sichUsage && (
+        <TranslationSection
+          icon={LuBinary}
+          title="Sich usage"
+          items={[
+            {
+              rule: 'With sich',
+              explanation: translation.sichUsage.withSich,
+            },
+            {
+              rule: 'Without sich',
+              explanation: translation.sichUsage.withoutSich,
+            },
+          ]}
+          renderMode="table"
+        />
+      )}
 
       <TranslationSection
         icon={LuBinary}
