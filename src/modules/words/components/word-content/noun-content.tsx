@@ -8,10 +8,8 @@ import {
 } from 'react-icons/lu';
 
 import { getGenderProperties } from '@/modules/words/utils/get-gender-properties';
-import type {
-  Gender,
-  TranslationNounResult,
-} from '@/modules/words/words.types';
+import { Gender, PartOfSpeech } from '@/modules/words/words.const';
+import type { TranslationNounResult } from '@/modules/words/words.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
 import { TranslationSection } from './common/translation-section';
@@ -22,7 +20,7 @@ interface NounContentProps {
 }
 
 export const NounContent: React.FC<NounContentProps> = ({ translation }) => {
-  const isNoun = translation.partOfSpeech?.includes('noun');
+  const isNoun = translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const hasPluralForm = 'pluralForm' in translation && !!translation.pluralForm;
   const hasPrepositions =
     'prepositions' in translation && !!translation.prepositions;

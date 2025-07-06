@@ -1,4 +1,11 @@
-export type Gender = 'masculine' | 'feminine' | 'neuter';
+import {
+  AdjectiveType,
+  Gender,
+  PartOfSpeech,
+  ReflexiveVerb,
+  Regularity,
+} from './words.const';
+
 export type Collocation = {
   collocation: string;
   translation: string;
@@ -8,23 +15,35 @@ export type Preposition = {
   exampleSentence: string;
   translation: string;
 };
-export type ReflexiveVerb = 'reflexive' | 'non-reflexive' | 'both';
+
 export type SichUsage = {
   withSich: string;
   withoutSich: string;
 };
-export type AdjectiveType = 'qualitative' | 'relative';
+
 export type ComparisonForms = {
   positive: string;
   comparative: string | null;
   superlative: string | null;
+};
+export type PronounCase = {
+  nominativ: string;
+  akkusativ: string;
+  dativ: string;
+  genitiv: string;
+};
+export type PronounDeclension = {
+  case: string;
+  form: string;
+  translation: string;
+  example: string;
 };
 
 export interface TranslationBasicResult {
   normalizedWord: string;
   mainTranslation: string;
   additionalTranslations: string[];
-  partOfSpeech: string[];
+  partOfSpeech: PartOfSpeech[];
   exampleSentences: string[];
   synonyms: string[];
   collocations: Collocation[];
@@ -37,7 +56,7 @@ export interface TranslationNounResult extends TranslationBasicResult {
 }
 
 export interface TranslationVerbResult extends TranslationBasicResult {
-  regular: 'regular' | 'irregular';
+  regular: Regularity;
   prepositions: Preposition[] | null;
   isReflexive: ReflexiveVerb;
   sichUsage: SichUsage | null;
@@ -51,8 +70,14 @@ export interface TranslationAdjectiveResult extends TranslationBasicResult {
   prepositions: Preposition[] | null;
 }
 
+export interface TranslationPronounResult extends TranslationBasicResult {
+  declensions: PronounDeclension[];
+  pronounType: string;
+}
+
 export type TranslationResult =
   | TranslationBasicResult
   | TranslationNounResult
   | TranslationVerbResult
-  | TranslationAdjectiveResult;
+  | TranslationAdjectiveResult
+  | TranslationPronounResult;

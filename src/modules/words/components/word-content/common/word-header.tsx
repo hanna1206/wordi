@@ -2,13 +2,18 @@ import React from 'react';
 
 import { HStack, Text, VStack } from '@chakra-ui/react';
 
-import type { Gender, ReflexiveVerb } from '@/modules/words/words.types';
+import type {
+  Gender,
+  PartOfSpeech,
+  ReflexiveVerb,
+  Regularity,
+} from '@/modules/words/words.const';
 
 interface WordHeaderProps {
   normalizedWord: string;
   mainTranslation: string;
-  partOfSpeech?: string[];
-  regularOtIregularVerb?: string; // For verb regular/irregular info
+  partOfSpeech?: PartOfSpeech[];
+  regularOtIregularVerb?: Regularity; // For verb regular/irregular info
   gender?: Gender;
   isReflexiveVerb?: ReflexiveVerb;
   separablePrefix?: string | null;

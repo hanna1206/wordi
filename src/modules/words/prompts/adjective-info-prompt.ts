@@ -1,6 +1,8 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
+import { AdjectiveType } from '../words.const';
+
 export const adjectiveInfoPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to provide additional info about a given adjective.
 
@@ -15,7 +17,7 @@ export const adjectiveInfoPrompt = PromptTemplate.fromTemplate(
 
 export const outputStructure = z.object({
   type: z
-    .enum(['qualitative', 'relative'])
+    .nativeEnum(AdjectiveType)
     .nullable()
     .describe(
       `The type of the German adjective:

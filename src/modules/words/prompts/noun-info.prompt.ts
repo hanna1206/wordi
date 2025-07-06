@@ -1,6 +1,8 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
+import { Gender } from '../words.const';
+
 export const nounInfoPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to provide additional info about a given noun.
 
@@ -11,7 +13,7 @@ export const nounInfoPrompt = PromptTemplate.fromTemplate(
 
 export const outputStructure = z.object({
   gender: z
-    .enum(['masculine', 'feminine', 'neuter'])
+    .nativeEnum(Gender)
     .nullable()
     .describe(
       'The grammatical gender of the German word written in English (masculine, feminine, neuter), only if the word is a noun. Otherwise, return null.',
