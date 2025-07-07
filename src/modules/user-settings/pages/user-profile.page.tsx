@@ -3,7 +3,9 @@ import { Card, Container, Text, VStack } from '@chakra-ui/react';
 import { AppHeader } from '@/components/app-header';
 import { getAuthenticatedUser } from '@/modules/auth/auth.service';
 
+import { LanguageCode } from '../user-settings.const';
 import { getUserSettings } from '../user-settings.service';
+import { getLanguageName } from '../utils/get-language-name';
 
 export const UserSettings = async () => {
   const { user } = await getAuthenticatedUser();
@@ -55,6 +57,13 @@ export const UserSettings = async () => {
               </Text>
               <Text>
                 <strong>Email:</strong> {user.email}
+              </Text>
+              <Text>
+                <strong>Name:</strong> {userSettings.name || 'Not set'}
+              </Text>
+              <Text>
+                <strong>Native Language:</strong>{' '}
+                {getLanguageName(userSettings.native_language as LanguageCode)}
               </Text>
               <Text>
                 <strong>Created:</strong>{' '}

@@ -1,5 +1,6 @@
 'use server';
 
+import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { getLanguageName } from '@/modules/user-settings/utils/get-language-name';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
@@ -19,7 +20,19 @@ export const translateWord = withUserSettings<string, TranslationResult>(
     }
 
     const { userSettings } = context;
-    const targetLanguage = getLanguageName(userSettings.native_language!);
+
+    // Check if user has completed their profile
+    if (!userSettings.native_language) {
+      return {
+        success: false,
+        error:
+          'Please complete your profile setup to use the translation feature',
+      };
+    }
+
+    const targetLanguage = getLanguageName(
+      userSettings.native_language as LanguageCode,
+    );
 
     try {
       // Call OpenAI for translation
