@@ -12,13 +12,18 @@ export const CardLayout: React.FC<CardLayoutProps> = ({
   genderColor,
 }) => {
   return (
-    <HStack align="stretch" gap={4}>
+    <HStack align="stretch" gap={{ base: 3, md: 4 }}>
       {genderColor && (
-        <Box w="4px" bg={genderColor} borderRadius="full" flexShrink={0} />
+        <Box
+          w={{ base: '3px', md: '4px' }}
+          bg={genderColor}
+          borderRadius="full"
+          flexShrink={0}
+        />
       )}
       <VStack
-        gap={{ base: 4, md: 6 }}
-        py={{ base: 2, md: 4 }}
+        gap={{ base: 5, md: 6 }}
+        py={{ base: 3, md: 4 }}
         align="stretch"
         w="full"
       >
@@ -29,5 +34,11 @@ export const CardLayout: React.FC<CardLayoutProps> = ({
 };
 
 export const CardDivider: React.FC = () => {
-  return <Box h="1px" bg="gray.200" my={2} />;
+  return (
+    <Box
+      h="1px"
+      bg={{ base: 'gray.150', md: 'gray.200' }}
+      my={{ base: 3, md: 2 }}
+    />
+  );
 };
