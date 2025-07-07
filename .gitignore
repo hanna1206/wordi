@@ -50,3 +50,5 @@ next-env.d.ts
 .temp
 
 project-words.txt
+# Sentry Config File
+.env.sentry-build-plugin
