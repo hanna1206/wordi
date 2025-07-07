@@ -12,6 +12,14 @@ export const verbInfoPrompt = PromptTemplate.fromTemplate(
   
   IMPORTANT: Focus on grammatically correct, standard written forms. Avoid colloquial or spoken language variations. 
   Provide formal, grammatically accurate explanations and examples.
+  
+  CRITICAL FOR REFLEXIVE CLASSIFICATION: Pay special attention to verbs that can be used both with and without reflexive pronouns but have different meanings:
+  - "leisten" (to perform/accomplish) vs "sich leisten" (to afford)
+  - "vorstellen" (to introduce someone) vs "sich vorstellen" (to introduce oneself/imagine)
+  - "waschen" (to wash something/someone) vs "sich waschen" (to wash oneself)
+  - "anziehen" (to dress someone/attract) vs "sich anziehen" (to get dressed)
+  
+  If the verb can be used both ways with different meanings, classify it as 'both' and provide detailed explanations for both usages.
   `,
 );
 
@@ -53,22 +61,33 @@ export const outputStructure = z.object({
       `Whether the verb is reflexive. Be very careful and accurate with this classification.
       - Return 'reflexive' ONLY if the verb MUST be used with a reflexive pronoun (sich) and cannot function without it (e.g., "sich freuen", "sich befinden").
       - Return 'non-reflexive' if the verb is used without reflexive pronouns in its standard meaning (e.g., "aufstehen", "gehen", "lesen").
-      - Return 'both' ONLY if the verb has genuinely different meanings when used with and without reflexive pronouns (e.g., "waschen" vs "sich waschen").
+      - Return 'both' ONLY if the verb has genuinely different meanings when used with and without reflexive pronouns.
+      
+      IMPORTANT EXAMPLES for 'both' category:
+      * "leisten" vs "sich leisten": "leisten" means to perform/accomplish (e.g., "Hilfe leisten" = to provide help), while "sich leisten" means to afford (e.g., "sich etwas leisten können" = to be able to afford something)
+      * "waschen" vs "sich waschen": "waschen" means to wash something/someone else, while "sich waschen" means to wash oneself
+      * "vorstellen" vs "sich vorstellen": "vorstellen" means to introduce someone else, while "sich vorstellen" means to introduce oneself or to imagine
+      * "anziehen" vs "sich anziehen": "anziehen" means to dress someone else or to attract, while "sich anziehen" means to get dressed
+      
       Do not confuse separable prefixes or other grammatical elements with reflexive usage.`,
     ),
   sichUsage: z
     .object({
       withSich: z.string().describe(
         `The usage of the verb with the reflexive pronoun. 
-          If verb is used with reflexive pronomen very rarely or very often, please, mention this as well.`,
+        Explain the specific meaning and provide example sentences in German.
+        For example, for "leisten": explain that "sich leisten" means "to afford" and give examples like "Ich kann mir das nicht leisten" (I can't afford that).
+        If verb is used with reflexive pronoun very rarely or very often, please mention this as well.`,
       ),
-      withoutSich: z
-        .string()
-        .describe('The usage of the verb without the reflexive pronoun'),
+      withoutSich: z.string().describe(
+        `The usage of the verb without the reflexive pronoun.
+          Explain the specific meaning and provide example sentences in German.
+          For example, for "leisten": explain that "leisten" means "to perform/accomplish/provide" and give examples like "Hilfe leisten" (to provide help) or "gute Arbeit leisten" (to do good work).`,
+      ),
     })
     .nullable()
     .describe(
-      `ONLY provide this if isReflexive is 'both'. If the verb has genuinely different meanings when used with and without reflexive pronouns, explain the difference. 
+      `ONLY provide this if isReflexive is 'both'. If the verb has genuinely different meanings when used with and without reflexive pronouns, explain the difference with specific examples in German and their meanings.
       Do not provide this for verbs that are simply non-reflexive or only reflexive. Give explanation in {targetLanguage}`,
     ),
   prepositions: z
