@@ -9,13 +9,6 @@ import { z } from 'zod';
 
 import { createClient } from '@/services/supabase/client';
 
-// maybe we should move this to user model or something else
-const LANGUAGE_OPTIONS = [
-  { value: 'russian', label: 'Русский' },
-  { value: 'english', label: 'English' },
-  { value: 'ukrainian', label: 'Українська' },
-] as const;
-
 const signupSchema = z
   .object({
     email: z
@@ -24,10 +17,6 @@ const signupSchema = z
       .email('Please enter a valid email'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
     confirmPassword: z.string().min(1, 'Please confirm your password'),
-    name: z.string().trim().min(1, 'Name is required'),
-    nativeLanguage: z.enum(['russian', 'english', 'ukrainian'], {
-      required_error: 'Please select your native language',
-    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -36,10 +25,13 @@ const signupSchema = z
 
 type SignupFormData = z.infer<typeof signupSchema>;
 
-export const SignupForm = () => {
+interface SignupFormProps {
+  onVerificationNeeded?: () => void;
+}
+
+export const SignupForm = ({ onVerificationNeeded }: SignupFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string>('');
-  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
 
   const {
     register,
@@ -59,18 +51,12 @@ export const SignupForm = () => {
       const { error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
-        options: {
-          data: {
-            name: data.name,
-            nativeLanguage: data.nativeLanguage,
-          },
-        },
       });
 
       if (error) {
         setSubmitError(error.message);
       } else {
-        setShowVerificationMessage(true);
+        onVerificationNeeded?.();
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -80,23 +66,6 @@ export const SignupForm = () => {
       setIsLoading(false);
     }
   };
-
-  // Show verification message instead of the form after signup
-  if (showVerificationMessage) {
-    return (
-      <Text
-        fontSize="lg"
-        color="gray.700"
-        _dark={{ color: 'gray.300' }}
-        textAlign="center"
-        fontWeight="medium"
-      >
-        Almost there! We&apos;ve sent a verification link to your email. Please
-        check your inbox and click the link to activate your account and start
-        your German learning journey.
-      </Text>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -148,48 +117,6 @@ export const SignupForm = () => {
               <Field.ErrorText>
                 {errors.confirmPassword.message}
               </Field.ErrorText>
-            )}
-          </Field.Root>
-
-          <Field.Root invalid={!!errors.name}>
-            <Field.Label htmlFor="name">How can I call you?</Field.Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="Your name"
-              {...register('name')}
-            />
-            {errors.name && (
-              <Field.ErrorText>{errors.name.message}</Field.ErrorText>
-            )}
-          </Field.Root>
-
-          <Field.Root invalid={!!errors.nativeLanguage}>
-            <Field.Label htmlFor="nativeLanguage">
-              What is your first language?
-            </Field.Label>
-            <select
-              id="nativeLanguage"
-              {...register('nativeLanguage')}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                border: '1px solid #D1D5DB',
-                borderRadius: '6px',
-                fontSize: '14px',
-                backgroundColor: 'white',
-                outline: 'none',
-              }}
-            >
-              <option value="">Select your language</option>
-              {LANGUAGE_OPTIONS.map((language) => (
-                <option key={language.value} value={language.value}>
-                  {language.label}
-                </option>
-              ))}
-            </select>
-            {errors.nativeLanguage && (
-              <Field.ErrorText>{errors.nativeLanguage.message}</Field.ErrorText>
             )}
           </Field.Root>
         </VStack>

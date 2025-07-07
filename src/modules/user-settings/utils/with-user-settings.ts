@@ -28,6 +28,11 @@ export const withUserSettings = <TInput, TOutput>(
     try {
       return await handler(nextContext, input);
     } catch (error) {
+      // Re-throw redirect errors to let Next.js handle them
+      if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
+        throw error;
+      }
+
       // eslint-disable-next-line no-console
       console.error('Action error:', error);
       return {

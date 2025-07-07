@@ -4,18 +4,26 @@ import { useState } from 'react';
 
 import { Button, Card, Center, HStack, Text, VStack } from '@chakra-ui/react';
 
+import { EmailVerification } from './email-verification';
 import { LoginForm } from './login-form';
 import { SignupForm } from './signup-form';
 
-type AuthMode = 'login' | 'signup';
+type AuthMode = 'login' | 'signup' | 'verification';
 
 export const AuthSwitcher = () => {
   const [mode, setMode] = useState<AuthMode>('login');
 
   const isLogin = mode === 'login';
+  const isVerification = mode === 'verification';
 
   const handleSwitchToSignup = () => setMode('signup');
   const handleSwitchToLogin = () => setMode('login');
+  const handleShowVerification = () => setMode('verification');
+
+  // Show email verification screen
+  if (isVerification) {
+    return <EmailVerification />;
+  }
 
   return (
     <Center h="100vh">
@@ -34,7 +42,11 @@ export const AuthSwitcher = () => {
 
         {/* Card with only form content */}
         <Card.Root w="full" p={6} variant="elevated" boxShadow="lg">
-          {isLogin ? <LoginForm /> : <SignupForm />}
+          {isLogin ? (
+            <LoginForm />
+          ) : (
+            <SignupForm onVerificationNeeded={handleShowVerification} />
+          )}
         </Card.Root>
 
         {/* Form switching outside the card */}

@@ -1,8 +1,8 @@
 export interface UserSettings {
   id: string;
   email: string;
-  name?: string;
-  native_language?: string;
+  name: string | null;
+  native_language: string | null;
   created_at: string;
   updated_at: string;
 }

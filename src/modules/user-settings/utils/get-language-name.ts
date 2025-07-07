@@ -1,5 +1,11 @@
-import { LANGUAGE_MAP } from '@/modules/user-settings/user-settings.const';
+import {
+  LanguageCode,
+  LanguageLabels,
+} from '@/modules/user-settings/user-settings.const';
 
-export const getLanguageName = (languageCode: string): string => {
-  return LANGUAGE_MAP[languageCode] || languageCode;
+export const getLanguageName = (languageCode: LanguageCode | null): string => {
+  if (!languageCode) {
+    return 'Not set';
+  }
+  return LanguageLabels[languageCode] || languageCode;
 };
