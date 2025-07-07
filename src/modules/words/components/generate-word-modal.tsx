@@ -27,15 +27,45 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Portal>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
+        <Dialog.Backdrop bg="blackAlpha.600" />
+        <Dialog.Positioner
+          position="fixed"
+          inset={0}
+          display="flex"
+          alignItems={{ base: 'flex-end', md: 'center' }}
+          justifyContent="center"
+          p={{ base: 0, md: 4 }}
+        >
           <Dialog.Content
-            maxW={{ base: '95vw', md: 'lg', lg: 'xl' }}
-            mx="auto"
-            px={{ base: 4, md: 6 }}
-            py={{ base: 4, md: 6 }}
+            maxW={{ base: '100vw', md: 'lg', lg: 'xl' }}
+            w="full"
+            h={{ base: '100vh', md: 'auto' }}
+            maxH={{ base: '100vh', md: '80vh' }}
+            m={0}
+            bg="white"
+            shadow={{ base: '0 -4px 20px rgba(0,0,0,0.15)', md: 'lg' }}
+            overflow="hidden"
+            position="relative"
           >
-            <Dialog.Body>
+            <Dialog.Body
+              p={{ base: 4, md: 6 }}
+              pt={{ base: 2, md: 6 }}
+              pb={{ base: 4, md: 4 }}
+              overflowY="auto"
+              flex="1"
+              css={{
+                '&::-webkit-scrollbar': {
+                  width: '4px',
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: 'transparent',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  background: '#CBD5E0',
+                  borderRadius: '4px',
+                },
+              }}
+            >
               {isLoading ? (
                 <GenerateWordLoading word={word} />
               ) : error ? (
@@ -44,28 +74,48 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
                 <GenerateWordLoaded translation={translation} />
               ) : null}
             </Dialog.Body>
+
             <Dialog.Footer
-              flexDirection={{ base: 'column', md: 'row' }}
-              gap={{ base: 2, md: 3 }}
-              pt={4}
+              px={{ base: 4, md: 6 }}
+              py={{ base: 4, md: 4 }}
               borderTopWidth="1px"
-              borderColor="gray.200"
+              borderColor="gray.100"
+              bg="gray.50"
+              mt="auto"
             >
               <Dialog.ActionTrigger asChild>
                 <Button
                   variant="outline"
                   onClick={onClose}
-                  w={{ base: '100%', md: 'auto' }}
+                  w={{ base: 'full', md: 'auto' }}
+                  size={{ base: 'lg', md: 'lg' }}
+                  h={{ base: '48px', md: '44px' }}
+                  px={{ base: 6, md: 8 }}
+                  borderRadius={{ base: 'xl', md: 'md' }}
+                  fontWeight="medium"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  bg="white"
+                  _hover={{
+                    bg: 'gray.50',
+                    borderColor: 'gray.300',
+                  }}
+                  _active={{
+                    bg: 'gray.100',
+                  }}
                 >
                   Close
                 </Button>
               </Dialog.ActionTrigger>
+              {/* Future: Save to Collection button */}
               {/* {translation && (
                 <Button
+                  size={{ base: 'lg', md: 'md' }}
+                  h={{ base: '48px', md: 'auto' }}
+                  borderRadius={{ base: 'xl', md: 'md' }}
                   colorScheme="blue"
-                  ml={{ base: 0, md: 3 }}
-                  w={{ base: '100%', md: 'auto' }}
-                  bg="blue.500"
+                  w="full"
+                  mt={3}
                 >
                   Save to Collection
                 </Button>
