@@ -34,11 +34,5 @@ export const CardLayout: React.FC<CardLayoutProps> = ({
 };
 
 export const CardDivider: React.FC = () => {
-  return (
-    <Box
-      h="1px"
-      bg={{ base: 'gray.150', md: 'gray.200' }}
-      my={{ base: 3, md: 2 }}
-    />
-  );
+  return <Box h="1px" bg="gray.200" my={{ base: 3, md: 2 }} />;
 };
