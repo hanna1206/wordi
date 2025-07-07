@@ -3,17 +3,9 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import {
-  Button,
-  Card,
-  Field,
-  HStack,
-  Input,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import { Button, Card, Field, Input, Text, VStack } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { createClient } from '@/services/supabase/client';
 
@@ -24,48 +16,27 @@ const LANGUAGE_OPTIONS = [
   { value: 'ukrainian', label: 'Українська' },
 ] as const;
 
-interface SignupFormProps {
-  onSwitchToLogin: () => void;
-}
+const signupSchema = z
+  .object({
+    email: z
+      .string()
+      .min(1, 'Email is required')
+      .email('Please enter a valid email'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    name: z.string().trim().min(1, 'Name is required'),
+    nativeLanguage: z.enum(['russian', 'english', 'ukrainian'], {
+      required_error: 'Please select your native language',
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
 
-type LanguageValue = (typeof LANGUAGE_OPTIONS)[number]['value'];
+type SignupFormData = z.infer<typeof signupSchema>;
 
-interface SignupFormData {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  name: string;
-  nativeLanguage: LanguageValue;
-}
-
-const signupSchema = yup.object({
-  email: yup
-    .string()
-    .email('Please enter a valid email')
-    .required('Email is required'),
-  password: yup
-    .string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref('password')], 'Passwords do not match')
-    .required('Please confirm your password'),
-  name: yup
-    .string()
-    .trim()
-    .min(1, 'Name is required')
-    .required('Name is required'),
-  nativeLanguage: yup
-    .string()
-    .oneOf(
-      LANGUAGE_OPTIONS.map((lang) => lang.value),
-      'Please select your native language',
-    )
-    .required('Please select your native language'),
-});
-
-export const SignupForm = ({ onSwitchToLogin }: SignupFormProps) => {
+export const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string>('');
 
@@ -74,7 +45,7 @@ export const SignupForm = ({ onSwitchToLogin }: SignupFormProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<SignupFormData>({
-    resolver: yupResolver(signupSchema),
+    resolver: zodResolver(signupSchema),
     mode: 'onBlur',
   });
 
@@ -114,7 +85,7 @@ export const SignupForm = ({ onSwitchToLogin }: SignupFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Card.Body>
+      <Card.Body p={0}>
         <VStack gap="4" w="full">
           {/* Error message */}
           {submitError && (
@@ -209,34 +180,16 @@ export const SignupForm = ({ onSwitchToLogin }: SignupFormProps) => {
         </VStack>
       </Card.Body>
 
-      <Card.Footer pt={4}>
-        <VStack w="full" justifyContent="space-between" gap={4}>
-          <Button
-            type="submit"
-            bg="primary"
-            w="full"
-            loading={isLoading}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Creating account...' : 'Sign up'}
-          </Button>
-
-          <HStack w="full" justifyContent="center">
-            <Text fontSize="0.875em">Already have an account?</Text>
-            <Button
-              type="button"
-              variant="plain"
-              color="primary"
-              fontSize="0.875em"
-              w="min-content"
-              px={0}
-              _hover={{ textDecoration: 'underline' }}
-              onClick={onSwitchToLogin}
-            >
-              Log in
-            </Button>
-          </HStack>
-        </VStack>
+      <Card.Footer pt={6} px={0} pb={2}>
+        <Button
+          type="submit"
+          bg="primary"
+          w="full"
+          loading={isLoading}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Creating account...' : 'Sign up'}
+        </Button>
       </Card.Footer>
     </form>
   );
