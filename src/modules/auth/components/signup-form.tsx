@@ -39,6 +39,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 export const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string>('');
+  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
 
   const {
     register,
@@ -66,13 +67,10 @@ export const SignupForm = () => {
         },
       });
 
-      // eslint-disable-next-line no-console
-      console.log('error', error);
-
       if (error) {
         setSubmitError(error.message);
       } else {
-        window.location.href = '/';
+        setShowVerificationMessage(true);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -82,6 +80,23 @@ export const SignupForm = () => {
       setIsLoading(false);
     }
   };
+
+  // Show verification message instead of the form after signup
+  if (showVerificationMessage) {
+    return (
+      <Text
+        fontSize="lg"
+        color="gray.700"
+        _dark={{ color: 'gray.300' }}
+        textAlign="center"
+        fontWeight="medium"
+      >
+        Almost there! We&apos;ve sent a verification link to your email. Please
+        check your inbox and click the link to activate your account and start
+        your German learning journey.
+      </Text>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
