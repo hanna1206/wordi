@@ -3,41 +3,23 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import {
-  Button,
-  Card,
-  Field,
-  HStack,
-  Input,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import { Button, Card, Field, Input, Text, VStack } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { createClient } from '@/services/supabase/client';
 
-interface LoginFormProps {
-  onSwitchToSignup: () => void;
-}
-
-interface LoginFormData {
-  email: string;
-  password: string;
-}
-
-const loginSchema = yup.object({
-  email: yup
+const loginSchema = z.object({
+  email: z
     .string()
-    .email('Please enter a valid email')
-    .required('Email is required'),
-  password: yup
-    .string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
+    .min(1, 'Email is required')
+    .email('Please enter a valid email'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-export const LoginForm = ({ onSwitchToSignup }: LoginFormProps) => {
+type LoginFormData = z.infer<typeof loginSchema>;
+
+export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string>('');
 
@@ -46,7 +28,7 @@ export const LoginForm = ({ onSwitchToSignup }: LoginFormProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
-    resolver: yupResolver(loginSchema),
+    resolver: zodResolver(loginSchema),
     mode: 'onBlur',
   });
 
@@ -77,7 +59,7 @@ export const LoginForm = ({ onSwitchToSignup }: LoginFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Card.Body>
+      <Card.Body p={0}>
         <VStack gap="4" w="full">
           {/* Error message */}
           {submitError && (
@@ -114,34 +96,16 @@ export const LoginForm = ({ onSwitchToSignup }: LoginFormProps) => {
         </VStack>
       </Card.Body>
 
-      <Card.Footer pt={4}>
-        <VStack w="full" justifyContent="space-between" gap={4}>
-          <Button
-            type="submit"
-            bg="primary"
-            w="full"
-            loading={isLoading}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Signing in...' : 'Log in'}
-          </Button>
-
-          <HStack w="full" justifyContent="center">
-            <Text fontSize="0.875em">Don&apos;t have an account?</Text>
-            <Button
-              type="button"
-              variant="plain"
-              color="primary"
-              fontSize="0.875em"
-              w="min-content"
-              px={0}
-              _hover={{ textDecoration: 'underline' }}
-              onClick={onSwitchToSignup}
-            >
-              Sign up
-            </Button>
-          </HStack>
-        </VStack>
+      <Card.Footer pt={6} px={0} pb={2}>
+        <Button
+          type="submit"
+          bg="primary"
+          w="full"
+          loading={isLoading}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Signing in...' : 'Log in'}
+        </Button>
       </Card.Footer>
     </form>
   );
