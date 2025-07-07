@@ -39,13 +39,19 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
           <Dialog.Content
             maxW={{ base: '100vw', md: 'lg', lg: 'xl' }}
             w="full"
-            h={{ base: '100vh', md: 'auto' }}
-            maxH={{ base: '100vh', md: '80vh' }}
+            h={{ base: '100dvh', md: 'auto' }}
+            maxH={{ base: '100dvh', md: '80vh' }}
             m={0}
             bg="white"
             shadow={{ base: '0 -4px 20px rgba(0,0,0,0.15)', md: 'lg' }}
             overflow="hidden"
             position="relative"
+            css={{
+              '@supports not (height: 100dvh)': {
+                height: { base: '100vh', md: 'auto' },
+                maxHeight: { base: '100vh', md: '80vh' },
+              },
+            }}
           >
             <Dialog.Body
               p={{ base: 4, md: 6 }}
