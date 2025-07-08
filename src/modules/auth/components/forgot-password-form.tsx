@@ -5,64 +5,79 @@ import { useForm } from 'react-hook-form';
 
 import { Button, Card, Field, Input, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
 import { z } from 'zod';
 
-import { createClient } from '@/services/supabase/client';
+import { requestPasswordReset } from '@/modules/auth/auth.actions';
 
-const loginSchema = z.object({
+const forgotPasswordSchema = z.object({
   email: z
     .string()
     .min(1, 'Email is required')
     .email('Please enter a valid email'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
-export const LoginForm = () => {
+export const ForgotPasswordForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string>('');
+  const [submitSuccess, setSubmitSuccess] = useState<string>('');
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
     mode: 'onBlur',
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: ForgotPasswordFormData) => {
     setIsLoading(true);
     setSubmitError('');
+    setSubmitSuccess('');
 
     try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
-
-      if (error) {
-        setSubmitError(error.message);
+      const result = await requestPasswordReset(data.email);
+      if (result.success) {
+        setSubmitSuccess(result.message);
       } else {
-        window.location.href = '/';
+        // This part might not be reached if action redirects on error
+        setSubmitError('An unexpected error occurred.');
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Login error:', error);
-      setSubmitError('Something went wrong. Please try again.');
+      // Errors in server actions can be caught here
+      if (error instanceof Error) {
+        setSubmitError(error.message);
+      } else {
+        setSubmitError('Something went wrong. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
+  if (submitSuccess) {
+    return (
+      <Text
+        color="green.700"
+        bg="green.50"
+        p={4}
+        borderRadius="md"
+        border="1px solid"
+        borderColor="green.200"
+        textAlign="center"
+        w="full"
+      >
+        {submitSuccess}
+      </Text>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Card.Body p={0}>
         <VStack gap="4" w="full">
-          {/* Error message */}
           {submitError && (
             <Text
               color="red.500"
@@ -86,24 +101,6 @@ export const LoginForm = () => {
               <Field.ErrorText>{errors.email.message}</Field.ErrorText>
             )}
           </Field.Root>
-
-          <Field.Root invalid={!!errors.password}>
-            <Field.Label htmlFor="password">Password:</Field.Label>
-            <Input id="password" type="password" {...register('password')} />
-            {errors.password && (
-              <Field.ErrorText>{errors.password.message}</Field.ErrorText>
-            )}
-          </Field.Root>
-          <Link href="/auth/forgot-password" style={{ alignSelf: 'flex-end' }}>
-            <Text
-              as="span"
-              fontSize="sm"
-              color="primary"
-              _hover={{ textDecoration: 'underline' }}
-            >
-              Forgot password?
-            </Text>
-          </Link>
         </VStack>
       </Card.Body>
 
@@ -115,7 +112,7 @@ export const LoginForm = () => {
           loading={isLoading}
           disabled={isLoading}
         >
-          {isLoading ? 'Signing in...' : 'Log in'}
+          {isLoading ? 'Sending...' : 'Send Reset Link'}
         </Button>
       </Card.Footer>
     </form>
