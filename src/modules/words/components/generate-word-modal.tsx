@@ -77,6 +77,9 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
               pb={{ base: 4, md: 4 }}
               overflowY="auto"
               flex="1"
+              display={isLoading ? 'flex' : 'block'}
+              alignItems={isLoading ? 'center' : 'initial'}
+              justifyContent={isLoading ? 'center' : 'initial'}
               css={{
                 '&::-webkit-scrollbar': {
                   width: '4px',
