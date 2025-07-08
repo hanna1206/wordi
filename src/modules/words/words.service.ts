@@ -30,6 +30,8 @@ import {
 } from './prompts/verb-info-prompt';
 import { PartOfSpeech } from './words.const';
 
+const WRONG_VERB_SEPARABLE_PREFIX_VALUES = ['null', '/', '/null'];
+
 const translateWordLlm = gpt41MiniModel.withStructuredOutput(
   translateToLanguageOutputStructure,
 );
@@ -97,7 +99,15 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
       word: normalizedWord,
       targetLanguage,
     });
-    posSpecifics = { ...posSpecifics, ...response };
+    const normalisedResponse = {
+      ...response,
+      separablePrefix:
+        response.separablePrefix != null &&
+        WRONG_VERB_SEPARABLE_PREFIX_VALUES.includes(response.separablePrefix)
+          ? null
+          : response.separablePrefix,
+    };
+    posSpecifics = { ...posSpecifics, ...normalisedResponse };
   }
 
   if (partOfSpeech.includes(PartOfSpeech.ADJECTIVE)) {
