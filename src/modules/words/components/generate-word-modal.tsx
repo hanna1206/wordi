@@ -5,7 +5,12 @@ import { Button, Dialog, Portal } from '@chakra-ui/react';
 import { GenerateWordError } from '@/modules/words/components/generate-word-modal/generate-word-error';
 import { GenerateWordLoaded } from '@/modules/words/components/generate-word-modal/generate-word-loaded';
 import { GenerateWordLoading } from '@/modules/words/components/generate-word-modal/generate-word-loading';
-import type { TranslationResult } from '@/modules/words/words.types';
+import { getGenderProperties } from '@/modules/words/utils/get-gender-properties';
+import { PartOfSpeech } from '@/modules/words/words.const';
+import type {
+  TranslationNounResult,
+  TranslationResult,
+} from '@/modules/words/words.types';
 
 interface GenerateWordModalProps {
   isOpen: boolean;
@@ -24,6 +29,15 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
   translation,
   onClose,
 }) => {
+  const isNoun = translation?.partOfSpeech?.includes(PartOfSpeech.NOUN);
+  const gender = isNoun
+    ? (translation as TranslationNounResult).gender
+    : undefined;
+  const genderProps = getGenderProperties(gender);
+  const genderColor = genderProps
+    ? `${genderProps.colorScheme}.400`
+    : undefined;
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Portal>
@@ -37,6 +51,8 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
           p={{ base: 0, md: 4 }}
         >
           <Dialog.Content
+            borderTopWidth="8px"
+            borderTopColor={genderColor}
             maxW={{ base: '100vw', md: 'lg', lg: 'xl' }}
             w="full"
             h={{ base: '100dvh', md: 'auto' }}

@@ -7,7 +7,6 @@ import {
   LuReplace,
 } from 'react-icons/lu';
 
-import { getGenderProperties } from '@/modules/words/utils/get-gender-properties';
 import { Gender, PartOfSpeech } from '@/modules/words/words.const';
 import type { TranslationNounResult } from '@/modules/words/words.types';
 
@@ -28,13 +27,9 @@ export const NounContent: React.FC<NounContentProps> = ({ translation }) => {
   // Extract plural form and prepositions safely
   const pluralForm = hasPluralForm ? translation.pluralForm : '';
   const prepositions = hasPrepositions ? translation.prepositions || [] : [];
-  const genderProps = getGenderProperties(translation.gender);
-  const genderColor = genderProps
-    ? `${genderProps.colorScheme}.400`
-    : undefined;
 
   return (
-    <CardLayout genderColor={genderColor}>
+    <CardLayout>
       <WordHeader
         normalizedWord={translation.normalizedWord}
         mainTranslation={translation.mainTranslation}
