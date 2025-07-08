@@ -16,10 +16,12 @@ import { WordHeader } from './common/word-header';
 
 interface AdjectiveContentProps {
   translation: TranslationAdjectiveResult;
+  onRegenerate?: () => void;
 }
 
 export const AdjectiveContent: React.FC<AdjectiveContentProps> = ({
   translation,
+  onRegenerate,
 }) => {
   const prepositions = translation.prepositions || [];
   const hasComparisonForms = translation.comparisonForms;
@@ -41,6 +43,7 @@ export const AdjectiveContent: React.FC<AdjectiveContentProps> = ({
         normalizedWord={translation.normalizedWord}
         mainTranslation={translation.mainTranslation}
         partOfSpeech={translation.partOfSpeech}
+        onRegenerate={onRegenerate}
       />
       <CardDivider />
       {/* Comparison Forms */}

@@ -18,26 +18,39 @@ import type {
 
 interface GenerateWordLoadedProps {
   translation: TranslationResult;
+  onRegenerate?: () => void;
 }
 
 export const GenerateWordLoaded: React.FC<GenerateWordLoadedProps> = ({
   translation,
+  onRegenerate,
 }) => {
   // Determine which component to render based on partOfSpeech
   const partOfSpeech = translation.partOfSpeech || [];
 
   if (partOfSpeech.includes(PartOfSpeech.NOUN)) {
-    return <NounContent translation={translation as TranslationNounResult} />;
+    return (
+      <NounContent
+        translation={translation as TranslationNounResult}
+        onRegenerate={onRegenerate}
+      />
+    );
   }
 
   if (partOfSpeech.includes(PartOfSpeech.VERB)) {
-    return <VerbContent translation={translation as TranslationVerbResult} />;
+    return (
+      <VerbContent
+        translation={translation as TranslationVerbResult}
+        onRegenerate={onRegenerate}
+      />
+    );
   }
 
   if (partOfSpeech.includes(PartOfSpeech.ADJECTIVE)) {
     return (
       <AdjectiveContent
         translation={translation as TranslationAdjectiveResult}
+        onRegenerate={onRegenerate}
       />
     );
   }
@@ -46,6 +59,7 @@ export const GenerateWordLoaded: React.FC<GenerateWordLoadedProps> = ({
     return (
       <PersonalPronounContent
         translation={translation as TranslationPronounResult}
+        onRegenerate={onRegenerate}
       />
     );
   }
@@ -54,10 +68,13 @@ export const GenerateWordLoaded: React.FC<GenerateWordLoadedProps> = ({
     return (
       <DemonstrativePronounContent
         translation={translation as TranslationDemonstrativePronounResult}
+        onRegenerate={onRegenerate}
       />
     );
   }
 
   // For all other parts of speech (adverb, etc.)
-  return <GeneralContent translation={translation} />;
+  return (
+    <GeneralContent translation={translation} onRegenerate={onRegenerate} />
+  );
 };

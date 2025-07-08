@@ -9,10 +9,12 @@ import { WordHeader } from './common/word-header';
 
 interface GeneralContentProps {
   translation: TranslationResult;
+  onRegenerate?: () => void;
 }
 
 export const GeneralContent: React.FC<GeneralContentProps> = ({
   translation,
+  onRegenerate,
 }) => {
   return (
     <CardLayout>
@@ -20,6 +22,7 @@ export const GeneralContent: React.FC<GeneralContentProps> = ({
         normalizedWord={translation.normalizedWord}
         mainTranslation={translation.mainTranslation}
         partOfSpeech={translation.partOfSpeech}
+        onRegenerate={onRegenerate}
       />
 
       <CardDivider />

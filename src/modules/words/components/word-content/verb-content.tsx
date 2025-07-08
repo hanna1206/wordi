@@ -17,9 +17,13 @@ import { WordHeader } from './common/word-header';
 
 interface VerbContentProps {
   translation: TranslationVerbResult;
+  onRegenerate?: () => void;
 }
 
-export const VerbContent: React.FC<VerbContentProps> = ({ translation }) => {
+export const VerbContent: React.FC<VerbContentProps> = ({
+  translation,
+  onRegenerate,
+}) => {
   const prepositions = translation.prepositions || [];
   const conjugationAsArray = translation.conjugation.split(', ');
   const conjugationText =
@@ -36,6 +40,7 @@ export const VerbContent: React.FC<VerbContentProps> = ({ translation }) => {
         regularOrIrregularVerb={translation.regular}
         isReflexiveVerb={translation.isReflexive}
         separablePrefix={translation.separablePrefix}
+        onRegenerate={onRegenerate}
       />
 
       {/* Conjugation */}

@@ -11,10 +11,12 @@ import { WordHeader } from './common/word-header';
 
 interface PersonalPronounContentProps {
   translation: TranslationPronounResult;
+  onRegenerate?: () => void;
 }
 
 export const PersonalPronounContent: React.FC<PersonalPronounContentProps> = ({
   translation,
+  onRegenerate,
 }) => {
   const hasDeclensions =
     translation.declensions && translation.declensions.length > 0;
@@ -25,6 +27,7 @@ export const PersonalPronounContent: React.FC<PersonalPronounContentProps> = ({
         normalizedWord={translation.normalizedWord}
         mainTranslation={translation.mainTranslation}
         partOfSpeech={translation.partOfSpeech}
+        onRegenerate={onRegenerate}
       />
 
       {/* Pronoun Type */}

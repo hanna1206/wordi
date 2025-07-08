@@ -19,6 +19,7 @@ interface GenerateWordModalProps {
   error: string | null;
   translation: TranslationResult | null;
   onClose: () => void;
+  onRegenerate: (word: string) => void;
 }
 
 export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
@@ -28,6 +29,7 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
   error,
   translation,
   onClose,
+  onRegenerate,
 }) => {
   const isNoun = translation?.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const gender = isNoun
@@ -93,7 +95,10 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
               ) : error ? (
                 <GenerateWordError error={error} />
               ) : translation ? (
-                <GenerateWordLoaded translation={translation} />
+                <GenerateWordLoaded
+                  translation={translation}
+                  onRegenerate={() => onRegenerate(word)}
+                />
               ) : null}
             </Dialog.Body>
 

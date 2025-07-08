@@ -12,13 +12,22 @@ import { WordHeader } from './common/word-header';
 
 interface DemonstrativePronounContentProps {
   translation: TranslationDemonstrativePronounResult;
+  onRegenerate?: () => void;
 }
 
 export const DemonstrativePronounContent: React.FC<
   DemonstrativePronounContentProps
-> = ({ translation }) => {
+> = ({ translation, onRegenerate }) => {
   const hasDeclensions =
-    translation.declensions && translation.declensions.length > 0;
+    translation.declensions &&
+    translation.declensions.length > 0 &&
+    translation.declensions.some(
+      (declension) =>
+        declension.masculine ||
+        declension.feminine ||
+        declension.neuter ||
+        declension.plural,
+    );
 
   const renderDeclensionTable = () => {
     if (!hasDeclensions) return null;
@@ -120,8 +129,12 @@ export const DemonstrativePronounContent: React.FC<
         normalizedWord={translation.normalizedWord}
         mainTranslation={translation.mainTranslation}
         partOfSpeech={translation.partOfSpeech}
+        onRegenerate={onRegenerate}
       />
 
+      <Text fontSize="md" color="gray.700" _dark={{ color: 'gray.300' }}>
+        {translation.pronounType}
+      </Text>
       <CardDivider />
 
       {/* Declension Table */}

@@ -158,6 +158,7 @@ export const CreateWordForm = () => {
         error={error}
         translation={translation}
         onClose={onClose}
+        onRegenerate={handleSubmit}
       />
     </>
   );

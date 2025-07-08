@@ -1,6 +1,7 @@
 import React from 'react';
+import { LuRefreshCw } from 'react-icons/lu';
 
-import { HStack, Text, VStack } from '@chakra-ui/react';
+import { HStack, IconButton, Text, VStack } from '@chakra-ui/react';
 
 import type {
   Gender,
@@ -17,6 +18,7 @@ interface WordHeaderProps {
   gender?: Gender;
   isReflexiveVerb?: ReflexiveVerb;
   separablePrefix?: string | null;
+  onRegenerate?: () => void;
 }
 
 export const WordHeader: React.FC<WordHeaderProps> = ({
@@ -26,6 +28,7 @@ export const WordHeader: React.FC<WordHeaderProps> = ({
   regularOrIrregularVerb,
   isReflexiveVerb,
   separablePrefix,
+  onRegenerate,
 }) => {
   const reflexivePronoun =
     isReflexiveVerb === 'reflexive'
@@ -46,34 +49,46 @@ export const WordHeader: React.FC<WordHeaderProps> = ({
     : normalizedWordWithPrefix;
 
   return (
-    <VStack gap={2} align="start">
-      <HStack gap={2} align="baseline">
-        <Text
-          fontSize={{ base: 'md', md: 'lg' }}
-          color="gray.800"
-          fontWeight="semibold"
-        >
-          {normalizedWordWithReflexivePronounAndPrefix}
-        </Text>
-        {partOfSpeech && partOfSpeech.length > 0 && (
+    <HStack w="100%" align="start" justify="space-between">
+      <VStack gap={2} align="start">
+        <HStack gap={2} align="baseline">
           <Text
-            as="span"
-            fontSize={{ base: 'sm', md: 'md' }}
-            color="gray.500"
-            fontStyle="italic"
+            fontSize={{ base: 'md', md: 'lg' }}
+            color="gray.800"
+            fontWeight="semibold"
           >
-            {partOfSpeech.join(', ')}
-            {regularOrIrregularVerb && ` / ${regularOrIrregularVerb}`}
+            {normalizedWordWithReflexivePronounAndPrefix}
           </Text>
-        )}
-      </HStack>
-      <Text
-        fontSize={{ base: 'xl', md: '2xl' }}
-        fontWeight="bold"
-        color="blue.600"
-      >
-        {mainTranslation}
-      </Text>
-    </VStack>
+          {partOfSpeech && partOfSpeech.length > 0 && (
+            <Text
+              as="span"
+              fontSize={{ base: 'sm', md: 'md' }}
+              color="gray.500"
+              fontStyle="italic"
+            >
+              {partOfSpeech.join(', ')}
+              {regularOrIrregularVerb && ` / ${regularOrIrregularVerb}`}
+            </Text>
+          )}
+        </HStack>
+        <Text
+          fontSize={{ base: 'xl', md: '2xl' }}
+          fontWeight="bold"
+          color="blue.600"
+        >
+          {mainTranslation}
+        </Text>
+      </VStack>
+      {onRegenerate && (
+        <IconButton
+          aria-label="Regenerate word"
+          onClick={onRegenerate}
+          variant="ghost"
+          size="sm"
+        >
+          <LuRefreshCw />
+        </IconButton>
+      )}
+    </HStack>
   );
 };

@@ -16,9 +16,13 @@ import { WordHeader } from './common/word-header';
 
 interface NounContentProps {
   translation: TranslationNounResult;
+  onRegenerate?: () => void;
 }
 
-export const NounContent: React.FC<NounContentProps> = ({ translation }) => {
+export const NounContent: React.FC<NounContentProps> = ({
+  translation,
+  onRegenerate,
+}) => {
   const isNoun = translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const hasPluralForm = 'pluralForm' in translation && !!translation.pluralForm;
   const hasPrepositions =
@@ -35,6 +39,7 @@ export const NounContent: React.FC<NounContentProps> = ({ translation }) => {
         mainTranslation={translation.mainTranslation}
         partOfSpeech={translation.partOfSpeech}
         gender={translation.gender as Gender}
+        onRegenerate={onRegenerate}
       />
 
       {/* Plural */}
