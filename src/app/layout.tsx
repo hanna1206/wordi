@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Onest } from 'next/font/google';
 
-import { CookieConsent } from '@/chakra/ui/cookie-consent';
-import { Provider } from '@/chakra/ui/provider';
+import { CookieConsent } from '@/components/cookie-consent';
+import { Provider } from '@/components/provider';
 
 const onest = Onest({
   subsets: ['latin', 'cyrillic'],

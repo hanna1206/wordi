@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
-import { toaster } from '@/chakra/ui/toaster';
+import { toaster } from '@/components/toaster';
 import { saveWordForLearning } from '@/modules/word-persistence/word-persistence.actions';
 import { GenerateWordError } from '@/modules/words-generation/components/generate-word-modal/generate-word-error';
 import { GenerateWordLoaded } from '@/modules/words-generation/components/generate-word-modal/generate-word-loaded';
