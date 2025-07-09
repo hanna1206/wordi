@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
+import { toaster } from '@/chakra/ui/toaster';
+import { saveWordForLearning } from '@/modules/word-persistence/word-persistence.actions';
 import { GenerateWordError } from '@/modules/words-generation/components/generate-word-modal/generate-word-error';
 import { GenerateWordLoaded } from '@/modules/words-generation/components/generate-word-modal/generate-word-loaded';
 import { GenerateWordLoading } from '@/modules/words-generation/components/generate-word-modal/generate-word-loading';
@@ -31,6 +33,8 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
   onClose,
   onRegenerate,
 }) => {
+  const [isSaving, setIsSaving] = useState(false);
+
   const isNoun = translation?.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const gender = isNoun
     ? (translation as TranslationNounResult).gender
@@ -39,6 +43,43 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
   const genderColor = genderProps
     ? `${genderProps.colorScheme}.400`
     : undefined;
+
+  const handleSaveWord = async () => {
+    if (!translation) return;
+
+    setIsSaving(true);
+    try {
+      const result = await saveWordForLearning({
+        translationResult: translation,
+      });
+
+      if (result.success) {
+        toaster.create({
+          title: 'Word saved!',
+          description: 'Word has been saved for learning',
+          type: 'success',
+          duration: 3000,
+        });
+        onClose(); // Close modal after successful save
+      } else {
+        toaster.create({
+          title: 'Save failed',
+          description: result.error,
+          type: 'error',
+          duration: 5000,
+        });
+      }
+    } catch {
+      toaster.create({
+        title: 'Save failed',
+        description: 'An unexpected error occurred',
+        type: 'error',
+        duration: 5000,
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
@@ -137,8 +178,7 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
                   Close
                 </Button>
               </Dialog.ActionTrigger>
-              {/* Future: Save to Collection button */}
-              {/* {translation && (
+              {translation && (
                 <Button
                   size={{ base: 'lg', md: 'md' }}
                   h={{ base: '48px', md: 'auto' }}
@@ -146,10 +186,13 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
                   colorScheme="blue"
                   w="full"
                   mt={3}
+                  onClick={handleSaveWord}
+                  loading={isSaving}
+                  disabled={isSaving}
                 >
-                  Save to Collection
+                  {isSaving ? 'Saving...' : 'Save for learning'}
                 </Button>
-              )} */}
+              )}
             </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Positioner>
