@@ -153,7 +153,26 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
               borderColor="gray.100"
               bg="gray.50"
               mt="auto"
+              display="flex"
+              gap={3}
+              flexDirection={{ base: 'column', md: 'row' }}
+              alignItems="stretch"
             >
+              {translation && (
+                <Button
+                  size={{ base: 'lg', md: 'lg' }}
+                  h={{ base: '48px', md: '44px' }}
+                  borderRadius={{ base: 'xl', md: 'md' }}
+                  colorScheme="blue"
+                  w={{ base: 'full', md: 'auto' }}
+                  onClick={handleSaveWord}
+                  loading={isSaving}
+                  disabled={isSaving}
+                  flex={{ base: 'none', md: '1' }}
+                >
+                  {isSaving ? 'Saving...' : 'Save for learning'}
+                </Button>
+              )}
               <Dialog.ActionTrigger asChild>
                 <Button
                   variant="outline"
@@ -174,25 +193,11 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
                   _active={{
                     bg: 'gray.100',
                   }}
+                  flex={{ base: 'none', md: '1' }}
                 >
                   Close
                 </Button>
               </Dialog.ActionTrigger>
-              {translation && (
-                <Button
-                  size={{ base: 'lg', md: 'md' }}
-                  h={{ base: '48px', md: 'auto' }}
-                  borderRadius={{ base: 'xl', md: 'md' }}
-                  colorScheme="blue"
-                  w="full"
-                  mt={3}
-                  onClick={handleSaveWord}
-                  loading={isSaving}
-                  disabled={isSaving}
-                >
-                  {isSaving ? 'Saving...' : 'Save for learning'}
-                </Button>
-              )}
             </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Positioner>

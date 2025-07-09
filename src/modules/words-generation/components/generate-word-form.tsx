@@ -32,8 +32,8 @@ export const GenerateWordForm = () => {
 
     try {
       // First check cache
-      const normalizedWord = wordToTranslate.trim().toLowerCase();
-      const cacheResult = await getWordFromCache(normalizedWord);
+      const wordToSearchInCache = wordToTranslate.trim().toLowerCase();
+      const cacheResult = await getWordFromCache(wordToSearchInCache);
 
       if (cacheResult.success && cacheResult.data) {
         // Cache hit - convert cached data to TranslationResult format
