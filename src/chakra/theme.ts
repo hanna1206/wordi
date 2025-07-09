@@ -22,6 +22,11 @@ const config = defineConfig({
       },
     },
   },
+  globalCss: {
+    html: {
+      colorPalette: 'blue',
+    },
+  },
 });
 
 export const system = createSystem(defaultConfig, config);

@@ -127,7 +127,6 @@ export const CookieConsent: React.FC = () => {
                 variant="ghost"
                 size={{ base: 'sm', md: 'md' }}
                 onClick={handleDecline}
-                color="gray.600"
                 _dark={{ color: 'gray.400' }}
                 _hover={{
                   bg: 'gray.100',
@@ -138,7 +137,6 @@ export const CookieConsent: React.FC = () => {
                 Decline
               </Button>
               <Button
-                colorScheme="blue"
                 size={{ base: 'sm', md: 'md' }}
                 onClick={handleAccept}
                 flex={{ base: 1, md: 'none' }}
@@ -147,6 +145,7 @@ export const CookieConsent: React.FC = () => {
                   shadow: 'md',
                 }}
                 transition="all 0.2s"
+                variant="solid"
               >
                 Accept
               </Button>

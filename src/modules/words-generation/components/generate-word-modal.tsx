@@ -163,7 +163,6 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
                   size={{ base: 'lg', md: 'lg' }}
                   h={{ base: '48px', md: '44px' }}
                   borderRadius={{ base: 'xl', md: 'md' }}
-                  colorScheme="blue"
                   w={{ base: 'full', md: 'auto' }}
                   onClick={handleSaveWord}
                   loading={isSaving}

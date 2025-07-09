@@ -145,13 +145,11 @@ export const GenerateWordForm = () => {
               <IconButton
                 type="submit"
                 aria-label="Generate word card"
-                bg="blue.500"
                 color="white"
                 borderRadius="xl"
                 size={{ base: 'md', md: 'lg' }}
                 transition="all 0.15s"
                 _hover={{
-                  bg: 'blue.600',
                   transform: 'scale(1.05)',
                 }}
                 _active={{

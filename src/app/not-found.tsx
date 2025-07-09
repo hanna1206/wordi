@@ -54,7 +54,6 @@ const NotFoundPage = () => {
         <HStack gap={4} flexWrap="wrap" justify="center">
           <Link href="/">
             <Button
-              colorScheme="blue"
               size={{ base: 'md', md: 'lg' }}
               _hover={{
                 transform: 'translateY(-2px)',

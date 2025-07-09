@@ -100,13 +100,7 @@ export const ResetPasswordForm = () => {
       </Card.Body>
 
       <Card.Footer pt={6} px={0} pb={2}>
-        <Button
-          type="submit"
-          bg="primary"
-          w="full"
-          loading={isLoading}
-          disabled={isLoading}
-        >
+        <Button type="submit" w="full" loading={isLoading} disabled={isLoading}>
           {isLoading ? 'Resetting...' : 'Reset Password'}
         </Button>
       </Card.Footer>
