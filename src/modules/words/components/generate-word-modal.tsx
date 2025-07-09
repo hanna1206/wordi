@@ -66,8 +66,8 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
             position="relative"
             css={{
               '@supports not (height: 100dvh)': {
-                height: { base: '100vh', md: 'auto' },
-                maxHeight: { base: '100vh', md: '80vh' },
+                height: { base: '100dvh', md: 'auto' },
+                maxHeight: { base: '100dvh', md: '80vh' },
               },
             }}
           >

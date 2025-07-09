@@ -11,7 +11,7 @@ const ErrorContent = () => {
   const message = searchParams.get('message') || 'Sorry, something went wrong';
 
   return (
-    <Center h="100vh">
+    <Center h="100dvh">
       <Card.Root
         maxW="md"
         mx="auto"
@@ -42,7 +42,7 @@ const ErrorPage = () => {
   return (
     <Suspense
       fallback={
-        <Center h="100vh">
+        <Center h="100dvh">
           <Card.Root
             maxW="md"
             mx="auto"

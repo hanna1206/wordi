@@ -18,7 +18,7 @@ export const GenerateWordLoading: React.FC<GenerateWordLoadingProps> = ({
       maxW="400px"
       mx="auto"
     >
-      <Spinner size="xl" color="blue.500" />
+      <Spinner size="xl" color="blue.500" borderWidth="4px" />
       <VStack gap={2} align="center">
         <Text
           fontSize="lg"

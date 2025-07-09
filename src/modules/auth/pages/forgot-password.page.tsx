@@ -7,7 +7,7 @@ import { ForgotPasswordForm } from '../components/forgot-password-form';
 
 export const ForgotPasswordPage = () => {
   return (
-    <Center h="100vh">
+    <Center h="100dvh">
       <VStack gap={6} maxW="md" mx="auto" mt={10}>
         <VStack gap={1} textAlign="center">
           <Text fontSize="2xl" fontWeight="bold">

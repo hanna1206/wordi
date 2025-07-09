@@ -73,7 +73,7 @@ export const OnboardingPage = () => {
   };
 
   return (
-    <Center h="100vh">
+    <Center h="100dvh">
       <VStack gap={6} maxW="md" mx="auto" mt={10}>
         {/* Welcome message */}
         <VStack gap={1} textAlign="center">
