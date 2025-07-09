@@ -5,9 +5,11 @@ import { LuArrowRight } from 'react-icons/lu';
 
 import { Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 
+import { getWordFromCache } from '@/modules/word-persistence/word-persistence.actions';
 import { ExampleWords } from '@/modules/words-generation/components/example-words';
 import { GenerateWordModal } from '@/modules/words-generation/components/generate-word-modal';
 import { translateWord } from '@/modules/words-generation/words-generation.actions';
+import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
 import type { TranslationResult } from '@/modules/words-generation/words-generation.types';
 
 export const CreateWordForm = () => {
@@ -29,6 +31,23 @@ export const CreateWordForm = () => {
     setError(null);
 
     try {
+      // First check cache
+      const normalizedWord = wordToTranslate.trim().toLowerCase();
+      const cacheResult = await getWordFromCache(normalizedWord);
+
+      if (cacheResult.success && cacheResult.data) {
+        // Cache hit - convert cached data to TranslationResult format
+        const cachedTranslation: TranslationResult = {
+          normalizedWord: cacheResult.data.normalized_word,
+          partOfSpeech: [cacheResult.data.part_of_speech as PartOfSpeech],
+          ...cacheResult.data.common_data,
+          ...cacheResult.data.part_specific_data,
+        };
+        setTranslation(cachedTranslation);
+        return;
+      }
+
+      // Cache miss - proceed with LLM request
       const result = await translateWord(wordToTranslate.trim());
       if (result.success && result.data) {
         setTranslation(result.data);
