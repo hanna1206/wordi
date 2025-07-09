@@ -12,7 +12,7 @@ import { translateWord } from '@/modules/words-generation/words-generation.actio
 import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
 import type { TranslationResult } from '@/modules/words-generation/words-generation.types';
 
-export const CreateWordForm = () => {
+export const GenerateWordForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [word, setWord] = useState('');
   const [isLoading, setIsLoading] = useState(false);
