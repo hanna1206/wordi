@@ -1,7 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-import { Regularity } from '../words.const';
+import { Regularity } from '../words-generation.const';
 
 export const verbInfoPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to provide additional info about a given verb.

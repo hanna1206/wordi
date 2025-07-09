@@ -5,32 +5,37 @@ import {
   LuLink2,
   LuQuote,
   LuReplace,
+  LuTrendingUp,
 } from 'react-icons/lu';
 
-import { Gender, PartOfSpeech } from '@/modules/words/words.const';
-import type { TranslationNounResult } from '@/modules/words/words.types';
+import type { TranslationAdjectiveResult } from '@/modules/words-generation/words-generation.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
 import { TranslationSection } from './common/translation-section';
 import { WordHeader } from './common/word-header';
 
-interface NounContentProps {
-  translation: TranslationNounResult;
+interface AdjectiveContentProps {
+  translation: TranslationAdjectiveResult;
   onRegenerate?: () => void;
 }
 
-export const NounContent: React.FC<NounContentProps> = ({
+export const AdjectiveContent: React.FC<AdjectiveContentProps> = ({
   translation,
   onRegenerate,
 }) => {
-  const isNoun = translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
-  const hasPluralForm = 'pluralForm' in translation && !!translation.pluralForm;
-  const hasPrepositions =
-    'prepositions' in translation && !!translation.prepositions;
+  const prepositions = translation.prepositions || [];
+  const hasComparisonForms = translation.comparisonForms;
 
-  // Extract plural form and prepositions safely
-  const pluralForm = hasPluralForm ? translation.pluralForm : '';
-  const prepositions = hasPrepositions ? translation.prepositions || [] : [];
+  // Create comparison forms data for table display
+  const comparisonFormsTable = hasComparisonForms
+    ? [
+        {
+          positive: hasComparisonForms.positive,
+          comparative: hasComparisonForms.comparative || 'N/A',
+          superlative: hasComparisonForms.superlative || 'N/A',
+        },
+      ]
+    : [];
 
   return (
     <CardLayout>
@@ -38,51 +43,43 @@ export const NounContent: React.FC<NounContentProps> = ({
         normalizedWord={translation.normalizedWord}
         mainTranslation={translation.mainTranslation}
         partOfSpeech={translation.partOfSpeech}
-        gender={translation.gender as Gender}
         onRegenerate={onRegenerate}
       />
-
-      {/* Plural */}
-      {isNoun && hasPluralForm && (
+      <CardDivider />
+      {/* Comparison Forms */}
+      {hasComparisonForms && (
         <TranslationSection
-          icon={LuBinary}
-          title="Plural"
-          items={[pluralForm || 'N/A']}
-          renderMode="text"
+          icon={LuTrendingUp}
+          title="Comparison Forms"
+          items={comparisonFormsTable}
+          renderMode="table"
         />
       )}
-
-      <CardDivider />
-
       <TranslationSection
         icon={LuBinary}
         title="Prepositions"
         items={prepositions}
         renderMode="table"
-        show={hasPrepositions}
+        show={prepositions.length > 0}
       />
-
       <TranslationSection
         icon={LuLayers}
         title="Also means"
         items={translation.additionalTranslations}
         renderMode="list"
       />
-
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
         items={translation.exampleSentences}
         renderMode="quotes"
       />
-
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
         items={translation.synonyms}
         renderMode="tags"
       />
-
       <TranslationSection
         icon={LuLink2}
         title="Collocations"

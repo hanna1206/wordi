@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { AdjectiveContent } from '@/modules/words/components/word-content/adjective-content';
-import { DemonstrativePronounContent } from '@/modules/words/components/word-content/demonstrative-pronoun-content';
-import { GeneralContent } from '@/modules/words/components/word-content/general-content';
-import { NounContent } from '@/modules/words/components/word-content/noun-content';
-import { PersonalPronounContent } from '@/modules/words/components/word-content/personal-pronoun-content';
-import { VerbContent } from '@/modules/words/components/word-content/verb-content';
-import { PartOfSpeech } from '@/modules/words/words.const';
+import { AdjectiveContent } from '@/modules/words-generation/components/word-content/adjective-content';
+import { DemonstrativePronounContent } from '@/modules/words-generation/components/word-content/demonstrative-pronoun-content';
+import { GeneralContent } from '@/modules/words-generation/components/word-content/general-content';
+import { NounContent } from '@/modules/words-generation/components/word-content/noun-content';
+import { PersonalPronounContent } from '@/modules/words-generation/components/word-content/personal-pronoun-content';
+import { VerbContent } from '@/modules/words-generation/components/word-content/verb-content';
+import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
 import type {
   TranslationAdjectiveResult,
   TranslationDemonstrativePronounResult,
@@ -14,7 +14,7 @@ import type {
   TranslationPronounResult,
   TranslationResult,
   TranslationVerbResult,
-} from '@/modules/words/words.types';
+} from '@/modules/words-generation/words-generation.types';
 
 interface GenerateWordLoadedProps {
   translation: TranslationResult;

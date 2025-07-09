@@ -3,7 +3,7 @@ import { LuLayers, LuLink2, LuQuote, LuReplace, LuTable } from 'react-icons/lu';
 
 import { Text } from '@chakra-ui/react';
 
-import type { TranslationPronounResult } from '@/modules/words/words.types';
+import type { TranslationPronounResult } from '@/modules/words-generation/words-generation.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
 import { TranslationSection } from './common/translation-section';

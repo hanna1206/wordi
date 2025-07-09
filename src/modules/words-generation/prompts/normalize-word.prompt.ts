@@ -1,7 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-import { PartOfSpeech } from '@/modules/words/words.const';
+import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
 
 export const normalizeWordPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to provide the normalized form of a given word as it usually appears in dictionaries.

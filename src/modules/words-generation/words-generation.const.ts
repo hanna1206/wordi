@@ -1,3 +1,4 @@
+// needs to be in sync with db enums
 export enum PartOfSpeech {
   NOUN = 'noun',
   VERB = 'verb',

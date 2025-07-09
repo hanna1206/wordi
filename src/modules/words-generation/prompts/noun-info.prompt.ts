@@ -1,7 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-import { Gender } from '../words.const';
+import { Gender } from '../words-generation.const';
 
 export const nounInfoPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to provide additional info about a given noun.

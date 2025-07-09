@@ -7,8 +7,8 @@ import { getLanguageName } from '@/modules/user-settings/utils/get-language-name
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
 
-import { getWordInfo as wordInfoService } from './words.service';
-import type { TranslationResult } from './words.types';
+import { getWordInfo as wordInfoService } from './words-generation.service';
+import type { TranslationResult } from './words-generation.types';
 
 export const translateWord = withUserSettings<string, TranslationResult>(
   async (context, word): Promise<ActionResult<TranslationResult>> => {

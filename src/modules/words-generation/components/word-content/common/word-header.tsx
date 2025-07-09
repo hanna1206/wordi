@@ -8,7 +8,7 @@ import type {
   PartOfSpeech,
   ReflexiveVerb,
   Regularity,
-} from '@/modules/words/words.const';
+} from '@/modules/words-generation/words-generation.const';
 
 interface WordHeaderProps {
   normalizedWord: string;

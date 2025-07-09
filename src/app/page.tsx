@@ -1,3 +1,3 @@
-import { CreateWordPage } from '@/modules/words/pages/create-word-page';
+import { GenerateWordPage } from '@/modules/words-generation/pages/generate-word-page';
 
-export default CreateWordPage;
+export default GenerateWordPage;

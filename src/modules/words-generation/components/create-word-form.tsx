@@ -5,10 +5,10 @@ import { LuArrowRight } from 'react-icons/lu';
 
 import { Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 
-import { ExampleWords } from '@/modules/words/components/example-words';
-import { GenerateWordModal } from '@/modules/words/components/generate-word-modal';
-import { translateWord } from '@/modules/words/words.actions';
-import type { TranslationResult } from '@/modules/words/words.types';
+import { ExampleWords } from '@/modules/words-generation/components/example-words';
+import { GenerateWordModal } from '@/modules/words-generation/components/generate-word-modal';
+import { translateWord } from '@/modules/words-generation/words-generation.actions';
+import type { TranslationResult } from '@/modules/words-generation/words-generation.types';
 
 export const CreateWordForm = () => {
   const [isOpen, setIsOpen] = useState(false);

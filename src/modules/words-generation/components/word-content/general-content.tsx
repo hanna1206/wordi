@@ -1,7 +1,7 @@
 import React from 'react';
 import { LuLayers, LuLink2, LuQuote, LuReplace } from 'react-icons/lu';
 
-import type { TranslationResult } from '@/modules/words/words.types';
+import type { TranslationResult } from '@/modules/words-generation/words-generation.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
 import { TranslationSection } from './common/translation-section';

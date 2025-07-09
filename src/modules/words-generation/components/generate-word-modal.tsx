@@ -2,15 +2,15 @@ import React from 'react';
 
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
-import { GenerateWordError } from '@/modules/words/components/generate-word-modal/generate-word-error';
-import { GenerateWordLoaded } from '@/modules/words/components/generate-word-modal/generate-word-loaded';
-import { GenerateWordLoading } from '@/modules/words/components/generate-word-modal/generate-word-loading';
-import { getGenderProperties } from '@/modules/words/utils/get-gender-properties';
-import { PartOfSpeech } from '@/modules/words/words.const';
+import { GenerateWordError } from '@/modules/words-generation/components/generate-word-modal/generate-word-error';
+import { GenerateWordLoaded } from '@/modules/words-generation/components/generate-word-modal/generate-word-loaded';
+import { GenerateWordLoading } from '@/modules/words-generation/components/generate-word-modal/generate-word-loading';
+import { getGenderProperties } from '@/modules/words-generation/utils/get-gender-properties';
+import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
 import type {
   TranslationNounResult,
   TranslationResult,
-} from '@/modules/words/words.types';
+} from '@/modules/words-generation/words-generation.types';
 
 interface GenerateWordModalProps {
   isOpen: boolean;

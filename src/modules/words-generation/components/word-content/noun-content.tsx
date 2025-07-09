@@ -7,29 +7,33 @@ import {
   LuReplace,
 } from 'react-icons/lu';
 
-import { Text } from '@chakra-ui/react';
-
-import type { TranslationVerbResult } from '@/modules/words/words.types';
+import {
+  Gender,
+  PartOfSpeech,
+} from '@/modules/words-generation/words-generation.const';
+import type { TranslationNounResult } from '@/modules/words-generation/words-generation.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
 import { TranslationSection } from './common/translation-section';
 import { WordHeader } from './common/word-header';
 
-interface VerbContentProps {
-  translation: TranslationVerbResult;
+interface NounContentProps {
+  translation: TranslationNounResult;
   onRegenerate?: () => void;
 }
 
-export const VerbContent: React.FC<VerbContentProps> = ({
+export const NounContent: React.FC<NounContentProps> = ({
   translation,
   onRegenerate,
 }) => {
-  const prepositions = translation.prepositions || [];
-  const conjugationAsArray = translation.conjugation.split(', ');
-  const conjugationText =
-    translation.regular === 'regular'
-      ? conjugationAsArray[conjugationAsArray.length - 1]
-      : conjugationAsArray.join(', ');
+  const isNoun = translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
+  const hasPluralForm = 'pluralForm' in translation && !!translation.pluralForm;
+  const hasPrepositions =
+    'prepositions' in translation && !!translation.prepositions;
+
+  // Extract plural form and prepositions safely
+  const pluralForm = hasPluralForm ? translation.pluralForm : '';
+  const prepositions = hasPrepositions ? translation.prepositions || [] : [];
 
   return (
     <CardLayout>
@@ -37,43 +41,28 @@ export const VerbContent: React.FC<VerbContentProps> = ({
         normalizedWord={translation.normalizedWord}
         mainTranslation={translation.mainTranslation}
         partOfSpeech={translation.partOfSpeech}
-        regularOrIrregularVerb={translation.regular}
-        isReflexiveVerb={translation.isReflexive}
-        separablePrefix={translation.separablePrefix}
+        gender={translation.gender as Gender}
         onRegenerate={onRegenerate}
       />
 
-      {/* Conjugation */}
-      <Text fontSize="md" color="gray.700">
-        {conjugationText}
-      </Text>
-
-      <CardDivider />
-
-      {translation.sichUsage && (
+      {/* Plural */}
+      {isNoun && hasPluralForm && (
         <TranslationSection
           icon={LuBinary}
-          title="Sich usage"
-          items={[
-            {
-              rule: 'With sich',
-              explanation: translation.sichUsage.withSich,
-            },
-            {
-              rule: 'Without sich',
-              explanation: translation.sichUsage.withoutSich,
-            },
-          ]}
-          renderMode="table"
+          title="Plural"
+          items={[pluralForm || 'N/A']}
+          renderMode="text"
         />
       )}
+
+      <CardDivider />
 
       <TranslationSection
         icon={LuBinary}
         title="Prepositions"
         items={prepositions}
         renderMode="table"
-        show={prepositions.length > 0}
+        show={hasPrepositions}
       />
 
       <TranslationSection

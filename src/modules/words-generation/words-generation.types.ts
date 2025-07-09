@@ -4,7 +4,7 @@ import {
   PartOfSpeech,
   ReflexiveVerb,
   Regularity,
-} from './words.const';
+} from './words-generation.const';
 
 export type Collocation = {
   collocation: string;

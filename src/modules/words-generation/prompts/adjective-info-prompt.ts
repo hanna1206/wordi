@@ -1,7 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-import { AdjectiveType } from '../words.const';
+import { AdjectiveType } from '../words-generation.const';
 
 export const adjectiveInfoPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to provide additional info about a given adjective.

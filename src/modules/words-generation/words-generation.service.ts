@@ -28,7 +28,7 @@ import {
   outputStructure as verbInfoOutputStructure,
   verbInfoPrompt,
 } from './prompts/verb-info-prompt';
-import { PartOfSpeech } from './words.const';
+import { PartOfSpeech } from './words-generation.const';
 
 const WRONG_VERB_SEPARABLE_PREFIX_VALUES = ['null', '/', '/null'];
 

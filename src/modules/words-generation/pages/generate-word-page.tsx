@@ -1,9 +1,9 @@
 import { Center, Container } from '@chakra-ui/react';
 
 import { AppHeader } from '@/components/app-header';
-import { CreateWordForm } from '@/modules/words/components/create-word-form';
+import { CreateWordForm } from '@/modules/words-generation/components/create-word-form';
 
-export const CreateWordPage = () => (
+export const GenerateWordPage = () => (
   <>
     <AppHeader />
     <Center h="100dvh" bg="white" _dark={{ bg: 'gray.900' }}>
