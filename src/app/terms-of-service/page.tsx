@@ -158,7 +158,7 @@ const TermsOfServicePage = () => {
             <Box
               mt={4}
               p={4}
-              bg="gray.50"
+              bg="gray.100"
               borderRadius="md"
               _dark={{ bg: 'gray.800' }}
             >
@@ -177,7 +177,7 @@ const TermsOfServicePage = () => {
           borderColor="gray.200"
           _dark={{ borderColor: 'gray.700' }}
         >
-          <Text fontSize="sm" color="gray.500" textAlign="center">
+          <Text fontSize="sm" color="gray.1000" textAlign="center">
             These terms of service are effective as of{' '}
             {new Date().toLocaleDateString()} and apply to all users of Wordi.
           </Text>

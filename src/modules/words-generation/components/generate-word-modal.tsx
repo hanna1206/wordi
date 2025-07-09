@@ -151,7 +151,7 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
               py={{ base: 4, md: 4 }}
               borderTopWidth="1px"
               borderColor="gray.100"
-              bg="gray.50"
+              bg="gray.100"
               mt="auto"
               display="flex"
               gap={3}
@@ -186,7 +186,7 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
                   borderColor="gray.200"
                   bg="white"
                   _hover={{
-                    bg: 'gray.50',
+                    bg: 'gray.100',
                     borderColor: 'gray.300',
                   }}
                   _active={{

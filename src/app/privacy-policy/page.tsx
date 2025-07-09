@@ -168,7 +168,7 @@ const PrivacyPolicyPage = () => {
             <Box
               mt={4}
               p={4}
-              bg="gray.50"
+              bg="gray.100"
               borderRadius="md"
               _dark={{ bg: 'gray.800' }}
             >
@@ -187,7 +187,7 @@ const PrivacyPolicyPage = () => {
           borderColor="gray.200"
           _dark={{ borderColor: 'gray.700' }}
         >
-          <Text fontSize="sm" color="gray.500" textAlign="center">
+          <Text fontSize="sm" color="gray.1000" textAlign="center">
             This privacy policy is effective as of{' '}
             {new Date().toLocaleDateString()} and applies to all information
             collected by Wordi.

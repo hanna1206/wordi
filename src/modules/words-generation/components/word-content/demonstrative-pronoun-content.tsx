@@ -44,7 +44,7 @@ export const DemonstrativePronounContent: React.FC<
           py={2}
           px={3}
           borderRadius="md"
-          bg="gray.50"
+          bg="gray.100"
           _dark={{ bg: 'gray.700' }}
         >
           {headers.map((header) => (
