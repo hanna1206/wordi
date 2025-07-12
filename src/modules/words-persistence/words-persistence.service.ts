@@ -6,7 +6,7 @@ import type {
   CommonWordData,
   SavedWord,
   SaveWordInput,
-} from './word-persistence.types';
+} from './words-persistence.types';
 
 const transformTranslationToDbFormat = (
   input: SaveWordInput,

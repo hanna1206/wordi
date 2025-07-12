@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
 import { toaster } from '@/components/toaster';
-import { saveWordForLearning } from '@/modules/word-persistence/word-persistence.actions';
 import { GenerateWordError } from '@/modules/words-generation/components/generate-word-modal/generate-word-error';
 import { GenerateWordLoaded } from '@/modules/words-generation/components/generate-word-modal/generate-word-loaded';
 import { GenerateWordLoading } from '@/modules/words-generation/components/generate-word-modal/generate-word-loading';
@@ -13,6 +12,7 @@ import type {
   TranslationNounResult,
   TranslationResult,
 } from '@/modules/words-generation/words-generation.types';
+import { saveWordForLearning } from '@/modules/words-persistence/words-persistence.actions';
 
 interface GenerateWordModalProps {
   isOpen: boolean;

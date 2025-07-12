@@ -6,12 +6,12 @@ import { LuArrowRight } from 'react-icons/lu';
 
 import { Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 
-import { getWordFromCache } from '@/modules/word-persistence/word-persistence.actions';
 import { ExampleWords } from '@/modules/words-generation/components/example-words';
 import { GenerateWordModal } from '@/modules/words-generation/components/generate-word-modal';
 import { translateWord } from '@/modules/words-generation/words-generation.actions';
 import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
 import type { TranslationResult } from '@/modules/words-generation/words-generation.types';
+import { getWordFromCache } from '@/modules/words-persistence/words-persistence.actions';
 
 interface FormData {
   word: string;

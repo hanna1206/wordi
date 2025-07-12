@@ -7,12 +7,12 @@ import {
   getCachedWord,
   getUserSavedWords,
   saveWordToDatabase,
-} from './word-persistence.service';
+} from './words-persistence.service';
 import type {
   CachedWord,
   SavedWord,
   SaveWordInput,
-} from './word-persistence.types';
+} from './words-persistence.types';
 
 // Save word for learning
 export const saveWordForLearning = withAuth<SaveWordInput, SavedWord>(
