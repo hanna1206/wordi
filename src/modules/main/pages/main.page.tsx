@@ -8,7 +8,7 @@ import { AppHeader } from '@/components/app-header';
 import { Sidebar } from '@/components/sidebar';
 import { GenerateWordForm } from '@/modules/words-generation/components/generate-word-form';
 
-export const GenerateWordPage = () => {
+export const MainPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleSidebarToggle = () => {
