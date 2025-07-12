@@ -23,7 +23,7 @@ export const requestPasswordReset = async (email: string) => {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${environment.appUrl}/auth/reset-password/confirm`,
+    redirectTo: `${environment.appUrl}/auth/reset-password`,
   });
 
   if (error) {
