@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { LuArrowRight } from 'react-icons/lu';
 
 import { Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
@@ -12,6 +13,10 @@ import { translateWord } from '@/modules/words-generation/words-generation.actio
 import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
 import type { TranslationResult } from '@/modules/words-generation/words-generation.types';
 
+interface FormData {
+  word: string;
+}
+
 export const GenerateWordForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [word, setWord] = useState('');
@@ -20,6 +25,13 @@ export const GenerateWordForm = () => {
     null,
   );
   const [error, setError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit: handleFormSubmit,
+    reset,
+    setValue,
+  } = useForm<FormData>();
 
   const handleSubmit = async (wordToTranslate: string) => {
     if (!wordToTranslate.trim()) return;
@@ -44,6 +56,8 @@ export const GenerateWordForm = () => {
           ...cacheResult.data.part_specific_data,
         };
         setTranslation(cachedTranslation);
+        // Clear form only on successful cache hit
+        reset();
         return;
       }
 
@@ -51,23 +65,29 @@ export const GenerateWordForm = () => {
       const result = await translateWord(wordToTranslate.trim());
       if (result.success && result.data) {
         setTranslation(result.data);
+        // Clear form only on successful translation
+        reset();
       } else {
         setError(result.error || 'Failed to translate word');
+        // Don't clear form on error so user can retry
       }
     } catch (err) {
       setError('An unexpected error occurred');
       // eslint-disable-next-line no-console
       console.error('Translation error:', err);
+      // Don't clear form on error so user can retry
     } finally {
       setIsLoading(false);
     }
   };
 
-  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const wordValue = formData.get('word') as string;
-    handleSubmit(wordValue);
+  const onFormSubmit = (data: FormData) => {
+    handleSubmit(data.word);
+  };
+
+  const handleExampleWordSelect = (wordToSelect: string) => {
+    setValue('word', wordToSelect);
+    handleSubmit(wordToSelect);
   };
 
   const onClose = () => {
@@ -94,7 +114,7 @@ export const GenerateWordForm = () => {
         </VStack>
 
         {/* Input form */}
-        <form onSubmit={onFormSubmit}>
+        <form onSubmit={handleFormSubmit(onFormSubmit)}>
           <VStack gap={{ base: 3, md: 6 }}>
             <HStack
               w="full"
@@ -125,7 +145,7 @@ export const GenerateWordForm = () => {
               gap={2}
             >
               <Input
-                name="word"
+                {...register('word', { required: true })}
                 placeholder="Enter any German word..."
                 size={{ base: 'md', md: 'lg' }}
                 fontSize={{ base: 'md', md: 'lg' }}
@@ -133,7 +153,6 @@ export const GenerateWordForm = () => {
                 outline="none"
                 px={{ base: 2, md: 4 }}
                 py={{ base: 2, md: 3 }}
-                required
                 flex={1}
                 _placeholder={{
                   color: 'gray.400',
@@ -163,7 +182,7 @@ export const GenerateWordForm = () => {
             </HStack>
 
             {/* Example Words Component */}
-            <ExampleWords onWordSelect={handleSubmit} />
+            <ExampleWords onWordSelect={handleExampleWordSelect} />
           </VStack>
         </form>
       </VStack>

@@ -60,7 +60,7 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
           type: 'success',
           duration: 3000,
         });
-        onClose(); // Close modal after successful save
+        onClose();
       } else {
         toaster.create({
           title: 'Save failed',
