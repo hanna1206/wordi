@@ -17,13 +17,24 @@ export const verbInfoPrompt = PromptTemplate.fromTemplate(
   IMPORTANT: Focus on grammatically correct, standard written forms. Avoid colloquial or spoken language variations. 
   Provide formal, grammatically accurate explanations and examples.
   
-  CRITICAL FOR REFLEXIVE CLASSIFICATION: Pay special attention to verbs that can be used both with and without reflexive pronouns but have different meanings:
-  - "leisten" (to perform/accomplish) vs "sich leisten" (to afford)
-  - "vorstellen" (to introduce someone) vs "sich vorstellen" (to introduce oneself/imagine)
-  - "waschen" (to wash something/someone) vs "sich waschen" (to wash oneself)
-  - "anziehen" (to dress someone/attract) vs "sich anziehen" (to get dressed)
+  CRITICAL FOR REFLEXIVE CLASSIFICATION: Be extremely conservative and strict. Most verbs should be classified as 'non-reflexive'. 
   
-  If the verb can be used both ways with different meanings, classify it as 'both' and provide detailed explanations for both usages.
+  Only classify as 'both' if the verb has two completely different, equally established meanings:
+  - "leisten" (to perform/accomplish) vs "sich leisten" (to afford) - DIFFERENT MEANINGS
+  - "vorstellen" (to introduce someone) vs "sich vorstellen" (to introduce oneself/imagine) - DIFFERENT MEANINGS
+  - "waschen" (to wash something/someone) vs "sich waschen" (to wash oneself) - DIFFERENT MEANINGS
+  - "anziehen" (to dress someone/attract) vs "sich anziehen" (to get dressed) - DIFFERENT MEANINGS
+  - "treffen" (to meet someone/hit target) vs "sich treffen" (to meet each other/get together) - DIFFERENT MEANINGS
+  - "verhalten" (to restrain/hold back) vs "sich verhalten" (to behave/act) - DIFFERENT MEANINGS
+  - "entscheiden" (to decide something) vs "sich entscheiden" (to make a decision/choose) - DIFFERENT MEANINGS
+  
+  DO NOT classify as 'both' if:
+  - The reflexive form is just a logical extension (e.g., "kämmen" vs "sich kämmen" - this is just transitive vs reflexive)
+  - One form is much more common than the other
+  - The verb can optionally take sich but meaning doesn't change significantly
+  - You're not absolutely certain both forms are equally established
+  
+  When in doubt, always choose 'non-reflexive'. Accuracy is more important than completeness.
   `,
 );
 
@@ -64,37 +75,79 @@ export const outputStructure = z.object({
     .enum(['reflexive', 'non-reflexive', 'both'])
     .nullable()
     .describe(
-      `Whether the verb is reflexive. Be very careful and accurate with this classification.
-      - Return 'reflexive' ONLY if the verb MUST be used with a reflexive pronoun (sich) and cannot function without it (e.g., "sich freuen", "sich befinden").
-      - Return 'non-reflexive' if the verb is used without reflexive pronouns in its standard meaning (e.g., "aufstehen", "gehen", "lesen").
-      - Return 'both' ONLY if the verb has genuinely different meanings when used with and without reflexive pronouns.
+      `Whether the verb is reflexive. Be EXTREMELY strict and conservative with this classification.
       
-      IMPORTANT EXAMPLES for 'both' category:
-      * "leisten" vs "sich leisten": "leisten" means to perform/accomplish (e.g., "Hilfe leisten" = to provide help), while "sich leisten" means to afford (e.g., "sich etwas leisten können" = to be able to afford something)
-      * "waschen" vs "sich waschen": "waschen" means to wash something/someone else, while "sich waschen" means to wash oneself
-      * "vorstellen" vs "sich vorstellen": "vorstellen" means to introduce someone else, while "sich vorstellen" means to introduce oneself or to imagine
-      * "anziehen" vs "sich anziehen": "anziehen" means to dress someone else or to attract, while "sich anziehen" means to get dressed
+      - Return 'reflexive' ONLY if the verb MUST ALWAYS be used with a reflexive pronoun (sich) and cannot function without it in standard German (e.g., "sich freuen", "sich befinden", "sich ereignen").
       
-      Do not confuse separable prefixes or other grammatical elements with reflexive usage.`,
+      - Return 'non-reflexive' if the verb is primarily used without reflexive pronouns in its standard, most common meaning (e.g., "aufstehen", "gehen", "lesen", "trinken", "essen").
+      
+      - Return 'both' ONLY in very rare cases where the verb has two completely different, equally common meanings when used with and without reflexive pronouns. This should be reserved for a very small number of verbs.
+      
+      STRICT CRITERIA for 'both' category - ALL must be true:
+      1. Both forms (with and without sich) must be commonly used in standard German (one may be more frequent than the other, but both must be well-established)
+      2. Both forms must have clearly different meanings (not just transitive vs. intransitive)
+      3. Both forms must be found in standard dictionaries as separate entries
+      4. The reflexive form must NOT be just a logical extension of the non-reflexive form (e.g., "kämmen" vs "sich kämmen" is just transitive vs reflexive)
+      
+      VERIFIED EXAMPLES for 'both' category (use these as strict reference):
+      * "leisten" vs "sich leisten": "leisten" means to perform/accomplish, "sich leisten" means to afford
+      * "vorstellen" vs "sich vorstellen": "vorstellen" means to introduce someone, "sich vorstellen" means to introduce oneself/imagine
+      * "waschen" vs "sich waschen": "waschen" means to wash something/someone, "sich waschen" means to wash oneself
+      * "anziehen" vs "sich anziehen": "anziehen" means to dress someone/attract, "sich anziehen" means to get dressed
+      * "treffen" vs "sich treffen": "treffen" means to meet someone/hit a target, "sich treffen" means to meet each other/get together
+      * "verhalten" vs "sich verhalten": "verhalten" means to restrain/hold back, "sich verhalten" means to behave/act
+      * "entscheiden" vs "sich entscheiden": "entscheiden" means to decide something, "sich entscheiden" means to make a decision/choose
+      
+      DO NOT classify as 'both' if:
+      - The reflexive form is just the logical reflexive version of the transitive verb (e.g., "kämmen" vs "sich kämmen")
+      - One form is extremely rare or archaic compared to the other
+      - The verb can optionally take a reflexive pronoun but doesn't change meaning significantly
+      - The meanings are too similar or one is just a special case of the other
+      - You're not confident both forms are well-established in German
+      
+      When in doubt, classify as 'non-reflexive'. However, don't be overly restrictive with clearly established cases like "treffen/sich treffen".`,
     ),
   sichUsage: z
     .object({
       withSich: z.string().describe(
-        `The usage of the verb with the reflexive pronoun. 
-        Explain the specific meaning and provide example sentences in German.
-        For example, for "leisten": explain that "sich leisten" means "to afford" and give examples like "Ich kann mir das nicht leisten" (I can't afford that).
-        If verb is used with reflexive pronoun very rarely or very often, please mention this as well.`,
+        `The usage of the verb with the reflexive pronoun. ONLY provide this if the verb truly has a different meaning with sich.
+        
+        Requirements:
+        - Explain the specific meaning that is different from the non-reflexive form IN {targetLanguage}
+        - Provide 2-3 example sentences in German showing proper usage
+        - Mention if this form is less common than the non-reflexive form
+        - Focus on standard, grammatically correct usage
+        - ALL explanations and descriptions must be in {targetLanguage}, only the German example sentences should be in German
+        
+        Example format: First explain the meaning in {targetLanguage}, then provide German examples: "Ich kann mir das nicht leisten", "Wir können uns einen Urlaub leisten".`,
       ),
       withoutSich: z.string().describe(
-        `The usage of the verb without the reflexive pronoun.
-          Explain the specific meaning and provide example sentences in German.
-          For example, for "leisten": explain that "leisten" means "to perform/accomplish/provide" and give examples like "Hilfe leisten" (to provide help) or "gute Arbeit leisten" (to do good work).`,
+        `The usage of the verb without the reflexive pronoun. This should be the primary, most common usage.
+        
+        Requirements:
+        - Explain the main meaning of the verb in its standard form IN {targetLanguage}
+        - Provide 2-3 example sentences in German showing proper usage
+        - Focus on the most common, standard usage
+        - ALL explanations and descriptions must be in {targetLanguage}, only the German example sentences should be in German
+        
+        Example format: First explain the meaning in {targetLanguage}, then provide German examples: "Hilfe leisten", "gute Arbeit leisten", "einen Beitrag leisten".`,
       ),
     })
     .nullable()
     .describe(
-      `ONLY provide this if isReflexive is 'both'. If the verb has genuinely different meanings when used with and without reflexive pronouns, explain the difference with specific examples in German and their meanings.
-      Do not provide this for verbs that are simply non-reflexive or only reflexive. Give explanation in {targetLanguage}`,
+      `ONLY provide this if isReflexive is 'both'. This field should be used very rarely.
+      
+      Provide this ONLY when:
+      1. You have classified the verb as 'both' (following the strict criteria above)
+      2. The verb has two completely different, equally established meanings with and without sich
+      3. Both forms are commonly used in standard German
+      
+      For each usage, provide:
+      - Clear explanation of the specific meaning IN {targetLanguage}
+      - Multiple example sentences in German showing proper usage
+      - Mention frequency of usage if one form is more common
+      
+      CRITICAL: All explanations, descriptions, and meanings must be written in {targetLanguage}. Only the German example sentences should be in German. Do NOT provide this field for verbs that are simply non-reflexive or only reflexive.`,
     ),
   prepositions: z
     .array(
