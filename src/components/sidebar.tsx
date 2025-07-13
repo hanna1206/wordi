@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { LuPanelLeftClose, LuX } from 'react-icons/lu';
 
-import { Box, IconButton, useBreakpointValue, VStack } from '@chakra-ui/react';
+import { Box, IconButton, useBreakpointValue } from '@chakra-ui/react';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -137,21 +137,31 @@ export const Sidebar = ({
       </Box>
 
       {/* Sidebar Content */}
-      <VStack
+      <Box
         pt={12}
         px={isOpen ? 2 : 1}
-        gap={2}
-        align="stretch"
         h="full"
+        display="flex"
+        flexDirection="column"
         overflow="hidden"
       >
-        {isOpen && children}
+        {isOpen && (
+          <Box
+            flex="1"
+            overflowY="auto"
+            css={{
+              WebkitOverflowScrolling: 'touch',
+            }}
+          >
+            {children}
+          </Box>
+        )}
         {!isOpen && (
           <Box textAlign="center" opacity={0.6}>
             {/* Collapsed state - could show icons only */}
           </Box>
         )}
-      </VStack>
+      </Box>
     </Box>
   );
 };
