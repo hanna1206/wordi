@@ -24,6 +24,20 @@ export const MainPage = () => {
     setIsSidebarOpen(false);
   };
 
+  // Prevent page scroll when this component is mounted
+  useEffect(() => {
+    // Store original overflow value
+    const originalOverflow = document.body.style.overflow;
+
+    // Prevent page scroll
+    document.body.style.overflow = 'hidden';
+
+    // Restore original overflow when component unmounts
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
   // Load user's saved words when component mounts
   const loadUserWords = async () => {
     try {
@@ -49,7 +63,7 @@ export const MainPage = () => {
   }, []);
 
   return (
-    <>
+    <Box h="100svh" overflow="hidden">
       <AppHeader
         onSidebarToggle={handleSidebarToggle}
         showSidebarToggle={true}
@@ -70,14 +84,18 @@ export const MainPage = () => {
       <Box
         ml={{ base: 0, md: isSidebarOpen ? '280px' : '60px' }}
         transition="margin-left 0.3s ease"
-        pt="72px" // Account for fixed header
+        h="100svh"
+        pt="72px"
+        overflow="hidden"
       >
-        <Center h="calc(100svh - 72px)" bg="white">
-          <Container maxW="4xl" w="full">
-            <GenerateWordForm onWordSaved={loadUserWords} />
-          </Container>
-        </Center>
+        <Box h="full" overflow="auto">
+          <Center h="full" bg="white">
+            <Container maxW="4xl" w="full">
+              <GenerateWordForm onWordSaved={loadUserWords} />
+            </Container>
+          </Center>
+        </Box>
       </Box>
-    </>
+    </Box>
   );
 };

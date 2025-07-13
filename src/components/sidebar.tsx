@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { LuPanelLeftClose, LuX } from 'react-icons/lu';
 
 import { Box, IconButton, useBreakpointValue } from '@chakra-ui/react';
@@ -20,27 +19,6 @@ export const Sidebar = ({
 }: SidebarProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  // Block body scroll when mobile sidebar is open
-  useEffect(() => {
-    if (isMobile && isOpen) {
-      // Store current scroll position
-      const scrollY = window.scrollY;
-
-      // Block scroll on body
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-
-      return () => {
-        // Restore scroll
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        window.scrollTo(0, scrollY);
-      };
-    }
-  }, [isMobile, isOpen]);
-
   // Mobile version - overlay sidebar
   if (isMobile) {
     return (
@@ -52,7 +30,7 @@ export const Sidebar = ({
             top={0}
             left={0}
             w="100vw"
-            h="100vh"
+            h="100svh"
             bg="blackAlpha.400"
             zIndex={998}
             onClick={onClose}
@@ -64,7 +42,7 @@ export const Sidebar = ({
           position="fixed"
           left={0}
           top={0}
-          h="100vh"
+          h="100svh"
           w="280px"
           borderRight="1px"
           borderColor="gray.200"
@@ -74,10 +52,6 @@ export const Sidebar = ({
           bg="white"
           display="flex"
           flexDirection="column"
-          css={{
-            WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain',
-          }}
         >
           <Box p={2} display="flex" justifyContent="flex-end" flexShrink={0}>
             <IconButton
@@ -89,14 +63,7 @@ export const Sidebar = ({
               <LuX />
             </IconButton>
           </Box>
-          <Box
-            p={2}
-            flex="1"
-            overflow="hidden"
-            css={{
-              WebkitOverflowScrolling: 'touch',
-            }}
-          >
+          <Box flex="1" overflow="hidden" display="flex" flexDirection="column">
             {children}
           </Box>
         </Box>
@@ -110,13 +77,15 @@ export const Sidebar = ({
       position="fixed"
       left={0}
       top={0}
-      h="100vh"
+      h="100svh"
       w={isOpen ? '280px' : '60px'}
       bg={isOpen ? 'gray.50' : 'white'}
       borderRight="1px solid"
       borderColor="gray.100"
       transition="width 0.3s ease"
       zIndex={isOpen ? 1001 : 100}
+      display="flex"
+      flexDirection="column"
     >
       {/* Collapse/Expand Button */}
       <Box
@@ -125,6 +94,7 @@ export const Sidebar = ({
         right={isOpen ? 2 : '50%'}
         transform={isOpen ? 'none' : 'translateX(50%)'}
         transition="all 0.3s ease"
+        zIndex={1}
       >
         <IconButton
           aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
@@ -139,20 +109,14 @@ export const Sidebar = ({
       {/* Sidebar Content */}
       <Box
         pt={12}
-        px={isOpen ? 2 : 1}
-        h="full"
+        // pl={2}
+        flex="1"
+        overflow="hidden"
         display="flex"
         flexDirection="column"
-        overflow="hidden"
       >
         {isOpen && (
-          <Box
-            flex="1"
-            overflowY="auto"
-            css={{
-              WebkitOverflowScrolling: 'touch',
-            }}
-          >
+          <Box flex="1" overflow="hidden" display="flex" flexDirection="column">
             {children}
           </Box>
         )}

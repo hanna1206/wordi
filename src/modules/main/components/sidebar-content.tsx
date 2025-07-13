@@ -32,7 +32,14 @@ export const SidebarContent = ({
 
   if (isLoadingWords) {
     return (
-      <Box p={2}>
+      <Box
+        p={2}
+        pr={4}
+        flex="1"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
         <VStack gap={1}>
           <Spinner size="sm" />
           <Text fontSize="sm" color="gray.600">
@@ -45,51 +52,67 @@ export const SidebarContent = ({
 
   return (
     <>
-      <Box p={2} h="full" display="flex" flexDirection="column">
-        <VStack gap={2} align="stretch" h="full">
+      <Box
+        pt={2}
+        pb={8}
+        pl={4}
+        flex="1"
+        display="flex"
+        flexDirection="column"
+        overflow="hidden"
+      >
+        <Box mb={4} flexShrink={0}>
           <Text fontSize="md" fontWeight="semibold">
             Your Saved Words
           </Text>
+        </Box>
 
-          {savedWords.length === 0 ? (
-            <Text fontSize="sm" color="gray.600">
+        {savedWords.length === 0 ? (
+          <Box
+            flex="1"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            pr={4}
+          >
+            <Text fontSize="sm" color="gray.600" textAlign="center">
               No saved words yet. Generate and save some words to see them here!
             </Text>
-          ) : (
-            <Box flex="1" overflowY="auto" pr={1}>
-              <VStack gap={1} align="stretch">
-                {savedWords.map((word) => (
-                  <Box
-                    key={word.id}
-                    p={2}
-                    bg="gray.50"
-                    borderRadius="md"
-                    borderWidth="1px"
-                    borderColor="gray.200"
-                    cursor="pointer"
-                    transition="all 0.2s"
-                    _hover={{
-                      bg: 'gray.100',
-                      transform: 'translateY(-1px)',
-                      shadow: 'sm',
-                    }}
-                    _active={{
-                      transform: 'translateY(0)',
-                    }}
-                    onClick={() => handleWordClick(word)}
-                  >
-                    <Text fontWeight="medium" fontSize="sm">
-                      {word.normalized_word}
-                    </Text>
-                    <Text fontSize="xs" color="gray.600">
-                      {word.common_data.mainTranslation}
-                    </Text>
-                  </Box>
-                ))}
-              </VStack>
-            </Box>
-          )}
-        </VStack>
+          </Box>
+        ) : (
+          <Box flex="1" overflowY="auto" pr={3}>
+            <VStack gap={1} align="stretch">
+              {savedWords.map((word) => (
+                <Box
+                  key={word.id}
+                  p={2}
+                  borderRadius="md"
+                  borderWidth="1px"
+                  borderColor="gray.200"
+                  bg="white"
+                  cursor="pointer"
+                  transition="all 0.2s"
+                  _hover={{
+                    bg: 'gray.100',
+                    transform: 'translateY(-1px)',
+                    shadow: 'sm',
+                  }}
+                  _active={{
+                    transform: 'translateY(0)',
+                  }}
+                  onClick={() => handleWordClick(word)}
+                >
+                  <Text fontWeight="medium" fontSize="sm">
+                    {word.normalized_word}
+                  </Text>
+                  <Text fontSize="xs" color="gray.600">
+                    {word.common_data.mainTranslation}
+                  </Text>
+                </Box>
+              ))}
+            </VStack>
+          </Box>
+        )}
       </Box>
 
       <SavedWordModal
