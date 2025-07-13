@@ -50,8 +50,10 @@ export const Sidebar = ({
           transition="transform 0.3s ease"
           zIndex={1001}
           bg="white"
+          display="flex"
+          flexDirection="column"
         >
-          <Box p={2} display="flex" justifyContent="flex-end">
+          <Box p={2} display="flex" justifyContent="flex-end" flexShrink={0}>
             <IconButton
               aria-label="Close sidebar"
               size="md"
@@ -61,7 +63,9 @@ export const Sidebar = ({
               <LuX />
             </IconButton>
           </Box>
-          <Box p={2}>{children}</Box>
+          <Box p={2} flex="1" overflow="hidden">
+            {children}
+          </Box>
         </Box>
       </>
     );
