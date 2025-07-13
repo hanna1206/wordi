@@ -4,11 +4,15 @@ import { z } from 'zod';
 import { AdjectiveType } from '../words-generation.const';
 
 export const adjectiveInfoPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to provide additional info about a given adjective.
+  `You are a linguistic assistant. Your task is to provide additional info about a given German adjective.
 
-  The word is "{word}"
-  All translations of the word are provided in "{targetLanguage}"
-  All explanations should be given in "{targetLanguage}"
+  The German word is "{word}"
+  
+  LANGUAGE REQUIREMENTS:
+  - The word "{word}" is in GERMAN
+  - All example sentences must be in GERMAN
+  - All translations and explanations must be in "{targetLanguage}"
+  - Never mix languages within a single field
   
   IMPORTANT: Focus on grammatically correct, standard written forms. Avoid colloquial or spoken language variations. 
   Provide formal, grammatically accurate explanations and examples.
@@ -63,25 +67,39 @@ export const outputStructure = z.object({
         exampleSentence: z
           .string()
           .describe(
-            'Example sentence in German showing the preposition usage with the adjective',
+            'Complete example sentence in GERMAN showing the preposition usage with the adjective',
           ),
         translation: z
           .string()
           .describe(
-            'Translation of the example sentence into {targetLanguage}',
+            'Translation of the ENTIRE example sentence into {targetLanguage} (NOT German)',
           ),
       }),
     )
     .nullable()
     .describe(
-      `For the given German adjective, list only the *specific* prepositions that are strongly and idiomatically connected to it, 
-      requiring a particular case, and which form fixed expressions or established grammatical constructions.
-      Each preposition should be an object with "rule" field containing the preposition and case (e.g., "auf + Akkusativ"), 
-      "exampleSentence" field with a German example sentence showing the adjective with the preposition, 
-      and "translation" field with the translation of the example sentence into {targetLanguage}.
-      Examples: "stolz auf + Akkusativ" (proud of), "zufrieden mit + Dativ" (satisfied with), "verantwortlich für + Akkusativ" (responsible for).
-      Do NOT include common, general prepositions that can combine freely with many adjectives 
-      unless they form a fixed or idiomatic phrase with this specific adjective.
-      If there are no such specific prepositions for this adjective, return null without any explanations.`,
+      `For the given German adjective, list ONLY the prepositions that are SPECIFICALLY and IDIOMATICALLY bound to this particular adjective.
+      These must be prepositions that:
+      1. Are strongly associated with this specific adjective (not general prepositions)
+      2. Require a specific grammatical case when used with this adjective
+      3. Form established, fixed expressions or grammatical constructions
+      4. Cannot be easily substituted with other prepositions without changing meaning
+      
+             Each preposition should be an object with:
+       - "rule": The preposition with required case (e.g., "auf + Akkusativ", "mit + Dativ")
+       - "exampleSentence": A complete sentence in GERMAN demonstrating the adjective with this preposition
+       - "translation": Translation of the ENTIRE example sentence into {targetLanguage} (NEVER in German)
+      
+      Examples of word-specific prepositions:
+      - "stolz auf + Akkusativ" (proud of): "Er ist stolz auf seinen Sohn."
+      - "zufrieden mit + Dativ" (satisfied with): "Sie ist zufrieden mit dem Ergebnis."
+      - "verantwortlich für + Akkusativ" (responsible for): "Du bist verantwortlich für diese Aufgabe."
+      
+      DO NOT include:
+      - General prepositions that work with many adjectives (wie, als, durch, etc.)
+      - Optional or interchangeable prepositions
+      - Prepositions that don't form fixed expressions with this specific adjective
+      
+      If this adjective has no such specific prepositional requirements, return null.`,
     ),
 });

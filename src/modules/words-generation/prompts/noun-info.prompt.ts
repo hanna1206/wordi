@@ -4,10 +4,18 @@ import { z } from 'zod';
 import { Gender } from '../words-generation.const';
 
 export const nounInfoPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to provide additional info about a given noun.
+  `You are a linguistic assistant. Your task is to provide additional info about a given German noun.
 
-  The word is "{word}"
-  All translations of the word are provided in "{targetLanguage}"
+  The German word is "{word}"
+  
+  LANGUAGE REQUIREMENTS:
+  - The word "{word}" is in GERMAN
+  - All example sentences must be in GERMAN
+  - All translations and explanations must be in "{targetLanguage}"
+  - Never mix languages within a single field
+  
+  IMPORTANT: Focus on grammatically correct, standard written forms. Avoid colloquial or spoken language variations. 
+  Provide formal, grammatically accurate explanations and examples.
   `,
 );
 
@@ -34,21 +42,41 @@ export const outputStructure = z.object({
           ),
         exampleSentence: z
           .string()
-          .describe('Example sentence in German showing the preposition usage'),
+          .describe(
+            'Complete example sentence in GERMAN showing the preposition usage',
+          ),
         translation: z
           .string()
           .describe(
-            'Translation of the example sentence into {targetLanguage}',
+            'Translation of the ENTIRE example sentence into {targetLanguage} (NOT German)',
           ),
       }),
     )
     .nullable()
     .describe(
-      `For the given German noun, list only the *specific* prepositions that are strongly and idiomatically connected to it, requiring a particular case, and which form fixed expressions or established grammatical constructions.
-      Each preposition should be an object with "rule" field containing the preposition and case (e.g., "mit + Dativ"), 
-      "exampleSentence" field with a German example sentence, and "translation" field with the translation of the example sentence into {targetLanguage}.
-      Do NOT include common, general prepositions that can combine freely with many nouns (such as mit, für, ohne) 
-      unless they form a fixed or idiomatic phrase.
-      If there are no such specific prepositions for this noun, return null without any explanations.`,
+      `For the given German noun, list ONLY the prepositions that are SPECIFICALLY and IDIOMATICALLY bound to this particular noun.
+      These must be prepositions that:
+      1. Are strongly associated with this specific noun (not general prepositions)
+      2. Require a specific grammatical case when used with this noun
+      3. Form established, fixed expressions or grammatical constructions
+      4. Cannot be easily substituted with other prepositions without changing meaning
+      
+             Each preposition should be an object with:
+       - "rule": The preposition with required case (e.g., "an + Dativ", "für + Akkusativ")
+       - "exampleSentence": A complete sentence in GERMAN demonstrating the noun with this preposition
+       - "translation": Translation of the ENTIRE example sentence into {targetLanguage} (NEVER in German)
+      
+      Examples of word-specific prepositions:
+      - "Angst vor + Dativ" (fear of): "Er hat Angst vor Spinnen."
+      - "Interesse an + Dativ" (interest in): "Sie zeigt Interesse an Musik."
+      - "Freude über + Akkusativ" (joy about): "Die Freude über den Erfolg war groß."
+      
+      DO NOT include:
+      - General prepositions that work with many nouns (mit, für, ohne, durch, etc.)
+      - Optional or interchangeable prepositions
+      - Prepositions that don't form fixed expressions with this specific noun
+      - Common locative or temporal prepositions unless they're idiomatically bound
+      
+      If this noun has no such specific prepositional requirements, return null.`,
     ),
 });
