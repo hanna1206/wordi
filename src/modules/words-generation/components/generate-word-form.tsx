@@ -17,7 +17,11 @@ interface FormData {
   word: string;
 }
 
-export const GenerateWordForm = () => {
+interface GenerateWordFormProps {
+  onWordSaved: () => void;
+}
+
+export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [word, setWord] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -195,6 +199,7 @@ export const GenerateWordForm = () => {
         translation={translation}
         onClose={onClose}
         onRegenerate={handleSubmit}
+        onWordSaved={onWordSaved}
       />
     </>
   );

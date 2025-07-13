@@ -73,7 +73,7 @@ export const MainPage = () => {
       >
         <Center h="calc(100dvh - 72px)" bg="white" _dark={{ bg: 'gray.900' }}>
           <Container maxW="4xl" w="full">
-            <GenerateWordForm />
+            <GenerateWordForm onWordSaved={loadUserWords} />
           </Container>
         </Center>
       </Box>

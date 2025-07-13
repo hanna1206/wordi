@@ -22,6 +22,7 @@ interface GenerateWordModalProps {
   translation: TranslationResult | null;
   onClose: () => void;
   onRegenerate: (word: string) => void;
+  onWordSaved: () => void;
 }
 
 export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
@@ -32,6 +33,7 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
   translation,
   onClose,
   onRegenerate,
+  onWordSaved,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
 
@@ -60,6 +62,7 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
           type: 'success',
           duration: 3000,
         });
+        onWordSaved();
         onClose();
       } else {
         toaster.create({
