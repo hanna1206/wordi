@@ -104,7 +104,6 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
             h={{ base: '100dvh', md: 'auto' }}
             maxH={{ base: '100dvh', md: '80vh' }}
             m={0}
-            bg="white"
             shadow={{ base: '0 -4px 20px rgba(0,0,0,0.15)', md: 'lg' }}
             overflow="hidden"
             position="relative"
@@ -177,24 +176,13 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
               )}
               <Dialog.ActionTrigger asChild>
                 <Button
-                  variant="outline"
+                  variant="subtle"
                   onClick={onClose}
                   w={{ base: 'full', md: 'auto' }}
                   size={{ base: 'lg', md: 'lg' }}
                   h={{ base: '48px', md: '44px' }}
                   px={{ base: 6, md: 8 }}
-                  borderRadius={{ base: 'xl', md: 'md' }}
                   fontWeight="medium"
-                  border="1px solid"
-                  borderColor="gray.200"
-                  bg="white"
-                  _hover={{
-                    bg: 'gray.100',
-                    borderColor: 'gray.300',
-                  }}
-                  _active={{
-                    bg: 'gray.100',
-                  }}
                   flex={{ base: 'none', md: '1' }}
                 >
                   Close

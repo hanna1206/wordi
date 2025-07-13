@@ -94,7 +94,6 @@ export const ExampleWords: React.FC<ExampleWordsProps> = ({ onWordSelect }) => {
         fontSize={{ base: 'xs', md: 'sm' }}
         color="gray.500"
         fontWeight="medium"
-        _dark={{ color: 'gray.400' }}
       >
         Try these
       </Text>
@@ -104,28 +103,11 @@ export const ExampleWords: React.FC<ExampleWordsProps> = ({ onWordSelect }) => {
             key={word}
             type="button"
             onClick={() => onWordSelect(word)}
-            variant="outline"
+            variant="subtle"
             size={{ base: 'xs', md: 'sm' }}
-            borderRadius="full"
-            borderColor="gray.200"
-            color="gray.600"
-            bg="white"
             display="flex"
             alignItems="center"
             gap={2}
-            _dark={{
-              borderColor: 'gray.600',
-              color: 'gray.300',
-              bg: 'gray.800',
-            }}
-            _hover={{
-              bg: 'gray.50',
-              borderColor: 'gray.300',
-              _dark: {
-                bg: 'gray.700',
-                borderColor: 'gray.500',
-              },
-            }}
           >
             <Icon size={14} />
             {word}

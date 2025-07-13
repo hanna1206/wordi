@@ -84,10 +84,6 @@ export const Sidebar = ({
       borderColor="gray.100"
       transition="width 0.3s ease"
       zIndex={isOpen ? 1001 : 100}
-      _dark={{
-        bg: 'gray.900',
-        borderColor: 'gray.600',
-      }}
     >
       {/* Collapse/Expand Button */}
       <Box

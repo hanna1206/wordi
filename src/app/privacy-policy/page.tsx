@@ -12,15 +12,10 @@ const PrivacyPolicyPage = () => {
             fontSize={{ base: '2xl', md: '3xl', lg: '4xl' }}
             fontWeight="600"
             color="gray.800"
-            _dark={{ color: 'gray.100' }}
           >
             Privacy Policy
           </Heading>
-          <Text
-            fontSize={{ base: 'sm', md: 'md' }}
-            color="gray.600"
-            _dark={{ color: 'gray.400' }}
-          >
+          <Text fontSize={{ base: 'sm', md: 'md' }} color="gray.600">
             Last updated: {new Date().toLocaleDateString()}
           </Text>
         </VStack>
@@ -165,13 +160,7 @@ const PrivacyPolicyPage = () => {
               If you have any questions about this Privacy Policy or our privacy
               practices, please contact us at:
             </Text>
-            <Box
-              mt={4}
-              p={4}
-              bg="gray.100"
-              borderRadius="md"
-              _dark={{ bg: 'gray.800' }}
-            >
+            <Box mt={4} p={4} bg="gray.100" borderRadius="md">
               <Text fontWeight="semibold">Email:</Text>
               <Link href="mailto:privacy@wordi.app" color="blue.500">
                 privacy@wordi.app
@@ -181,12 +170,7 @@ const PrivacyPolicyPage = () => {
         </VStack>
 
         {/* Footer */}
-        <Box
-          pt={8}
-          borderTop="1px"
-          borderColor="gray.200"
-          _dark={{ borderColor: 'gray.700' }}
-        >
+        <Box pt={8} borderTop="1px" borderColor="gray.200">
           <Text fontSize="sm" color="gray.1000" textAlign="center">
             This privacy policy is effective as of{' '}
             {new Date().toLocaleDateString()} and applies to all information
@@ -210,14 +194,12 @@ const Section: React.FC<SectionProps> = ({ title, children }) => {
         fontSize={{ base: 'lg', md: 'xl' }}
         fontWeight="600"
         color="gray.800"
-        _dark={{ color: 'gray.100' }}
       >
         {title}
       </Heading>
       <Box
         fontSize={{ base: 'sm', md: 'md' }}
         color="gray.700"
-        _dark={{ color: 'gray.300' }}
         lineHeight="1.6"
       >
         {children}
@@ -238,7 +220,6 @@ const SubSection: React.FC<SubSectionProps> = ({ title, children }) => {
         fontSize={{ base: 'md', md: 'lg' }}
         fontWeight="500"
         color="gray.700"
-        _dark={{ color: 'gray.200' }}
       >
         {title}
       </Heading>

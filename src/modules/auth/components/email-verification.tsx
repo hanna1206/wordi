@@ -9,12 +9,7 @@ export const EmailVerification = () => {
         <Text fontSize="3xl" fontWeight="bold" color="green.500">
           Check your email! 📧
         </Text>
-        <Text
-          fontSize="lg"
-          color="gray.700"
-          _dark={{ color: 'gray.300' }}
-          lineHeight="relaxed"
-        >
+        <Text fontSize="lg" color="gray.700" lineHeight="relaxed">
           Almost there! We&apos;ve sent a verification link to your email.
           Please check your inbox and click the link to activate your account
           and start your German learning journey.

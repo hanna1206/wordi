@@ -51,15 +51,10 @@ export const CookieConsent: React.FC = () => {
         left={0}
         right={0}
         zIndex={1000}
-        bg="white"
         borderTop="1px"
         borderColor="gray.200"
         shadow="lg"
         p={{ base: 4, md: 6 }}
-        _dark={{
-          bg: 'gray.800',
-          borderColor: 'gray.600',
-        }}
       >
         <Box maxW="7xl" mx="auto">
           <VStack
@@ -81,14 +76,12 @@ export const CookieConsent: React.FC = () => {
                   fontSize={{ base: 'sm', md: 'md' }}
                   fontWeight="semibold"
                   color="gray.800"
-                  _dark={{ color: 'gray.100' }}
                 >
                   We use cookies
                 </Text>
                 <Text
                   fontSize={{ base: 'xs', md: 'sm' }}
                   color="gray.600"
-                  _dark={{ color: 'gray.400' }}
                   lineHeight="1.5"
                 >
                   This website uses cookies to enhance your browsing experience,
@@ -127,10 +120,8 @@ export const CookieConsent: React.FC = () => {
                 variant="ghost"
                 size={{ base: 'sm', md: 'md' }}
                 onClick={handleDecline}
-                _dark={{ color: 'gray.400' }}
                 _hover={{
                   bg: 'gray.100',
-                  _dark: { bg: 'gray.700' },
                 }}
                 flex={{ base: 1, md: 'none' }}
               >

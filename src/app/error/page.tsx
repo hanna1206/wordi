@@ -27,7 +27,7 @@ const ErrorContent = () => {
           <VStack gap={4}>
             <Text textAlign="center">{message}</Text>
             <Link href="/login">
-              <Button variant="outline" w="full">
+              <Button variant="subtle" w="full">
                 Go back to login
               </Button>
             </Link>

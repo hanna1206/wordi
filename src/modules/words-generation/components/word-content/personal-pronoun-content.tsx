@@ -31,7 +31,7 @@ export const PersonalPronounContent: React.FC<PersonalPronounContentProps> = ({
       />
 
       {/* Pronoun Type */}
-      <Text fontSize="md" color="gray.700" _dark={{ color: 'gray.300' }}>
+      <Text fontSize="md" color="gray.700">
         {translation.pronounType}
       </Text>
 

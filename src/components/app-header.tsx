@@ -50,25 +50,9 @@ export const AppHeader = ({
         <Box>
           <IconButton
             aria-label="Logout"
-            variant="outline"
+            variant="subtle"
             size="sm"
             onClick={handleLogout}
-            bg="white"
-            borderColor="gray.300"
-            _hover={{
-              bg: 'red.50',
-              borderColor: 'red.300',
-              color: 'red.600',
-            }}
-            _dark={{
-              bg: 'gray.800',
-              borderColor: 'gray.600',
-              _hover: {
-                bg: 'red.900',
-                borderColor: 'red.600',
-                color: 'red.300',
-              },
-            }}
           >
             <LuPowerOff size={16} />
           </IconButton>

@@ -35,39 +35,28 @@ export const ModalFooter = ({
       {!showDeleteConfirm ? (
         <>
           <Button
-            variant="outline"
+            variant="subtle"
             colorScheme="red"
             onClick={onDeleteClick}
             size={{ base: 'lg', md: 'lg' }}
             h={{ base: '48px', md: '44px' }}
             px={{ base: 6, md: 8 }}
-            borderRadius={{ base: 'xl', md: 'md' }}
             fontWeight="medium"
-            flex={{ base: 'none', md: '0 0 auto' }}
+            flex={{ base: 'none', md: '1' }}
           >
             <LuTrash2 />
             Delete
           </Button>
           <Dialog.ActionTrigger asChild>
             <Button
-              variant="outline"
+              variant="subtle"
               onClick={onClose}
-              w="full"
+              w={{ base: 'full', md: 'auto' }}
+              flex={{ base: 'none', md: '1' }}
               size={{ base: 'lg', md: 'lg' }}
               h={{ base: '48px', md: '44px' }}
               px={{ base: 6, md: 8 }}
-              borderRadius={{ base: 'xl', md: 'md' }}
               fontWeight="medium"
-              border="1px solid"
-              borderColor="gray.200"
-              bg="white"
-              _hover={{
-                bg: 'gray.100',
-                borderColor: 'gray.300',
-              }}
-              _active={{
-                bg: 'gray.100',
-              }}
             >
               Close
             </Button>
@@ -76,23 +65,12 @@ export const ModalFooter = ({
       ) : (
         <>
           <Button
-            variant="outline"
+            variant="subtle"
             onClick={onDeleteCancel}
             size={{ base: 'lg', md: 'lg' }}
             h={{ base: '48px', md: '44px' }}
             px={{ base: 6, md: 8 }}
-            borderRadius={{ base: 'xl', md: 'md' }}
             fontWeight="medium"
-            border="1px solid"
-            borderColor="gray.200"
-            bg="white"
-            _hover={{
-              bg: 'gray.100',
-              borderColor: 'gray.300',
-            }}
-            _active={{
-              bg: 'gray.100',
-            }}
           >
             Cancel
           </Button>

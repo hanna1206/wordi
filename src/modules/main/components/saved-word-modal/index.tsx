@@ -81,7 +81,6 @@ export const SavedWordModal: React.FC<SavedWordModalProps> = ({
             h={{ base: '100dvh', md: 'auto' }}
             maxH={{ base: '100dvh', md: '80vh' }}
             m={0}
-            bg="white"
             shadow={{ base: '0 -4px 20px rgba(0,0,0,0.15)', md: 'lg' }}
             overflow="hidden"
             position="relative"

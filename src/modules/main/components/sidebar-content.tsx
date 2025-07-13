@@ -63,7 +63,6 @@ export const SidebarContent = ({
                     key={word.id}
                     p={2}
                     bg="gray.50"
-                    _dark={{ bg: 'gray.700', borderColor: 'gray.600' }}
                     borderRadius="md"
                     borderWidth="1px"
                     borderColor="gray.200"
@@ -71,7 +70,6 @@ export const SidebarContent = ({
                     transition="all 0.2s"
                     _hover={{
                       bg: 'gray.100',
-                      _dark: { bg: 'gray.600' },
                       transform: 'translateY(-1px)',
                       shadow: 'sm',
                     }}
@@ -83,11 +81,7 @@ export const SidebarContent = ({
                     <Text fontWeight="medium" fontSize="sm">
                       {word.normalized_word}
                     </Text>
-                    <Text
-                      fontSize="xs"
-                      color="gray.600"
-                      _dark={{ color: 'gray.400' }}
-                    >
+                    <Text fontSize="xs" color="gray.600">
                       {word.common_data.mainTranslation}
                     </Text>
                   </Box>

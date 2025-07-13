@@ -22,7 +22,6 @@ const NotFoundPage = () => {
             fontSize={{ base: '6xl', md: '8xl' }}
             fontWeight="700"
             color="gray.800"
-            _dark={{ color: 'gray.100' }}
             lineHeight="1"
           >
             404
@@ -31,7 +30,6 @@ const NotFoundPage = () => {
             fontSize={{ base: '2xl', md: '3xl' }}
             fontWeight="600"
             color="gray.700"
-            _dark={{ color: 'gray.200' }}
           >
             Page Not Found
           </Heading>
@@ -42,7 +40,6 @@ const NotFoundPage = () => {
           <Text
             fontSize={{ base: 'md', md: 'lg' }}
             color="gray.600"
-            _dark={{ color: 'gray.400' }}
             lineHeight="1.6"
           >
             Sorry, we couldn&apos;t find the page you&apos;re looking for. It
@@ -70,12 +67,8 @@ const NotFoundPage = () => {
           </Link>
           <Link href="/words">
             <Button
-              variant="outline"
+              variant="subtle"
               size={{ base: 'md', md: 'lg' }}
-              _hover={{
-                transform: 'translateY(-2px)',
-                shadow: 'md',
-              }}
               transition="all 0.2s"
               display="flex"
               alignItems="center"
@@ -88,12 +81,7 @@ const NotFoundPage = () => {
         </HStack>
 
         {/* Help Text */}
-        <Text
-          fontSize="sm"
-          color="gray.500"
-          _dark={{ color: 'gray.500' }}
-          mt={8}
-        >
+        <Text fontSize="sm" color="gray.500" mt={8}>
           If you think this is a mistake, please contact our support team.
         </Text>
       </VStack>

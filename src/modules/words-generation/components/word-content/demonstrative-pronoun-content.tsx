@@ -45,7 +45,6 @@ export const DemonstrativePronounContent: React.FC<
           px={3}
           borderRadius="md"
           bg="gray.100"
-          _dark={{ bg: 'gray.700' }}
         >
           {headers.map((header) => (
             <Text
@@ -54,7 +53,6 @@ export const DemonstrativePronounContent: React.FC<
               fontWeight="bold"
               textTransform="capitalize"
               color="gray.600"
-              _dark={{ color: 'gray.400' }}
               textAlign="center"
             >
               {header}
@@ -73,47 +71,25 @@ export const DemonstrativePronounContent: React.FC<
               borderRadius="md"
               border="1px solid"
               borderColor="gray.200"
-              _dark={{ borderColor: 'gray.600' }}
             >
               <Text
                 fontSize="sm"
                 color="gray.700"
-                _dark={{ color: 'gray.300' }}
                 fontWeight="medium"
                 textAlign="center"
               >
                 {declension.case}
               </Text>
-              <Text
-                fontSize="sm"
-                color="gray.700"
-                _dark={{ color: 'gray.300' }}
-                textAlign="center"
-              >
+              <Text fontSize="sm" color="gray.700" textAlign="center">
                 {declension.masculine}
               </Text>
-              <Text
-                fontSize="sm"
-                color="gray.700"
-                _dark={{ color: 'gray.300' }}
-                textAlign="center"
-              >
+              <Text fontSize="sm" color="gray.700" textAlign="center">
                 {declension.feminine}
               </Text>
-              <Text
-                fontSize="sm"
-                color="gray.700"
-                _dark={{ color: 'gray.300' }}
-                textAlign="center"
-              >
+              <Text fontSize="sm" color="gray.700" textAlign="center">
                 {declension.neuter}
               </Text>
-              <Text
-                fontSize="sm"
-                color="gray.700"
-                _dark={{ color: 'gray.300' }}
-                textAlign="center"
-              >
+              <Text fontSize="sm" color="gray.700" textAlign="center">
                 {declension.plural}
               </Text>
             </Grid>
@@ -132,7 +108,7 @@ export const DemonstrativePronounContent: React.FC<
         onRegenerate={onRegenerate}
       />
 
-      <Text fontSize="md" color="gray.700" _dark={{ color: 'gray.300' }}>
+      <Text fontSize="md" color="gray.700">
         {translation.pronounType}
       </Text>
       <CardDivider />

@@ -34,26 +34,6 @@ export const TranslationSection: React.FC<TranslationSectionProps> = ({
 
         return (
           <Box pl={6}>
-            {/* Header row */}
-            {/* <Grid
-              templateColumns={`repeat(${headers.length}, 1fr)`}
-              gap={4}
-              mb={2}
-            >
-              {headers.map((header) => (
-                <Text
-                  key={header}
-                  fontSize="sm"
-                  fontWeight="bold"
-                  textTransform="capitalize"
-                  color="gray.600"
-                  _dark={{ color: 'gray.400' }}
-                >
-                  {header}
-                </Text>
-              ))}
-            </Grid> */}
-            {/* Data rows */}
             <VStack gap={1} align="stretch">
               {tableItems.map((item, index) => (
                 <Grid
@@ -65,15 +45,9 @@ export const TranslationSection: React.FC<TranslationSectionProps> = ({
                   borderRadius="md"
                   border="1px solid"
                   borderColor="gray.200"
-                  _dark={{ borderColor: 'gray.600' }}
                 >
                   {headers.map((header) => (
-                    <Text
-                      key={header}
-                      fontSize="sm"
-                      color="gray.700"
-                      _dark={{ color: 'gray.300' }}
-                    >
+                    <Text key={header} fontSize="sm" color="gray.700">
                       {item[header]}
                     </Text>
                   ))}
@@ -94,7 +68,6 @@ export const TranslationSection: React.FC<TranslationSectionProps> = ({
                 borderRadius="md"
                 bg="gray.100"
                 color="gray.800"
-                _dark={{ bg: 'gray.700', color: 'gray.200' }}
               >
                 {item}
               </Text>

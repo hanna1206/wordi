@@ -111,7 +111,6 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
             fontWeight="500"
             color="gray.800"
             letterSpacing="-0.02em"
-            _dark={{ color: 'gray.100' }}
           >
             What German word would you like to learn today?
           </Heading>
@@ -124,21 +123,15 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
               w="full"
               maxW={{ base: '100%', md: '2xl' }}
               mx="auto"
-              bg="white"
               border="1px"
               borderColor="gray.200"
               borderRadius={{ base: 'lg', md: '2xl' }}
               p={{ base: 1, md: 2 }}
               shadow="sm"
               transition="all 0.2s"
-              _dark={{
-                bg: 'gray.800',
-                borderColor: 'gray.600',
-              }}
               _hover={{
                 shadow: 'md',
                 borderColor: 'gray.300',
-                _dark: { borderColor: 'gray.500' },
               }}
               _focusWithin={{
                 shadow: 'lg',
@@ -160,7 +153,6 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
                 flex={1}
                 _placeholder={{
                   color: 'gray.400',
-                  _dark: { color: 'gray.500' },
                 }}
                 _focus={{ boxShadow: 'none' }}
                 w="100%"
@@ -172,12 +164,8 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
                 borderRadius="xl"
                 size={{ base: 'md', md: 'lg' }}
                 transition="all 0.15s"
-                _hover={{
-                  transform: 'scale(1.05)',
-                }}
-                _active={{
-                  transform: 'scale(0.95)',
-                }}
+                _hover={{ transform: 'scale(1.05)' }}
+                _active={{ transform: 'scale(0.95)' }}
                 w={12}
                 h={12}
               >
