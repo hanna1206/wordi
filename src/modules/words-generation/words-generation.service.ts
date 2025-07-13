@@ -1,4 +1,4 @@
-import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
+import { gpt41Model } from '@/services/llm/gpt-4.1';
 
 import {
   adjectiveInfoPrompt,
@@ -32,37 +32,33 @@ import { PartOfSpeech } from './words-generation.const';
 
 const WRONG_VERB_SEPARABLE_PREFIX_VALUES = ['null', '/', '/null'];
 
-const translateWordLlm = gpt41MiniModel.withStructuredOutput(
+const translateWordLlm = gpt41Model.withStructuredOutput(
   translateToLanguageOutputStructure,
 );
 const translateWordChain = translateToLanguagePrompt.pipe(translateWordLlm);
 
-const normalizeWordLlm = gpt41MiniModel.withStructuredOutput(
+const normalizeWordLlm = gpt41Model.withStructuredOutput(
   normalizeWordOutputStructure,
 );
 const normalizeWordChain = normalizeWordPrompt.pipe(normalizeWordLlm);
 
-const nounInfoLlm = gpt41MiniModel.withStructuredOutput(
-  nounInfoOutputStructure,
-);
+const nounInfoLlm = gpt41Model.withStructuredOutput(nounInfoOutputStructure);
 const nounInfoChain = nounInfoPrompt.pipe(nounInfoLlm);
 
-const verbInfoLlm = gpt41MiniModel.withStructuredOutput(
-  verbInfoOutputStructure,
-);
+const verbInfoLlm = gpt41Model.withStructuredOutput(verbInfoOutputStructure);
 const verbInfoChain = verbInfoPrompt.pipe(verbInfoLlm);
 
-const adjectiveInfoLlm = gpt41MiniModel.withStructuredOutput(
+const adjectiveInfoLlm = gpt41Model.withStructuredOutput(
   adjectiveInfoOutputStructure,
 );
 const adjectiveInfoChain = adjectiveInfoPrompt.pipe(adjectiveInfoLlm);
 
-const pronounInfoLlm = gpt41MiniModel.withStructuredOutput(
+const pronounInfoLlm = gpt41Model.withStructuredOutput(
   pronounInfoOutputStructure,
 );
 const pronounInfoChain = pronounInfoPrompt.pipe(pronounInfoLlm);
 
-const demonstrativePronounInfoLlm = gpt41MiniModel.withStructuredOutput(
+const demonstrativePronounInfoLlm = gpt41Model.withStructuredOutput(
   demonstrativePronounInfoOutputStructure,
 );
 const demonstrativePronounInfoChain = demonstrativePronounInfoPrompt.pipe(
