@@ -63,6 +63,7 @@ export const MainPage = () => {
         <SidebarContent
           savedWords={savedWords}
           isLoadingWords={isLoadingWords}
+          onWordDeleted={loadUserWords}
         />
       </Sidebar>
 

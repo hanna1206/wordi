@@ -9,11 +9,13 @@ import { SavedWordModal } from './saved-word-modal';
 interface SidebarContentProps {
   savedWords: SavedWord[];
   isLoadingWords: boolean;
+  onWordDeleted: () => void;
 }
 
 export const SidebarContent = ({
   savedWords,
   isLoadingWords,
+  onWordDeleted,
 }: SidebarContentProps) => {
   const [selectedWord, setSelectedWord] = useState<SavedWord | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,6 +102,7 @@ export const SidebarContent = ({
         isOpen={isModalOpen}
         savedWord={selectedWord}
         onClose={handleModalClose}
+        onWordDeleted={onWordDeleted}
       />
     </>
   );

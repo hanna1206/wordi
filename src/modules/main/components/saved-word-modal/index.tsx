@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Dialog, Portal } from '@chakra-ui/react';
+import { Dialog, Portal } from '@chakra-ui/react';
 
 import { getGenderProperties } from '@/modules/words-generation/utils/get-gender-properties';
 import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
@@ -10,12 +10,16 @@ import type {
 } from '@/modules/words-generation/words-generation.types';
 import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
-import { SavedWordContent } from './saved-word-content';
+import { useSavedWordModal } from '../../hooks/use-saved-word-modal';
+import { SavedWordContent } from '../saved-word-content';
+import { DeleteConfirmation } from './delete-confirmation';
+import { ModalFooter } from './modal-footer';
 
 interface SavedWordModalProps {
   isOpen: boolean;
   savedWord: SavedWord | null;
   onClose: () => void;
+  onWordDeleted: () => void;
 }
 
 const convertSavedWordToTranslationResult = (
@@ -35,7 +39,16 @@ export const SavedWordModal: React.FC<SavedWordModalProps> = ({
   isOpen,
   savedWord,
   onClose,
+  onWordDeleted,
 }) => {
+  const {
+    isDeleting,
+    showDeleteConfirm,
+    handleDeleteClick,
+    handleDeleteConfirm,
+    handleDeleteCancel,
+  } = useSavedWordModal({ savedWord, onClose, onWordDeleted });
+
   if (!savedWord) return null;
 
   const translation = convertSavedWordToTranslationResult(savedWord);
@@ -98,46 +111,21 @@ export const SavedWordModal: React.FC<SavedWordModalProps> = ({
                 },
               }}
             >
-              <SavedWordContent translation={translation} />
+              {showDeleteConfirm ? (
+                <DeleteConfirmation savedWord={savedWord} />
+              ) : (
+                <SavedWordContent translation={translation} />
+              )}
             </Dialog.Body>
 
-            <Dialog.Footer
-              px={{ base: 4, md: 6 }}
-              py={{ base: 4, md: 4 }}
-              borderTopWidth="1px"
-              borderColor="gray.100"
-              bg="gray.100"
-              mt="auto"
-              display="flex"
-              gap={3}
-              flexDirection={{ base: 'column', md: 'row' }}
-              alignItems="stretch"
-            >
-              <Dialog.ActionTrigger asChild>
-                <Button
-                  variant="outline"
-                  onClick={onClose}
-                  w="full"
-                  size={{ base: 'lg', md: 'lg' }}
-                  h={{ base: '48px', md: '44px' }}
-                  px={{ base: 6, md: 8 }}
-                  borderRadius={{ base: 'xl', md: 'md' }}
-                  fontWeight="medium"
-                  border="1px solid"
-                  borderColor="gray.200"
-                  bg="white"
-                  _hover={{
-                    bg: 'gray.100',
-                    borderColor: 'gray.300',
-                  }}
-                  _active={{
-                    bg: 'gray.100',
-                  }}
-                >
-                  Close
-                </Button>
-              </Dialog.ActionTrigger>
-            </Dialog.Footer>
+            <ModalFooter
+              showDeleteConfirm={showDeleteConfirm}
+              isDeleting={isDeleting}
+              onDeleteClick={handleDeleteClick}
+              onDeleteConfirm={handleDeleteConfirm}
+              onDeleteCancel={handleDeleteCancel}
+              onClose={onClose}
+            />
           </Dialog.Content>
         </Dialog.Positioner>
       </Portal>

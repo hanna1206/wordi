@@ -161,3 +161,35 @@ export const getUserSavedWords = async (
     };
   }
 };
+
+// Delete user's saved word
+export const deleteUserWord = async (
+  wordId: string,
+  userId: string,
+): Promise<ActionResult<void>> => {
+  try {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from('words')
+      .delete()
+      .eq('id', wordId)
+      .eq('user_id', userId); // Ensure user can only delete their own words
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      success: true,
+      data: undefined,
+    };
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error deleting word:', error);
+    return {
+      success: false,
+      error: 'Failed to delete word',
+    };
+  }
+};

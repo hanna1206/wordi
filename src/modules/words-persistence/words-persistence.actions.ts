@@ -4,6 +4,7 @@ import { withAuth } from '@/modules/auth/utils/with-auth';
 import type { ActionResult } from '@/shared-types';
 
 import {
+  deleteUserWord,
   getCachedWord,
   getUserSavedWords,
   saveWordToDatabase,
@@ -86,6 +87,32 @@ export const getUserWords = withAuth<void, SavedWord[]>(
       return {
         success: false,
         error: 'Failed to get saved words',
+      };
+    }
+  },
+);
+
+// Delete user's saved word
+export const deleteWord = withAuth<{ wordId: string }, void>(
+  async (context, input): Promise<ActionResult<void>> => {
+    const { wordId } = input;
+
+    if (!wordId) {
+      return {
+        success: false,
+        error: 'Word ID is required',
+      };
+    }
+
+    try {
+      const result = await deleteUserWord(wordId, context.userId);
+      return result;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to delete word:', error);
+      return {
+        success: false,
+        error: 'Failed to delete word',
       };
     }
   },
