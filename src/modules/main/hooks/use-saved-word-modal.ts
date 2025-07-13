@@ -63,11 +63,18 @@ export const useSavedWordModal = ({
     setShowDeleteConfirm(false);
   };
 
+  // Wrap onClose to reset confirmation state when modal closes
+  const handleClose = () => {
+    setShowDeleteConfirm(false);
+    onClose();
+  };
+
   return {
     isDeleting,
     showDeleteConfirm,
     handleDeleteClick,
     handleDeleteConfirm,
     handleDeleteCancel,
+    handleClose,
   };
 };

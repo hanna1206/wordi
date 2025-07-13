@@ -71,6 +71,7 @@ export const ModalFooter = ({
             h={{ base: '48px', md: '44px' }}
             px={{ base: 6, md: 8 }}
             fontWeight="medium"
+            flex={{ base: 'none', md: '1' }}
           >
             Cancel
           </Button>
@@ -78,12 +79,12 @@ export const ModalFooter = ({
             colorScheme="red"
             onClick={onDeleteConfirm}
             loading={isDeleting}
-            w="full"
             size={{ base: 'lg', md: 'lg' }}
             h={{ base: '48px', md: '44px' }}
             px={{ base: 6, md: 8 }}
             borderRadius={{ base: 'xl', md: 'md' }}
             fontWeight="medium"
+            flex={{ base: 'none', md: '1' }}
           >
             {isDeleting ? 'Deleting...' : 'Delete Word'}
           </Button>

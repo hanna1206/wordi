@@ -47,6 +47,7 @@ export const SavedWordModal: React.FC<SavedWordModalProps> = ({
     handleDeleteClick,
     handleDeleteConfirm,
     handleDeleteCancel,
+    handleClose,
   } = useSavedWordModal({ savedWord, onClose, onWordDeleted });
 
   if (!savedWord) return null;
@@ -62,7 +63,7 @@ export const SavedWordModal: React.FC<SavedWordModalProps> = ({
     : undefined;
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={onClose}>
+    <Dialog.Root open={isOpen} onOpenChange={handleClose}>
       <Portal>
         <Dialog.Backdrop bg="blackAlpha.600" />
         <Dialog.Positioner
@@ -123,7 +124,7 @@ export const SavedWordModal: React.FC<SavedWordModalProps> = ({
               onDeleteClick={handleDeleteClick}
               onDeleteConfirm={handleDeleteConfirm}
               onDeleteCancel={handleDeleteCancel}
-              onClose={onClose}
+              onClose={handleClose}
             />
           </Dialog.Content>
         </Dialog.Positioner>
