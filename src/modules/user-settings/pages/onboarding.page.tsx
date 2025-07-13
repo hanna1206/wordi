@@ -21,8 +21,16 @@ import { completeProfile } from '../user-settings.actions';
 import { LanguageCode, LanguageLabels } from '../user-settings.const';
 
 const LANGUAGE_OPTIONS = [
-  { value: LanguageCode.RUSSIAN, label: LanguageLabels[LanguageCode.RUSSIAN] },
   { value: LanguageCode.ENGLISH, label: LanguageLabels[LanguageCode.ENGLISH] },
+  {
+    value: LanguageCode.PORTUGUESE,
+    label: LanguageLabels[LanguageCode.PORTUGUESE],
+  },
+  { value: LanguageCode.RUSSIAN, label: LanguageLabels[LanguageCode.RUSSIAN] },
+  {
+    value: LanguageCode.TURKISH,
+    label: LanguageLabels[LanguageCode.TURKISH],
+  },
   {
     value: LanguageCode.UKRAINIAN,
     label: LanguageLabels[LanguageCode.UKRAINIAN],
@@ -143,7 +151,8 @@ export const OnboardingPage = () => {
 
                   <Field.Root invalid={!!errors.nativeLanguage}>
                     <Field.Label htmlFor="nativeLanguage">
-                      What is your native language?
+                      What is your native language? We will use it to generate
+                      translations for you.
                     </Field.Label>
                     <select
                       id="nativeLanguage"
