@@ -4,7 +4,11 @@ import { z } from 'zod';
 export const translateToLanguagePrompt = PromptTemplate.fromTemplate(
   `Translate the German word "{word}" to {targetLanguage} and provide additional info about this word. If the word is a noun, also provide its grammatical gender in English (masculine, feminine, neuter).
 
-IMPORTANT: Only provide synonyms for nouns, adjectives, and verbs. For pronouns and other parts of speech, return an empty array for synonyms.`,
+IMPORTANT INSTRUCTIONS:
+- Only provide synonyms for nouns, adjectives, and verbs. For pronouns and other parts of speech, return an empty array for synonyms.
+- Do NOT invent synonyms if they are hard to find or don't exist naturally. Return an empty array if no clear synonyms exist.
+- For additional translations, return an empty array if there are no genuine alternative translations. For example, "Apfel" is always "apple" - don't invent additional translations.
+- Be precise and authentic - only include genuine synonyms and translations that native speakers would actually use.`,
 );
 
 export const outputStructure = z.object({
@@ -14,7 +18,7 @@ export const outputStructure = z.object({
   additionalTranslations: z
     .array(z.string())
     .describe(
-      'Other translations of the word, return just empty array like this: [] if none',
+      'Other genuine translations of the word. Return empty array [] if there are no authentic alternative translations. Do not invent translations.',
     ),
   partOfSpeech: z.array(z.string()).describe(
     `The part of speech of the word in English, e.g. noun, verb, adjective, adverb, etc. 
@@ -49,5 +53,7 @@ export const outputStructure = z.object({
   synonyms: z.array(z.string()).describe(`Synonyms of the word in German. 
     If they are nouns - add article. For example: "das Buch".
     IMPORTANT: Only provide synonyms if the word is a noun, adjective, or verb. 
-    For pronouns and other parts of speech, return an empty array [].`),
+    For pronouns and other parts of speech, return an empty array [].
+    Do NOT invent synonyms if they are hard to find or don't exist naturally. 
+    Return empty array [] if no clear, authentic synonyms exist.`),
 });
