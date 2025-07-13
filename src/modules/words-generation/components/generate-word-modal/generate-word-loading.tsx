@@ -30,16 +30,22 @@ export const GenerateWordLoading: React.FC<GenerateWordLoadingProps> = ({
         </Text>
       </VStack>
 
-      <Alert.Root status="info" w="full" mt={4} mb={2}>
+      <Alert.Root status="info" w="full" mt={4} mb={8}>
         <Alert.Indicator />
-        <VStack align="start" gap={2} fontSize="sm">
+        <VStack align="start" gap={3} fontSize="sm">
           <Alert.Title>
             AI-powered linguistic analysis and translation✨
           </Alert.Title>
-          <VStack align="start" gap={1} fontSize="sm">
-            <Text>• AI-generated content - double-check if needed</Text>
-            <Text>• Hallucinating? Check for typos in your input</Text>
-            <Text>• Use &quot;Regenerate&quot; for different results</Text>
+          <VStack align="start" gap={1} fontSize="sm" color="gray.600">
+            <Text fontWeight="medium" color="gray.700">
+              💡 Important to know:
+            </Text>
+            <Text>
+              • AI can sometimes make mistakes or &quot;hallucinate&quot;
+            </Text>
+            <Text>• Double-check the result, especially grammar details</Text>
+            <Text>• Typos in the word can lead to inaccuracies</Text>
+            <Text>• Use the &quot;Regenerate&quot; button to try again</Text>
           </VStack>
         </VStack>
       </Alert.Root>

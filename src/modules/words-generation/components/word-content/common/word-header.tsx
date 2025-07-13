@@ -3,7 +3,8 @@ import { LuRefreshCw } from 'react-icons/lu';
 
 import { HStack, IconButton, Text, VStack } from '@chakra-ui/react';
 
-import type {
+import { Tooltip } from '@/components/tooltip';
+import {
   Gender,
   PartOfSpeech,
   ReflexiveVerb,
@@ -80,14 +81,24 @@ export const WordHeader: React.FC<WordHeaderProps> = ({
         </Text>
       </VStack>
       {onRegenerate && (
-        <IconButton
-          aria-label="Regenerate word"
-          onClick={onRegenerate}
-          variant="ghost"
-          size="sm"
+        <Tooltip
+          content={
+            <VStack gap={1} align="start" fontSize="xs">
+              <Text fontWeight="medium">Regenerate information</Text>
+              <Text>Use if the result seems inaccurate</Text>
+              <Text>AI can make mistakes or hallucinate</Text>
+            </VStack>
+          }
         >
-          <LuRefreshCw />
-        </IconButton>
+          <IconButton
+            aria-label="Regenerate word"
+            onClick={onRegenerate}
+            variant="ghost"
+            size="sm"
+          >
+            <LuRefreshCw />
+          </IconButton>
+        </Tooltip>
       )}
     </HStack>
   );
