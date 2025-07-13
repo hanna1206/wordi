@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { LuPanelLeftClose, LuX } from 'react-icons/lu';
 
 import { Box, IconButton, useBreakpointValue, VStack } from '@chakra-ui/react';
@@ -18,6 +19,27 @@ export const Sidebar = ({
   children,
 }: SidebarProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  // Block body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (isMobile && isOpen) {
+      // Store current scroll position
+      const scrollY = window.scrollY;
+
+      // Block scroll on body
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+
+      return () => {
+        // Restore scroll
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isMobile, isOpen]);
 
   // Mobile version - overlay sidebar
   if (isMobile) {
@@ -52,6 +74,10 @@ export const Sidebar = ({
           bg="white"
           display="flex"
           flexDirection="column"
+          css={{
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain',
+          }}
         >
           <Box p={2} display="flex" justifyContent="flex-end" flexShrink={0}>
             <IconButton
@@ -63,7 +89,14 @@ export const Sidebar = ({
               <LuX />
             </IconButton>
           </Box>
-          <Box p={2} flex="1" overflow="hidden">
+          <Box
+            p={2}
+            flex="1"
+            overflow="hidden"
+            css={{
+              WebkitOverflowScrolling: 'touch',
+            }}
+          >
             {children}
           </Box>
         </Box>
