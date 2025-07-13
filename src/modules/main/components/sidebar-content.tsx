@@ -30,8 +30,8 @@ export const SidebarContent = ({
 
   if (isLoadingWords) {
     return (
-      <Box p={4}>
-        <VStack gap={2}>
+      <Box p={2}>
+        <VStack gap={1}>
           <Spinner size="sm" />
           <Text fontSize="sm" color="gray.600">
             Loading your words...
@@ -43,9 +43,9 @@ export const SidebarContent = ({
 
   return (
     <>
-      <Box p={4}>
-        <VStack gap={4} align="stretch">
-          <Text fontSize="lg" fontWeight="semibold">
+      <Box p={2} h="full" display="flex" flexDirection="column">
+        <VStack gap={2} align="stretch" h="full">
+          <Text fontSize="md" fontWeight="semibold">
             Your Saved Words
           </Text>
 
@@ -54,42 +54,44 @@ export const SidebarContent = ({
               No saved words yet. Generate and save some words to see them here!
             </Text>
           ) : (
-            <VStack gap={2} align="stretch">
-              {savedWords.map((word) => (
-                <Box
-                  key={word.id}
-                  p={3}
-                  bg="gray.50"
-                  _dark={{ bg: 'gray.700', borderColor: 'gray.600' }}
-                  borderRadius="md"
-                  borderWidth="1px"
-                  borderColor="gray.200"
-                  cursor="pointer"
-                  transition="all 0.2s"
-                  _hover={{
-                    bg: 'gray.100',
-                    _dark: { bg: 'gray.600' },
-                    transform: 'translateY(-1px)',
-                    shadow: 'sm',
-                  }}
-                  _active={{
-                    transform: 'translateY(0)',
-                  }}
-                  onClick={() => handleWordClick(word)}
-                >
-                  <Text fontWeight="medium" fontSize="sm">
-                    {word.normalized_word}
-                  </Text>
-                  <Text
-                    fontSize="xs"
-                    color="gray.600"
-                    _dark={{ color: 'gray.400' }}
+            <Box flex="1" overflowY="auto" pr={1}>
+              <VStack gap={1} align="stretch">
+                {savedWords.map((word) => (
+                  <Box
+                    key={word.id}
+                    p={2}
+                    bg="gray.50"
+                    _dark={{ bg: 'gray.700', borderColor: 'gray.600' }}
+                    borderRadius="md"
+                    borderWidth="1px"
+                    borderColor="gray.200"
+                    cursor="pointer"
+                    transition="all 0.2s"
+                    _hover={{
+                      bg: 'gray.100',
+                      _dark: { bg: 'gray.600' },
+                      transform: 'translateY(-1px)',
+                      shadow: 'sm',
+                    }}
+                    _active={{
+                      transform: 'translateY(0)',
+                    }}
+                    onClick={() => handleWordClick(word)}
                   >
-                    {word.common_data.mainTranslation}
-                  </Text>
-                </Box>
-              ))}
-            </VStack>
+                    <Text fontWeight="medium" fontSize="sm">
+                      {word.normalized_word}
+                    </Text>
+                    <Text
+                      fontSize="xs"
+                      color="gray.600"
+                      _dark={{ color: 'gray.400' }}
+                    >
+                      {word.common_data.mainTranslation}
+                    </Text>
+                  </Box>
+                ))}
+              </VStack>
+            </Box>
           )}
         </VStack>
       </Box>

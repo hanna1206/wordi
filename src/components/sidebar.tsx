@@ -51,7 +51,7 @@ export const Sidebar = ({
           zIndex={1001}
           bg="white"
         >
-          <Box p={4} display="flex" justifyContent="flex-end">
+          <Box p={2} display="flex" justifyContent="flex-end">
             <IconButton
               aria-label="Close sidebar"
               size="md"
@@ -61,7 +61,7 @@ export const Sidebar = ({
               <LuX />
             </IconButton>
           </Box>
-          <Box p={4}>{children}</Box>
+          <Box p={2}>{children}</Box>
         </Box>
       </>
     );
@@ -105,9 +105,9 @@ export const Sidebar = ({
 
       {/* Sidebar Content */}
       <VStack
-        pt={16}
-        px={isOpen ? 4 : 2}
-        gap={4}
+        pt={12}
+        px={isOpen ? 2 : 1}
+        gap={2}
         align="stretch"
         h="full"
         overflow="hidden"
