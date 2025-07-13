@@ -6,7 +6,7 @@ import { ResetPasswordForm } from '../components/reset-password-form';
 
 export const ResetPasswordPage = () => {
   return (
-    <Center h="100dvh">
+    <Center h="100svh">
       <VStack gap={6} maxW="md" mx="auto" mt={10}>
         <VStack gap={1} textAlign="center">
           <Text fontSize="2xl" fontWeight="bold">

@@ -4,7 +4,7 @@ import { Center, Text, VStack } from '@chakra-ui/react';
 
 export const EmailVerification = () => {
   return (
-    <Center h="100dvh">
+    <Center h="100svh">
       <VStack gap={4} maxW="lg" mx="auto" px={6} textAlign="center">
         <Text fontSize="3xl" fontWeight="bold" color="green.500">
           Check your email! 📧

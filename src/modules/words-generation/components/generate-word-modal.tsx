@@ -101,16 +101,16 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
             borderTopColor={genderColor}
             maxW={{ base: '100vw', md: 'lg', lg: 'xl' }}
             w="full"
-            h={{ base: '100dvh', md: 'auto' }}
-            maxH={{ base: '100dvh', md: '80vh' }}
+            h={{ base: '100svh', md: 'auto' }}
+            maxH={{ base: '100svh', md: '80vh' }}
             m={0}
             shadow={{ base: '0 -4px 20px rgba(0,0,0,0.15)', md: 'lg' }}
             overflow="hidden"
             position="relative"
             css={{
-              '@supports not (height: 100dvh)': {
-                height: { base: '100dvh', md: 'auto' },
-                maxHeight: { base: '100dvh', md: '80vh' },
+              '@supports not (height: 100svh)': {
+                height: { base: '100svh', md: 'auto' },
+                maxHeight: { base: '100svh', md: '80vh' },
               },
             }}
           >

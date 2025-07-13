@@ -26,7 +26,7 @@ export const AuthSwitcher = () => {
   }
 
   return (
-    <Center h="100dvh">
+    <Center h="100svh">
       <VStack gap={6} maxW="md" mx="auto" mt={10}>
         {/* Title and Description outside the card */}
         <VStack gap={1} textAlign="center">

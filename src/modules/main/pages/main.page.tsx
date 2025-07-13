@@ -72,7 +72,7 @@ export const MainPage = () => {
         transition="margin-left 0.3s ease"
         pt="72px" // Account for fixed header
       >
-        <Center h="calc(100dvh - 72px)" bg="white">
+        <Center h="calc(100svh - 72px)" bg="white">
           <Container maxW="4xl" w="full">
             <GenerateWordForm onWordSaved={loadUserWords} />
           </Container>
