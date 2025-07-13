@@ -104,7 +104,7 @@ export const ExampleWords: React.FC<ExampleWordsProps> = ({ onWordSelect }) => {
             type="button"
             onClick={() => onWordSelect(word)}
             variant="subtle"
-            size={{ base: 'xs', md: 'sm' }}
+            size={{ base: 'xs', md: 'md' }}
             display="flex"
             alignItems="center"
             gap={2}
