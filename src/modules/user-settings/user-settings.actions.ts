@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { withAuth } from '@/modules/auth/utils/with-auth';
 import type { ActionResult } from '@/shared-types';
 
-import { completeUserProfile } from './user-settings.service';
+import { completeUserProfile, getUserSettings } from './user-settings.service';
 import type { UserSettings } from './user-settings.types';
 
 export const completeProfile = withAuth<
@@ -45,3 +45,21 @@ export const completeProfile = withAuth<
   // Note: redirect() throws and prevents execution of code after it
   redirect('/');
 });
+
+export const fetchUserSettings = withAuth<void, UserSettings>(
+  async (context): Promise<ActionResult<UserSettings>> => {
+    const result = await getUserSettings(context.userId);
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: result.error || 'Failed to fetch user settings',
+      };
+    }
+
+    return {
+      success: true,
+      data: result.data,
+    };
+  },
+);
