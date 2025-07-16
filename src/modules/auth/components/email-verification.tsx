@@ -6,7 +6,7 @@ export const EmailVerification = () => {
   return (
     <Center h="100svh">
       <VStack gap={4} maxW="lg" mx="auto" px={6} textAlign="center">
-        <Text fontSize="3xl" fontWeight="bold" color="green.500">
+        <Text fontSize="2xl" fontWeight="bold" color="blue.500">
           Check your email! 📧
         </Text>
         <Text fontSize="lg" color="gray.700" lineHeight="relaxed">

@@ -1,6 +1,7 @@
 import { createClient } from '@/services/supabase/server';
 import type { ActionResult } from '@/shared-types';
 
+import { LanguageCode } from '../user-settings/user-settings.const';
 import type {
   CachedWord,
   CommonWordData,
@@ -11,6 +12,7 @@ import type {
 const transformTranslationToDbFormat = (
   input: SaveWordInput,
   userId: string,
+  targetLanguage: LanguageCode,
 ) => {
   const { translationResult } = input;
 
@@ -47,16 +49,22 @@ const transformTranslationToDbFormat = (
     part_of_speech: translationResult.partOfSpeech[0] || 'other', // Use first part of speech
     common_data: commonData,
     part_specific_data: specificData,
+    target_language: targetLanguage,
   };
 };
 
 export const saveWordToDatabase = async (
   input: SaveWordInput,
   userId: string,
+  targetLanguage: LanguageCode,
 ): Promise<ActionResult<SavedWord>> => {
   try {
     const supabase = await createClient();
-    const wordData = transformTranslationToDbFormat(input, userId);
+    const wordData = transformTranslationToDbFormat(
+      input,
+      userId,
+      targetLanguage,
+    );
 
     const { data, error } = await supabase
       .from('words')

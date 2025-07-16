@@ -1,6 +1,8 @@
 'use server';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
+import { LanguageCode } from '@/modules/user-settings/user-settings.const';
+import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
 
 import {
@@ -16,7 +18,7 @@ import type {
 } from './words-persistence.types';
 
 // Save word for learning
-export const saveWordForLearning = withAuth<SaveWordInput, SavedWord>(
+export const saveWordForLearning = withUserSettings<SaveWordInput, SavedWord>(
   async (context, input): Promise<ActionResult<SavedWord>> => {
     const { translationResult } = input;
 
@@ -32,7 +34,11 @@ export const saveWordForLearning = withAuth<SaveWordInput, SavedWord>(
 
     try {
       // Try to save - database constraint will handle duplicates
-      const saveResult = await saveWordToDatabase(input, context.userId);
+      const saveResult = await saveWordToDatabase(
+        input,
+        context.userId,
+        context.userSettings.native_language as LanguageCode,
+      );
 
       return saveResult;
     } catch (error) {
