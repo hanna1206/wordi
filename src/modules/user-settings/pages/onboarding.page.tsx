@@ -80,6 +80,15 @@ export const OnboardingPage = () => {
         setShowAIInfoModal(true);
       }
     } catch (error) {
+      // Check if this is a Next.js redirect error (which is expected)
+      if (error && typeof error === 'object' && 'digest' in error) {
+        const digest = (error as { digest: unknown }).digest;
+        if (typeof digest === 'string' && digest.startsWith('NEXT_REDIRECT')) {
+          // This is a redirect, don't show error - let it proceed
+          return;
+        }
+      }
+
       // eslint-disable-next-line no-console
       console.error('Profile completion error:', error);
       setSubmitError('Something went wrong. Please try again.');

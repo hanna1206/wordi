@@ -42,5 +42,6 @@ export const completeProfile = withAuth<
   }
 
   // Redirect to home page after successful completion
+  // Note: redirect() throws and prevents execution of code after it
   redirect('/');
 });
