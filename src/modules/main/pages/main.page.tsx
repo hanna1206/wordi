@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Box, Center, Container } from '@chakra-ui/react';
 
 import { AppHeader } from '@/components/app-header';
+import { InstallPrompt } from '@/components/install-prompt';
 import { Sidebar } from '@/components/sidebar';
 import { SidebarContent } from '@/modules/main/components/sidebar-content';
 import { GenerateWordForm } from '@/modules/words-generation/components/generate-word-form';
@@ -87,6 +88,7 @@ export const MainPage = () => {
         h="100svh"
         pt="72px"
         overflow="hidden"
+        position="relative"
       >
         <Box h="full" overflow="auto">
           <Center h="full" bg="white">
@@ -95,6 +97,7 @@ export const MainPage = () => {
             </Container>
           </Center>
         </Box>
+        <InstallPrompt />
       </Box>
     </Box>
   );
