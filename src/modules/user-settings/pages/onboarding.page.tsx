@@ -9,6 +9,7 @@ import {
   Center,
   Field,
   Input,
+  NativeSelect,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -136,7 +137,7 @@ export const OnboardingPage = () => {
 
                   <Field.Root invalid={!!errors.name}>
                     <Field.Label htmlFor="name">
-                      What should we call you?
+                      How should we call you?
                     </Field.Label>
                     <Input
                       id="name"
@@ -154,26 +155,20 @@ export const OnboardingPage = () => {
                       What is your native language? We will use it to generate
                       translations for you.
                     </Field.Label>
-                    <select
-                      id="nativeLanguage"
-                      {...register('nativeLanguage')}
-                      style={{
-                        width: '100%',
-                        padding: '8px 12px',
-                        border: '1px solid #D1D5DB',
-                        borderRadius: '6px',
-                        fontSize: '14px',
-                        backgroundColor: 'white',
-                        outline: 'none',
-                      }}
-                    >
-                      <option value="">Select your language</option>
-                      {LANGUAGE_OPTIONS.map((language) => (
-                        <option key={language.value} value={language.value}>
-                          {language.label}
-                        </option>
-                      ))}
-                    </select>
+                    <NativeSelect.Root>
+                      <NativeSelect.Field
+                        id="nativeLanguage"
+                        placeholder="Select your language"
+                        {...register('nativeLanguage')}
+                      >
+                        {LANGUAGE_OPTIONS.map((language) => (
+                          <option key={language.value} value={language.value}>
+                            {language.label}
+                          </option>
+                        ))}
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
                     {errors.nativeLanguage && (
                       <Field.ErrorText>
                         {errors.nativeLanguage.message}
