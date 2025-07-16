@@ -1,6 +1,15 @@
 import { useState } from 'react';
+import { LuListTodo } from 'react-icons/lu';
 
-import { Box, Spinner, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  HStack,
+  Link,
+  Spinner,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 
 import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
@@ -61,9 +70,17 @@ export const SidebarContent = ({
         flexDirection="column"
         overflow="hidden"
       >
-        <Box mb={4} flexShrink={0}>
-          <Text fontSize="md" fontWeight="semibold">
-            Your Saved Words
+        <Link href="/words">
+          <Button variant="ghost" width="250px" p={2} justifyContent="start">
+            <HStack justifyContent="start">
+              <LuListTodo />
+              <Text>All saved words</Text>
+            </HStack>
+          </Button>
+        </Link>
+        <Box mt={10} mb={2} flexShrink={0}>
+          <Text fontSize="sm" fontWeight="semibold">
+            Your Last 50 Saved Words
           </Text>
         </Box>
 
@@ -74,6 +91,7 @@ export const SidebarContent = ({
             alignItems="center"
             justifyContent="center"
             pr={4}
+            my={4}
           >
             <Text fontSize="sm" color="gray.600" textAlign="center">
               No saved words yet. Generate and save some words to see them here!
