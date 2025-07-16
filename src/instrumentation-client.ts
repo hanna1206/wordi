@@ -17,6 +17,18 @@ Sentry.init({
   _experiments: {
     enableLogs: true,
   },
+
+  integrations: [
+    Sentry.feedbackIntegration({
+      colorScheme: 'system',
+      triggerLabel: 'Send Feedback',
+      formTitle: 'Feedback',
+      formDescription: 'Please describe the issue you are experiencing.',
+      formSuccessMessage: 'Thank you for your feedback!',
+      formError: 'An error occurred while submitting the feedback.',
+      submitButtonLabel: 'Submit',
+    }),
+  ],
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
