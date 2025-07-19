@@ -6,6 +6,7 @@ import { Provider } from '@/components/provider';
 const onest = Onest({
   subsets: ['latin', 'cyrillic'],
   display: 'swap',
+  variable: '--font-onest',
 });
 
 export const metadata: Metadata = {
@@ -19,8 +20,8 @@ const RootLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={onest.className}>
+    <html lang="en" suppressHydrationWarning className={onest.variable}>
+      <body suppressHydrationWarning>
         <Provider>{children}</Provider>
       </body>
     </html>
