@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Onest } from 'next/font/google';
 
+import { FeedbackWidget } from '@/components/feedback-widget';
 import { Provider } from '@/components/provider';
 
 const onest = Onest({
@@ -23,6 +24,7 @@ const RootLayout = ({
     <html lang="en" suppressHydrationWarning className={onest.variable}>
       <body suppressHydrationWarning>
         <Provider>{children}</Provider>
+        <FeedbackWidget />
       </body>
     </html>
   );

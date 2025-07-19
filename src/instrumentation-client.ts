@@ -20,6 +20,7 @@ Sentry.init({
 
   integrations: [
     Sentry.feedbackIntegration({
+      autoInject: false, // Disable automatic injection to control visibility per page
       colorScheme: 'system',
       triggerLabel: 'Send Feedback',
       formTitle: 'Feedback',
