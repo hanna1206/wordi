@@ -20,9 +20,18 @@ export const AppHeader = ({
 }: AppHeaderProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [showAIInfoModal, setShowAIInfoModal] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    await logout();
+    setIsLoggingOut(true);
+    try {
+      await logout();
+    } catch (error) {
+      // Reset loading state if logout fails (though logout() usually redirects)
+      setIsLoggingOut(false);
+      // eslint-disable-next-line no-console
+      console.error('Logout error:', error);
+    }
   };
 
   const handleShowAIInfo = () => {
@@ -78,6 +87,8 @@ export const AppHeader = ({
               variant="subtle"
               size="sm"
               onClick={handleLogout}
+              loading={isLoggingOut}
+              disabled={isLoggingOut}
             >
               <LuPowerOff size={16} />
             </IconButton>
