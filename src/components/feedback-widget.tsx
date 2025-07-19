@@ -18,6 +18,7 @@ export const FeedbackWidget = () => {
     '/words',
     '/user',
     '/onboarding',
+    '/',
     // Add more paths as needed
   ];
 

@@ -3,6 +3,7 @@ import { Onest } from 'next/font/google';
 
 import { FeedbackWidget } from '@/components/feedback-widget';
 import { Provider } from '@/components/provider';
+import { Toaster } from '@/components/toaster';
 
 const onest = Onest({
   subsets: ['latin', 'cyrillic'],
@@ -23,7 +24,10 @@ const RootLayout = ({
   return (
     <html lang="en" suppressHydrationWarning className={onest.variable}>
       <body suppressHydrationWarning>
-        <Provider>{children}</Provider>
+        <Provider>
+          {children}
+          <Toaster />
+        </Provider>
         <FeedbackWidget />
       </body>
     </html>

@@ -1,69 +1,83 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { LuX } from 'react-icons/lu';
+import { useEffect, useRef, useState } from 'react';
+import { LuPlus, LuShare } from 'react-icons/lu';
 
-import { Box, Container, HStack, IconButton, Text } from '@chakra-ui/react';
+import { HStack, Text } from '@chakra-ui/react';
+
+import { toaster } from './toaster';
 
 export const InstallPrompt = () => {
-  const [isIOS, setIsIOS] = useState(false);
-  const [isStandalone, setIsStandalone] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+  const [hasShownToast, setHasShownToast] = useState(false);
+  const isScheduledRef = useRef(false);
 
   useEffect(() => {
-    setIsIOS(
+    // Prevent duplicate toasts
+    if (hasShownToast || isScheduledRef.current) return;
+
+    // Only show the toast once per session for iOS users who haven't installed the app
+    const isIOS =
       /iPad|iPhone|iPod/.test(navigator.userAgent) &&
-        !(window as unknown as { MSStream: unknown }).MSStream,
-    );
+      !(window as unknown as { MSStream: unknown }).MSStream;
+    const isStandalone = window.matchMedia(
+      '(display-mode: standalone)',
+    ).matches;
 
-    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches);
-  }, []);
+    if (isIOS && !isStandalone && !hasShownToast) {
+      // Mark as scheduled to prevent duplicates
+      isScheduledRef.current = true;
 
-  if (isStandalone || !isOpen || !isIOS) {
-    return null;
-  }
+      // Show toast after a short delay to avoid overwhelming the user immediately
+      const timer = setTimeout(() => {
+        toaster.create({
+          title: 'Install App',
+          description: (
+            <HStack gap="1" align="center" wrap="wrap" mt="2">
+              <Text fontSize="sm">Tap</Text>
+              <HStack
+                as="span"
+                display="inline-flex"
+                alignItems="center"
+                bg="bg.subtle"
+                px="2"
+                py="1"
+                borderRadius="md"
+                fontSize="sm"
+              >
+                <LuShare size="14" />
+              </HStack>
+              <Text fontSize="sm">then</Text>
+              <HStack
+                as="span"
+                display="inline-flex"
+                alignItems="center"
+                bg="bg.subtle"
+                px="2"
+                py="1"
+                borderRadius="md"
+                fontSize="sm"
+                gap="1"
+              >
+                <LuPlus size="12" />
+                <Text>Add to Home Screen</Text>
+              </HStack>
+            </HStack>
+          ),
+          action: {
+            label: 'Got it',
+            onClick: () => {}, // No additional action needed, toast will close automatically
+          },
+          type: 'info',
+          duration: 8000, // 8 seconds
+          closable: true,
+        });
+        setHasShownToast(true);
+      }, 2000); // Show after 2 seconds
 
-  return (
-    <Box
-      borderTopWidth="1px"
-      bg="bg.panel"
-      position="absolute"
-      bottom={0}
-      left={0}
-      right={0}
-      zIndex={1000}
-    >
-      <Container py="1">
-        <HStack
-          px="8"
-          gap={{ base: '3', md: '4' }}
-          justify={{ base: 'start', md: 'space-between' }}
-        >
-          <Box boxSize="8" display={{ base: 'none', md: 'block' }} />
-          <Text fontWeight="medium" fontSize="xs">
-            <strong>Add to Home Screen. </strong> To install this app on your
-            iOS device, tap the share button
-            <span role="img" aria-label="share icon">
-              {' '}
-              ⎋{' '}
-            </span>
-            and then &quot;Add to Home Screen&quot;
-            <span role="img" aria-label="plus icon">
-              {' '}
-              ➕{' '}
-            </span>
-            .
-          </Text>
-          <IconButton
-            variant="ghost"
-            aria-label="Close banner"
-            colorPalette="gray"
-            onClick={() => setIsOpen(false)}
-          >
-            <LuX />
-          </IconButton>
-        </HStack>
-      </Container>
-    </Box>
-  );
+      return () => clearTimeout(timer);
+    }
+  }, [hasShownToast]);
+
+  // This component doesn't render anything visible in the DOM
+  return null;
 };
