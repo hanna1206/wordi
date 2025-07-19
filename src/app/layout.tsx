@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Onest } from 'next/font/google';
 
-import { CookieConsent } from '@/components/cookie-consent';
 import { Provider } from '@/components/provider';
 
 const onest = Onest({
@@ -22,10 +21,7 @@ const RootLayout = ({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={onest.className}>
-        <Provider>
-          {children}
-          <CookieConsent />
-        </Provider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

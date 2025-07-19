@@ -19,9 +19,9 @@ interface ExampleWordsProps {
 }
 
 interface WordSet {
-  noun: { word: string; icon: React.ElementType };
-  verb: { word: string; icon: React.ElementType };
-  adjective: { word: string; icon: React.ElementType };
+  noun: { word: string; icon: typeof LuBook };
+  verb: { word: string; icon: typeof LuBook };
+  adjective: { word: string; icon: typeof LuBook };
 }
 
 const WORD_SETS: WordSet[] = [
@@ -68,11 +68,9 @@ const WORD_SETS: WordSet[] = [
 ];
 
 export const ExampleWords: React.FC<ExampleWordsProps> = ({ onWordSelect }) => {
-  const [selectedSet, setSelectedSet] = useState<WordSet>(WORD_SETS[0]); // Default to first set
-  const [isClient, setIsClient] = useState(false);
+  const [selectedSet, setSelectedSet] = useState<WordSet>(WORD_SETS[0]);
 
   useEffect(() => {
-    setIsClient(true);
     const randomIndex = Math.floor(Math.random() * WORD_SETS.length);
     setSelectedSet(WORD_SETS[randomIndex]);
   }, []);
@@ -82,11 +80,6 @@ export const ExampleWords: React.FC<ExampleWordsProps> = ({ onWordSelect }) => {
     selectedSet.verb,
     selectedSet.adjective,
   ];
-
-  // Don't render the random selection until client-side hydration is complete
-  if (!isClient) {
-    return null;
-  }
 
   return (
     <VStack gap={{ base: 2, md: 4 }} mt={4}>
