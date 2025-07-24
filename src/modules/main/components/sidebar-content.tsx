@@ -1,15 +1,7 @@
 import { useState } from 'react';
 import { LuListTodo } from 'react-icons/lu';
 
-import {
-  Box,
-  Button,
-  HStack,
-  Link,
-  Spinner,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, Link, Spinner, Text } from '@chakra-ui/react';
 
 import { environment } from '@/config/environment.config';
 import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
@@ -50,12 +42,12 @@ export const SidebarContent = ({
         alignItems="center"
         justifyContent="center"
       >
-        <VStack gap={1}>
+        <Flex direction="column" gap={1}>
           <Spinner size="sm" />
           <Text fontSize="sm" color="gray.600">
             Loading your words...
           </Text>
-        </VStack>
+        </Flex>
       </Box>
     );
   }
@@ -71,13 +63,13 @@ export const SidebarContent = ({
         flexDirection="column"
         overflow="hidden"
       >
-        <VStack>
+        <Flex direction="column">
           <Link href="/words">
             <Button variant="ghost" width="250px" p={2} justifyContent="start">
-              <HStack justifyContent="start">
+              <Flex justifyContent="start">
                 <LuListTodo />
                 <Text>All saved words</Text>
-              </HStack>
+              </Flex>
             </Button>
           </Link>
           {environment.showFlashCardsGame && (
@@ -88,14 +80,14 @@ export const SidebarContent = ({
                 p={2}
                 justifyContent="start"
               >
-                <HStack justifyContent="start">
+                <Flex justifyContent="start">
                   <LuListTodo />
                   <Text>Practice with Flash Cards</Text>
-                </HStack>
+                </Flex>
               </Button>
             </Link>
           )}
-        </VStack>
+        </Flex>
         <Box mt={10} mb={2} flexShrink={0}>
           <Text fontSize="sm" fontWeight="semibold">
             Your Last 50 Saved Words
@@ -117,7 +109,7 @@ export const SidebarContent = ({
           </Box>
         ) : (
           <Box flex="1" overflowY="auto" pr={3}>
-            <VStack gap={1} align="stretch">
+            <Flex direction="column" gap={1}>
               {savedWords.map((word) => (
                 <Box
                   key={word.id}
@@ -146,7 +138,7 @@ export const SidebarContent = ({
                   </Text>
                 </Box>
               ))}
-            </VStack>
+            </Flex>
           </Box>
         )}
       </Box>
