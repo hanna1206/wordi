@@ -6,11 +6,12 @@ import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 
 import { GameModeCard } from '../components/game-mode-card';
+import { GameMode } from '../flash-cards-game.const';
 
 export const FlashCardsGamePage = () => {
   const router = useRouter();
 
-  const handleStartGame = (mode: string, limit: number) => {
+  const handleStartGame = (mode: GameMode, limit: number) => {
     router.push(`/flash-cards-game/play?mode=${mode}&limit=${limit}`);
   };
 
@@ -31,25 +32,25 @@ export const FlashCardsGamePage = () => {
             icon={FaRegClock}
             title="Practice 10 Latest Words"
             description="Review the most recent words you've saved."
-            onClick={() => handleStartGame('latest', 10)}
+            onClick={() => handleStartGame(GameMode.Latest, 10)}
           />
           <GameModeCard
             icon={FaRegClock}
             title="Practice 20 Latest Words"
             description="A longer session with your newest words."
-            onClick={() => handleStartGame('latest', 20)}
+            onClick={() => handleStartGame(GameMode.Latest, 20)}
           />
           <GameModeCard
             icon={FaRandom}
             title="Practice 10 Random Words"
             description="Shuffle your saved words for a surprise review."
-            onClick={() => handleStartGame('random', 10)}
+            onClick={() => handleStartGame(GameMode.Random, 10)}
           />
           <GameModeCard
             icon={FaRandom}
             title="Practice 20 Random Words"
             description="A bigger random set for a more robust practice."
-            onClick={() => handleStartGame('random', 20)}
+            onClick={() => handleStartGame(GameMode.Random, 20)}
           />
         </Flex>
       </Flex>
