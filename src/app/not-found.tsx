@@ -1,6 +1,6 @@
 'use client';
 
-import { LuHouse, LuSearch } from 'react-icons/lu';
+import { LuHouse } from 'react-icons/lu';
 
 import {
   Button,
@@ -60,22 +60,10 @@ const NotFoundPage = () => {
               display="flex"
               alignItems="center"
               gap={2}
+              variant="solid"
             >
               <LuHouse size={18} />
               Go Home
-            </Button>
-          </Link>
-          <Link href="/words">
-            <Button
-              variant="subtle"
-              size={{ base: 'md', md: 'lg' }}
-              transition="all 0.2s"
-              display="flex"
-              alignItems="center"
-              gap={2}
-            >
-              <LuSearch size={18} />
-              Search Words
             </Button>
           </Link>
         </HStack>
