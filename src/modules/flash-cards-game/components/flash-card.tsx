@@ -38,7 +38,10 @@ export const FlashCard = ({ word, cardSide, allWordIds }: FlashCardProps) => {
     cardSide === CardSide.Word
       ? word.common_data.mainTranslation
       : word.normalized_word;
-  // key is needed to reset the flip state when the word changes
+
+  const additionalTranslations = word.common_data.additionalTranslations || [];
+  const hasAdditionalTranslations = additionalTranslations.length > 0;
+
   return (
     <Box
       key={word.id}
@@ -81,13 +84,46 @@ export const FlashCard = ({ word, cardSide, allWordIds }: FlashCardProps) => {
         backfaceVisibility="hidden"
         transform="rotateY(180deg)"
         display="flex"
+        flexDirection="column"
         alignItems="center"
         justifyContent="center"
+        gap={hasAdditionalTranslations ? 6 : 0}
+        px={4}
       >
         {/* Back of the card */}
-        <Text fontSize="4xl" fontWeight="bold">
-          {backContent}
-        </Text>
+        <Box textAlign="center">
+          <Text
+            fontSize="4xl"
+            fontWeight="bold"
+            mb={hasAdditionalTranslations ? 4 : 0}
+          >
+            {backContent}
+          </Text>
+        </Box>
+
+        {hasAdditionalTranslations && (
+          <Box
+            textAlign="center"
+            borderTop="2px solid"
+            borderColor="gray.200"
+            pt={4}
+            w="80%"
+          >
+            <Text
+              fontSize="sm"
+              fontWeight="semibold"
+              color="gray.500"
+              textTransform="uppercase"
+              letterSpacing="wide"
+              mb={3}
+            >
+              Also means
+            </Text>
+            <Text fontSize="lg" color="gray.700" lineHeight="relaxed">
+              {additionalTranslations.join(' • ')}
+            </Text>
+          </Box>
+        )}
       </Box>
     </Box>
   );
