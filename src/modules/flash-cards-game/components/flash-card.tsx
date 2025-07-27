@@ -37,7 +37,15 @@ export const FlashCard = ({ word }: FlashCardProps) => {
       transformStyle="preserve-3d"
       transform={isFlipped ? 'rotateY(180deg)' : 'none'}
     >
-      <Box position="absolute" w="full" h="full" backfaceVisibility="hidden">
+      <Box
+        position="absolute"
+        w="full"
+        h="full"
+        backfaceVisibility="hidden"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
         {/* Front of the card */}
         <Text fontSize="4xl" fontWeight="bold">
           {word.normalized_word}
@@ -49,6 +57,9 @@ export const FlashCard = ({ word }: FlashCardProps) => {
         h="full"
         backfaceVisibility="hidden"
         transform="rotateY(180deg)"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
       >
         {/* Back of the card */}
         <Text fontSize="4xl" fontWeight="bold">
