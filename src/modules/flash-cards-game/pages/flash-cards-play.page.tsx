@@ -8,62 +8,56 @@ import { useSearchParams } from 'next/navigation';
 
 import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
-import { getFlashCardsWords } from '../actions/flash-cards-game.actions';
+import { getWordsForGame } from '../actions/flash-cards-game.actions';
 import { FlashCard } from '../components/flash-card';
-import { GameMode } from '../flash-cards-game.const';
+import { CardSide, GameMode } from '../flash-cards-game.const';
 
 export const FlashCardsPlayPage = () => {
   const searchParams = useSearchParams();
   const [words, setWords] = useState<SavedWord[]>([]);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [knewWords, setKnewWords] = useState<SavedWord[]>([]);
-  const [needsReviewWords, setNeedsReviewWords] = useState<SavedWord[]>([]);
   const [isGameFinished, setIsGameFinished] = useState(false);
+  const [needsReviewWords, setNeedsReviewWords] = useState<SavedWord[]>([]);
+
+  const mode = searchParams.get('mode') as GameMode;
+  const limit = Number(searchParams.get('limit'));
+  const cardSide = (searchParams.get('cardSide') as CardSide) || CardSide.Word;
 
   useEffect(() => {
     const fetchWords = async () => {
-      const mode = searchParams.get('mode') as GameMode | null;
-      const limit = searchParams.get('limit');
-
       if (!mode || !limit) {
         setError('Invalid game parameters.');
         setIsLoading(false);
         return;
       }
 
-      const limitNumber = parseInt(limit, 10);
-
-      if (isNaN(limitNumber)) {
-        setError('Invalid limit parameter.');
+      try {
+        setIsLoading(true);
+        const fetchedWords = await getWordsForGame({ mode, limit });
+        setWords(fetchedWords);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unknown error occurred.');
+        }
+      } finally {
         setIsLoading(false);
-        return;
       }
-
-      const result = await getFlashCardsWords({ mode, limit: limitNumber });
-
-      if (result.error) {
-        setError(result.error);
-      } else if (result.data) {
-        setWords(result.data);
-      }
-      setIsLoading(false);
     };
 
     fetchWords();
-  }, [searchParams]);
+  }, [mode, limit]);
 
   const handleNextCard = (knewIt: boolean) => {
-    const currentWord = words[currentCardIndex];
-    if (knewIt) {
-      setKnewWords([...knewWords, currentWord]);
-    } else {
-      setNeedsReviewWords([...needsReviewWords, currentWord]);
+    if (!knewIt) {
+      setNeedsReviewWords((prev) => [...prev, words[currentCardIndex]]);
     }
 
     if (currentCardIndex < words.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1);
+      setCurrentCardIndex((prev) => prev + 1);
     } else {
       setIsGameFinished(true);
     }
@@ -71,37 +65,23 @@ export const FlashCardsPlayPage = () => {
 
   if (isLoading) {
     return (
-      <Flex
-        h="100svh"
-        w="full"
-        align="center"
-        justify="center"
-        direction="column"
-        gap={2}
-      >
+      <Flex direction="column" h="100svh" align="center" justify="center" p={4}>
         <Spinner size="xl" />
-        <Text>Loading your flashcards...</Text>
+        <Text mt={4}>Loading your words...</Text>
       </Flex>
     );
   }
 
   if (error) {
     return (
-      <Flex
-        h="100svh"
-        w="full"
-        align="center"
-        justify="center"
-        direction="column"
-        gap={4}
-      >
-        <Heading as="h2" size="lg">
-          Something went wrong
+      <Flex direction="column" h="100svh" align="center" justify="center" p={4}>
+        <Heading as="h2" size="lg" color="red.500">
+          Error
         </Heading>
-        <Text>{error}</Text>
+        <Text mt={2}>{error}</Text>
         <Link href="/flash-cards-game" passHref>
-          <Button as="a" colorScheme="blue">
-            Back to Setup
+          <Button as="a" mt={4} colorScheme="blue">
+            Go Back
           </Button>
         </Link>
       </Flex>
@@ -110,23 +90,26 @@ export const FlashCardsPlayPage = () => {
 
   if (isGameFinished) {
     return (
-      <Flex
-        h="100svh"
-        w="full"
-        align="center"
-        justify="center"
-        direction="column"
-        gap={4}
-        p={4}
-      >
-        <Heading as="h2" size="xl">
-          Session Complete!
+      <Flex direction="column" h="100svh" align="center" justify="center" p={4}>
+        <Heading as="h2" size="lg">
+          Game Over!
         </Heading>
-        <Text fontSize="lg">
-          You knew {knewWords.length} out of {words.length} words.
-        </Text>
+        {needsReviewWords.length > 0 ? (
+          <Box mt={4} textAlign="center">
+            <Text>You should review these words:</Text>
+            <Flex direction="column" gap={2} mt={2}>
+              {needsReviewWords.map((word) => (
+                <Text key={word.id}>
+                  {word.normalized_word} - {word.common_data.mainTranslation}
+                </Text>
+              ))}
+            </Flex>
+          </Box>
+        ) : (
+          <Text mt={4}>Great job! You knew all the words.</Text>
+        )}
         <Link href="/flash-cards-game" passHref>
-          <Button as="a" colorScheme="blue" size="lg">
+          <Button as="a" mt={8} colorScheme="blue">
             Play Again
           </Button>
         </Link>
@@ -137,21 +120,13 @@ export const FlashCardsPlayPage = () => {
   return (
     <Flex direction="column" h="100svh" align="center" justify="center" p={4}>
       <Box w="full" maxW="lg" flex={1} display="flex" alignItems="center">
-        <FlashCard word={words[currentCardIndex]} />
+        <FlashCard word={words[currentCardIndex]} cardSide={cardSide} />
       </Box>
       <Flex w="full" maxW="lg" justify="space-between" p={4}>
-        <Button
-          colorScheme="orange"
-          size="lg"
-          onClick={() => handleNextCard(false)}
-        >
-          Needs Review
+        <Button colorScheme="orange" onClick={() => handleNextCard(false)}>
+          I Don&apos;t Know
         </Button>
-        <Button
-          colorScheme="green"
-          size="lg"
-          onClick={() => handleNextCard(true)}
-        >
+        <Button colorScheme="green" onClick={() => handleNextCard(true)}>
           I Knew This
         </Button>
       </Flex>

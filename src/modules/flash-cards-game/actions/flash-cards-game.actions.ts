@@ -2,19 +2,17 @@
 
 import { createClient } from '@/services/supabase/server';
 
-import { SavedWord } from '../../words-persistence/words-persistence.types';
 import { GameMode } from '../flash-cards-game.const';
 
-type GetFlashCardsWordsParams = {
+type GetWordsForGameParams = {
   mode: GameMode;
   limit: number;
 };
 
-export const getFlashCardsWords = async (
-  params: GetFlashCardsWordsParams,
-): Promise<{ data?: SavedWord[]; error?: string }> => {
-  const { mode, limit } = params;
-
+export const getWordsForGame = async ({
+  mode,
+  limit,
+}: GetWordsForGameParams) => {
   const supabase = await createClient();
 
   const {
@@ -23,7 +21,7 @@ export const getFlashCardsWords = async (
   } = await supabase.auth.getUser();
 
   if (userError || !user) {
-    return { error: 'User not found' };
+    throw new Error('User not found');
   }
 
   if (mode === GameMode.Latest) {
@@ -35,48 +33,24 @@ export const getFlashCardsWords = async (
       .limit(limit);
 
     if (error) {
-      return { error: 'Failed to fetch latest words' };
+      throw new Error('Failed to fetch latest words');
     }
-    return { data };
+    return data;
   }
 
   if (mode === GameMode.Random) {
-    const { data: idsData, error: idsError } = await supabase
-      .from('words')
-      .select('id')
-      .eq('user_id', user.id);
-
-    if (idsError) {
-      return { error: 'Failed to fetch word IDs for randomization' };
-    }
-
-    if (!idsData || idsData.length === 0) {
-      return { data: [] };
-    }
-
-    const ids = idsData.map((item) => item.id);
-
-    for (let i = ids.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [ids[i], ids[j]] = [ids[j], ids[i]];
-    }
-
-    const randomIds = ids.slice(0, limit);
-
-    if (randomIds.length === 0) {
-      return { data: [] };
-    }
-
-    const { data, error } = await supabase
+    const { data: allWords, error: allWordsError } = await supabase
       .from('words')
       .select('*')
-      .in('id', randomIds);
+      .eq('user_id', user.id);
 
-    if (error) {
-      return { error: 'Failed to fetch random words' };
+    if (allWordsError) {
+      throw new Error('Failed to fetch words for random mode');
     }
-    return { data };
+
+    const shuffledWords = allWords.sort(() => 0.5 - Math.random());
+    return shuffledWords.slice(0, limit);
   }
 
-  return { error: 'Invalid mode specified' };
+  throw new Error('Invalid mode specified');
 };

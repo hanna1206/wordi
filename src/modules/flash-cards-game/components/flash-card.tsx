@@ -6,16 +6,29 @@ import { Box, Text } from '@chakra-ui/react';
 
 import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
+import { CardSide } from '../flash-cards-game.const';
+
 type FlashCardProps = {
   word: SavedWord;
+  cardSide: CardSide;
 };
 
-export const FlashCard = ({ word }: FlashCardProps) => {
+export const FlashCard = ({ word, cardSide }: FlashCardProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
   };
+
+  const frontContent =
+    cardSide === CardSide.Word
+      ? word.normalized_word
+      : word.common_data.mainTranslation;
+
+  const backContent =
+    cardSide === CardSide.Word
+      ? word.common_data.mainTranslation
+      : word.normalized_word;
 
   return (
     <Box
@@ -48,7 +61,7 @@ export const FlashCard = ({ word }: FlashCardProps) => {
       >
         {/* Front of the card */}
         <Text fontSize="4xl" fontWeight="bold">
-          {word.normalized_word}
+          {frontContent}
         </Text>
       </Box>
       <Box
@@ -63,7 +76,7 @@ export const FlashCard = ({ word }: FlashCardProps) => {
       >
         {/* Back of the card */}
         <Text fontSize="4xl" fontWeight="bold">
-          {word.common_data.mainTranslation}
+          {backContent}
         </Text>
       </Box>
     </Box>

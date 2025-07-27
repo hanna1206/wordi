@@ -1,18 +1,27 @@
 'use client';
 
+import { useState } from 'react';
 import { FaRandom, FaRegClock } from 'react-icons/fa';
 
-import { Box, Flex, Heading, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, RadioGroup, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 
 import { GameModeCard } from '../components/game-mode-card';
-import { GameMode } from '../flash-cards-game.const';
+import { CardSide, GameMode } from '../flash-cards-game.const';
+
+const items = [
+  { label: 'Show German Word', value: CardSide.Word },
+  { label: 'Show Translation', value: CardSide.Translation },
+];
 
 export const FlashCardsGamePage = () => {
   const router = useRouter();
+  const [cardSide, setCardSide] = useState<string | null>(CardSide.Word);
 
   const handleStartGame = (mode: GameMode, limit: number) => {
-    router.push(`/flash-cards-game/play?mode=${mode}&limit=${limit}`);
+    router.push(
+      `/flash-cards-game/play?mode=${mode}&limit=${limit}&cardSide=${cardSide}`,
+    );
   };
 
   return (
@@ -25,6 +34,26 @@ export const FlashCardsGamePage = () => {
           <Text fontSize="lg" color="gray.600">
             Choose a mode to start practicing your words.
           </Text>
+        </Flex>
+
+        <Flex direction="column" gap={2}>
+          <Heading as="h3" size="md" textAlign="center">
+            Choose what to show on the front
+          </Heading>
+          <RadioGroup.Root
+            value={cardSide}
+            onValueChange={(e) => setCardSide(e.value)}
+          >
+            <HStack gap="6" justifyContent="center">
+              {items.map((item) => (
+                <RadioGroup.Item key={item.value} value={item.value}>
+                  <RadioGroup.ItemHiddenInput />
+                  <RadioGroup.ItemIndicator />
+                  <RadioGroup.ItemText>{item.label}</RadioGroup.ItemText>
+                </RadioGroup.Item>
+              ))}
+            </HStack>
+          </RadioGroup.Root>
         </Flex>
 
         <Flex direction="column" w="full" gap={4}>
