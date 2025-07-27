@@ -120,7 +120,11 @@ export const FlashCardsPlayPage = () => {
   return (
     <Flex direction="column" h="100svh" align="center" justify="center" p={4}>
       <Box w="full" maxW="lg" flex={1} display="flex" alignItems="center">
-        <FlashCard word={words[currentCardIndex]} cardSide={cardSide} />
+        <FlashCard
+          word={words[currentCardIndex]}
+          cardSide={cardSide}
+          allWordIds={words.map((w) => w.id)}
+        />
       </Box>
       <Flex w="full" maxW="lg" justify="space-between" p={4}>
         <Button colorScheme="orange" onClick={() => handleNextCard(false)}>

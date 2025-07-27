@@ -11,13 +11,22 @@ import { CardSide } from '../flash-cards-game.const';
 type FlashCardProps = {
   word: SavedWord;
   cardSide: CardSide;
+  allWordIds: string[];
 };
 
-export const FlashCard = ({ word, cardSide }: FlashCardProps) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+export const FlashCard = ({ word, cardSide, allWordIds }: FlashCardProps) => {
+  // Initialize flip states for all words with false as default
+  const [flipStates, setFlipStates] = useState<Record<string, boolean>>(() =>
+    allWordIds.reduce((acc, id) => ({ ...acc, [id]: false }), {}),
+  );
+
+  const isFlipped = flipStates[word.id] || false;
 
   const handleFlip = () => {
-    setIsFlipped(!isFlipped);
+    setFlipStates((prev) => ({
+      ...prev,
+      [word.id]: !prev[word.id],
+    }));
   };
 
   const frontContent =
@@ -29,9 +38,10 @@ export const FlashCard = ({ word, cardSide }: FlashCardProps) => {
     cardSide === CardSide.Word
       ? word.common_data.mainTranslation
       : word.normalized_word;
-
+  // key is needed to reset the flip state when the word changes
   return (
     <Box
+      key={word.id}
       w="full"
       h="300px"
       bg="white"
