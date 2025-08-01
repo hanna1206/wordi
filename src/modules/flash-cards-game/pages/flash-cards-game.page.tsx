@@ -1,11 +1,20 @@
 'use client';
 
-import { useState } from 'react';
-import { FaRandom, FaRegClock } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { FaBrain, FaRandom, FaRegClock } from 'react-icons/fa';
 
-import { Box, Flex, Heading, HStack, RadioGroup, Text } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  RadioGroup,
+  Text,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 
+import { getDueWordsCount } from '../actions/flash-cards-game.actions';
 import { GameModeCard } from '../components/game-mode-card';
 import { CardSide, GameMode } from '../flash-cards-game.const';
 
@@ -17,6 +26,28 @@ const items = [
 export const FlashCardsGamePage = () => {
   const router = useRouter();
   const [cardSide, setCardSide] = useState<string | null>(CardSide.Word);
+  const [dueCount, setDueCount] = useState<number>(0);
+  const [totalWords, setTotalWords] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDueWordsCount = async () => {
+      try {
+        const result = await getDueWordsCount();
+        if (result.success && result.data) {
+          setDueCount(result.data.dueCount);
+          setTotalWords(result.data.totalWords);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to fetch due words count:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDueWordsCount();
+  }, []);
 
   const handleStartGame = (mode: GameMode, limit: number) => {
     router.push(
@@ -57,30 +88,79 @@ export const FlashCardsGamePage = () => {
         </Flex>
 
         <Flex direction="column" w="full" gap={4}>
-          <GameModeCard
-            icon={FaRegClock}
-            title="Practice 10 Latest Words"
-            description="Review the most recent words you've saved."
-            onClick={() => handleStartGame(GameMode.Latest, 10)}
-          />
-          <GameModeCard
-            icon={FaRegClock}
-            title="Practice 20 Latest Words"
-            description="A longer session with your newest words."
-            onClick={() => handleStartGame(GameMode.Latest, 20)}
-          />
-          <GameModeCard
-            icon={FaRandom}
-            title="Practice 10 Random Words"
-            description="Shuffle your saved words for a surprise review."
-            onClick={() => handleStartGame(GameMode.Random, 10)}
-          />
-          <GameModeCard
-            icon={FaRandom}
-            title="Practice 20 Random Words"
-            description="A bigger random set for a more robust practice."
-            onClick={() => handleStartGame(GameMode.Random, 20)}
-          />
+          {/* Daily Review - Priority mode */}
+          <Box>
+            <GameModeCard
+              icon={FaBrain}
+              title={
+                <Flex align="center" gap={3}>
+                  <Text>Daily Review</Text>
+                  {!isLoading && (
+                    <Badge
+                      colorScheme={dueCount > 0 ? 'orange' : 'green'}
+                      borderRadius="full"
+                    >
+                      {dueCount} due
+                    </Badge>
+                  )}
+                </Flex>
+              }
+              description={
+                dueCount > 0
+                  ? `Review ${dueCount} words using spaced repetition algorithm.`
+                  : totalWords > 0
+                    ? "Great! No words due for review today. You're all caught up!"
+                    : 'Start learning words to see them here for review.'
+              }
+              onClick={() =>
+                handleStartGame(
+                  GameMode.DueReview,
+                  dueCount > 0 ? dueCount : 10,
+                )
+              }
+              disabled={dueCount === 0}
+            />
+          </Box>
+
+          {/* Traditional modes */}
+          <Box>
+            <Text
+              fontSize="sm"
+              color="gray.500"
+              mb={3}
+              textAlign="center"
+              textTransform="uppercase"
+              letterSpacing="wide"
+            >
+              Practice Modes
+            </Text>
+            <Flex direction="column" gap={3}>
+              <GameModeCard
+                icon={FaRegClock}
+                title="Practice 10 Latest Words"
+                description="Review the most recent words you've saved."
+                onClick={() => handleStartGame(GameMode.Latest, 10)}
+              />
+              <GameModeCard
+                icon={FaRegClock}
+                title="Practice 20 Latest Words"
+                description="A longer session with your newest words."
+                onClick={() => handleStartGame(GameMode.Latest, 20)}
+              />
+              <GameModeCard
+                icon={FaRandom}
+                title="Practice 10 Random Words"
+                description="Shuffle your saved words for a surprise review."
+                onClick={() => handleStartGame(GameMode.Random, 10)}
+              />
+              <GameModeCard
+                icon={FaRandom}
+                title="Practice 20 Random Words"
+                description="A bigger random set for a more robust practice."
+                onClick={() => handleStartGame(GameMode.Random, 20)}
+              />
+            </Flex>
+          </Box>
         </Flex>
       </Flex>
     </Box>

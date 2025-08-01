@@ -1,6 +1,7 @@
 export enum GameMode {
   Latest = 'latest',
   Random = 'random',
+  DueReview = 'due-review',
 }
 
 export enum CardSide {

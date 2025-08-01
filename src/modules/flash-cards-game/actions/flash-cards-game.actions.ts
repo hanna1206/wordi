@@ -21,6 +21,16 @@ type SaveQualityFeedbackParams = {
   qualityScore: QualityScore;
 };
 
+type DueWordsCount = {
+  dueCount: number;
+  totalWords: number;
+};
+
+type UserWordProgressWithWords = {
+  word_id: string;
+  words: SavedWord | SavedWord[];
+};
+
 export const getWordsForGame = withAuth<GetWordsForGameParams, SavedWord[]>(
   async (context, { mode, limit }): Promise<ActionResult<SavedWord[]>> => {
     const supabase = await createClient();
@@ -64,6 +74,46 @@ export const getWordsForGame = withAuth<GetWordsForGameParams, SavedWord[]>(
       return {
         success: true,
         data: shuffledWords.slice(0, limit),
+      };
+    }
+
+    if (mode === GameMode.DueReview) {
+      // Fetch words that are due for review
+      const { data: dueProgressData, error: progressError } = await supabase
+        .from('user_word_progress')
+        .select(
+          `
+          word_id,
+          words (*)
+        `,
+        )
+        .eq('user_id', context.userId)
+        .lte('next_review_date', new Date().toISOString())
+        .eq('is_archived', false)
+        .order('next_review_date', { ascending: true })
+        .limit(limit);
+
+      if (progressError) {
+        return {
+          success: false,
+          error: 'Failed to fetch words due for review',
+        };
+      }
+
+      // Extract the words from the joined data
+      const dueWords = (dueProgressData || [])
+        .map((item) => {
+          const progressItem = item as unknown as UserWordProgressWithWords;
+          // Handle both single word and array cases from Supabase join
+          return Array.isArray(progressItem.words)
+            ? progressItem.words[0]
+            : progressItem.words;
+        })
+        .filter(Boolean);
+
+      return {
+        success: true,
+        data: dueWords,
       };
     }
 
@@ -144,6 +194,48 @@ export const saveQualityFeedback = withAuth<SaveQualityFeedbackParams, void>(
 
     return {
       success: true,
+    };
+  },
+);
+
+export const getDueWordsCount = withAuth<void, DueWordsCount>(
+  async (context): Promise<ActionResult<DueWordsCount>> => {
+    const supabase = await createClient();
+
+    // Get count of words due for review
+    const { count: dueCount, error: dueError } = await supabase
+      .from('user_word_progress')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', context.userId)
+      .lte('next_review_date', new Date().toISOString())
+      .eq('is_archived', false);
+
+    if (dueError) {
+      return {
+        success: false,
+        error: 'Failed to fetch due words count',
+      };
+    }
+
+    // Get total words count
+    const { count: totalWords, error: totalError } = await supabase
+      .from('words')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', context.userId);
+
+    if (totalError) {
+      return {
+        success: false,
+        error: 'Failed to fetch total words count',
+      };
+    }
+
+    return {
+      success: true,
+      data: {
+        dueCount: dueCount || 0,
+        totalWords: totalWords || 0,
+      },
     };
   },
 );

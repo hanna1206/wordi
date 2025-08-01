@@ -1,40 +1,53 @@
+import { ReactNode } from 'react';
 import { IconType } from 'react-icons';
 
 import { Box, Flex, Icon, Text } from '@chakra-ui/react';
 
 type GameModeCardProps = {
   icon: IconType;
-  title: string;
+  title: string | ReactNode;
   description: string;
   onClick: () => void;
+  disabled?: boolean;
 };
 
 export const GameModeCard = (props: GameModeCardProps) => {
-  const { icon, title, description, onClick } = props;
+  const { icon, title, description, onClick, disabled = false } = props;
 
   return (
     <Box
       w="full"
       borderWidth={1}
-      borderColor="gray.200"
+      borderColor={disabled ? 'gray.100' : 'gray.200'}
       borderRadius="lg"
       overflow="hidden"
-      _hover={{
-        cursor: 'pointer',
-        borderColor: 'blue.500',
-        boxShadow: 'lg',
-      }}
+      _hover={
+        disabled
+          ? {}
+          : {
+              cursor: 'pointer',
+              borderColor: 'blue.500',
+              boxShadow: 'lg',
+            }
+      }
       transition="all 0.2s"
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       p={4}
+      opacity={disabled ? 0.5 : 1}
+      cursor={disabled ? 'not-allowed' : 'pointer'}
     >
       <Flex align="center">
-        <Icon as={icon} boxSize={8} color="blue.500" mr={4} />
+        <Icon
+          as={icon}
+          boxSize={8}
+          color={disabled ? 'gray.400' : 'blue.500'}
+          mr={4}
+        />
         <Box>
-          <Text fontSize="lg" fontWeight="bold">
-            {title}
-          </Text>
-          <Text fontSize="sm" color="gray.600">
+          <Box fontSize="lg" fontWeight="bold">
+            {typeof title === 'string' ? <Text>{title}</Text> : title}
+          </Box>
+          <Text fontSize="sm" color={disabled ? 'gray.400' : 'gray.600'}>
             {description}
           </Text>
         </Box>
