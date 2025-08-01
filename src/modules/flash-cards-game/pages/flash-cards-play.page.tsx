@@ -8,9 +8,17 @@ import { useSearchParams } from 'next/navigation';
 
 import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
-import { getWordsForGame } from '../actions/flash-cards-game.actions';
+import {
+  getWordsForGame,
+  saveQualityFeedback,
+} from '../actions/flash-cards-game.actions';
 import { FlashCard } from '../components/flash-card';
-import { CardSide, GameMode } from '../flash-cards-game.const';
+import {
+  CardSide,
+  GameMode,
+  QUALITY_OPTIONS,
+  QualityScore,
+} from '../flash-cards-game.const';
 
 export const FlashCardsPlayPage = () => {
   const searchParams = useSearchParams();
@@ -35,8 +43,13 @@ export const FlashCardsPlayPage = () => {
 
       try {
         setIsLoading(true);
-        const fetchedWords = await getWordsForGame({ mode, limit });
-        setWords(fetchedWords);
+        const result = await getWordsForGame({ mode, limit });
+
+        if (result.success && result.data) {
+          setWords(result.data);
+        } else {
+          setError(result.error || 'Failed to fetch words');
+        }
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -51,9 +64,30 @@ export const FlashCardsPlayPage = () => {
     fetchWords();
   }, [mode, limit]);
 
-  const handleNextCard = (knewIt: boolean) => {
-    if (!knewIt) {
-      setNeedsReviewWords((prev) => [...prev, words[currentCardIndex]]);
+  const handleNextCard = async (qualityScore: QualityScore) => {
+    const currentWord = words[currentCardIndex];
+
+    // Add words to review list if they were marked as hard
+    if (qualityScore === QualityScore.Hard) {
+      setNeedsReviewWords((prev) => [...prev, currentWord]);
+    }
+
+    // Save quality feedback to the database for spaced repetition
+    try {
+      const result = await saveQualityFeedback({
+        wordId: currentWord.id,
+        qualityScore,
+      });
+
+      if (!result.success) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to save quality feedback:', result.error);
+        // Continue with the game even if saving fails
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to save quality feedback:', error);
+      // Continue with the game even if saving fails
     }
 
     if (currentCardIndex < words.length - 1) {
@@ -126,13 +160,28 @@ export const FlashCardsPlayPage = () => {
           allWordIds={words.map((w) => w.id)}
         />
       </Box>
-      <Flex w="full" maxW="lg" justify="space-between" p={4}>
-        <Button colorScheme="orange" onClick={() => handleNextCard(false)}>
-          I Don&apos;t Know
-        </Button>
-        <Button colorScheme="green" onClick={() => handleNextCard(true)}>
-          I Knew This
-        </Button>
+      <Flex w="full" maxW="lg" justify="center" gap={4} p={4}>
+        {QUALITY_OPTIONS.map((option) => (
+          <Button
+            key={option.score}
+            colorScheme={option.colorScheme}
+            onClick={() => handleNextCard(option.score)}
+            flex={1}
+            maxW="120px"
+            display="flex"
+            flexDirection="column"
+            height="auto"
+            py={3}
+            px={2}
+          >
+            <Text fontSize="xl" mb={1}>
+              {option.emoji}
+            </Text>
+            <Text fontSize="sm" fontWeight="semibold">
+              {option.label}
+            </Text>
+          </Button>
+        ))}
       </Flex>
     </Flex>
   );
