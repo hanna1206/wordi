@@ -14,7 +14,7 @@ export const DeleteConfirmation = ({ savedWord }: DeleteConfirmationProps) => {
           Are you sure you want to delete this word?
         </Text>
         <Text fontSize="md" color="gray.600">
-          <strong>&ldquo;{savedWord.normalized_word}&rdquo;</strong> will be
+          <strong>&ldquo;{savedWord.normalizedWord}&rdquo;</strong> will be
           permanently removed from your saved words.
         </Text>
         <Text fontSize="sm" color="gray.500">

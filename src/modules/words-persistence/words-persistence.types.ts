@@ -1,15 +1,16 @@
 import type { TranslationResult } from '../words-generation/words-generation.types';
 
-// Database word structure (matches our migration)
+// Application layer word structure - uses camelCase
 export interface SavedWord {
   id: string;
-  user_id: string;
-  normalized_word: string;
-  part_of_speech: string;
-  common_data: CommonWordData;
-  part_specific_data: Record<string, unknown>;
-  created_at: string;
-  updated_at: string;
+  userId: string;
+  normalizedWord: string;
+  partOfSpeech: string;
+  commonData: CommonWordData;
+  partSpecificData: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+  targetLanguage?: string;
 }
 
 // Common data structure (stored in common_data JSONB)
@@ -29,14 +30,14 @@ export interface SaveWordInput {
   translationResult: TranslationResult;
 }
 
-// Result of cache lookup
+// Application layer cache word structure - uses camelCase
 export interface CachedWord {
   id: string;
-  normalized_word: string;
-  part_of_speech: string;
-  common_data: CommonWordData;
-  part_specific_data: Record<string, unknown>;
-  created_at: string;
+  normalizedWord: string;
+  partOfSpeech: string;
+  commonData: CommonWordData;
+  partSpecificData: Record<string, unknown>;
+  createdAt: string;
 }
 
 // Check if user already has this word saved

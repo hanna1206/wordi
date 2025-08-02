@@ -26,10 +26,10 @@ const convertSavedWordToTranslationResult = (
   savedWord: SavedWord,
 ): TranslationResult => {
   const baseTranslation: TranslationResult = {
-    normalizedWord: savedWord.normalized_word,
-    partOfSpeech: [savedWord.part_of_speech as PartOfSpeech],
-    ...savedWord.common_data,
-    ...savedWord.part_specific_data,
+    normalizedWord: savedWord.normalizedWord,
+    partOfSpeech: [savedWord.partOfSpeech as PartOfSpeech],
+    ...savedWord.commonData,
+    ...savedWord.partSpecificData,
   };
 
   return baseTranslation;

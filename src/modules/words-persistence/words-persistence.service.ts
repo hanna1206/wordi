@@ -1,5 +1,9 @@
 import { createClient } from '@/services/supabase/server';
 import type { ActionResult } from '@/shared-types';
+import {
+  convertKeysToCamelCase,
+  convertKeysToSnakeCase,
+} from '@/utils/case-conversion';
 
 import { LanguageCode } from '../user-settings/user-settings.const';
 import type {
@@ -43,14 +47,18 @@ const transformTranslationToDbFormat = (
     }
   });
 
-  return {
-    user_id: userId,
-    normalized_word: translationResult.normalizedWord,
-    part_of_speech: translationResult.partOfSpeech[0] || 'other', // Use first part of speech
-    common_data: commonData,
-    part_specific_data: specificData,
-    target_language: targetLanguage,
+  // Create camelCase object first, then convert to snake_case for database
+  const camelCaseData = {
+    userId,
+    normalizedWord: translationResult.normalizedWord,
+    partOfSpeech: translationResult.partOfSpeech[0] || 'other', // Use first part of speech
+    commonData,
+    partSpecificData: specificData,
+    targetLanguage,
   };
+
+  // Convert to snake_case for database
+  return convertKeysToSnakeCase(camelCaseData);
 };
 
 export const saveWordToDatabase = async (
@@ -87,7 +95,9 @@ export const saveWordToDatabase = async (
 
     return {
       success: true,
-      data: data as SavedWord,
+      data: convertKeysToCamelCase(
+        data as Record<string, unknown>,
+      ) as unknown as SavedWord,
     };
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -124,7 +134,11 @@ export const getCachedWord = async (
 
     return {
       success: true,
-      data: data as CachedWord | null,
+      data: data
+        ? (convertKeysToCamelCase(
+            data as Record<string, unknown>,
+          ) as unknown as CachedWord)
+        : null,
     };
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -158,7 +172,13 @@ export const getUserSavedWords = async (
 
     return {
       success: true,
-      data: data as SavedWord[],
+      data:
+        data?.map(
+          (item) =>
+            convertKeysToCamelCase(
+              item as Record<string, unknown>,
+            ) as unknown as SavedWord,
+        ) || [],
     };
   } catch (error) {
     // eslint-disable-next-line no-console

@@ -143,7 +143,7 @@ export const FlashCardsPlayPage = () => {
             <Flex direction="column" gap={2} mt={2}>
               {needsReviewWords.map((word) => (
                 <Text key={word.id}>
-                  {word.normalized_word} - {word.common_data.mainTranslation}
+                  {word.normalizedWord} - {word.commonData.mainTranslation}
                 </Text>
               ))}
             </Flex>

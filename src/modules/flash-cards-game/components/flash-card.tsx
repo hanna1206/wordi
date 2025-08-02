@@ -31,15 +31,15 @@ export const FlashCard = ({ word, cardSide, allWordIds }: FlashCardProps) => {
 
   const frontContent =
     cardSide === CardSide.Word
-      ? word.normalized_word
-      : word.common_data.mainTranslation;
+      ? word.normalizedWord
+      : word.commonData.mainTranslation;
 
   const backContent =
     cardSide === CardSide.Word
-      ? word.common_data.mainTranslation
-      : word.normalized_word;
+      ? word.commonData.mainTranslation
+      : word.normalizedWord;
 
-  const additionalTranslations = word.common_data.additionalTranslations || [];
+  const additionalTranslations = word.commonData.additionalTranslations || [];
   const hasAdditionalTranslations = additionalTranslations.length > 0;
 
   return (

@@ -131,10 +131,10 @@ export const SidebarContent = ({
                   onClick={() => handleWordClick(word)}
                 >
                   <Text fontWeight="medium" fontSize="sm">
-                    {word.normalized_word}
+                    {word.normalizedWord}
                   </Text>
                   <Text fontSize="xs" color="gray.600">
-                    {word.common_data.mainTranslation}
+                    {word.commonData.mainTranslation}
                   </Text>
                 </Box>
               ))}

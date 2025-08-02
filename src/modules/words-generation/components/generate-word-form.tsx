@@ -54,10 +54,10 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
       if (cacheResult.success && cacheResult.data) {
         // Cache hit - convert cached data to TranslationResult format
         const cachedTranslation: TranslationResult = {
-          normalizedWord: cacheResult.data.normalized_word,
-          partOfSpeech: [cacheResult.data.part_of_speech as PartOfSpeech],
-          ...cacheResult.data.common_data,
-          ...cacheResult.data.part_specific_data,
+          normalizedWord: cacheResult.data.normalizedWord,
+          partOfSpeech: [cacheResult.data.partOfSpeech as PartOfSpeech],
+          ...cacheResult.data.commonData,
+          ...cacheResult.data.partSpecificData,
         };
         setTranslation(cachedTranslation);
         // Clear form only on successful cache hit

@@ -1,5 +1,12 @@
 import { QualityScore } from '../flash-cards-game.const';
 
+/**
+ * Spaced Repetition Utilities
+ *
+ * NOTE: These utilities work directly with database field names (snake_case)
+ * to avoid unnecessary conversions when interfacing with the database.
+ */
+
 // Types for the spaced repetition algorithm
 export interface ExistingProgress {
   easiness_factor: number;

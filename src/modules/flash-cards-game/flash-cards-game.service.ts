@@ -1,9 +1,13 @@
 import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 import { createClient } from '@/services/supabase/server';
 import type { ActionResult } from '@/shared-types';
+import { convertKeysToCamelCase } from '@/utils/case-conversion';
 
 import { GameMode, QualityScore } from './flash-cards-game.const';
-import { calculateProgressUpdate } from './utils/spaced-repetition.utils';
+import {
+  calculateProgressUpdate,
+  type ExistingProgress,
+} from './utils/spaced-repetition.utils';
 
 type GetWordsForGameParams = {
   userId: string;
@@ -24,7 +28,7 @@ type DueWordsCount = {
 
 type UserWordProgressWithWords = {
   word_id: string;
-  words: SavedWord | SavedWord[];
+  words: Record<string, unknown> | Record<string, unknown>[];
 };
 
 export const createInitialWordProgressService = async (
@@ -92,7 +96,13 @@ export const getWordsForGameService = async ({
 
       return {
         success: true,
-        data: data || [],
+        data:
+          data?.map(
+            (item) =>
+              convertKeysToCamelCase(
+                item as Record<string, unknown>,
+              ) as unknown as SavedWord,
+          ) || [],
       };
     }
 
@@ -109,7 +119,14 @@ export const getWordsForGameService = async ({
         };
       }
 
-      const shuffledWords = (allWords || []).sort(() => 0.5 - Math.random());
+      const shuffledWords = (allWords || [])
+        .map(
+          (item) =>
+            convertKeysToCamelCase(
+              item as Record<string, unknown>,
+            ) as unknown as SavedWord,
+        )
+        .sort(() => 0.5 - Math.random());
 
       return {
         success: true,
@@ -145,11 +162,14 @@ export const getWordsForGameService = async ({
         .map((item) => {
           const progressItem = item as unknown as UserWordProgressWithWords;
           // Handle both single word and array cases from Supabase join
-          return Array.isArray(progressItem.words)
+          const dbWord = Array.isArray(progressItem.words)
             ? progressItem.words[0]
             : progressItem.words;
+          return dbWord
+            ? (convertKeysToCamelCase(dbWord) as unknown as SavedWord)
+            : null;
         })
-        .filter(Boolean);
+        .filter(Boolean) as SavedWord[];
 
       return {
         success: true,
@@ -208,7 +228,7 @@ export const saveQualityFeedbackService = async ({
 
     // Calculate updated progress using utility function
     const progressUpdate = calculateProgressUpdate(
-      existingProgress,
+      existingProgress as ExistingProgress,
       qualityScore,
     );
 
