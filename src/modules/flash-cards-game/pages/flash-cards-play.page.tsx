@@ -1,8 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { FaArrowLeft, FaTimes } from 'react-icons/fa';
 
-import { Box, Button, Flex, Heading, Spinner, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
@@ -152,37 +161,76 @@ export const FlashCardsPlayPage = () => {
   }
 
   return (
-    <Flex direction="column" h="100svh" align="center" justify="center" p={4}>
-      <Box w="full" maxW="lg" flex={1} display="flex" alignItems="center">
-        <FlashCard
-          word={words[currentCardIndex]}
-          cardSide={cardSide}
-          allWordIds={words.map((w) => w.id)}
-        />
-      </Box>
-      <Flex w="full" maxW="lg" justify="center" gap={4} p={4}>
-        {QUALITY_OPTIONS.map((option) => (
-          <Button
-            key={option.score}
-            colorScheme={option.colorScheme}
-            onClick={() => handleNextCard(option.score)}
-            flex={1}
-            maxW="120px"
-            display="flex"
-            flexDirection="column"
-            height="auto"
-            py={3}
-            px={2}
-          >
-            <Text fontSize="xl" mb={1}>
-              {option.emoji}
-            </Text>
-            <Text fontSize="sm" fontWeight="semibold">
-              {option.label}
-            </Text>
-          </Button>
-        ))}
+    <>
+      <Flex direction="column" h="100svh" p={4} pt={24}>
+        {/* Navigation Header */}
+        <Flex align="center" justify="space-between" mb={4}>
+          <Link href="/flash-cards-game" passHref>
+            <IconButton
+              as="a"
+              aria-label="Back to game selection"
+              variant="ghost"
+              size="lg"
+            >
+              <FaArrowLeft />
+            </IconButton>
+          </Link>
+          <Text fontSize="sm" color="gray.500">
+            {currentCardIndex + 1} / {words.length}
+          </Text>
+          <Link href="/" passHref>
+            <IconButton
+              as="a"
+              aria-label="Back to home"
+              variant="ghost"
+              size="lg"
+            >
+              <FaTimes />
+            </IconButton>
+          </Link>
+        </Flex>
+
+        {/* Game Content */}
+        <Box
+          w="full"
+          maxW="lg"
+          mx="auto"
+          flex={1}
+          display="flex"
+          alignItems="center"
+        >
+          <FlashCard
+            word={words[currentCardIndex]}
+            cardSide={cardSide}
+            allWordIds={words.map((w) => w.id)}
+          />
+        </Box>
+
+        {/* Quality Feedback Buttons */}
+        <Flex w="full" maxW="lg" mx="auto" justify="center" gap={4} mt={4}>
+          {QUALITY_OPTIONS.map((option) => (
+            <Button
+              key={option.score}
+              colorScheme={option.colorScheme}
+              onClick={() => handleNextCard(option.score)}
+              flex={1}
+              maxW="120px"
+              display="flex"
+              flexDirection="column"
+              height="auto"
+              py={3}
+              px={2}
+            >
+              <Text fontSize="xl" mb={1}>
+                {option.emoji}
+              </Text>
+              <Text fontSize="sm" fontWeight="semibold">
+                {option.label}
+              </Text>
+            </Button>
+          ))}
+        </Flex>
       </Flex>
-    </Flex>
+    </>
   );
 };
