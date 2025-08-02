@@ -110,7 +110,7 @@ export const FlashCardsPlayPage = () => {
 
   return (
     <>
-      <Flex direction="column" h="100svh" p={4} pt={24}>
+      <Flex direction="column" h="100svh" p={4} pt={2}>
         <PlayPageNavigation
           currentIndex={currentCardIndex}
           totalCount={words.length}
@@ -123,16 +123,18 @@ export const FlashCardsPlayPage = () => {
           mx="auto"
           flex={1}
           display="flex"
-          alignItems="center"
+          flexDirection="column"
+          justifyContent="center"
+          gap={6}
         >
           <FlashCard
             word={words[currentCardIndex]}
             cardSide={cardSide}
             allWordIds={words.map((w) => w.id)}
           />
-        </Box>
 
-        <PlayPageQualityFeedbackButtons onQualitySelect={handleNextCard} />
+          <PlayPageQualityFeedbackButtons onQualitySelect={handleNextCard} />
+        </Box>
       </Flex>
     </>
   );
