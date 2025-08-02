@@ -1,4 +1,8 @@
-import { QualityScore } from '../flash-cards-game.const';
+import { QualityScore } from '@/modules/flash-cards-game/flash-cards-game.const';
+import type {
+  ExistingProgress,
+  ProgressUpdate,
+} from '@/modules/flash-cards-game/flash-cards-game.types';
 
 /**
  * Spaced Repetition Utilities
@@ -7,31 +11,7 @@ import { QualityScore } from '../flash-cards-game.const';
  * to avoid unnecessary conversions when interfacing with the database.
  */
 
-// Types for the spaced repetition algorithm
-export interface ExistingProgress {
-  easiness_factor: number;
-  interval_days: number;
-  repetition_count: number;
-  total_reviews: number;
-  correct_reviews: number;
-  consecutive_correct: number;
-  quality_scores: number[];
-  status: 'new' | 'learning' | 'review' | 'graduated' | 'lapsed';
-}
-
-export interface ProgressUpdate {
-  easiness_factor: number;
-  interval_days: number;
-  repetition_count: number;
-  total_reviews: number;
-  correct_reviews: number;
-  consecutive_correct: number;
-  quality_scores: number[];
-  status: 'new' | 'learning' | 'review' | 'graduated' | 'lapsed';
-  next_review_date: string;
-}
-
-export interface InitialProgress {
+interface InitialProgress {
   easiness_factor: number;
   interval_days: number;
   repetition_count: number;

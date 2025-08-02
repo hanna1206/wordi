@@ -1,13 +1,11 @@
+import { ExistingProgress } from '@/modules/flash-cards-game/flash-cards-game.types';
 import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 import { createClient } from '@/services/supabase/server';
 import type { ActionResult } from '@/shared-types';
 import { convertKeysToCamelCase } from '@/utils/case-conversion';
 
 import { GameMode, QualityScore } from './flash-cards-game.const';
-import {
-  calculateProgressUpdate,
-  type ExistingProgress,
-} from './utils/spaced-repetition.utils';
+import { calculateProgressUpdate } from './utils/spaced-repetition.utils';
 
 type GetWordsForGameParams = {
   userId: string;

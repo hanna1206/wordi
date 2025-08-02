@@ -2,7 +2,7 @@ import type { User } from '@supabase/supabase-js';
 
 import { createClient } from '@/services/supabase/server';
 
-export interface AuthResult {
+interface AuthResult {
   success: boolean;
   user?: User;
   error?: string;
