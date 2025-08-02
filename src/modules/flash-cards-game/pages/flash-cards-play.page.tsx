@@ -1,33 +1,23 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FaArrowLeft, FaTimes } from 'react-icons/fa';
 
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  IconButton,
-  Spinner,
-  Text,
-} from '@chakra-ui/react';
-import Link from 'next/link';
+import { Box, Flex } from '@chakra-ui/react';
 import { useSearchParams } from 'next/navigation';
 
 import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
 import { FlashCard } from '../components/flash-card';
+import { PlayPageErrorState } from '../components/play-page-error-state';
+import { PlayPageGameCompleteState } from '../components/play-page-game-complete-state';
+import { PlayPageLoadingState } from '../components/play-page-loading-state';
+import { PlayPageNavigation } from '../components/play-page-navigation';
+import { PlayPageQualityFeedbackButtons } from '../components/play-page-quality-feedback-buttons';
 import {
   getWordsForGame,
   saveQualityFeedback,
 } from '../flash-cards-game.actions';
-import {
-  CardSide,
-  GameMode,
-  QUALITY_OPTIONS,
-  QualityScore,
-} from '../flash-cards-game.const';
+import { CardSide, GameMode, QualityScore } from '../flash-cards-game.const';
 
 export const FlashCardsPlayPage = () => {
   const searchParams = useSearchParams();
@@ -107,88 +97,24 @@ export const FlashCardsPlayPage = () => {
   };
 
   if (isLoading) {
-    return (
-      <Flex direction="column" h="100svh" align="center" justify="center" p={4}>
-        <Spinner size="xl" />
-        <Text mt={4}>Loading your words...</Text>
-      </Flex>
-    );
+    return <PlayPageLoadingState />;
   }
 
   if (error) {
-    return (
-      <Flex direction="column" h="100svh" align="center" justify="center" p={4}>
-        <Heading as="h2" size="lg" color="red.500">
-          Error
-        </Heading>
-        <Text mt={2}>{error}</Text>
-        <Link href="/flash-cards-game" passHref>
-          <Button as="a" mt={4} colorScheme="blue">
-            Go Back
-          </Button>
-        </Link>
-      </Flex>
-    );
+    return <PlayPageErrorState error={error} />;
   }
 
   if (isGameFinished) {
-    return (
-      <Flex direction="column" h="100svh" align="center" justify="center" p={4}>
-        <Heading as="h2" size="lg">
-          Game Over!
-        </Heading>
-        {needsReviewWords.length > 0 ? (
-          <Box mt={4} textAlign="center">
-            <Text>You should review these words:</Text>
-            <Flex direction="column" gap={2} mt={2}>
-              {needsReviewWords.map((word) => (
-                <Text key={word.id}>
-                  {word.normalizedWord} - {word.commonData.mainTranslation}
-                </Text>
-              ))}
-            </Flex>
-          </Box>
-        ) : (
-          <Text mt={4}>Great job! You knew all the words.</Text>
-        )}
-        <Link href="/flash-cards-game" passHref>
-          <Button as="a" mt={8} colorScheme="blue">
-            Play Again
-          </Button>
-        </Link>
-      </Flex>
-    );
+    return <PlayPageGameCompleteState needsReviewWords={needsReviewWords} />;
   }
 
   return (
     <>
       <Flex direction="column" h="100svh" p={4} pt={24}>
-        {/* Navigation Header */}
-        <Flex align="center" justify="space-between" mb={4}>
-          <Link href="/flash-cards-game" passHref>
-            <IconButton
-              as="a"
-              aria-label="Back to game selection"
-              variant="ghost"
-              size="lg"
-            >
-              <FaArrowLeft />
-            </IconButton>
-          </Link>
-          <Text fontSize="sm" color="gray.500">
-            {currentCardIndex + 1} / {words.length}
-          </Text>
-          <Link href="/" passHref>
-            <IconButton
-              as="a"
-              aria-label="Back to home"
-              variant="ghost"
-              size="lg"
-            >
-              <FaTimes />
-            </IconButton>
-          </Link>
-        </Flex>
+        <PlayPageNavigation
+          currentIndex={currentCardIndex}
+          totalCount={words.length}
+        />
 
         {/* Game Content */}
         <Box
@@ -206,30 +132,7 @@ export const FlashCardsPlayPage = () => {
           />
         </Box>
 
-        {/* Quality Feedback Buttons */}
-        <Flex w="full" maxW="lg" mx="auto" justify="center" gap={4} mt={4}>
-          {QUALITY_OPTIONS.map((option) => (
-            <Button
-              key={option.score}
-              colorScheme={option.colorScheme}
-              onClick={() => handleNextCard(option.score)}
-              flex={1}
-              maxW="120px"
-              display="flex"
-              flexDirection="column"
-              height="auto"
-              py={3}
-              px={2}
-            >
-              <Text fontSize="xl" mb={1}>
-                {option.emoji}
-              </Text>
-              <Text fontSize="sm" fontWeight="semibold">
-                {option.label}
-              </Text>
-            </Button>
-          ))}
-        </Flex>
+        <PlayPageQualityFeedbackButtons onQualitySelect={handleNextCard} />
       </Flex>
     </>
   );
