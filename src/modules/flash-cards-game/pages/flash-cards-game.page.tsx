@@ -17,8 +17,8 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { getDueWordsCount } from '../actions/flash-cards-game.actions';
 import { GameModeCard } from '../components/game-mode-card';
+import { getDueWordsCount } from '../flash-cards-game.actions';
 import { CardSide, GameMode } from '../flash-cards-game.const';
 
 const items = [

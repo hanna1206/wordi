@@ -1,22 +1,18 @@
-'use server';
-
-import { withAuth } from '@/modules/auth/utils/with-auth';
 import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 import { createClient } from '@/services/supabase/server';
 import type { ActionResult } from '@/shared-types';
 
-import { GameMode, QualityScore } from '../flash-cards-game.const';
-import {
-  calculateInitialProgress,
-  calculateProgressUpdate,
-} from '../utils/spaced-repetition.utils';
+import { GameMode, QualityScore } from './flash-cards-game.const';
+import { calculateProgressUpdate } from './utils/spaced-repetition.utils';
 
 type GetWordsForGameParams = {
+  userId: string;
   mode: GameMode;
   limit: number;
 };
 
 type SaveQualityFeedbackParams = {
+  userId: string;
   wordId: string;
   qualityScore: QualityScore;
 };
@@ -31,15 +27,59 @@ type UserWordProgressWithWords = {
   words: SavedWord | SavedWord[];
 };
 
-export const getWordsForGame = withAuth<GetWordsForGameParams, SavedWord[]>(
-  async (context, { mode, limit }): Promise<ActionResult<SavedWord[]>> => {
+export const createInitialWordProgressService = async (
+  userId: string,
+  wordId: string,
+): Promise<ActionResult<void>> => {
+  try {
+    const supabase = await createClient();
+
+    const { error } = await supabase.from('user_word_progress').insert({
+      user_id: userId,
+      word_id: wordId,
+      status: 'new',
+    });
+
+    if (error) {
+      // It's possible a progress record was created by another process
+      // between the word creation and now. We can ignore duplicate errors.
+      if (error.code === '23505') {
+        // Unique constraint violation
+        return { success: true };
+      }
+
+      return {
+        success: false,
+        error: 'Failed to create initial word progress',
+      };
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error creating initial word progress:', error);
+    return {
+      success: false,
+      error: 'Failed to create initial word progress',
+    };
+  }
+};
+
+export const getWordsForGameService = async ({
+  userId,
+  mode,
+  limit,
+}: GetWordsForGameParams): Promise<ActionResult<SavedWord[]>> => {
+  try {
     const supabase = await createClient();
 
     if (mode === GameMode.Latest) {
       const { data, error } = await supabase
         .from('words')
         .select('*')
-        .eq('user_id', context.userId)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false })
         .limit(limit);
 
@@ -60,7 +100,7 @@ export const getWordsForGame = withAuth<GetWordsForGameParams, SavedWord[]>(
       const { data: allWords, error: allWordsError } = await supabase
         .from('words')
         .select('*')
-        .eq('user_id', context.userId);
+        .eq('user_id', userId);
 
       if (allWordsError) {
         return {
@@ -83,11 +123,11 @@ export const getWordsForGame = withAuth<GetWordsForGameParams, SavedWord[]>(
         .from('user_word_progress')
         .select(
           `
-          word_id,
-          words (*)
-        `,
+            word_id,
+            words (*)
+          `,
         )
-        .eq('user_id', context.userId)
+        .eq('user_id', userId)
         .lte('next_review_date', new Date().toISOString())
         .eq('is_archived', false)
         .order('next_review_date', { ascending: true })
@@ -121,18 +161,29 @@ export const getWordsForGame = withAuth<GetWordsForGameParams, SavedWord[]>(
       success: false,
       error: 'Invalid mode specified',
     };
-  },
-);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error getting words for game:', error);
+    return {
+      success: false,
+      error: 'Failed to fetch words for game',
+    };
+  }
+};
 
-export const saveQualityFeedback = withAuth<SaveQualityFeedbackParams, void>(
-  async (context, { wordId, qualityScore }): Promise<ActionResult<void>> => {
+export const saveQualityFeedbackService = async ({
+  userId,
+  wordId,
+  qualityScore,
+}: SaveQualityFeedbackParams): Promise<ActionResult<void>> => {
+  try {
     const supabase = await createClient();
 
     // Check if progress record exists for this word
     const { data: existingProgress, error: fetchError } = await supabase
       .from('user_word_progress')
       .select('*')
-      .eq('user_id', context.userId)
+      .eq('user_id', userId)
       .eq('word_id', wordId)
       .single();
 
@@ -146,67 +197,61 @@ export const saveQualityFeedback = withAuth<SaveQualityFeedbackParams, void>(
 
     const now = new Date().toISOString();
 
-    // Update existing progress or create new progress
-    if (existingProgress) {
-      // Calculate updated progress using utility function
-      const progressUpdate = calculateProgressUpdate(
-        existingProgress,
-        qualityScore,
-      );
+    // Since progress is created with the word, we assume it always exists.
+    if (!existingProgress) {
+      return {
+        success: false,
+        error:
+          'Word progress record not found. It should have been created with the word.',
+      };
+    }
 
-      const { error: updateError } = await supabase
-        .from('user_word_progress')
-        .update({
-          ...progressUpdate,
-          last_reviewed_at: now,
-          updated_at: now,
-        })
-        .eq('id', existingProgress.id);
+    // Calculate updated progress using utility function
+    const progressUpdate = calculateProgressUpdate(
+      existingProgress,
+      qualityScore,
+    );
 
-      if (updateError) {
-        return {
-          success: false,
-          error: 'Failed to update word progress',
-        };
-      }
-    } else {
-      // Calculate initial progress using utility function
-      const initialProgress = calculateInitialProgress(qualityScore);
+    const { error: updateError } = await supabase
+      .from('user_word_progress')
+      .update({
+        ...progressUpdate,
+        last_reviewed_at: now,
+        updated_at: now,
+      })
+      .eq('id', existingProgress.id);
 
-      const { error: insertError } = await supabase
-        .from('user_word_progress')
-        .insert({
-          user_id: context.userId,
-          word_id: wordId,
-          ...initialProgress,
-          last_reviewed_at: now,
-          created_at: now,
-          updated_at: now,
-        });
-
-      if (insertError) {
-        return {
-          success: false,
-          error: 'Failed to create word progress',
-        };
-      }
+    if (updateError) {
+      return {
+        success: false,
+        error: 'Failed to update word progress',
+      };
     }
 
     return {
       success: true,
     };
-  },
-);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error saving quality feedback:', error);
+    return {
+      success: false,
+      error: 'Failed to save quality feedback',
+    };
+  }
+};
 
-export const getDueWordsCount = withAuth<void, DueWordsCount>(
-  async (context): Promise<ActionResult<DueWordsCount>> => {
+export const getDueWordsCountService = async (
+  userId: string,
+): Promise<ActionResult<DueWordsCount>> => {
+  try {
     const supabase = await createClient();
 
     // Get count of words due for review
     const { count: dueCount, error: dueError } = await supabase
       .from('user_word_progress')
       .select('*', { count: 'exact', head: true })
-      .eq('user_id', context.userId)
+      .eq('user_id', userId)
       .lte('next_review_date', new Date().toISOString())
       .eq('is_archived', false);
 
@@ -221,7 +266,7 @@ export const getDueWordsCount = withAuth<void, DueWordsCount>(
     const { count: totalWords, error: totalError } = await supabase
       .from('words')
       .select('*', { count: 'exact', head: true })
-      .eq('user_id', context.userId);
+      .eq('user_id', userId);
 
     if (totalError) {
       return {
@@ -237,5 +282,12 @@ export const getDueWordsCount = withAuth<void, DueWordsCount>(
         totalWords: totalWords || 0,
       },
     };
-  },
-);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error getting due words count:', error);
+    return {
+      success: false,
+      error: 'Failed to get due words count',
+    };
+  }
+};

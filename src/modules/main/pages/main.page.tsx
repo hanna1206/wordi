@@ -9,7 +9,7 @@ import { InstallPrompt } from '@/components/install-prompt';
 import { Sidebar } from '@/components/sidebar';
 import { SidebarContent } from '@/modules/main/components/sidebar-content';
 import { GenerateWordForm } from '@/modules/words-generation/components/generate-word-form';
-import { getUserWords } from '@/modules/words-persistence/words-persistence.actions';
+import { fetchUserSavedWords } from '@/modules/words-persistence/words-persistence.actions';
 import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
 export const MainPage = () => {
@@ -43,7 +43,7 @@ export const MainPage = () => {
   const loadUserWords = async () => {
     try {
       setIsLoadingWords(true);
-      const result = await getUserWords();
+      const result = await fetchUserSavedWords();
 
       if (result.success && result.data) {
         setSavedWords(result.data);

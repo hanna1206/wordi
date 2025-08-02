@@ -17,11 +17,11 @@ import { useSearchParams } from 'next/navigation';
 
 import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
+import { FlashCard } from '../components/flash-card';
 import {
   getWordsForGame,
   saveQualityFeedback,
-} from '../actions/flash-cards-game.actions';
-import { FlashCard } from '../components/flash-card';
+} from '../flash-cards-game.actions';
 import {
   CardSide,
   GameMode,

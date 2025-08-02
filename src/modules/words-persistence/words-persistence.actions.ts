@@ -1,6 +1,7 @@
 'use server';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
+import { createInitialWordProgressService } from '@/modules/flash-cards-game/flash-cards-game.service';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
@@ -33,17 +34,24 @@ export const saveWordForLearning = withUserSettings<SaveWordInput, SavedWord>(
     }
 
     try {
-      // Try to save - database constraint will handle duplicates
       const saveResult = await saveWordToDatabase(
         input,
         context.userId,
         context.userSettings.native_language as LanguageCode,
       );
 
+      // If the word was saved successfully, create its initial progress record
+      if (saveResult.success && saveResult.data) {
+        await createInitialWordProgressService(
+          context.userId,
+          saveResult.data.id,
+        );
+      }
+
       return saveResult;
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Save word error:', error);
+      console.error('Error in saveWordForLearning action:', error);
       return {
         success: false,
         error: 'Failed to save word',
@@ -60,66 +68,22 @@ export const getWordFromCache = async (
   normalizedWord: string,
   partOfSpeech?: string,
 ): Promise<ActionResult<CachedWord | null>> => {
-  if (!normalizedWord) {
-    return {
-      success: false,
-      error: 'Word is required',
-    };
-  }
-
-  try {
-    const result = await getCachedWord(normalizedWord, partOfSpeech);
-    return result;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to get cached word:', error);
-    return {
-      success: false,
-      error: 'Failed to get cached word',
-    };
-  }
+  const result = await getCachedWord(normalizedWord, partOfSpeech);
+  return result;
 };
 
-// Get user's saved words
-export const getUserWords = withAuth<void, SavedWord[]>(
+// Get user saved words
+export const fetchUserSavedWords = withAuth<void, SavedWord[]>(
   async (context): Promise<ActionResult<SavedWord[]>> => {
-    try {
-      const result = await getUserSavedWords(context.userId);
-
-      return result;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to get saved words:', error);
-      return {
-        success: false,
-        error: 'Failed to get saved words',
-      };
-    }
+    const result = await getUserSavedWords(context.userId);
+    return result;
   },
 );
 
-// Delete user's saved word
+// Delete user word
 export const deleteWord = withAuth<{ wordId: string }, void>(
-  async (context, input): Promise<ActionResult<void>> => {
-    const { wordId } = input;
-
-    if (!wordId) {
-      return {
-        success: false,
-        error: 'Word ID is required',
-      };
-    }
-
-    try {
-      const result = await deleteUserWord(wordId, context.userId);
-      return result;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to delete word:', error);
-      return {
-        success: false,
-        error: 'Failed to delete word',
-      };
-    }
+  async (context, { wordId }): Promise<ActionResult<void>> => {
+    const result = await deleteUserWord(wordId, context.userId);
+    return result;
   },
 );
