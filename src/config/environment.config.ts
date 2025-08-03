@@ -10,5 +10,4 @@ export const environment = {
   langSmithProject: process.env.LANGSMITH_PROJECT,
   // OpenAI configuration
   openAIApiKey: process.env.OPENAI_API_KEY,
-  showFlashCardsGame: process.env.NEXT_PUBLIC_SHOW_FLASH_CARDS_GAME === 'true',
 };

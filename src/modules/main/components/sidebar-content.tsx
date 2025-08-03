@@ -3,7 +3,6 @@ import { LuListTodo } from 'react-icons/lu';
 
 import { Box, Button, Flex, Link, Spinner, Text } from '@chakra-ui/react';
 
-import { environment } from '@/config/environment.config';
 import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
 import { SavedWordModal } from './saved-word-modal';
@@ -72,21 +71,14 @@ export const SidebarContent = ({
               </Flex>
             </Button>
           </Link>
-          {environment.showFlashCardsGame && (
-            <Link href="/flash-cards-game">
-              <Button
-                variant="ghost"
-                width="250px"
-                p={2}
-                justifyContent="start"
-              >
-                <Flex justifyContent="start">
-                  <LuListTodo />
-                  <Text>Practice with Flash Cards</Text>
-                </Flex>
-              </Button>
-            </Link>
-          )}
+          <Link href="/flash-cards-game">
+            <Button variant="ghost" width="250px" p={2} justifyContent="start">
+              <Flex justifyContent="start">
+                <LuListTodo />
+                <Text>Practice with Flash Cards</Text>
+              </Flex>
+            </Button>
+          </Link>
         </Flex>
         <Box mt={10} mb={2} flexShrink={0}>
           <Text fontSize="sm" fontWeight="semibold">
