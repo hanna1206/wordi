@@ -265,31 +265,31 @@ export const getDueWordsCountService = async (
   try {
     const supabase = await createClient();
 
-    // Get count of words due for review
-    const { count: dueCount, error: dueError } = await supabase
+    const nowIso = new Date().toISOString();
+
+    const dueCountPromise = supabase
       .from('user_word_progress')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', userId)
-      .lte('next_review_date', new Date().toISOString())
+      .lte('next_review_date', nowIso)
       .eq('is_archived', false);
 
-    if (dueError) {
-      return {
-        success: false,
-        error: 'Failed to fetch due words count',
-      };
-    }
-
-    // Get total words count
-    const { count: totalWords, error: totalError } = await supabase
+    const totalWordsPromise = supabase
       .from('words')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', userId);
 
-    if (totalError) {
+    const [
+      { count: dueCount, error: dueError },
+      { count: totalWords, error: totalError },
+    ] = await Promise.all([dueCountPromise, totalWordsPromise]);
+
+    if (dueError || totalError) {
       return {
         success: false,
-        error: 'Failed to fetch total words count',
+        error: dueError
+          ? 'Failed to fetch due words count'
+          : 'Failed to fetch total words count',
       };
     }
 

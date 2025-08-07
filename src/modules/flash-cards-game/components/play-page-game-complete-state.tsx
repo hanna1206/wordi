@@ -31,11 +31,9 @@ export const PlayPageGameCompleteState = ({
       ) : (
         <Text mt={4}>Great job! You knew all the words.</Text>
       )}
-      <Link href="/flash-cards-game" passHref>
-        <Button as="a" mt={8} colorScheme="blue">
-          Play Again
-        </Button>
-      </Link>
+      <Button asChild mt={8} colorScheme="blue">
+        <Link href="/flash-cards-game">Play Again</Link>
+      </Button>
     </Flex>
   );
 };

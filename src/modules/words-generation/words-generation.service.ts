@@ -1,4 +1,4 @@
-import { gpt41Model } from '@/services/llm/gpt-4.1';
+import { gpt5MiniModel } from '@/services/llm/gpt-5-mini';
 
 import {
   adjectiveInfoPrompt,
@@ -32,33 +32,33 @@ import { PartOfSpeech } from './words-generation.const';
 
 const WRONG_VERB_SEPARABLE_PREFIX_VALUES = ['null', '/', '/null'];
 
-const translateWordLlm = gpt41Model.withStructuredOutput(
+const translateWordLlm = gpt5MiniModel.withStructuredOutput(
   translateToLanguageOutputStructure,
 );
 const translateWordChain = translateToLanguagePrompt.pipe(translateWordLlm);
 
-const normalizeWordLlm = gpt41Model.withStructuredOutput(
+const normalizeWordLlm = gpt5MiniModel.withStructuredOutput(
   normalizeWordOutputStructure,
 );
 const normalizeWordChain = normalizeWordPrompt.pipe(normalizeWordLlm);
 
-const nounInfoLlm = gpt41Model.withStructuredOutput(nounInfoOutputStructure);
+const nounInfoLlm = gpt5MiniModel.withStructuredOutput(nounInfoOutputStructure);
 const nounInfoChain = nounInfoPrompt.pipe(nounInfoLlm);
 
-const verbInfoLlm = gpt41Model.withStructuredOutput(verbInfoOutputStructure);
+const verbInfoLlm = gpt5MiniModel.withStructuredOutput(verbInfoOutputStructure);
 const verbInfoChain = verbInfoPrompt.pipe(verbInfoLlm);
 
-const adjectiveInfoLlm = gpt41Model.withStructuredOutput(
+const adjectiveInfoLlm = gpt5MiniModel.withStructuredOutput(
   adjectiveInfoOutputStructure,
 );
 const adjectiveInfoChain = adjectiveInfoPrompt.pipe(adjectiveInfoLlm);
 
-const pronounInfoLlm = gpt41Model.withStructuredOutput(
+const pronounInfoLlm = gpt5MiniModel.withStructuredOutput(
   pronounInfoOutputStructure,
 );
 const pronounInfoChain = pronounInfoPrompt.pipe(pronounInfoLlm);
 
-const demonstrativePronounInfoLlm = gpt41Model.withStructuredOutput(
+const demonstrativePronounInfoLlm = gpt5MiniModel.withStructuredOutput(
   demonstrativePronounInfoOutputStructure,
 );
 const demonstrativePronounInfoChain = demonstrativePronounInfoPrompt.pipe(
@@ -70,74 +70,93 @@ export const getWordInfo = async (word: string, targetLanguage: string) => {
     word,
   });
 
-  const {
-    mainTranslation,
-    additionalTranslations,
-    exampleSentences,
-    collocations,
-    synonyms,
-  } = await translateWordChain.invoke({
+  // Run translation and any relevant POS-specific queries in parallel
+  const translatePromise = translateWordChain.invoke({
     word: normalizedWord,
     targetLanguage,
   });
-  let posSpecifics = {};
 
-  if (partOfSpeech.includes(PartOfSpeech.NOUN)) {
-    const response = await nounInfoChain.invoke({
-      word: normalizedWord,
-      targetLanguage,
-    });
-    posSpecifics = { ...posSpecifics, ...response };
+  const nounPromise = partOfSpeech.includes(PartOfSpeech.NOUN)
+    ? nounInfoChain.invoke({ word: normalizedWord, targetLanguage })
+    : Promise.resolve(undefined);
+
+  const verbPromise = partOfSpeech.includes(PartOfSpeech.VERB)
+    ? verbInfoChain.invoke({ word: normalizedWord, targetLanguage })
+    : Promise.resolve(undefined);
+
+  const adjectivePromise = partOfSpeech.includes(PartOfSpeech.ADJECTIVE)
+    ? adjectiveInfoChain.invoke({ word: normalizedWord, targetLanguage })
+    : Promise.resolve(undefined);
+
+  const personalPronounPromise = partOfSpeech.includes(
+    PartOfSpeech.PERSONAL_PRONOUN,
+  )
+    ? pronounInfoChain.invoke({ word: normalizedWord, targetLanguage })
+    : Promise.resolve(undefined);
+
+  const demonstrativePronounPromise = partOfSpeech.includes(
+    PartOfSpeech.DEMONSTRATIVE_PRONOUN,
+  )
+    ? demonstrativePronounInfoChain.invoke({
+        word: normalizedWord,
+        targetLanguage,
+      })
+    : Promise.resolve(undefined);
+
+  const [
+    translateResult,
+    nounResult,
+    verbResult,
+    adjectiveResult,
+    personalPronounResult,
+    demonstrativePronounResult,
+  ] = await Promise.all([
+    translatePromise,
+    nounPromise,
+    verbPromise,
+    adjectivePromise,
+    personalPronounPromise,
+    demonstrativePronounPromise,
+  ]);
+
+  let posSpecifics = {} as Record<string, unknown>;
+
+  if (nounResult) {
+    posSpecifics = { ...posSpecifics, ...nounResult };
   }
 
-  if (partOfSpeech.includes(PartOfSpeech.VERB)) {
-    const response = await verbInfoChain.invoke({
-      word: normalizedWord,
-      targetLanguage,
-    });
-    const normalisedResponse = {
-      ...response,
+  if (verbResult) {
+    const normalisedVerb = {
+      ...verbResult,
       separablePrefix:
-        response.separablePrefix != null &&
-        WRONG_VERB_SEPARABLE_PREFIX_VALUES.includes(response.separablePrefix)
+        verbResult.separablePrefix != null &&
+        WRONG_VERB_SEPARABLE_PREFIX_VALUES.includes(verbResult.separablePrefix)
           ? null
-          : response.separablePrefix,
+          : verbResult.separablePrefix,
     };
-    posSpecifics = { ...posSpecifics, ...normalisedResponse };
+    posSpecifics = { ...posSpecifics, ...normalisedVerb };
   }
 
-  if (partOfSpeech.includes(PartOfSpeech.ADJECTIVE)) {
-    const response = await adjectiveInfoChain.invoke({
-      word: normalizedWord,
-      targetLanguage,
-    });
-    posSpecifics = { ...posSpecifics, ...response };
+  if (adjectiveResult) {
+    posSpecifics = { ...posSpecifics, ...adjectiveResult };
   }
 
-  if (partOfSpeech.includes(PartOfSpeech.PERSONAL_PRONOUN)) {
-    const response = await pronounInfoChain.invoke({
-      word: normalizedWord,
-      targetLanguage,
-    });
-    posSpecifics = { ...posSpecifics, ...response };
+  if (personalPronounResult) {
+    posSpecifics = { ...posSpecifics, ...personalPronounResult };
   }
 
-  if (partOfSpeech.includes(PartOfSpeech.DEMONSTRATIVE_PRONOUN)) {
-    const response = await demonstrativePronounInfoChain.invoke({
-      word: normalizedWord,
-      targetLanguage,
-    });
-    posSpecifics = { ...posSpecifics, ...response };
+  if (demonstrativePronounResult) {
+    posSpecifics = { ...posSpecifics, ...demonstrativePronounResult };
   }
 
   return {
     normalizedWord,
     partOfSpeech,
-    mainTranslation,
-    additionalTranslations,
-    exampleSentences,
-    collocations,
-    synonyms,
+    mainTranslation: translateResult.mainTranslation,
+    additionalTranslations: translateResult.additionalTranslations,
+    exampleSentences: translateResult.exampleSentences,
+    collocations: translateResult.collocations,
+    synonyms: translateResult.synonyms,
     ...posSpecifics,
   };
 };

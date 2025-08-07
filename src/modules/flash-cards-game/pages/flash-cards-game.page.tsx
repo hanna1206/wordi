@@ -21,7 +21,9 @@ import { GameModeCard } from '../components/game-mode-card';
 import { getDueWordsCount } from '../flash-cards-game.actions';
 import { CardSide, GameMode } from '../flash-cards-game.const';
 
-const items = [
+const STORAGE_KEY = 'flashcards_due_meta_v1';
+
+const CARD_SIDE_OPTIONS = [
   { label: 'Show German Word', value: CardSide.Word },
   { label: 'Show Translation', value: CardSide.Translation },
 ];
@@ -34,12 +36,41 @@ export const FlashCardsGamePage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    try {
+      const cachedRaw = window.localStorage.getItem(STORAGE_KEY);
+      if (cachedRaw) {
+        const cached = JSON.parse(cachedRaw) as {
+          date: string;
+          dueCount: number;
+          totalWords: number;
+        };
+        const isSameDay =
+          new Date(cached.date).toDateString() === new Date().toDateString();
+        if (isSameDay) {
+          setDueCount(cached.dueCount);
+          setTotalWords(cached.totalWords);
+          setIsLoading(false);
+        }
+      }
+    } catch {}
+
     const fetchDueWordsCount = async () => {
       try {
         const result = await getDueWordsCount();
         if (result.success && result.data) {
           setDueCount(result.data.dueCount);
           setTotalWords(result.data.totalWords);
+
+          try {
+            window.localStorage.setItem(
+              STORAGE_KEY,
+              JSON.stringify({
+                date: new Date().toISOString(),
+                dueCount: result.data.dueCount,
+                totalWords: result.data.totalWords,
+              }),
+            );
+          } catch {}
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -63,14 +94,14 @@ export const FlashCardsGamePage = () => {
       <Box as="main" py={2}>
         <Box mx="auto" px={2}>
           <Box mb={8}>
-            <Link href="/" passHref>
-              <Button as="a" variant="ghost">
+            <Button asChild variant="ghost">
+              <Link href="/">
                 <HStack>
                   <FaArrowLeft />
                   <Text>Back to Home</Text>
                 </HStack>
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </Box>
 
           <Box w="full" maxW="2xl" mx="auto">
@@ -93,7 +124,7 @@ export const FlashCardsGamePage = () => {
                   onValueChange={(e) => setCardSide(e.value)}
                 >
                   <HStack gap="6" justifyContent="center">
-                    {items.map((item) => (
+                    {CARD_SIDE_OPTIONS.map((item) => (
                       <RadioGroup.Item key={item.value} value={item.value}>
                         <RadioGroup.ItemHiddenInput />
                         <RadioGroup.ItemIndicator />

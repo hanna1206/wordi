@@ -62,6 +62,7 @@ export const FlashCard = ({ word, cardSide, allWordIds }: FlashCardProps) => {
       transition="transform 0.6s"
       transformStyle="preserve-3d"
       transform={isFlipped ? 'rotateY(180deg)' : 'none'}
+      position="relative"
     >
       <Box
         position="absolute"
@@ -71,11 +72,21 @@ export const FlashCard = ({ word, cardSide, allWordIds }: FlashCardProps) => {
         display="flex"
         alignItems="center"
         justifyContent="center"
+        px={4}
+        py={4}
       >
         {/* Front of the card */}
-        <Text fontSize="4xl" fontWeight="bold">
-          {frontContent}
-        </Text>
+        <Box maxH="100%" overflowY="auto">
+          <Text
+            fontSize="clamp(24px, 8vw, 40px)"
+            lineHeight="1.1"
+            fontWeight="bold"
+            wordBreak="break-word"
+            hyphens="auto"
+          >
+            {frontContent}
+          </Text>
+        </Box>
       </Box>
       <Box
         position="absolute"
@@ -89,13 +100,17 @@ export const FlashCard = ({ word, cardSide, allWordIds }: FlashCardProps) => {
         justifyContent="center"
         gap={hasAdditionalTranslations ? 6 : 0}
         px={4}
+        py={4}
       >
         {/* Back of the card */}
-        <Box textAlign="center">
+        <Box textAlign="center" maxH="50%" overflowY="auto">
           <Text
-            fontSize="4xl"
+            fontSize="clamp(24px, 8vw, 40px)"
+            lineHeight="1.1"
             fontWeight="bold"
             mb={hasAdditionalTranslations ? 4 : 0}
+            wordBreak="break-word"
+            hyphens="auto"
           >
             {backContent}
           </Text>
@@ -107,10 +122,12 @@ export const FlashCard = ({ word, cardSide, allWordIds }: FlashCardProps) => {
             borderTop="2px solid"
             borderColor="gray.200"
             pt={4}
-            w="80%"
+            w="90%"
+            maxH="40%"
+            overflowY="auto"
           >
             <Text
-              fontSize="sm"
+              fontSize="xs"
               fontWeight="semibold"
               color="gray.500"
               textTransform="uppercase"
@@ -119,7 +136,13 @@ export const FlashCard = ({ word, cardSide, allWordIds }: FlashCardProps) => {
             >
               Also means
             </Text>
-            <Text fontSize="lg" color="gray.700" lineHeight="relaxed">
+            <Text
+              fontSize="md"
+              color="gray.700"
+              lineHeight="relaxed"
+              wordBreak="break-word"
+              hyphens="auto"
+            >
               {additionalTranslations.join(' • ')}
             </Text>
           </Box>

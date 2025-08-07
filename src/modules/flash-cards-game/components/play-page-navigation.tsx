@@ -16,24 +16,24 @@ export const PlayPageNavigation = ({
 }: PlayPageNavigationProps) => {
   return (
     <Flex align="center" justify="space-between" mb={4}>
-      <Link href="/flash-cards-game" passHref>
-        <IconButton
-          as="a"
-          aria-label="Back to game selection"
-          variant="ghost"
-          size="lg"
-        >
+      <IconButton
+        asChild
+        aria-label="Back to game selection"
+        variant="ghost"
+        size="lg"
+      >
+        <Link href="/flash-cards-game">
           <FaArrowLeft />
-        </IconButton>
-      </Link>
+        </Link>
+      </IconButton>
       <Text fontSize="sm" color="gray.500">
         {currentIndex + 1} / {totalCount}
       </Text>
-      <Link href="/" passHref>
-        <IconButton as="a" aria-label="Back to home" variant="ghost" size="lg">
+      <IconButton asChild aria-label="Back to home" variant="ghost" size="lg">
+        <Link href="/">
           <FaTimes />
-        </IconButton>
-      </Link>
+        </Link>
+      </IconButton>
     </Flex>
   );
 };
