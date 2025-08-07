@@ -63,30 +63,12 @@ export const FlashCardsPlayPage = () => {
     fetchWords();
   }, [mode, limit]);
 
-  const handleNextCard = async (qualityScore: QualityScore) => {
+  const handleNextCard = (qualityScore: QualityScore) => {
     const currentWord = words[currentCardIndex];
 
-    // Add words to review list if they were marked as hard
+    // Optimistically update UI first
     if (qualityScore === QualityScore.Hard) {
       setNeedsReviewWords((prev) => [...prev, currentWord]);
-    }
-
-    // Save quality feedback to the database for spaced repetition
-    try {
-      const result = await saveQualityFeedback({
-        wordId: currentWord.id,
-        qualityScore,
-      });
-
-      if (!result.success) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to save quality feedback:', result.error);
-        // Continue with the game even if saving fails
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to save quality feedback:', error);
-      // Continue with the game even if saving fails
     }
 
     if (currentCardIndex < words.length - 1) {
@@ -94,6 +76,19 @@ export const FlashCardsPlayPage = () => {
     } else {
       setIsGameFinished(true);
     }
+
+    // Save quality feedback in the background (non-blocking)
+    saveQualityFeedback({ wordId: currentWord.id, qualityScore })
+      .then((result) => {
+        if (!result.success) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to save quality feedback:', result.error);
+        }
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('Failed to save quality feedback:', error);
+      });
   };
 
   if (isLoading) {
