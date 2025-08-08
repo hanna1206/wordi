@@ -44,12 +44,14 @@ export const Sidebar = ({
           top={0}
           h="100svh"
           w="280px"
-          borderRight="1px"
-          borderColor="gray.200"
+          borderRight="1px solid"
+          borderColor="white/20"
           transform={isOpen ? 'translateX(0)' : 'translateX(-100%)'}
           transition="transform 0.3s ease"
           zIndex={1001}
-          bg="white"
+          bg="rgba(255, 255, 255, 0.95)"
+          backdropFilter="blur(10px)"
+          boxShadow="0 8px 32px rgba(0, 0, 0, 0.1)"
           display="flex"
           flexDirection="column"
         >
@@ -79,10 +81,16 @@ export const Sidebar = ({
       top={0}
       h="100svh"
       w={isOpen ? '280px' : '60px'}
-      bg={isOpen ? 'gray.50' : 'white'}
+      bg={isOpen ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.9)'}
+      backdropFilter="blur(10px)"
       borderRight="1px solid"
-      borderColor="gray.100"
-      transition="width 0.3s ease"
+      borderColor="rgba(255, 255, 255, 0.2)"
+      boxShadow={
+        isOpen
+          ? '0 8px 32px rgba(0, 0, 0, 0.1)'
+          : '0 4px 12px rgba(0, 0, 0, 0.05)'
+      }
+      transition="all 0.3s ease"
       zIndex={isOpen ? 1001 : 100}
       display="flex"
       flexDirection="column"

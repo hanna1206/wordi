@@ -17,6 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 import { AIInfoModal } from '@/components/ai-info-modal';
+import { GradientBackground } from '@/components/gradient-background';
 
 import { completeProfile } from '../user-settings.actions';
 import { LanguageCode, LanguageLabels } from '../user-settings.const';
@@ -108,7 +109,7 @@ export const OnboardingPage = () => {
   };
 
   return (
-    <>
+    <GradientBackground variant="primary">
       <Center h="100svh">
         <VStack gap={6} maxW="md" mx="auto" mt={10}>
           {/* Welcome message */}
@@ -209,6 +210,6 @@ export const OnboardingPage = () => {
         showContinueButton={true}
         onContinue={handleAIInfoContinue}
       />
-    </>
+    </GradientBackground>
   );
 };

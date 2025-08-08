@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Box, Center, Container } from '@chakra-ui/react';
 
 import { AppHeader } from '@/components/app-header';
+import { GradientBackground } from '@/components/gradient-background';
 import { InstallPrompt } from '@/components/install-prompt';
 import { Sidebar } from '@/components/sidebar';
 import { SidebarContent } from '@/modules/main/components/sidebar-content';
@@ -64,41 +65,43 @@ export const MainPage = () => {
   }, []);
 
   return (
-    <Box h="100svh" overflow="hidden">
-      <AppHeader
-        onSidebarToggle={handleSidebarToggle}
-        showSidebarToggle={true}
-      />
-
-      <Sidebar
-        isOpen={isSidebarOpen}
-        onClose={handleSidebarClose}
-        onToggle={handleSidebarToggle}
-      >
-        <SidebarContent
-          savedWords={savedWords}
-          isLoadingWords={isLoadingWords}
-          onWordDeleted={loadUserWords}
+    <GradientBackground variant="primary">
+      <Box h="100svh" overflow="hidden">
+        <AppHeader
+          onSidebarToggle={handleSidebarToggle}
+          showSidebarToggle={true}
         />
-      </Sidebar>
 
-      <Box
-        ml={{ base: 0, md: isSidebarOpen ? '280px' : '60px' }}
-        transition="margin-left 0.3s ease"
-        h="100svh"
-        pt="72px"
-        overflow="hidden"
-        position="relative"
-      >
-        <Box h="full" overflow="auto">
-          <Center h="full" bg="white">
-            <Container maxW="4xl" w="full">
-              <GenerateWordForm onWordSaved={loadUserWords} />
-            </Container>
-          </Center>
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={handleSidebarClose}
+          onToggle={handleSidebarToggle}
+        >
+          <SidebarContent
+            savedWords={savedWords}
+            isLoadingWords={isLoadingWords}
+            onWordDeleted={loadUserWords}
+          />
+        </Sidebar>
+
+        <Box
+          ml={{ base: 0, md: isSidebarOpen ? '280px' : '60px' }}
+          transition="margin-left 0.3s ease"
+          h="100svh"
+          pt="72px"
+          overflow="hidden"
+          position="relative"
+        >
+          <Box h="full" overflow="auto">
+            <Center h="full">
+              <Container maxW="4xl" w="full">
+                <GenerateWordForm onWordSaved={loadUserWords} />
+              </Container>
+            </Center>
+          </Box>
+          <InstallPrompt />
         </Box>
-        <InstallPrompt />
       </Box>
-    </Box>
+    </GradientBackground>
   );
 };

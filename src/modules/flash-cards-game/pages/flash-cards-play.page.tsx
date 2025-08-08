@@ -66,8 +66,6 @@ export const FlashCardsPlayPage = () => {
         totalCount={words.length}
       />
 
-      <KeyboardShortcutsHints />
-
       <GameContent
         ref={cardButtonRef}
         currentWord={words[currentCardIndex]}
@@ -77,6 +75,8 @@ export const FlashCardsPlayPage = () => {
         onQualitySelect={handleNextCard}
         onFlip={(_, flipped) => setIsCurrentFlipped(flipped)}
       />
+
+      <KeyboardShortcutsHints />
     </Flex>
   );
 };

@@ -140,6 +140,7 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
               alignItems="center"
               flexDirection="row"
               gap={2}
+              bg="white"
             >
               <Input
                 {...register('word', { required: true })}
@@ -156,6 +157,7 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
                 }}
                 _focus={{ boxShadow: 'none' }}
                 w="100%"
+                bg="white"
               />
               <IconButton
                 type="submit"

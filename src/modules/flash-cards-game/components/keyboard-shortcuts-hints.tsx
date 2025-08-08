@@ -11,7 +11,7 @@ export const KeyboardShortcutsHints = () => {
       gap={6}
       color="gray.600"
       fontSize="sm"
-      mb={2}
+      mt={4}
     >
       <HStack gap={2}>
         <Text fontWeight="600">Flip:</Text>

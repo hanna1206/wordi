@@ -18,6 +18,8 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+import { GradientBackground } from '@/components/gradient-background';
+
 import { GameModeCard } from '../components/game-mode-card';
 import { getDueWordsCount } from '../flash-cards-game.actions';
 import { CardSide, GameMode } from '../flash-cards-game.const';
@@ -91,7 +93,7 @@ export const FlashCardsGamePage = () => {
   };
 
   return (
-    <>
+    <GradientBackground variant="primary">
       <Box as="main" py={8}>
         <Box mx="auto" px={4} maxW="3xl">
           <Box mb={8}>
@@ -127,7 +129,7 @@ export const FlashCardsGamePage = () => {
                   <HStack
                     gap="6"
                     justifyContent="center"
-                    bg="gray.50"
+                    bg="white"
                     px={4}
                     py={3}
                     borderRadius="xl"
@@ -228,7 +230,7 @@ export const FlashCardsGamePage = () => {
                         icon={FaRandom}
                         title="Practice 10 Random Words"
                         description="Shuffle your saved words for a surprise review."
-                        subtext="Good for variety and spaced retrieval."
+                        subtext="Good for variety and effective spaced retrieval practice."
                         onClick={() => handleStartGame(GameMode.Random, 10)}
                       />
                     </Box>
@@ -248,6 +250,6 @@ export const FlashCardsGamePage = () => {
           </Box>
         </Box>
       </Box>
-    </>
+    </GradientBackground>
   );
 };

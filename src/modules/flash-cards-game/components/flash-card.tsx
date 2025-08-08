@@ -143,7 +143,12 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
                 alignItems="center"
                 gap={1.5}
               >
-                Tap to flip
+                <Text display={{ base: 'inline', lg: 'none' }}>
+                  Tap to flip
+                </Text>
+                <Text display={{ base: 'none', lg: 'inline' }}>
+                  Press Space to flip
+                </Text>
               </Box>
             )}
           </Box>

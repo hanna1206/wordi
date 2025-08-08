@@ -68,6 +68,7 @@ export const GameModeCard = (props: GameModeCardProps) => {
         boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.3)',
       }}
       aria-describedby={descriptionId}
+      bg="white"
     >
       <Flex align="flex-start" gap={4} h="full">
         <Flex
