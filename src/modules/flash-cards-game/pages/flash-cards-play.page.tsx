@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Box, Flex } from '@chakra-ui/react';
 import { useSearchParams } from 'next/navigation';
@@ -27,6 +27,7 @@ export const FlashCardsPlayPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isGameFinished, setIsGameFinished] = useState(false);
   const [needsReviewWords, setNeedsReviewWords] = useState<SavedWord[]>([]);
+  const cardButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const mode = searchParams.get('mode') as GameMode;
   const limit = Number(searchParams.get('limit'));
@@ -63,6 +64,22 @@ export const FlashCardsPlayPage = () => {
     fetchWords();
   }, [mode, limit]);
 
+  // Focus the card when the index changes or words are loaded
+  useEffect(() => {
+    if (!isLoading && !error && !isGameFinished) {
+      // slight delay to ensure DOM is updated
+      const id = window.setTimeout(() => {
+        cardButtonRef.current?.focus();
+      }, 0);
+      return () => window.clearTimeout(id);
+    }
+    return undefined;
+  }, [currentCardIndex, isLoading, error, isGameFinished]);
+
+  const focusCard = useCallback(() => {
+    cardButtonRef.current?.focus();
+  }, []);
+
   const handleNextCard = (qualityScore: QualityScore) => {
     const currentWord = words[currentCardIndex];
 
@@ -73,6 +90,8 @@ export const FlashCardsPlayPage = () => {
 
     if (currentCardIndex < words.length - 1) {
       setCurrentCardIndex((prev) => prev + 1);
+      // Move focus back to the card so Space flips instead of re-pressing the button
+      setTimeout(focusCard, 0);
     } else {
       setIsGameFinished(true);
     }
@@ -123,6 +142,7 @@ export const FlashCardsPlayPage = () => {
           gap={6}
         >
           <FlashCard
+            ref={cardButtonRef}
             word={words[currentCardIndex]}
             cardSide={cardSide}
             allWordIds={words.map((w) => w.id)}
