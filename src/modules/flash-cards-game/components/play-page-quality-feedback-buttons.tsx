@@ -18,60 +18,66 @@ interface PlayPageQualityFeedbackButtonsProps {
 export const PlayPageQualityFeedbackButtons = ({
   onQualitySelect,
 }: PlayPageQualityFeedbackButtonsProps) => {
-  const getButtonStyles = (option: (typeof QUALITY_OPTIONS)[number]) => {
-    const shared = {
-      h: '64px',
+  const getButtonStyles = (colorScheme: string) => {
+    const colorStyles = {
+      red: {
+        bg: 'red.500',
+        color: 'white',
+        _hover: {
+          bg: 'red.600',
+          transform: 'translateY(-2px)',
+          boxShadow: '0 8px 20px -4px rgba(220, 38, 38, 0.4)',
+        },
+        _active: {
+          bg: 'red.700',
+          transform: 'translateY(0) scale(0.98)',
+        },
+      },
+      yellow: {
+        bg: 'orange.500',
+        color: 'white',
+        _hover: {
+          bg: 'orange.600',
+          transform: 'translateY(-2px)',
+          boxShadow: '0 8px 20px -4px rgba(251, 146, 60, 0.4)',
+        },
+        _active: {
+          bg: 'orange.700',
+          transform: 'translateY(0) scale(0.98)',
+        },
+      },
+      green: {
+        bg: 'green.500',
+        color: 'white',
+        _hover: {
+          bg: 'green.600',
+          transform: 'translateY(-2px)',
+          boxShadow: '0 8px 20px -4px rgba(34, 197, 94, 0.4)',
+        },
+        _active: {
+          bg: 'green.700',
+          transform: 'translateY(0) scale(0.98)',
+        },
+      },
+    };
+
+    return {
+      minH: '60px',
       minW: '120px',
       px: 4,
       py: 3,
-      borderRadius: 'xl',
-      borderWidth: '2px',
-      boxShadow: 'sm',
-      transition: 'all 0.2s ease',
+      borderRadius: 'lg',
+      border: 'none',
+      boxShadow: '0 4px 12px -2px rgba(0, 0, 0, 0.15)',
+      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+      cursor: 'pointer',
+      fontWeight: '600',
       _focus: {
         outline: 'none',
         boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.25)',
       },
-      _active: { transform: 'translateY(0)' },
+      ...colorStyles[colorScheme as keyof typeof colorStyles],
     } as const;
-
-    if (option.colorScheme === 'red') {
-      return {
-        ...shared,
-        bg: 'red.50',
-        borderColor: 'red.200',
-        color: 'red.800',
-        _hover: {
-          bg: 'red.100',
-          borderColor: 'red.300',
-          transform: 'translateY(-1px)',
-        },
-      };
-    }
-    if (option.colorScheme === 'yellow') {
-      return {
-        ...shared,
-        bg: 'orange.50',
-        borderColor: 'orange.200',
-        color: 'orange.800',
-        _hover: {
-          bg: 'orange.100',
-          borderColor: 'orange.300',
-          transform: 'translateY(-1px)',
-        },
-      };
-    }
-    return {
-      ...shared,
-      bg: 'green.50',
-      borderColor: 'green.200',
-      color: 'green.800',
-      _hover: {
-        bg: 'green.100',
-        borderColor: 'green.300',
-        transform: 'translateY(-1px)',
-      },
-    };
   };
 
   const getIcon = (score: (typeof QUALITY_OPTIONS)[number]['score']) => {
@@ -81,25 +87,32 @@ export const PlayPageQualityFeedbackButtons = ({
   };
 
   const fadeInUp = keyframes`
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { 
+      opacity: 0; 
+      transform: translateY(20px) scale(0.95);
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0) scale(1);
+    }
   `;
 
   return (
     <Flex
       w="full"
-      maxW="lg"
+      maxW="xl"
       mx="auto"
       justify="center"
-      gap={4}
-      mt={-1}
+      gap={{ base: 3, sm: 4 }}
+      mt={2}
       as={chakra.div}
-      animation={`${fadeInUp} 220ms ease-out`}
+      animation={`${fadeInUp} 350ms cubic-bezier(0.4, 0, 0.2, 1)`}
       direction={{ base: 'column', sm: 'row' }}
       align={{ base: 'stretch', sm: 'center' }}
+      px={{ base: 4, sm: 0 }}
     >
-      {QUALITY_OPTIONS.map((option) => {
-        const styles = getButtonStyles(option);
+      {QUALITY_OPTIONS.map((option, idx) => {
+        const styles = getButtonStyles(option.colorScheme);
         const IconComp = getIcon(option.score);
         const aria = `${option.label}: ${option.description}`;
         return (
@@ -109,13 +122,16 @@ export const PlayPageQualityFeedbackButtons = ({
             aria-label={aria}
             title={aria}
             flex={1}
-            maxW="140px"
+            maxW={{ base: 'full', sm: '140px' }}
             variant="solid"
             {...styles}
+            style={{ animationDelay: `${idx * 50}ms` }}
+            role="option"
+            aria-selected={false}
           >
-            <Flex direction="column" align="center" gap={2} lineHeight={1}>
-              <Icon as={IconComp} boxSize={6} aria-hidden />
-              <Text fontSize="sm" fontWeight="700">
+            <Flex align="center" justify="center" gap={2.5}>
+              <Icon as={IconComp} boxSize={4} aria-hidden />
+              <Text fontSize="sm" fontWeight="inherit">
                 {option.label}
               </Text>
             </Flex>

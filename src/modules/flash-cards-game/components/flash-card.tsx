@@ -26,14 +26,11 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
     const isFlipped = flipStates[word.id] || false;
 
     const handleFlip = useCallback(() => {
-      setFlipStates((prev) => {
-        const next = !prev[word.id];
-        const updated = { ...prev, [word.id]: next };
-        if (onFlip) onFlip(word.id, next);
-        return updated;
-      });
+      const next = !isFlipped;
+      setFlipStates((prev) => ({ ...prev, [word.id]: next }));
       setHasFlippedAny(true);
-    }, [onFlip, word.id]);
+      if (onFlip) onFlip(word.id, next);
+    }, [isFlipped, onFlip, word.id]);
 
     const frontContent =
       cardSide === CardSide.Word
@@ -51,7 +48,7 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
     const ariaLabel = `Flashcard. ${isFlipped ? 'Back' : 'Front'} side showing. Press to flip`;
 
     return (
-      <Box w="full" style={{ perspective: '1000px' }}>
+      <Box w="full" style={{ perspective: '1200px' }}>
         <Box
           role="button"
           tabIndex={-1}
@@ -59,11 +56,11 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
           aria-pressed={isFlipped}
           key={word.id}
           w="full"
-          h="300px"
-          bg="white"
-          borderRadius="xl"
-          boxShadow="lg"
-          p={6}
+          h="320px"
+          bg="transparent"
+          borderRadius="2xl"
+          boxShadow="0 8px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -5px rgba(0, 0, 0, 0.04)"
+          p={0}
           display="flex"
           alignItems="center"
           justifyContent="center"
@@ -71,34 +68,58 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
           cursor="pointer"
           onClick={handleFlip}
           border="1px solid"
-          borderColor="gray.200"
-          transition="transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease"
+          borderColor="transparent"
+          transition="transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.3s ease"
           transformStyle="preserve-3d"
           transform={isFlipped ? 'rotateY(180deg)' : 'none'}
           position="relative"
           willChange="transform"
           ref={ref}
-          _focus={{ outline: 'none', boxShadow: 'none' }}
+          _hover={{
+            boxShadow:
+              '0 15px 35px -10px rgba(0, 0, 0, 0.1), 0 8px 15px -5px rgba(0, 0, 0, 0.05)',
+            transform: isFlipped
+              ? 'rotateY(180deg) scale(1.03)'
+              : 'scale(1.03)',
+          }}
+          _active={{
+            transform: isFlipped
+              ? 'rotateY(180deg) scale(0.99)'
+              : 'scale(0.99)',
+            boxShadow:
+              '0 5px 15px -3px rgba(0, 0, 0, 0.08), 0 3px 6px -2px rgba(0, 0, 0, 0.04)',
+          }}
+          _focus={{
+            outline: 'none',
+          }}
         >
           <Box
             position="absolute"
+            inset={0}
             w="full"
             h="full"
             backfaceVisibility="hidden"
             display="flex"
             alignItems="center"
             justifyContent="center"
-            px={4}
-            py={4}
+            px={6}
+            py={6}
+            borderRadius="2xl"
+            bg="gray.50"
+            border="1px solid"
+            borderColor="gray.200"
+            overflow="hidden"
           >
             {/* Front of the card */}
-            <Box maxH="100%" overflowY="auto">
+            <Box maxH="100%" overflowY="auto" zIndex={1}>
               <Text
-                fontSize="clamp(24px, 8vw, 40px)"
-                lineHeight="1.1"
+                fontSize="clamp(28px, 8vw, 44px)"
+                lineHeight="1.2"
                 fontWeight="bold"
+                color="gray.800"
                 wordBreak="break-word"
                 hyphens="auto"
+                letterSpacing="-0.02em"
               >
                 {frontContent}
               </Text>
@@ -107,24 +128,28 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
             {!hasFlippedAny && !isFlipped && (
               <Box
                 position="absolute"
-                bottom={4}
+                bottom={5}
                 left="50%"
                 transform="translateX(-50%)"
                 px={3}
-                py={1}
+                py={1.5}
                 borderRadius="full"
-                bg="gray.800"
-                color="white"
+                bg="rgba(0,0,0,0.04)"
+                color="gray.600"
                 fontSize="xs"
-                opacity={0.85}
+                fontWeight="medium"
                 pointerEvents="none"
+                display="flex"
+                alignItems="center"
+                gap={1.5}
               >
-                Tap or press Space to flip
+                Tap to flip
               </Box>
             )}
           </Box>
           <Box
             position="absolute"
+            inset={0}
             w="full"
             h="full"
             backfaceVisibility="hidden"
@@ -133,19 +158,26 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
-            gap={hasAdditionalTranslations ? 6 : 0}
-            px={4}
-            py={4}
+            gap={hasAdditionalTranslations ? 4 : 0}
+            px={6}
+            py={6}
+            borderRadius="2xl"
+            bg="white"
+            border="1px solid"
+            borderColor="gray.200"
+            overflow="hidden"
           >
             {/* Back of the card */}
-            <Box textAlign="center" maxH="50%" overflowY="auto">
+            <Box textAlign="center" maxH="50%" overflowY="auto" zIndex={1}>
               <Text
-                fontSize="clamp(24px, 8vw, 40px)"
-                lineHeight="1.1"
+                fontSize="clamp(28px, 8vw, 44px)"
+                lineHeight="1.2"
                 fontWeight="bold"
+                color="gray.800"
                 mb={hasAdditionalTranslations ? 4 : 0}
                 wordBreak="break-word"
                 hyphens="auto"
+                letterSpacing="-0.02em"
               >
                 {backContent}
               </Text>
@@ -157,14 +189,15 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
                 w="90%"
                 maxH="40%"
                 overflowY="auto"
-                pt={1}
+                pt={2}
+                zIndex={1}
               >
                 <Text
                   fontSize="xs"
-                  fontWeight="semibold"
+                  fontWeight="medium"
                   color="gray.500"
                   textTransform="uppercase"
-                  letterSpacing="wide"
+                  letterSpacing="wider"
                   mb={3}
                   textAlign="center"
                 >
@@ -180,13 +213,14 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
                     <Box
                       key={t}
                       px={3}
-                      py={1}
-                      borderRadius="full"
-                      bg="gray.50"
+                      py={1.5}
+                      borderRadius="lg"
+                      bg="gray.100"
                       border="1px solid"
                       borderColor="gray.200"
                       color="gray.700"
                       fontSize="sm"
+                      fontWeight="medium"
                       lineHeight={1}
                     >
                       {t}
@@ -199,7 +233,7 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
                   bottom={0}
                   left={0}
                   right={0}
-                  height="16px"
+                  height="20px"
                   bgGradient="linear(to-t, white, transparent)"
                 />
               </Box>

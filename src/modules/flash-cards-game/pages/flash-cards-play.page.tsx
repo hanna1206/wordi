@@ -285,85 +285,94 @@ export const FlashCardsPlayPage = () => {
   }
 
   return (
-    <>
-      <Flex direction="column" h="100svh" p={4} pt={2}>
-        <PlayPageNavigation
-          currentIndex={currentCardIndex}
-          totalCount={words.length}
-        />
+    <Flex
+      direction="column"
+      h="100svh"
+      p={4}
+      pt={2}
+      background={
+        cardSide === CardSide.Word
+          ? 'linear-gradient(135deg, #f0f9ff, #faf5ff)'
+          : 'linear-gradient(135deg, #f0fdfa, #f7fee7)'
+      }
+      transition="background 0.5s ease-in-out"
+    >
+      <PlayPageNavigation
+        currentIndex={currentCardIndex}
+        totalCount={words.length}
+      />
 
-        {/* Desktop-only shortcut hints */}
-        <Flex
-          display={{ base: 'none', lg: 'flex' }}
-          justify="center"
-          align="center"
-          gap={6}
-          color="gray.600"
-          fontSize="sm"
-          mb={2}
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-        >
-          <HStack gap={2}>
-            <Text fontWeight="600">Flip:</Text>
-            <HStack gap={1}>
-              <Kbd>Space</Kbd>
-              <Text>/</Text>
-              <Kbd>Enter</Kbd>
-              <Text>/</Text>
-              <Kbd>↑</Kbd>
-              <Text>/</Text>
-              <Kbd>↓</Kbd>
-            </HStack>
+      {/* Desktop-only shortcut hints */}
+      <Flex
+        display={{ base: 'none', lg: 'flex' }}
+        justify="center"
+        align="center"
+        gap={6}
+        color="gray.600"
+        fontSize="sm"
+        mb={2}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        <HStack gap={2}>
+          <Text fontWeight="600">Flip:</Text>
+          <HStack gap={1}>
+            <Kbd>Space</Kbd>
+            <Text>/</Text>
+            <Kbd>Enter</Kbd>
+            <Text>/</Text>
+            <Kbd>↑</Kbd>
+            <Text>/</Text>
+            <Kbd>↓</Kbd>
           </HStack>
-          <HStack gap={2}>
-            <Text fontWeight="600">Rate:</Text>
-            <HStack gap={1}>
-              <Kbd>1</Kbd>
-              <Text>= Hard</Text>
-              <Text>·</Text>
-              <Kbd>2</Kbd>
-              <Text>= Good</Text>
-              <Text>·</Text>
-              <Kbd>3</Kbd>
-              <Text>= Easy</Text>
-            </HStack>
+        </HStack>
+        <HStack gap={2}>
+          <Text fontWeight="600">Rate:</Text>
+          <HStack gap={1}>
+            <Kbd>1</Kbd>
+            <Text>= Hard</Text>
+            <Text>·</Text>
+            <Kbd>2</Kbd>
+            <Text>= Good</Text>
+            <Text>·</Text>
+            <Kbd>3</Kbd>
+            <Text>= Easy</Text>
           </HStack>
-          <HStack gap={2}>
-            <Text fontWeight="600">Next:</Text>
-            <Kbd>→</Kbd>
-            <Text>(Good)</Text>
-          </HStack>
-        </Flex>
-
-        {/* Game Content */}
-        <Box
-          w="full"
-          maxW="lg"
-          mx="auto"
-          flex={1}
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          gap={6}
-        >
-          <Box
-            key={words[currentCardIndex].id}
-            animation={`${slideIn} 220ms ease-out`}
-            willChange="transform, opacity"
-          >
-            <FlashCard
-              ref={cardButtonRef}
-              word={words[currentCardIndex]}
-              cardSide={cardSide}
-              allWordIds={words.map((w) => w.id)}
-              onFlip={(_, flipped) => setIsCurrentFlipped(flipped)}
-            />
-          </Box>
-
-          <PlayPageQualityFeedbackButtons onQualitySelect={handleNextCard} />
-        </Box>
+        </HStack>
+        <HStack gap={2}>
+          <Text fontWeight="600">Next:</Text>
+          <Kbd>→</Kbd>
+          <Text>(Good)</Text>
+        </HStack>
       </Flex>
-    </>
+
+      {/* Game Content */}
+      <Box
+        w="full"
+        maxW="lg"
+        mx="auto"
+        flex={1}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        gap={6}
+      >
+        <Box
+          key={words[currentCardIndex].id}
+          animation={`${slideIn} 220ms ease-out`}
+          willChange="transform, opacity"
+        >
+          <FlashCard
+            ref={cardButtonRef}
+            word={words[currentCardIndex]}
+            cardSide={cardSide}
+            allWordIds={words.map((w) => w.id)}
+            onFlip={(_, flipped) => setIsCurrentFlipped(flipped)}
+          />
+        </Box>
+
+        <PlayPageQualityFeedbackButtons onQualitySelect={handleNextCard} />
+      </Box>
+    </Flex>
   );
 };
