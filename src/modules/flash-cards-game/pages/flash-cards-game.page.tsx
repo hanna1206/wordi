@@ -12,6 +12,7 @@ import {
   Heading,
   HStack,
   RadioGroup,
+  Spinner,
   Text,
 } from '@chakra-ui/react';
 import Link from 'next/link';
@@ -91,8 +92,8 @@ export const FlashCardsGamePage = () => {
 
   return (
     <>
-      <Box as="main" py={2}>
-        <Box mx="auto" px={2}>
+      <Box as="main" py={8}>
+        <Box mx="auto" px={4} maxW="3xl">
           <Box mb={8}>
             <Button asChild variant="ghost">
               <Link href="/">
@@ -104,14 +105,14 @@ export const FlashCardsGamePage = () => {
             </Button>
           </Box>
 
-          <Box w="full" maxW="2xl" mx="auto">
-            <Flex direction="column" gap={8}>
+          <Box w="full" mx="auto">
+            <Flex direction="column" gap={10}>
               <Flex direction="column" gap={2} textAlign="center">
-                <Heading as="h1" size="xl">
+                <Heading as="h1" size="2xl" lineHeight="shorter">
                   Flashcards Game
                 </Heading>
-                <Text fontSize="lg" color="gray.600">
-                  Choose a mode to start practicing your words.
+                <Text fontSize="md" color="gray.600">
+                  Practice smarter with daily review or quick modes.
                 </Text>
               </Flex>
 
@@ -123,7 +124,16 @@ export const FlashCardsGamePage = () => {
                   value={cardSide}
                   onValueChange={(e) => setCardSide(e.value)}
                 >
-                  <HStack gap="6" justifyContent="center">
+                  <HStack
+                    gap="6"
+                    justifyContent="center"
+                    bg="gray.50"
+                    px={4}
+                    py={3}
+                    borderRadius="xl"
+                    borderWidth={1}
+                    borderColor="gray.200"
+                  >
                     {CARD_SIDE_OPTIONS.map((item) => (
                       <RadioGroup.Item key={item.value} value={item.value}>
                         <RadioGroup.ItemHiddenInput />
@@ -135,7 +145,7 @@ export const FlashCardsGamePage = () => {
                 </RadioGroup.Root>
               </Flex>
 
-              <Flex direction="column" w="full" gap={4}>
+              <Flex direction="column" w="full" gap={6}>
                 {/* Daily Review - Priority mode */}
                 <Box>
                   <GameModeCard
@@ -143,7 +153,12 @@ export const FlashCardsGamePage = () => {
                     title={
                       <Flex align="center" gap={3}>
                         <Text>Daily Review</Text>
-                        {!isLoading && (
+                        {isLoading ? (
+                          <HStack color="gray.500" fontSize="sm">
+                            <Spinner size="sm" />
+                            <Text>Checking due words...</Text>
+                          </HStack>
+                        ) : (
                           <Badge
                             colorScheme={dueCount > 0 ? 'orange' : 'green'}
                             borderRadius="full"
@@ -160,6 +175,7 @@ export const FlashCardsGamePage = () => {
                           ? "Great! No words due for review today. You're all caught up!"
                           : 'Start learning words to see them here for review.'
                     }
+                    subtext="Best for maintaining progress daily with spaced repetition."
                     onClick={() =>
                       handleStartGame(
                         GameMode.DueReview,
@@ -167,6 +183,7 @@ export const FlashCardsGamePage = () => {
                       )
                     }
                     disabled={dueCount === 0}
+                    isLoading={isLoading}
                   />
                 </Box>
 
@@ -182,31 +199,48 @@ export const FlashCardsGamePage = () => {
                   >
                     Practice Modes
                   </Text>
-                  <Flex direction="column" gap={3}>
-                    <GameModeCard
-                      icon={FaRegClock}
-                      title="Practice 10 Latest Words"
-                      description="Review the most recent words you've saved."
-                      onClick={() => handleStartGame(GameMode.Latest, 10)}
-                    />
-                    <GameModeCard
-                      icon={FaRegClock}
-                      title="Practice 20 Latest Words"
-                      description="A longer session with your newest words."
-                      onClick={() => handleStartGame(GameMode.Latest, 20)}
-                    />
-                    <GameModeCard
-                      icon={FaRandom}
-                      title="Practice 10 Random Words"
-                      description="Shuffle your saved words for a surprise review."
-                      onClick={() => handleStartGame(GameMode.Random, 10)}
-                    />
-                    <GameModeCard
-                      icon={FaRandom}
-                      title="Practice 20 Random Words"
-                      description="A bigger random set for a more robust practice."
-                      onClick={() => handleStartGame(GameMode.Random, 20)}
-                    />
+                  <Flex
+                    direction={{ base: 'column', md: 'row' }}
+                    gap={4}
+                    align="stretch"
+                    flexWrap="wrap"
+                  >
+                    <Box flex={{ md: 1 }} minW={{ md: 'calc(50% - 8px)' }}>
+                      <GameModeCard
+                        icon={FaRegClock}
+                        title="Practice 10 Latest Words"
+                        description="Review the most recent words you've saved."
+                        subtext="A quick warm-up with your newest vocabulary."
+                        onClick={() => handleStartGame(GameMode.Latest, 10)}
+                      />
+                    </Box>
+                    <Box flex={{ md: 1 }} minW={{ md: 'calc(50% - 8px)' }}>
+                      <GameModeCard
+                        icon={FaRegClock}
+                        title="Practice 20 Latest Words"
+                        description="A longer session with your newest words."
+                        subtext="Great when you just added many words."
+                        onClick={() => handleStartGame(GameMode.Latest, 20)}
+                      />
+                    </Box>
+                    <Box flex={{ md: 1 }} minW={{ md: 'calc(50% - 8px)' }}>
+                      <GameModeCard
+                        icon={FaRandom}
+                        title="Practice 10 Random Words"
+                        description="Shuffle your saved words for a surprise review."
+                        subtext="Good for variety and spaced retrieval."
+                        onClick={() => handleStartGame(GameMode.Random, 10)}
+                      />
+                    </Box>
+                    <Box flex={{ md: 1 }} minW={{ md: 'calc(50% - 8px)' }}>
+                      <GameModeCard
+                        icon={FaRandom}
+                        title="Practice 20 Random Words"
+                        description="A bigger random set for a more robust practice."
+                        subtext="Use when you want a longer, mixed session."
+                        onClick={() => handleStartGame(GameMode.Random, 20)}
+                      />
+                    </Box>
                   </Flex>
                 </Box>
               </Flex>
