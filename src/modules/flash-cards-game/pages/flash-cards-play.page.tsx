@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Box, Flex, HStack, Kbd, Text } from '@chakra-ui/react';
+import { keyframes } from '@emotion/react';
 import { useSearchParams } from 'next/navigation';
 
 import { toaster } from '@/components/toaster';
@@ -28,7 +29,14 @@ export const FlashCardsPlayPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isGameFinished, setIsGameFinished] = useState(false);
   const [needsReviewWords, setNeedsReviewWords] = useState<SavedWord[]>([]);
-  const cardButtonRef = useRef<HTMLButtonElement | null>(null);
+  const cardButtonRef = useRef<HTMLDivElement | null>(null);
+  const [isCurrentFlipped, setIsCurrentFlipped] = useState(false);
+  const switchTimeoutRef = useRef<number | null>(null);
+
+  const slideIn = keyframes`
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  `;
 
   const mode = searchParams.get('mode') as GameMode;
   const limit = Number(searchParams.get('limit'));
@@ -77,6 +85,16 @@ export const FlashCardsPlayPage = () => {
     return undefined;
   }, [currentCardIndex, isLoading, error, isGameFinished]);
 
+  // Clear pending switch timer on unmount or index change
+  useEffect(() => {
+    return () => {
+      if (switchTimeoutRef.current != null) {
+        window.clearTimeout(switchTimeoutRef.current);
+        switchTimeoutRef.current = null;
+      }
+    };
+  }, [currentCardIndex]);
+
   const focusCard = useCallback(() => {
     cardButtonRef.current?.focus();
   }, []);
@@ -116,12 +134,28 @@ export const FlashCardsPlayPage = () => {
         setNeedsReviewWords((prev) => [...prev, currentWord]);
       }
 
-      if (currentCardIndex < words.length - 1) {
-        setCurrentCardIndex((prev) => prev + 1);
-        // Move focus back to the card so Space flips instead of re-pressing the button
-        setTimeout(focusCard, 0);
+      // For HARD: if card isn't flipped, flip to reveal answer, then advance after delay
+      if (qualityScore === QualityScore.Hard && !isCurrentFlipped) {
+        cardButtonRef.current?.click();
+        setIsCurrentFlipped(true);
+        const id = window.setTimeout(() => {
+          if (currentCardIndex < words.length - 1) {
+            setCurrentCardIndex((prev) => prev + 1);
+            setIsCurrentFlipped(false);
+            setTimeout(focusCard, 0);
+          } else {
+            setIsGameFinished(true);
+          }
+        }, 1400);
+        switchTimeoutRef.current = id;
       } else {
-        setIsGameFinished(true);
+        if (currentCardIndex < words.length - 1) {
+          setCurrentCardIndex((prev) => prev + 1);
+          setIsCurrentFlipped(false);
+          setTimeout(focusCard, 0);
+        } else {
+          setIsGameFinished(true);
+        }
       }
 
       // Save quality feedback in the background (non-blocking)
@@ -137,7 +171,7 @@ export const FlashCardsPlayPage = () => {
           console.error('Failed to save quality feedback:', error);
         });
     },
-    [words, currentCardIndex, focusCard],
+    [words, currentCardIndex, focusCard, isCurrentFlipped],
   );
 
   // Gesture handling (swipe): up/down flip, left=Hard, right=Easy
@@ -179,6 +213,7 @@ export const FlashCardsPlayPage = () => {
       } else {
         // Vertical swipe -> flip
         cardButtonRef.current?.click();
+        setIsCurrentFlipped((v) => !v);
       }
     },
     [handleNextCard],
@@ -201,12 +236,7 @@ export const FlashCardsPlayPage = () => {
       if (isTypingInField(document.activeElement)) return;
 
       // Flip with Space/Enter/Arrows Up/Down
-      if (
-        e.key === ' ' ||
-        e.key === 'Enter' ||
-        e.key === 'ArrowUp' ||
-        e.key === 'ArrowDown'
-      ) {
+      if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
         cardButtonRef.current?.click();
         return;
@@ -317,12 +347,19 @@ export const FlashCardsPlayPage = () => {
           justifyContent="center"
           gap={6}
         >
-          <FlashCard
-            ref={cardButtonRef}
-            word={words[currentCardIndex]}
-            cardSide={cardSide}
-            allWordIds={words.map((w) => w.id)}
-          />
+          <Box
+            key={words[currentCardIndex].id}
+            animation={`${slideIn} 220ms ease-out`}
+            willChange="transform, opacity"
+          >
+            <FlashCard
+              ref={cardButtonRef}
+              word={words[currentCardIndex]}
+              cardSide={cardSide}
+              allWordIds={words.map((w) => w.id)}
+              onFlip={(_, flipped) => setIsCurrentFlipped(flipped)}
+            />
+          </Box>
 
           <PlayPageQualityFeedbackButtons onQualitySelect={handleNextCard} />
         </Box>

@@ -1,6 +1,5 @@
 'use client';
 
-import type { KeyboardEvent } from 'react';
 import { forwardRef, useCallback, useState } from 'react';
 
 import { Box, Text } from '@chakra-ui/react';
@@ -13,10 +12,11 @@ type FlashCardProps = {
   word: SavedWord;
   cardSide: CardSide;
   allWordIds: string[];
+  onFlip?: (wordId: string, isFlipped: boolean) => void;
 };
 
-export const FlashCard = forwardRef<HTMLButtonElement, FlashCardProps>(
-  ({ word, cardSide, allWordIds }, ref) => {
+export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
+  ({ word, cardSide, allWordIds, onFlip }, ref) => {
     // Initialize flip states for all words with false as default
     const [flipStates, setFlipStates] = useState<Record<string, boolean>>(() =>
       allWordIds.reduce((acc, id) => ({ ...acc, [id]: false }), {}),
@@ -26,22 +26,14 @@ export const FlashCard = forwardRef<HTMLButtonElement, FlashCardProps>(
     const isFlipped = flipStates[word.id] || false;
 
     const handleFlip = useCallback(() => {
-      setFlipStates((prev) => ({
-        ...prev,
-        [word.id]: !prev[word.id],
-      }));
+      setFlipStates((prev) => {
+        const next = !prev[word.id];
+        const updated = { ...prev, [word.id]: next };
+        if (onFlip) onFlip(word.id, next);
+        return updated;
+      });
       setHasFlippedAny(true);
-    }, [word.id]);
-
-    const handleKeyDown = useCallback(
-      (event: KeyboardEvent) => {
-        if (event.key === ' ' || event.key === 'Enter') {
-          event.preventDefault();
-          handleFlip();
-        }
-      },
-      [handleFlip],
-    );
+    }, [onFlip, word.id]);
 
     const frontContent =
       cardSide === CardSide.Word
@@ -61,7 +53,8 @@ export const FlashCard = forwardRef<HTMLButtonElement, FlashCardProps>(
     return (
       <Box w="full" style={{ perspective: '1000px' }}>
         <Box
-          as="button"
+          role="button"
+          tabIndex={-1}
           aria-label={ariaLabel}
           aria-pressed={isFlipped}
           key={word.id}
@@ -77,19 +70,15 @@ export const FlashCard = forwardRef<HTMLButtonElement, FlashCardProps>(
           textAlign="center"
           cursor="pointer"
           onClick={handleFlip}
-          onKeyDown={handleKeyDown}
           border="1px solid"
           borderColor="gray.200"
-          transition="transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)"
+          transition="transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease"
           transformStyle="preserve-3d"
           transform={isFlipped ? 'rotateY(180deg)' : 'none'}
           position="relative"
           willChange="transform"
           ref={ref}
-          _focus={{
-            outline: 'none',
-            boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.35)',
-          }}
+          _focus={{ outline: 'none', boxShadow: 'none' }}
         >
           <Box
             position="absolute"
