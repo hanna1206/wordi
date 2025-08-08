@@ -1,6 +1,13 @@
 'use client';
 
-import { Box, Flex, Text } from '@chakra-ui/react';
+import {
+  FaRegCheckCircle,
+  FaRegDotCircle,
+  FaRegTimesCircle,
+} from 'react-icons/fa';
+
+import { Button, chakra, Flex, Icon, Text } from '@chakra-ui/react';
+import { keyframes } from '@emotion/react';
 
 import { QUALITY_OPTIONS, QualityScore } from '../flash-cards-game.const';
 
@@ -12,88 +19,105 @@ export const PlayPageQualityFeedbackButtons = ({
   onQualitySelect,
 }: PlayPageQualityFeedbackButtonsProps) => {
   const getButtonStyles = (option: (typeof QUALITY_OPTIONS)[number]) => {
-    const baseStyles = {
-      hard: {
+    const shared = {
+      h: '64px',
+      minW: '120px',
+      px: 4,
+      py: 3,
+      borderRadius: 'xl',
+      borderWidth: '2px',
+      boxShadow: 'sm',
+      transition: 'all 0.2s ease',
+      _focus: {
+        outline: 'none',
+        boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.25)',
+      },
+      _active: { transform: 'translateY(0)' },
+    } as const;
+
+    if (option.colorScheme === 'red') {
+      return {
+        ...shared,
         bg: 'red.50',
         borderColor: 'red.200',
-        color: 'red.700',
+        color: 'red.800',
         _hover: {
           bg: 'red.100',
           borderColor: 'red.300',
           transform: 'translateY(-1px)',
         },
-        _active: { bg: 'red.200', transform: 'translateY(0)' },
-      },
-      good: {
+      };
+    }
+    if (option.colorScheme === 'yellow') {
+      return {
+        ...shared,
         bg: 'orange.50',
         borderColor: 'orange.200',
-        color: 'orange.700',
+        color: 'orange.800',
         _hover: {
           bg: 'orange.100',
           borderColor: 'orange.300',
           transform: 'translateY(-1px)',
         },
-        _active: { bg: 'orange.200', transform: 'translateY(0)' },
-      },
-      easy: {
-        bg: 'green.50',
-        borderColor: 'green.200',
-        color: 'green.700',
-        _hover: {
-          bg: 'green.100',
-          borderColor: 'green.300',
-          transform: 'translateY(-1px)',
-        },
-        _active: { bg: 'green.200', transform: 'translateY(0)' },
+      };
+    }
+    return {
+      ...shared,
+      bg: 'green.50',
+      borderColor: 'green.200',
+      color: 'green.800',
+      _hover: {
+        bg: 'green.100',
+        borderColor: 'green.300',
+        transform: 'translateY(-1px)',
       },
     };
-
-    return option.colorScheme === 'red'
-      ? baseStyles.hard
-      : option.colorScheme === 'yellow'
-        ? baseStyles.good
-        : baseStyles.easy;
   };
 
+  const getIcon = (score: (typeof QUALITY_OPTIONS)[number]['score']) => {
+    if (score === QUALITY_OPTIONS[0].score) return FaRegTimesCircle;
+    if (score === QUALITY_OPTIONS[1].score) return FaRegDotCircle;
+    return FaRegCheckCircle;
+  };
+
+  const fadeInUp = keyframes`
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  `;
+
   return (
-    <Flex w="full" maxW="lg" mx="auto" justify="center" gap={3} mt={-2}>
+    <Flex
+      w="full"
+      maxW="lg"
+      mx="auto"
+      justify="center"
+      gap={4}
+      mt={-1}
+      as={chakra.div}
+      animation={`${fadeInUp} 220ms ease-out`}
+    >
       {QUALITY_OPTIONS.map((option) => {
         const styles = getButtonStyles(option);
+        const IconComp = getIcon(option.score);
+        const aria = `${option.label}: ${option.description}`;
         return (
-          <Box
+          <Button
             key={option.score}
-            as="button"
             onClick={() => onQualitySelect(option.score)}
+            aria-label={aria}
+            title={aria}
             flex={1}
-            maxW="110px"
-            borderRadius="xl"
-            border="2px solid"
-            p={4}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            cursor="pointer"
-            transition="all 0.2s ease"
-            boxShadow="sm"
-            _focus={{
-              outline: 'none',
-              boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.15)',
-            }}
+            maxW="140px"
+            variant="solid"
             {...styles}
           >
-            <Text fontSize="2xl" mb={2} lineHeight={1}>
-              {option.emoji}
-            </Text>
-            <Text
-              fontSize="sm"
-              fontWeight="600"
-              textAlign="center"
-              lineHeight={1.2}
-            >
-              {option.label}
-            </Text>
-          </Box>
+            <Flex direction="column" align="center" gap={2} lineHeight={1}>
+              <Icon as={IconComp} boxSize={6} aria-hidden />
+              <Text fontSize="sm" fontWeight="700">
+                {option.label}
+              </Text>
+            </Flex>
+          </Button>
         );
       })}
     </Flex>

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, HStack, Kbd, Text } from '@chakra-ui/react';
 import { useSearchParams } from 'next/navigation';
 
 import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
@@ -80,35 +80,98 @@ export const FlashCardsPlayPage = () => {
     cardButtonRef.current?.focus();
   }, []);
 
-  const handleNextCard = (qualityScore: QualityScore) => {
-    const currentWord = words[currentCardIndex];
+  const handleNextCard = useCallback(
+    (qualityScore: QualityScore) => {
+      const currentWord = words[currentCardIndex];
 
-    // Optimistically update UI first
-    if (qualityScore === QualityScore.Hard) {
-      setNeedsReviewWords((prev) => [...prev, currentWord]);
-    }
+      if (!currentWord) return;
 
-    if (currentCardIndex < words.length - 1) {
-      setCurrentCardIndex((prev) => prev + 1);
-      // Move focus back to the card so Space flips instead of re-pressing the button
-      setTimeout(focusCard, 0);
-    } else {
-      setIsGameFinished(true);
-    }
+      // Optimistically update UI first
+      if (qualityScore === QualityScore.Hard) {
+        setNeedsReviewWords((prev) => [...prev, currentWord]);
+      }
 
-    // Save quality feedback in the background (non-blocking)
-    saveQualityFeedback({ wordId: currentWord.id, qualityScore })
-      .then((result) => {
-        if (!result.success) {
+      if (currentCardIndex < words.length - 1) {
+        setCurrentCardIndex((prev) => prev + 1);
+        // Move focus back to the card so Space flips instead of re-pressing the button
+        setTimeout(focusCard, 0);
+      } else {
+        setIsGameFinished(true);
+      }
+
+      // Save quality feedback in the background (non-blocking)
+      saveQualityFeedback({ wordId: currentWord.id, qualityScore })
+        .then((result) => {
+          if (!result.success) {
+            // eslint-disable-next-line no-console
+            console.error('Failed to save quality feedback:', result.error);
+          }
+        })
+        .catch((error) => {
           // eslint-disable-next-line no-console
-          console.error('Failed to save quality feedback:', result.error);
-        }
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error('Failed to save quality feedback:', error);
-      });
-  };
+          console.error('Failed to save quality feedback:', error);
+        });
+    },
+    [words, currentCardIndex, focusCard],
+  );
+
+  // Global keyboard shortcuts
+  useEffect(() => {
+    if (isLoading || error || isGameFinished || words.length === 0) return;
+
+    const isTypingInField = (el: Element | null) => {
+      if (!el) return false;
+      const tag = el.tagName.toLowerCase();
+      const editable = (el as HTMLElement).isContentEditable;
+      return (
+        editable || tag === 'input' || tag === 'textarea' || tag === 'select'
+      );
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (isTypingInField(document.activeElement)) return;
+
+      // Flip with Space/Enter/Arrows Up/Down
+      if (
+        e.key === ' ' ||
+        e.key === 'Enter' ||
+        e.key === 'ArrowUp' ||
+        e.key === 'ArrowDown'
+      ) {
+        e.preventDefault();
+        cardButtonRef.current?.click();
+        return;
+      }
+
+      // Numeric ratings
+      if (e.code === 'Digit1' || e.code === 'Numpad1') {
+        e.preventDefault();
+        handleNextCard(QualityScore.Hard);
+        return;
+      }
+      if (e.code === 'Digit2' || e.code === 'Numpad2') {
+        e.preventDefault();
+        handleNextCard(QualityScore.Good);
+        return;
+      }
+      if (e.code === 'Digit3' || e.code === 'Numpad3') {
+        e.preventDefault();
+        handleNextCard(QualityScore.Easy);
+        return;
+      }
+
+      // ArrowRight advances with Good by default
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        handleNextCard(QualityScore.Good);
+        return;
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown as EventListener);
+    return () =>
+      window.removeEventListener('keydown', onKeyDown as EventListener);
+  }, [isLoading, error, isGameFinished, words.length, handleNextCard]);
 
   if (isLoading) {
     return <PlayPageLoadingState />;
@@ -129,6 +192,48 @@ export const FlashCardsPlayPage = () => {
           currentIndex={currentCardIndex}
           totalCount={words.length}
         />
+
+        {/* Desktop-only shortcut hints */}
+        <Flex
+          display={{ base: 'none', lg: 'flex' }}
+          justify="center"
+          align="center"
+          gap={6}
+          color="gray.600"
+          fontSize="sm"
+          mb={2}
+        >
+          <HStack gap={2}>
+            <Text fontWeight="600">Flip:</Text>
+            <HStack gap={1}>
+              <Kbd>Space</Kbd>
+              <Text>/</Text>
+              <Kbd>Enter</Kbd>
+              <Text>/</Text>
+              <Kbd>↑</Kbd>
+              <Text>/</Text>
+              <Kbd>↓</Kbd>
+            </HStack>
+          </HStack>
+          <HStack gap={2}>
+            <Text fontWeight="600">Rate:</Text>
+            <HStack gap={1}>
+              <Kbd>1</Kbd>
+              <Text>= Hard</Text>
+              <Text>·</Text>
+              <Kbd>2</Kbd>
+              <Text>= Good</Text>
+              <Text>·</Text>
+              <Kbd>3</Kbd>
+              <Text>= Easy</Text>
+            </HStack>
+          </HStack>
+          <HStack gap={2}>
+            <Text fontWeight="600">Next:</Text>
+            <Kbd>→</Kbd>
+            <Text>(Good)</Text>
+          </HStack>
+        </Flex>
 
         {/* Game Content */}
         <Box
