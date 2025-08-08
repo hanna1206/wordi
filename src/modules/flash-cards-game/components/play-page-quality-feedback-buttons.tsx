@@ -95,6 +95,8 @@ export const PlayPageQualityFeedbackButtons = ({
       mt={-1}
       as={chakra.div}
       animation={`${fadeInUp} 220ms ease-out`}
+      direction={{ base: 'column', sm: 'row' }}
+      align={{ base: 'stretch', sm: 'center' }}
     >
       {QUALITY_OPTIONS.map((option) => {
         const styles = getButtonStyles(option);

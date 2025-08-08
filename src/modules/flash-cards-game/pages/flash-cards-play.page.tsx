@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Flex, HStack, Kbd, Text } from '@chakra-ui/react';
 import { useSearchParams } from 'next/navigation';
 
+import { toaster } from '@/components/toaster';
 import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
 import { FlashCard } from '../components/flash-card';
@@ -80,6 +81,30 @@ export const FlashCardsPlayPage = () => {
     cardButtonRef.current?.focus();
   }, []);
 
+  // First-time helper toast (keyboard on desktop, swipe on mobile/tablet)
+  useEffect(() => {
+    const STORAGE_KEY = 'flashcards_helper_v1';
+    if (typeof window === 'undefined') return;
+    try {
+      const shown = window.localStorage.getItem(STORAGE_KEY);
+      if (shown) return;
+
+      const isDesktop = window.innerWidth >= 992; // matches lg ~ 992px
+      const description = isDesktop
+        ? 'Flip: Space / Enter / ↑ / ↓ • Rate: 1=Hard, 2=Good, 3=Easy • Next: →'
+        : 'Swipe up/down to flip • Swipe left = Hard • Swipe right = Easy';
+
+      toaster.create({
+        title: 'Tips',
+        description,
+        type: 'info',
+        duration: 6000,
+        closable: true,
+      });
+      window.localStorage.setItem(STORAGE_KEY, '1');
+    } catch {}
+  }, []);
+
   const handleNextCard = useCallback(
     (qualityScore: QualityScore) => {
       const currentWord = words[currentCardIndex];
@@ -113,6 +138,50 @@ export const FlashCardsPlayPage = () => {
         });
     },
     [words, currentCardIndex, focusCard],
+  );
+
+  // Gesture handling (swipe): up/down flip, left=Hard, right=Easy
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const touchStartTarget = useRef<HTMLElement | null>(null);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStartX.current = t.clientX;
+    touchStartY.current = t.clientY;
+    touchStartTarget.current = (e.target as HTMLElement) || null;
+  }, []);
+
+  const onTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      // Ignore if started on a button (prevent accidental triggers)
+      const startEl = touchStartTarget.current;
+      if (startEl && startEl.closest('button')) return;
+
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX.current;
+      const dy = t.clientY - touchStartY.current;
+      const absX = Math.abs(dx);
+      const absY = Math.abs(dy);
+      const THRESHOLD = 60;
+
+      if (absX < THRESHOLD && absY < THRESHOLD) return;
+
+      if (absX > absY) {
+        // Horizontal swipe
+        if (dx > 0) {
+          // Right -> Easy
+          handleNextCard(QualityScore.Easy);
+        } else {
+          // Left -> Hard
+          handleNextCard(QualityScore.Hard);
+        }
+      } else {
+        // Vertical swipe -> flip
+        cardButtonRef.current?.click();
+      }
+    },
+    [handleNextCard],
   );
 
   // Global keyboard shortcuts
@@ -202,6 +271,8 @@ export const FlashCardsPlayPage = () => {
           color="gray.600"
           fontSize="sm"
           mb={2}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
         >
           <HStack gap={2}>
             <Text fontWeight="600">Flip:</Text>
