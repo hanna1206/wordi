@@ -48,7 +48,14 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
     const ariaLabel = `Flashcard. ${isFlipped ? 'Back' : 'Front'} side showing. Press to flip`;
 
     return (
-      <Box w="full" style={{ perspective: '1200px' }}>
+      <Box
+        w="full"
+        style={{
+          perspective: '1200px',
+          WebkitPerspective: '1200px',
+          MozPerspective: '1200px',
+        }}
+      >
         <Box
           role="button"
           tabIndex={-1}
@@ -69,11 +76,17 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
           onClick={handleFlip}
           border="1px solid"
           borderColor="transparent"
-          transition="transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.3s ease"
+          transition="transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.3s ease"
           transformStyle="preserve-3d"
           transform={isFlipped ? 'rotateY(180deg)' : 'none'}
           position="relative"
           willChange="transform"
+          style={{
+            WebkitTransformStyle: 'preserve-3d',
+            MozTransformStyle: 'preserve-3d',
+            WebkitPerspective: '1200px',
+            MozPerspective: '1200px',
+          }}
           ref={ref}
           _hover={{
             boxShadow:
@@ -99,7 +112,7 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
             w="full"
             h="full"
             backfaceVisibility="hidden"
-            display="flex"
+            display={isFlipped ? 'none' : 'flex'}
             alignItems="center"
             justifyContent="center"
             px={6}
@@ -109,6 +122,10 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
             border="1px solid"
             borderColor="gray.200"
             overflow="hidden"
+            style={{
+              WebkitBackfaceVisibility: 'hidden',
+              MozBackfaceVisibility: 'hidden',
+            }}
           >
             {/* Front of the card */}
             <Box maxH="100%" overflowY="auto" zIndex={1}>
@@ -159,7 +176,7 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
             h="full"
             backfaceVisibility="hidden"
             transform="rotateY(180deg)"
-            display="flex"
+            display={isFlipped ? 'flex' : 'none'}
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
@@ -171,6 +188,10 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
             border="1px solid"
             borderColor="gray.200"
             overflow="hidden"
+            style={{
+              WebkitBackfaceVisibility: 'hidden',
+              MozBackfaceVisibility: 'hidden',
+            }}
           >
             {/* Back of the card */}
             <Box textAlign="center" maxH="50%" overflowY="auto" zIndex={1}>
