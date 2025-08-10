@@ -1,3 +1,3 @@
-import { WordsPage } from '@/modules/words-persistence/pages/words.page';
+import { WordsPage } from '@/modules/words-management/pages/words.page';
 
 export default WordsPage;

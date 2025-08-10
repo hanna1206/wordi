@@ -26,6 +26,7 @@
     "@sentry/nextjs": "^9.35.0",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.50.2",
+    "ag-grid-react": "^34.1.1",
     "langchain": "^0.3.29",
     "next": "15.3.4",
     "next-themes": "^0.4.6",
