@@ -1,5 +1,4 @@
 import { gpt41Model } from '@/services/llm/gpt-4.1';
-import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
 
 import {
   adjectiveComparisonFormsPrompt,
@@ -103,17 +102,17 @@ const collocationsChain = collocationsPrompt.pipe(collocationsLlm);
 const synonymsLlm = gpt41Model.withStructuredOutput(synonymsOutputStructure);
 const synonymsChain = synonymsPrompt.pipe(synonymsLlm);
 
-const normalizeWordLlm = gpt41MiniModel.withStructuredOutput(
+const normalizeWordLlm = gpt41Model.withStructuredOutput(
   normalizeWordOutputStructure,
 );
 const normalizeWordChain = normalizeWordPrompt.pipe(normalizeWordLlm);
 
-const nounGenderLlm = gpt41MiniModel.withStructuredOutput(
+const nounGenderLlm = gpt41Model.withStructuredOutput(
   nounGenderOutputStructure,
 );
 const nounGenderChain = nounGenderPrompt.pipe(nounGenderLlm);
 
-const nounPluralFormLlm = gpt41MiniModel.withStructuredOutput(
+const nounPluralFormLlm = gpt41Model.withStructuredOutput(
   nounPluralFormOutputStructure,
 );
 const nounPluralFormChain = nounPluralFormPrompt.pipe(nounPluralFormLlm);
@@ -123,7 +122,7 @@ const nounPrepositionsLlm = gpt41Model.withStructuredOutput(
 );
 const nounPrepositionsChain = nounPrepositionsPrompt.pipe(nounPrepositionsLlm);
 
-const verbRegularityLlm = gpt41MiniModel.withStructuredOutput(
+const verbRegularityLlm = gpt41Model.withStructuredOutput(
   verbRegularityOutputStructure,
 );
 const verbRegularityChain = verbRegularityPrompt.pipe(verbRegularityLlm);
@@ -133,7 +132,7 @@ const verbConjugationLlm = gpt41Model.withStructuredOutput(
 );
 const verbConjugationChain = verbConjugationPrompt.pipe(verbConjugationLlm);
 
-const verbSeparablePrefixLlm = gpt41MiniModel.withStructuredOutput(
+const verbSeparablePrefixLlm = gpt41Model.withStructuredOutput(
   verbSeparablePrefixOutputStructure,
 );
 const verbSeparablePrefixChain = verbSeparablePrefixPrompt.pipe(
@@ -155,7 +154,7 @@ const verbPrepositionsLlm = gpt41Model.withStructuredOutput(
 );
 const verbPrepositionsChain = verbPrepositionsPrompt.pipe(verbPrepositionsLlm);
 
-const adjectiveTypeLlm = gpt41MiniModel.withStructuredOutput(
+const adjectiveTypeLlm = gpt41Model.withStructuredOutput(
   adjectiveTypeOutputStructure,
 );
 const adjectiveTypeChain = adjectiveTypePrompt.pipe(adjectiveTypeLlm);
@@ -174,7 +173,7 @@ const adjectivePrepositionsChain = adjectivePrepositionsPrompt.pipe(
   adjectivePrepositionsLlm,
 );
 
-const pronounTypeLlm = gpt41MiniModel.withStructuredOutput(
+const pronounTypeLlm = gpt41Model.withStructuredOutput(
   pronounTypeOutputStructure,
 );
 const pronounTypeChain = pronounTypePrompt.pipe(pronounTypeLlm);
