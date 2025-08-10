@@ -1,4 +1,5 @@
-import { gpt5MiniModel } from '@/services/llm/gpt-5-mini';
+import { gpt41Model } from '@/services/llm/gpt-4.1';
+import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
 
 import {
   adjectiveComparisonFormsPrompt,
@@ -84,108 +85,108 @@ import { PartOfSpeech } from './words-generation.const';
 
 const WRONG_VERB_SEPARABLE_PREFIX_VALUES = ['null', '/', '/null'];
 
-const basicTranslationLlm = gpt5MiniModel.withStructuredOutput(
+const basicTranslationLlm = gpt41Model.withStructuredOutput(
   basicTranslationOutputStructure,
 );
 const basicTranslationChain = basicTranslationPrompt.pipe(basicTranslationLlm);
 
-const exampleSentencesLlm = gpt5MiniModel.withStructuredOutput(
+const exampleSentencesLlm = gpt41Model.withStructuredOutput(
   exampleSentencesOutputStructure,
 );
 const exampleSentencesChain = exampleSentencesPrompt.pipe(exampleSentencesLlm);
 
-const collocationsLlm = gpt5MiniModel.withStructuredOutput(
+const collocationsLlm = gpt41Model.withStructuredOutput(
   collocationsOutputStructure,
 );
 const collocationsChain = collocationsPrompt.pipe(collocationsLlm);
 
-const synonymsLlm = gpt5MiniModel.withStructuredOutput(synonymsOutputStructure);
+const synonymsLlm = gpt41Model.withStructuredOutput(synonymsOutputStructure);
 const synonymsChain = synonymsPrompt.pipe(synonymsLlm);
 
-const normalizeWordLlm = gpt5MiniModel.withStructuredOutput(
+const normalizeWordLlm = gpt41MiniModel.withStructuredOutput(
   normalizeWordOutputStructure,
 );
 const normalizeWordChain = normalizeWordPrompt.pipe(normalizeWordLlm);
 
-const nounGenderLlm = gpt5MiniModel.withStructuredOutput(
+const nounGenderLlm = gpt41MiniModel.withStructuredOutput(
   nounGenderOutputStructure,
 );
 const nounGenderChain = nounGenderPrompt.pipe(nounGenderLlm);
 
-const nounPluralFormLlm = gpt5MiniModel.withStructuredOutput(
+const nounPluralFormLlm = gpt41MiniModel.withStructuredOutput(
   nounPluralFormOutputStructure,
 );
 const nounPluralFormChain = nounPluralFormPrompt.pipe(nounPluralFormLlm);
 
-const nounPrepositionsLlm = gpt5MiniModel.withStructuredOutput(
+const nounPrepositionsLlm = gpt41Model.withStructuredOutput(
   nounPrepositionsOutputStructure,
 );
 const nounPrepositionsChain = nounPrepositionsPrompt.pipe(nounPrepositionsLlm);
 
-const verbRegularityLlm = gpt5MiniModel.withStructuredOutput(
+const verbRegularityLlm = gpt41MiniModel.withStructuredOutput(
   verbRegularityOutputStructure,
 );
 const verbRegularityChain = verbRegularityPrompt.pipe(verbRegularityLlm);
 
-const verbConjugationLlm = gpt5MiniModel.withStructuredOutput(
+const verbConjugationLlm = gpt41Model.withStructuredOutput(
   verbConjugationOutputStructure,
 );
 const verbConjugationChain = verbConjugationPrompt.pipe(verbConjugationLlm);
 
-const verbSeparablePrefixLlm = gpt5MiniModel.withStructuredOutput(
+const verbSeparablePrefixLlm = gpt41MiniModel.withStructuredOutput(
   verbSeparablePrefixOutputStructure,
 );
 const verbSeparablePrefixChain = verbSeparablePrefixPrompt.pipe(
   verbSeparablePrefixLlm,
 );
 
-const verbReflexivityLlm = gpt5MiniModel.withStructuredOutput(
+const verbReflexivityLlm = gpt41Model.withStructuredOutput(
   verbReflexivityOutputStructure,
 );
 const verbReflexivityChain = verbReflexivityPrompt.pipe(verbReflexivityLlm);
 
-const verbSichUsageLlm = gpt5MiniModel.withStructuredOutput(
+const verbSichUsageLlm = gpt41Model.withStructuredOutput(
   verbSichUsageOutputStructure,
 );
 const verbSichUsageChain = verbSichUsagePrompt.pipe(verbSichUsageLlm);
 
-const verbPrepositionsLlm = gpt5MiniModel.withStructuredOutput(
+const verbPrepositionsLlm = gpt41Model.withStructuredOutput(
   verbPrepositionsOutputStructure,
 );
 const verbPrepositionsChain = verbPrepositionsPrompt.pipe(verbPrepositionsLlm);
 
-const adjectiveTypeLlm = gpt5MiniModel.withStructuredOutput(
+const adjectiveTypeLlm = gpt41MiniModel.withStructuredOutput(
   adjectiveTypeOutputStructure,
 );
 const adjectiveTypeChain = adjectiveTypePrompt.pipe(adjectiveTypeLlm);
 
-const adjectiveComparisonFormsLlm = gpt5MiniModel.withStructuredOutput(
+const adjectiveComparisonFormsLlm = gpt41Model.withStructuredOutput(
   adjectiveComparisonFormsOutputStructure,
 );
 const adjectiveComparisonFormsChain = adjectiveComparisonFormsPrompt.pipe(
   adjectiveComparisonFormsLlm,
 );
 
-const adjectivePrepositionsLlm = gpt5MiniModel.withStructuredOutput(
+const adjectivePrepositionsLlm = gpt41Model.withStructuredOutput(
   adjectivePrepositionsOutputStructure,
 );
 const adjectivePrepositionsChain = adjectivePrepositionsPrompt.pipe(
   adjectivePrepositionsLlm,
 );
 
-const pronounTypeLlm = gpt5MiniModel.withStructuredOutput(
+const pronounTypeLlm = gpt41MiniModel.withStructuredOutput(
   pronounTypeOutputStructure,
 );
 const pronounTypeChain = pronounTypePrompt.pipe(pronounTypeLlm);
 
-const pronounDeclensionsLlm = gpt5MiniModel.withStructuredOutput(
+const pronounDeclensionsLlm = gpt41Model.withStructuredOutput(
   pronounDeclensionsOutputStructure,
 );
 const pronounDeclensionsChain = pronounDeclensionsPrompt.pipe(
   pronounDeclensionsLlm,
 );
 
-const demonstrativePronounDeclensionsLlm = gpt5MiniModel.withStructuredOutput(
+const demonstrativePronounDeclensionsLlm = gpt41Model.withStructuredOutput(
   demonstrativePronounDeclensionsOutputStructure,
 );
 const demonstrativePronounDeclensionsChain =
