@@ -1,21 +1,22 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const demonstrativePronounInfoPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to provide detailed information about a given German demonstrative pronoun.
+export const demonstrativePronounDeclensionsPrompt =
+  PromptTemplate.fromTemplate(
+    `You are a linguistic assistant. Your task is to provide the complete declension table for a German demonstrative pronoun.
 
   The word is "{word}"
-  All translations of the word are provided in "{targetLanguage}"
   All explanations should be given in "{targetLanguage}"
   
-  IMPORTANT: Focus on grammatically correct, standard written forms. Provide formal, grammatically accurate explanations and examples.
-  
-  For demonstrative pronouns like "dieser", "jener", "derjenige", "derselbe", etc., provide the complete declension table showing how the pronoun changes across:
-  - All four cases (Nominativ, Akkusativ, Dativ, Genitiv)
-  - All three genders (Masculine, Feminine, Neuter)
-  - Plural forms
+  IMPORTANT: 
+  - Focus on grammatically correct, standard written forms
+  - Provide formal, grammatically accurate declensions
+  - For demonstrative pronouns like "dieser", "jener", "derjenige", "derselbe", etc.
+  - Provide the complete declension showing changes across all four cases and all genders
+  - Include all four cases: Nominativ, Akkusativ, Dativ, Genitiv
+  - Include all three genders: Masculine, Feminine, Neuter, plus Plural
   `,
-);
+  );
 
 export const outputStructure = z.object({
   declensions: z
@@ -48,9 +49,11 @@ export const outputStructure = z.object({
           ),
       }),
     )
+    .nullable()
     .describe(
       `Complete declension table for the demonstrative pronoun showing how it changes across all cases and genders.
       Each entry should include the case name and the forms for masculine, feminine, neuter, and plural.
-      Include all four cases: Nominativ, Akkusativ, Dativ, and Genitiv.`,
+      Include all four cases: Nominativ, Akkusativ, Dativ, and Genitiv.
+      Return null if not a demonstrative pronoun.`,
     ),
 });

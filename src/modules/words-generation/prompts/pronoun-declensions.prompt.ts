@@ -1,23 +1,22 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const pronounInfoPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to provide detailed information about a given German personal pronoun.
+export const pronounDeclensionsPrompt = PromptTemplate.fromTemplate(
+  `You are a linguistic assistant. Your task is to provide the declensions of a German personal pronoun.
 
   The word is "{word}"
-  All translations of the word are provided in "{targetLanguage}"
+  All translations should be in "{targetLanguage}"
   All explanations should be given in "{targetLanguage}"
   
-  IMPORTANT: Focus on grammatically correct, standard written forms. Provide formal, grammatically accurate explanations and examples.
+  IMPORTANT: 
+  - Focus on grammatically correct, standard written forms
+  - Provide formal, grammatically accurate explanations and examples
+  - Include all relevant cases for the pronoun
+  - All example sentences must be in German
   `,
 );
 
 export const outputStructure = z.object({
-  pronounType: z
-    .string()
-    .describe(
-      `The type of personal pronoun in German. Examples: "1st person singular", "2nd person plural", "3rd person singular masculine", etc.`,
-    ),
   declensions: z
     .array(
       z.object({
@@ -41,9 +40,11 @@ export const outputStructure = z.object({
           ),
       }),
     )
+    .nullable()
     .describe(
       `Array of declensions for the personal pronoun showing how it changes in different cases.
       Each declension should include the case name, the pronoun form, translation, and an example sentence.
-      Include all relevant cases (Nominativ, Akkusativ, Dativ, and Genitiv if applicable).`,
+      Include all relevant cases (Nominativ, Akkusativ, Dativ, and Genitiv if applicable).
+      Return null if not a personal pronoun.`,
     ),
 });
