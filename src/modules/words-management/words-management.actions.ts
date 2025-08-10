@@ -38,6 +38,18 @@ export const updateWordArchiveStatus = async (
   }
 };
 
+export const performBulkAction = async (
+  payload: BulkActionPayload,
+): Promise<void> => {
+  try {
+    await WordsManagementService.performBulkAction(payload);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error performing bulk action:', error);
+    throw new Error('Failed to perform bulk action');
+  }
+};
+
 export const updateWordStatus = async (
   progressId: string,
   status: WordWithProgress['status'],
@@ -48,18 +60,6 @@ export const updateWordStatus = async (
     // eslint-disable-next-line no-console
     console.error('Error updating word status:', error);
     throw new Error('Failed to update word status');
-  }
-};
-
-export const performBulkAction = async (
-  payload: BulkActionPayload,
-): Promise<void> => {
-  try {
-    await WordsManagementService.performBulkAction(payload);
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error performing bulk action:', error);
-    throw new Error('Failed to perform bulk action');
   }
 };
 

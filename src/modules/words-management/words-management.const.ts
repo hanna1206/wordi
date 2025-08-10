@@ -1,3 +1,5 @@
+import type { WordsFilterOptions } from './words-management.types';
+
 // Status configuration
 export const WORD_STATUS_CONFIG = {
   new: {
@@ -58,26 +60,26 @@ export const FILTER_PRESETS = {
     filters: {
       overdue: true,
       isArchived: false,
-    },
+    } as WordsFilterOptions,
   },
   newWords: {
     name: 'New Words',
     filters: {
-      status: ['new' as const],
+      status: ['new'],
       isArchived: false,
-    },
+    } as WordsFilterOptions,
   },
   struggling: {
     name: 'Needs Practice',
     filters: {
-      status: ['lapsed' as const],
+      status: ['lapsed'],
       isArchived: false,
-    },
+    } as WordsFilterOptions,
   },
   archived: {
     name: 'Archived',
     filters: {
       isArchived: true,
-    },
+    } as WordsFilterOptions,
   },
-} as const;
+};

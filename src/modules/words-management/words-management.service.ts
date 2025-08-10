@@ -10,6 +10,50 @@ import type {
 } from './words-management.types';
 
 export class WordsManagementService {
+  // Ensure all words have progress records
+  static async ensureProgressRecordsExist(userId: string): Promise<void> {
+    const supabase = await createClient();
+
+    // Get all user's words
+    const { data: words, error: wordsError } = await supabase
+      .from('words')
+      .select('id')
+      .eq('user_id', userId);
+
+    if (wordsError) throw wordsError;
+    if (!words || words.length === 0) return;
+
+    // Get existing progress records
+    const { data: existingProgress, error: progressError } = await supabase
+      .from('user_word_progress')
+      .select('word_id')
+      .eq('user_id', userId);
+
+    if (progressError) throw progressError;
+
+    const existingWordIds = new Set(
+      existingProgress?.map((p) => p.word_id) || [],
+    );
+    const wordsWithoutProgress = words.filter(
+      (w) => !existingWordIds.has(w.id),
+    );
+
+    if (wordsWithoutProgress.length === 0) return;
+
+    // Create progress records for words that don't have them
+    const progressRecords = wordsWithoutProgress.map((word) => ({
+      user_id: userId,
+      word_id: word.id,
+      status: 'new' as const,
+    }));
+
+    const { error: insertError } = await supabase
+      .from('user_word_progress')
+      .insert(progressRecords);
+
+    if (insertError) throw insertError;
+  }
+
   // Fetch all words with progress data for the user
   static async getUserWordsWithProgress(
     filters?: WordsFilterOptions,
@@ -21,6 +65,9 @@ export class WordsManagementService {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
+
+    // Ensure all words have progress records
+    await this.ensureProgressRecordsExist(user.id);
 
     // Build the query
     let query = supabase
@@ -63,20 +110,54 @@ export class WordsManagementService {
 
     // Apply sorting
     if (sort) {
-      const column =
-        sort.field === 'successRate'
-          ? 'user_word_progress.correct_reviews'
-          : sort.field;
-      query = query.order(column, { ascending: sort.direction === 'asc' });
+      // For joined table columns, we need to use a different approach
+      // We'll sort by the main table columns and handle progress columns differently
+      switch (sort.field) {
+        case 'normalizedWord':
+          query = query.order('normalized_word', {
+            ascending: sort.direction === 'asc',
+          });
+          break;
+        case 'partOfSpeech':
+          query = query.order('part_of_speech', {
+            ascending: sort.direction === 'asc',
+          });
+          break;
+        case 'createdAt':
+          query = query.order('created_at', {
+            ascending: sort.direction === 'asc',
+          });
+          break;
+        case 'updatedAt':
+          query = query.order('updated_at', {
+            ascending: sort.direction === 'asc',
+          });
+          break;
+        case 'id':
+          query = query.order('id', { ascending: sort.direction === 'asc' });
+          break;
+        // For progress-related fields, we'll sort in memory after fetching
+        // since Supabase doesn't easily support ordering by joined table columns
+        default:
+          // Default sort by created_at if field is not supported
+          query = query.order('created_at', {
+            ascending: sort.direction === 'asc',
+          });
+          break;
+      }
     }
 
     const { data, error } = await query;
 
-    if (error) throw error;
+    if (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error fetching words with progress:', error);
+      throw error;
+    }
     if (!data) return [];
 
     // Transform the data to match WordWithProgress interface
-    return data.map((word) => {
+    const transformedData = data.map((word) => {
       const progress = word.user_word_progress[0];
       const commonData = word.common_data as CommonWordData;
 
@@ -117,6 +198,44 @@ export class WordsManagementService {
             : 0,
       };
     });
+
+    // Handle in-memory sorting for progress fields
+    if (
+      sort &&
+      [
+        'nextReviewDate',
+        'status',
+        'successRate',
+        'easinessFactor',
+        'totalReviews',
+        'isArchived',
+      ].includes(sort.field)
+    ) {
+      transformedData.sort((a, b) => {
+        let aValue = a[sort.field];
+        let bValue = b[sort.field];
+
+        // Handle date comparison
+        if (sort.field === 'nextReviewDate') {
+          aValue = new Date(aValue as string).getTime();
+          bValue = new Date(bValue as string).getTime();
+        }
+
+        // Handle boolean comparison
+        if (typeof aValue === 'boolean') {
+          aValue = aValue ? 1 : 0;
+          bValue = bValue ? 1 : 0;
+        }
+
+        if (sort.direction === 'asc') {
+          return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+        } else {
+          return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+        }
+      });
+    }
+
+    return transformedData;
   }
 
   // Update archive status for a single word
