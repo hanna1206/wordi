@@ -18,15 +18,15 @@ const transformTranslationToDbFormat = (
   userId: string,
   targetLanguage: LanguageCode,
 ) => {
-  const { translationResult } = input;
+  const { linguisticItem } = input;
 
   // Extract common data
   const commonData: CommonWordData = {
-    mainTranslation: translationResult.mainTranslation,
-    additionalTranslations: translationResult.additionalTranslations,
-    exampleSentences: translationResult.exampleSentences,
-    synonyms: translationResult.synonyms,
-    collocations: translationResult.collocations,
+    mainTranslation: linguisticItem.mainTranslation,
+    additionalTranslations: linguisticItem.additionalTranslations,
+    exampleSentences: linguisticItem.exampleSentences,
+    synonyms: linguisticItem.synonyms,
+    collocations: linguisticItem.collocations,
   };
 
   // Build part-specific data object (everything except common fields)
@@ -41,7 +41,7 @@ const transformTranslationToDbFormat = (
     'partOfSpeech',
   ]);
 
-  Object.entries(translationResult).forEach(([key, value]) => {
+  Object.entries(linguisticItem).forEach(([key, value]) => {
     if (!commonFields.has(key)) {
       specificData[key] = value;
     }
@@ -50,8 +50,8 @@ const transformTranslationToDbFormat = (
   // Create camelCase object first, then convert to snake_case for database
   const camelCaseData = {
     userId,
-    normalizedWord: translationResult.normalizedWord,
-    partOfSpeech: translationResult.partOfSpeech[0] || 'other', // Use first part of speech
+    normalizedWord: linguisticItem.normalizedWord,
+    partOfSpeech: linguisticItem.partOfSpeech[0] || 'other', // Use first part of speech
     commonData,
     partSpecificData: specificData,
     targetLanguage,

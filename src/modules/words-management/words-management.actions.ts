@@ -1,6 +1,12 @@
 'use server';
 
-import { WordsManagementService } from './words-management.service';
+import {
+  getUserWordsWithProgress as getUserWordsWithProgressService,
+  getWordsStatistics as getWordsStatisticsService,
+  performBulkAction as performBulkActionService,
+  updateWordArchiveStatus as updateWordArchiveStatusService,
+  updateWordStatus as updateWordStatusService,
+} from './words-management.service';
 import type {
   BulkActionPayload,
   WordsFilterOptions,
@@ -14,7 +20,7 @@ export const getUserWordsWithProgress = async (
   sort?: WordsSortOptions,
 ): Promise<WordWithProgress[]> => {
   try {
-    return await WordsManagementService.getUserWordsWithProgress(filters, sort);
+    return await getUserWordsWithProgressService(filters, sort);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error fetching words with progress:', error);
@@ -27,10 +33,7 @@ export const updateWordArchiveStatus = async (
   isArchived: boolean,
 ): Promise<void> => {
   try {
-    await WordsManagementService.updateWordArchiveStatus(
-      progressId,
-      isArchived,
-    );
+    await updateWordArchiveStatusService(progressId, isArchived);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error updating archive status:', error);
@@ -42,7 +45,7 @@ export const performBulkAction = async (
   payload: BulkActionPayload,
 ): Promise<void> => {
   try {
-    await WordsManagementService.performBulkAction(payload);
+    await performBulkActionService(payload);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error performing bulk action:', error);
@@ -55,7 +58,7 @@ export const updateWordStatus = async (
   status: WordWithProgress['status'],
 ): Promise<void> => {
   try {
-    await WordsManagementService.updateWordStatus(progressId, status);
+    await updateWordStatusService(progressId, status);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error updating word status:', error);
@@ -65,7 +68,7 @@ export const updateWordStatus = async (
 
 export const getWordsStatistics = async (): Promise<WordsStatistics> => {
   try {
-    return await WordsManagementService.getWordsStatistics();
+    return await getWordsStatisticsService();
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error fetching words statistics:', error);

@@ -9,37 +9,37 @@ import {
 
 import { Text } from '@chakra-ui/react';
 
-import type { TranslationVerbResult } from '@/modules/words-generation/words-generation.types';
+import type { VerbLinguisticItem } from '@/modules/linguistics/linguistics.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
+import { LinguisticItemHeader } from './common/linguistic-item-header';
 import { TranslationSection } from './common/translation-section';
-import { WordHeader } from './common/word-header';
 
 interface VerbContentProps {
-  translation: TranslationVerbResult;
+  linguisticItem: VerbLinguisticItem;
   onRegenerate?: () => void;
 }
 
 export const VerbContent: React.FC<VerbContentProps> = ({
-  translation,
+  linguisticItem,
   onRegenerate,
 }) => {
-  const prepositions = translation.prepositions || [];
-  const conjugationAsArray = translation.conjugation.split(', ');
+  const prepositions = linguisticItem.prepositions || [];
+  const conjugationAsArray = linguisticItem.conjugation.split(', ');
   const conjugationText =
-    translation.regular === 'regular'
+    linguisticItem.regular === 'regular'
       ? conjugationAsArray[conjugationAsArray.length - 1]
       : conjugationAsArray.join(', ');
 
   return (
     <CardLayout>
-      <WordHeader
-        normalizedWord={translation.normalizedWord}
-        mainTranslation={translation.mainTranslation}
-        partOfSpeech={translation.partOfSpeech}
-        regularOrIrregularVerb={translation.regular}
-        isReflexiveVerb={translation.isReflexive}
-        separablePrefix={translation.separablePrefix}
+      <LinguisticItemHeader
+        normalizedWord={linguisticItem.normalizedWord}
+        mainTranslation={linguisticItem.mainTranslation}
+        partOfSpeech={linguisticItem.partOfSpeech}
+        regularOrIrregularVerb={linguisticItem.regular}
+        isReflexiveVerb={linguisticItem.isReflexive}
+        separablePrefix={linguisticItem.separablePrefix}
         onRegenerate={onRegenerate}
       />
 
@@ -50,18 +50,18 @@ export const VerbContent: React.FC<VerbContentProps> = ({
 
       <CardDivider />
 
-      {translation.sichUsage && (
+      {linguisticItem.sichUsage && (
         <TranslationSection
           icon={LuBinary}
           title="Sich usage"
           items={[
             {
               rule: 'With sich',
-              explanation: translation.sichUsage.withSich,
+              explanation: linguisticItem.sichUsage.withSich,
             },
             {
               rule: 'Without sich',
-              explanation: translation.sichUsage.withoutSich,
+              explanation: linguisticItem.sichUsage.withoutSich,
             },
           ]}
           renderMode="table"
@@ -79,28 +79,28 @@ export const VerbContent: React.FC<VerbContentProps> = ({
       <TranslationSection
         icon={LuLayers}
         title="Also means"
-        items={translation.additionalTranslations}
+        items={linguisticItem.additionalTranslations}
         renderMode="list"
       />
 
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
-        items={translation.exampleSentences}
+        items={linguisticItem.exampleSentences}
         renderMode="quotes"
       />
 
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
-        items={translation.synonyms}
+        items={linguisticItem.synonyms}
         renderMode="tags"
       />
 
       <TranslationSection
         icon={LuLink2}
         title="Collocations"
-        items={translation.collocations}
+        items={linguisticItem.collocations}
         renderMode="table"
       />
     </CardLayout>

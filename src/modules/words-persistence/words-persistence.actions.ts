@@ -21,10 +21,10 @@ import type {
 // Save word for learning
 export const saveWordForLearning = withUserSettings<SaveWordInput, SavedWord>(
   async (context, input): Promise<ActionResult<SavedWord>> => {
-    const { translationResult } = input;
+    const { linguisticItem } = input;
 
     // Validate input
-    if (!translationResult || !translationResult.normalizedWord) {
+    if (!linguisticItem || !linguisticItem.normalizedWord) {
       const error = 'Valid translation result is required';
 
       return {

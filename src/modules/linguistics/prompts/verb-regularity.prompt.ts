@@ -1,7 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-import { Regularity } from '../words-generation.const';
+import { Regularity } from '../linguistics.const';
 
 export const verbRegularityPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to determine whether a German verb is regular or irregular.

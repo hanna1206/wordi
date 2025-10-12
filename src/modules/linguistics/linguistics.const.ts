@@ -1,4 +1,4 @@
-// needs to be in sync with db enums
+// should be in sync with db enums (in vocabulary module and db migrations)
 export enum PartOfSpeech {
   NOUN = 'noun',
   VERB = 'verb',

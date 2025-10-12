@@ -1,4 +1,4 @@
-import type { TranslationResult } from '../words-generation/words-generation.types';
+import type { LinguisticItem } from '../linguistics/linguistics.types';
 
 // Application layer word structure - uses camelCase
 export interface SavedWord {
@@ -27,7 +27,7 @@ export interface CommonWordData {
 
 // Input for saving a word
 export interface SaveWordInput {
-  translationResult: TranslationResult;
+  linguisticItem: LinguisticItem;
 }
 
 // Application layer cache word structure - uses camelCase

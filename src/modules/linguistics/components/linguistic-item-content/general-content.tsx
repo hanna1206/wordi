@@ -1,27 +1,27 @@
 import React from 'react';
 import { LuLayers, LuLink2, LuQuote, LuReplace } from 'react-icons/lu';
 
-import type { TranslationResult } from '@/modules/words-generation/words-generation.types';
+import type { LinguisticItem } from '@/modules/linguistics/linguistics.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
+import { LinguisticItemHeader } from './common/linguistic-item-header';
 import { TranslationSection } from './common/translation-section';
-import { WordHeader } from './common/word-header';
 
 interface GeneralContentProps {
-  translation: TranslationResult;
+  linguisticItem: LinguisticItem;
   onRegenerate?: () => void;
 }
 
 export const GeneralContent: React.FC<GeneralContentProps> = ({
-  translation,
+  linguisticItem,
   onRegenerate,
 }) => {
   return (
     <CardLayout>
-      <WordHeader
-        normalizedWord={translation.normalizedWord}
-        mainTranslation={translation.mainTranslation}
-        partOfSpeech={translation.partOfSpeech}
+      <LinguisticItemHeader
+        normalizedWord={linguisticItem.normalizedWord}
+        mainTranslation={linguisticItem.mainTranslation}
+        partOfSpeech={linguisticItem.partOfSpeech}
         onRegenerate={onRegenerate}
       />
 
@@ -30,28 +30,28 @@ export const GeneralContent: React.FC<GeneralContentProps> = ({
       <TranslationSection
         icon={LuLayers}
         title="Also means"
-        items={translation.additionalTranslations}
+        items={linguisticItem.additionalTranslations}
         renderMode="list"
       />
 
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
-        items={translation.exampleSentences}
+        items={linguisticItem.exampleSentences}
         renderMode="quotes"
       />
 
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
-        items={translation.synonyms}
+        items={linguisticItem.synonyms}
         renderMode="tags"
       />
 
       <TranslationSection
         icon={LuLink2}
         title="Collocations"
-        items={translation.collocations}
+        items={linguisticItem.collocations}
         renderMode="table"
       />
     </CardLayout>

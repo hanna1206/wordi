@@ -1,4 +1,4 @@
-import { Gender } from '@/modules/words-generation/words-generation.const';
+import { Gender } from '@/modules/linguistics/linguistics.const';
 
 const GENDER_PROPERTIES: Record<
   Gender,

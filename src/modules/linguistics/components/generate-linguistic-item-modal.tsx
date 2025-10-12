@@ -3,43 +3,45 @@ import React, { useState } from 'react';
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
 import { toaster } from '@/components/toaster';
-import { GenerateWordError } from '@/modules/words-generation/components/generate-word-modal/generate-word-error';
-import { GenerateWordLoaded } from '@/modules/words-generation/components/generate-word-modal/generate-word-loaded';
-import { GenerateWordLoading } from '@/modules/words-generation/components/generate-word-modal/generate-word-loading';
-import { getGenderProperties } from '@/modules/words-generation/utils/get-gender-properties';
-import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
+import { GenerateLinguisticItemError } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-error';
+import { GenerateLinguisticItemLoaded } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-loaded';
+import { GenerateLinguisticItemLoading } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-loading';
+import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
-  TranslationNounResult,
-  TranslationResult,
-} from '@/modules/words-generation/words-generation.types';
+  LinguisticItem,
+  NounLinguisticItem,
+} from '@/modules/linguistics/linguistics.types';
+import { getGenderProperties } from '@/modules/linguistics/utils/get-gender-properties';
 import { saveWordForLearning } from '@/modules/words-persistence/words-persistence.actions';
 
-interface GenerateWordModalProps {
+interface GenerateLinguisticItemModalProps {
   isOpen: boolean;
   word: string;
   isLoading: boolean;
   error: string | null;
-  translation: TranslationResult | null;
+  linguisticItem: LinguisticItem | null;
   onClose: () => void;
   onRegenerate: (word: string) => void;
   onWordSaved: () => void;
 }
 
-export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
+export const GenerateLinguisticItemModal: React.FC<
+  GenerateLinguisticItemModalProps
+> = ({
   isOpen,
   word,
   isLoading,
   error,
-  translation,
+  linguisticItem,
   onClose,
   onRegenerate,
   onWordSaved,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
 
-  const isNoun = translation?.partOfSpeech?.includes(PartOfSpeech.NOUN);
+  const isNoun = linguisticItem?.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const gender = isNoun
-    ? (translation as TranslationNounResult).gender
+    ? (linguisticItem as NounLinguisticItem).gender
     : undefined;
   const genderProps = getGenderProperties(gender);
   const genderColor = genderProps
@@ -47,12 +49,12 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
     : undefined;
 
   const handleSaveWord = async () => {
-    if (!translation) return;
+    if (!linguisticItem) return;
 
     setIsSaving(true);
     try {
       const result = await saveWordForLearning({
-        translationResult: translation,
+        linguisticItem,
       });
 
       if (result.success) {
@@ -137,12 +139,12 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
               }}
             >
               {isLoading ? (
-                <GenerateWordLoading word={word} />
+                <GenerateLinguisticItemLoading word={word} />
               ) : error ? (
-                <GenerateWordError error={error} />
-              ) : translation ? (
-                <GenerateWordLoaded
-                  translation={translation}
+                <GenerateLinguisticItemError error={error} />
+              ) : linguisticItem ? (
+                <GenerateLinguisticItemLoaded
+                  linguisticItem={linguisticItem}
                   onRegenerate={() => onRegenerate(word)}
                 />
               ) : null}
@@ -160,7 +162,7 @@ export const GenerateWordModal: React.FC<GenerateWordModalProps> = ({
               flexDirection={{ base: 'column', md: 'row' }}
               alignItems="stretch"
             >
-              {translation && (
+              {linguisticItem && (
                 <Button
                   size={{ base: 'lg', md: 'lg' }}
                   h={{ base: '48px', md: '44px' }}

@@ -16,24 +16,32 @@ import type {
   VerbLinguisticItem,
 } from '@/modules/linguistics/linguistics.types';
 
-interface SavedWordContentProps {
+interface GenerateLinguisticItemLoadedProps {
   linguisticItem: LinguisticItem;
+  onRegenerate?: () => void;
 }
 
-export const SavedWordContent: React.FC<SavedWordContentProps> = ({
-  linguisticItem,
-}) => {
+export const GenerateLinguisticItemLoaded: React.FC<
+  GenerateLinguisticItemLoadedProps
+> = ({ linguisticItem, onRegenerate }) => {
+  // Determine which component to render based on partOfSpeech
   const partOfSpeech = linguisticItem.partOfSpeech || [];
 
   if (partOfSpeech.includes(PartOfSpeech.NOUN)) {
     return (
-      <NounContent linguisticItem={linguisticItem as NounLinguisticItem} />
+      <NounContent
+        linguisticItem={linguisticItem as NounLinguisticItem}
+        onRegenerate={onRegenerate}
+      />
     );
   }
 
   if (partOfSpeech.includes(PartOfSpeech.VERB)) {
     return (
-      <VerbContent linguisticItem={linguisticItem as VerbLinguisticItem} />
+      <VerbContent
+        linguisticItem={linguisticItem as VerbLinguisticItem}
+        onRegenerate={onRegenerate}
+      />
     );
   }
 
@@ -41,6 +49,7 @@ export const SavedWordContent: React.FC<SavedWordContentProps> = ({
     return (
       <AdjectiveContent
         linguisticItem={linguisticItem as AdjectiveLinguisticItem}
+        onRegenerate={onRegenerate}
       />
     );
   }
@@ -49,6 +58,7 @@ export const SavedWordContent: React.FC<SavedWordContentProps> = ({
     return (
       <PersonalPronounContent
         linguisticItem={linguisticItem as PronounLinguisticItem}
+        onRegenerate={onRegenerate}
       />
     );
   }
@@ -57,9 +67,16 @@ export const SavedWordContent: React.FC<SavedWordContentProps> = ({
     return (
       <DemonstrativePronounContent
         linguisticItem={linguisticItem as DemonstrativePronounLinguisticItem}
+        onRegenerate={onRegenerate}
       />
     );
   }
 
-  return <GeneralContent linguisticItem={linguisticItem} />;
+  // For all other parts of speech (adverb, etc.)
+  return (
+    <GeneralContent
+      linguisticItem={linguisticItem}
+      onRegenerate={onRegenerate}
+    />
+  );
 };

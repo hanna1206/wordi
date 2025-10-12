@@ -9,9 +9,9 @@ import {
   PartOfSpeech,
   ReflexiveVerb,
   Regularity,
-} from '@/modules/words-generation/words-generation.const';
+} from '@/modules/linguistics/linguistics.const';
 
-interface WordHeaderProps {
+interface LinguisticItemHeaderProps {
   normalizedWord: string;
   mainTranslation: string;
   partOfSpeech?: PartOfSpeech[];
@@ -22,7 +22,7 @@ interface WordHeaderProps {
   onRegenerate?: () => void;
 }
 
-export const WordHeader: React.FC<WordHeaderProps> = ({
+export const LinguisticItemHeader: React.FC<LinguisticItemHeaderProps> = ({
   normalizedWord,
   mainTranslation,
   partOfSpeech,

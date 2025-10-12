@@ -2,13 +2,13 @@ import React from 'react';
 
 import { Box, Text, VStack } from '@chakra-ui/react';
 
-interface GenerateWordErrorProps {
+interface GenerateLinguisticItemErrorProps {
   error: string;
 }
 
-export const GenerateWordError: React.FC<GenerateWordErrorProps> = ({
-  error,
-}) => {
+export const GenerateLinguisticItemError: React.FC<
+  GenerateLinguisticItemErrorProps
+> = ({ error }) => {
   return (
     <VStack
       gap={{ base: 4, md: 4 }}

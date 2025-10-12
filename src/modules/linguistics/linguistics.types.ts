@@ -4,7 +4,7 @@ import {
   PartOfSpeech,
   ReflexiveVerb,
   Regularity,
-} from './words-generation.const';
+} from './linguistics.const';
 
 export type Collocation = {
   collocation: string;
@@ -50,7 +50,7 @@ export type DemonstrativeDeclension = {
   plural: string;
 };
 
-export interface TranslationBasicResult {
+export interface BasicLinguisticItem {
   normalizedWord: string;
   mainTranslation: string;
   additionalTranslations: string[];
@@ -60,13 +60,13 @@ export interface TranslationBasicResult {
   collocations: Collocation[];
 }
 
-export interface TranslationNounResult extends TranslationBasicResult {
+export interface NounLinguisticItem extends BasicLinguisticItem {
   gender: Gender;
   pluralForm: string;
   prepositions: Preposition[] | null;
 }
 
-export interface TranslationVerbResult extends TranslationBasicResult {
+export interface VerbLinguisticItem extends BasicLinguisticItem {
   regular: Regularity;
   prepositions: Preposition[] | null;
   isReflexive: ReflexiveVerb;
@@ -75,28 +75,28 @@ export interface TranslationVerbResult extends TranslationBasicResult {
   conjugation: string;
 }
 
-export interface TranslationAdjectiveResult extends TranslationBasicResult {
+export interface AdjectiveLinguisticItem extends BasicLinguisticItem {
   type: AdjectiveType;
   comparisonForms: ComparisonForms | null;
   prepositions: Preposition[] | null;
 }
 
-export interface TranslationPronounResult extends TranslationBasicResult {
+export interface PronounLinguisticItem extends BasicLinguisticItem {
   declensions: PronounDeclension[];
   pronounType: string;
 }
 
-export interface TranslationDemonstrativePronounResult
-  extends TranslationBasicResult {
+export interface DemonstrativePronounLinguisticItem
+  extends BasicLinguisticItem {
   declensions: DemonstrativeDeclension[];
   pronounType: string;
   baseForm: string;
 }
 
-export type TranslationResult =
-  | TranslationBasicResult
-  | TranslationNounResult
-  | TranslationVerbResult
-  | TranslationAdjectiveResult
-  | TranslationPronounResult
-  | TranslationDemonstrativePronounResult;
+export type LinguisticItem =
+  | BasicLinguisticItem
+  | NounLinguisticItem
+  | VerbLinguisticItem
+  | AdjectiveLinguisticItem
+  | PronounLinguisticItem
+  | DemonstrativePronounLinguisticItem;

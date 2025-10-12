@@ -6,26 +6,28 @@ import { LuArrowRight } from 'react-icons/lu';
 
 import { Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 
-import { ExampleWords } from '@/modules/words-generation/components/example-words';
-import { GenerateWordModal } from '@/modules/words-generation/components/generate-word-modal';
-import { translateWord } from '@/modules/words-generation/words-generation.actions';
-import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
-import type { TranslationResult } from '@/modules/words-generation/words-generation.types';
+import { ExampleWords } from '@/modules/linguistics/components/example-words';
+import { GenerateLinguisticItemModal } from '@/modules/linguistics/components/generate-linguistic-item-modal';
+import { generateLinguisticItem } from '@/modules/linguistics/linguistics.actions';
+import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
+import type { LinguisticItem } from '@/modules/linguistics/linguistics.types';
 import { getWordFromCache } from '@/modules/words-persistence/words-persistence.actions';
 
 interface FormData {
   word: string;
 }
 
-interface GenerateWordFormProps {
+interface GenerateLinguisticItemFormProps {
   onWordSaved: () => void;
 }
 
-export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
+export const GenerateLinguisticItemForm = ({
+  onWordSaved,
+}: GenerateLinguisticItemFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [word, setWord] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [translation, setTranslation] = useState<TranslationResult | null>(
+  const [linguisticItem, setLinguisticItem] = useState<LinguisticItem | null>(
     null,
   );
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +45,7 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
     setWord(wordToTranslate);
     setIsOpen(true);
     setIsLoading(true);
-    setTranslation(null);
+    setLinguisticItem(null);
     setError(null);
 
     try {
@@ -53,22 +55,22 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
 
       if (cacheResult.success && cacheResult.data) {
         // Cache hit - convert cached data to TranslationResult format
-        const cachedTranslation: TranslationResult = {
+        const cachedTranslation: LinguisticItem = {
           normalizedWord: cacheResult.data.normalizedWord,
           partOfSpeech: [cacheResult.data.partOfSpeech as PartOfSpeech],
           ...cacheResult.data.commonData,
           ...cacheResult.data.partSpecificData,
         };
-        setTranslation(cachedTranslation);
+        setLinguisticItem(cachedTranslation);
         // Clear form only on successful cache hit
         reset();
         return;
       }
 
       // Cache miss - proceed with LLM request
-      const result = await translateWord(wordToTranslate.trim());
+      const result = await generateLinguisticItem(wordToTranslate.trim());
       if (result.success && result.data) {
-        setTranslation(result.data);
+        setLinguisticItem(result.data);
         // Clear form only on successful translation
         reset();
       } else {
@@ -97,7 +99,7 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
   const onClose = () => {
     setIsOpen(false);
     setWord('');
-    setTranslation(null);
+    setLinguisticItem(null);
     setError(null);
   };
 
@@ -181,12 +183,12 @@ export const GenerateWordForm = ({ onWordSaved }: GenerateWordFormProps) => {
         </form>
       </VStack>
 
-      <GenerateWordModal
+      <GenerateLinguisticItemModal
         isOpen={isOpen}
         word={word}
         isLoading={isLoading}
         error={error}
-        translation={translation}
+        linguisticItem={linguisticItem}
         onClose={onClose}
         onRegenerate={handleSubmit}
         onWordSaved={onWordSaved}

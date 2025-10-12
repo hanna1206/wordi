@@ -1,5 +1,6 @@
 import { gpt41Model } from '@/services/llm/gpt-4.1';
 
+import { PartOfSpeech } from './linguistics.const';
 import {
   adjectiveComparisonFormsPrompt,
   outputStructure as adjectiveComparisonFormsOutputStructure,
@@ -80,7 +81,6 @@ import {
   outputStructure as verbSichUsageOutputStructure,
   verbSichUsagePrompt,
 } from './prompts/verb-sich-usage.prompt';
-import { PartOfSpeech } from './words-generation.const';
 
 const WRONG_VERB_SEPARABLE_PREFIX_VALUES = ['null', '/', '/null'];
 
@@ -193,7 +193,10 @@ const demonstrativePronounDeclensionsChain =
     demonstrativePronounDeclensionsLlm,
   );
 
-export const getWordInfo = async (word: string, targetLanguage: string) => {
+export const generateLinguisticItem = async (
+  word: string,
+  targetLanguage: string,
+) => {
   const { normalizedWord, partOfSpeech } = await normalizeWordChain.invoke({
     word,
   });

@@ -2,13 +2,13 @@ import React from 'react';
 
 import { Alert, Spinner, Text, VStack } from '@chakra-ui/react';
 
-interface GenerateWordLoadingProps {
+interface GenerateLinguisticItemLoadingProps {
   word: string;
 }
 
-export const GenerateWordLoading: React.FC<GenerateWordLoadingProps> = ({
-  word,
-}) => {
+export const GenerateLinguisticItemLoading: React.FC<
+  GenerateLinguisticItemLoadingProps
+> = ({ word }) => {
   return (
     <VStack
       gap={6}

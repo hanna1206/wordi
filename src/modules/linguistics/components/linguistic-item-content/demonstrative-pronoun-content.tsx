@@ -3,25 +3,25 @@ import { LuLayers, LuLink2, LuQuote, LuReplace, LuTable } from 'react-icons/lu';
 
 import { Box, Grid, Text, VStack } from '@chakra-ui/react';
 
-import type { TranslationDemonstrativePronounResult } from '@/modules/words-generation/words-generation.types';
+import type { DemonstrativePronounLinguisticItem } from '@/modules/linguistics/linguistics.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
+import { LinguisticItemHeader } from './common/linguistic-item-header';
 import { SectionHeader } from './common/section-header';
 import { TranslationSection } from './common/translation-section';
-import { WordHeader } from './common/word-header';
 
 interface DemonstrativePronounContentProps {
-  translation: TranslationDemonstrativePronounResult;
+  linguisticItem: DemonstrativePronounLinguisticItem;
   onRegenerate?: () => void;
 }
 
 export const DemonstrativePronounContent: React.FC<
   DemonstrativePronounContentProps
-> = ({ translation, onRegenerate }) => {
+> = ({ linguisticItem, onRegenerate }) => {
   const hasDeclensions =
-    translation.declensions &&
-    translation.declensions.length > 0 &&
-    translation.declensions.some(
+    linguisticItem.declensions &&
+    linguisticItem.declensions.length > 0 &&
+    linguisticItem.declensions.some(
       (declension) =>
         declension.masculine ||
         declension.feminine ||
@@ -61,7 +61,7 @@ export const DemonstrativePronounContent: React.FC<
         </Grid>
         {/* Data rows */}
         <VStack gap={1} align="stretch">
-          {translation.declensions.map((declension, index) => (
+          {linguisticItem.declensions.map((declension, index) => (
             <Grid
               key={index}
               templateColumns="repeat(5, 1fr)"
@@ -101,15 +101,15 @@ export const DemonstrativePronounContent: React.FC<
 
   return (
     <CardLayout>
-      <WordHeader
-        normalizedWord={translation.normalizedWord}
-        mainTranslation={translation.mainTranslation}
-        partOfSpeech={translation.partOfSpeech}
+      <LinguisticItemHeader
+        normalizedWord={linguisticItem.normalizedWord}
+        mainTranslation={linguisticItem.mainTranslation}
+        partOfSpeech={linguisticItem.partOfSpeech}
         onRegenerate={onRegenerate}
       />
 
       <Text fontSize="md" color="gray.700">
-        {translation.pronounType}
+        {linguisticItem.pronounType}
       </Text>
       <CardDivider />
 
@@ -127,28 +127,28 @@ export const DemonstrativePronounContent: React.FC<
       <TranslationSection
         icon={LuLayers}
         title="Also means"
-        items={translation.additionalTranslations}
+        items={linguisticItem.additionalTranslations}
         renderMode="list"
       />
 
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
-        items={translation.exampleSentences}
+        items={linguisticItem.exampleSentences}
         renderMode="quotes"
       />
 
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
-        items={translation.synonyms}
+        items={linguisticItem.synonyms}
         renderMode="tags"
       />
 
       <TranslationSection
         icon={LuLink2}
         title="Collocations"
-        items={translation.collocations}
+        items={linguisticItem.collocations}
         renderMode="table"
       />
     </CardLayout>

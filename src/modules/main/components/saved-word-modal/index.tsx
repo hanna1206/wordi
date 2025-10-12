@@ -2,12 +2,12 @@ import React from 'react';
 
 import { Dialog, Portal } from '@chakra-ui/react';
 
-import { getGenderProperties } from '@/modules/words-generation/utils/get-gender-properties';
-import { PartOfSpeech } from '@/modules/words-generation/words-generation.const';
+import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
-  TranslationNounResult,
-  TranslationResult,
-} from '@/modules/words-generation/words-generation.types';
+  LinguisticItem,
+  NounLinguisticItem,
+} from '@/modules/linguistics/linguistics.types';
+import { getGenderProperties } from '@/modules/linguistics/utils/get-gender-properties';
 import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
 import { useSavedWordModal } from '../../hooks/use-saved-word-modal';
@@ -24,8 +24,8 @@ interface SavedWordModalProps {
 
 const convertSavedWordToTranslationResult = (
   savedWord: SavedWord,
-): TranslationResult => {
-  const baseTranslation: TranslationResult = {
+): LinguisticItem => {
+  const baseTranslation: LinguisticItem = {
     normalizedWord: savedWord.normalizedWord,
     partOfSpeech: [savedWord.partOfSpeech as PartOfSpeech],
     ...savedWord.commonData,
@@ -55,7 +55,7 @@ export const SavedWordModal: React.FC<SavedWordModalProps> = ({
   const translation = convertSavedWordToTranslationResult(savedWord);
   const isNoun = translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const gender = isNoun
-    ? (translation as TranslationNounResult).gender
+    ? (translation as NounLinguisticItem).gender
     : undefined;
   const genderProps = getGenderProperties(gender);
   const genderColor = genderProps
@@ -114,7 +114,7 @@ export const SavedWordModal: React.FC<SavedWordModalProps> = ({
               {showDeleteConfirm ? (
                 <DeleteConfirmation savedWord={savedWord} />
               ) : (
-                <SavedWordContent translation={translation} />
+                <SavedWordContent linguisticItem={translation} />
               )}
             </Dialog.Body>
 

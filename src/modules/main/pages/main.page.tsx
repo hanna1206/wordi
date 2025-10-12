@@ -8,8 +8,8 @@ import { AppHeader } from '@/components/app-header';
 import { GradientBackground } from '@/components/gradient-background';
 import { InstallPrompt } from '@/components/install-prompt';
 import { Sidebar } from '@/components/sidebar';
+import { GenerateLinguisticItemForm } from '@/modules/linguistics/components/generate-linguistic-item-form';
 import { SidebarContent } from '@/modules/main/components/sidebar-content';
-import { GenerateWordForm } from '@/modules/words-generation/components/generate-word-form';
 import { fetchUserSavedWords } from '@/modules/words-persistence/words-persistence.actions';
 import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
@@ -95,7 +95,7 @@ export const MainPage = () => {
           <Box h="full" overflow="auto">
             <Center h="full">
               <Container maxW="4xl" w="full">
-                <GenerateWordForm onWordSaved={loadUserWords} />
+                <GenerateLinguisticItemForm onWordSaved={loadUserWords} />
               </Container>
             </Center>
           </Box>

@@ -7,41 +7,39 @@ import {
   LuReplace,
 } from 'react-icons/lu';
 
-import {
-  Gender,
-  PartOfSpeech,
-} from '@/modules/words-generation/words-generation.const';
-import type { TranslationNounResult } from '@/modules/words-generation/words-generation.types';
+import { Gender, PartOfSpeech } from '@/modules/linguistics/linguistics.const';
+import type { NounLinguisticItem } from '@/modules/linguistics/linguistics.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
+import { LinguisticItemHeader } from './common/linguistic-item-header';
 import { TranslationSection } from './common/translation-section';
-import { WordHeader } from './common/word-header';
 
 interface NounContentProps {
-  translation: TranslationNounResult;
+  linguisticItem: NounLinguisticItem;
   onRegenerate?: () => void;
 }
 
 export const NounContent: React.FC<NounContentProps> = ({
-  translation,
+  linguisticItem,
   onRegenerate,
 }) => {
-  const isNoun = translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
-  const hasPluralForm = 'pluralForm' in translation && !!translation.pluralForm;
+  const isNoun = linguisticItem.partOfSpeech?.includes(PartOfSpeech.NOUN);
+  const hasPluralForm =
+    'pluralForm' in linguisticItem && !!linguisticItem.pluralForm;
   const hasPrepositions =
-    'prepositions' in translation && !!translation.prepositions;
+    'prepositions' in linguisticItem && !!linguisticItem.prepositions;
 
   // Extract plural form and prepositions safely
-  const pluralForm = hasPluralForm ? translation.pluralForm : '';
-  const prepositions = hasPrepositions ? translation.prepositions || [] : [];
+  const pluralForm = hasPluralForm ? linguisticItem.pluralForm : '';
+  const prepositions = hasPrepositions ? linguisticItem.prepositions || [] : [];
 
   return (
     <CardLayout>
-      <WordHeader
-        normalizedWord={translation.normalizedWord}
-        mainTranslation={translation.mainTranslation}
-        partOfSpeech={translation.partOfSpeech}
-        gender={translation.gender as Gender}
+      <LinguisticItemHeader
+        normalizedWord={linguisticItem.normalizedWord}
+        mainTranslation={linguisticItem.mainTranslation}
+        partOfSpeech={linguisticItem.partOfSpeech}
+        gender={linguisticItem.gender as Gender}
         onRegenerate={onRegenerate}
       />
 
@@ -68,28 +66,28 @@ export const NounContent: React.FC<NounContentProps> = ({
       <TranslationSection
         icon={LuLayers}
         title="Also means"
-        items={translation.additionalTranslations}
+        items={linguisticItem.additionalTranslations}
         renderMode="list"
       />
 
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
-        items={translation.exampleSentences}
+        items={linguisticItem.exampleSentences}
         renderMode="quotes"
       />
 
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
-        items={translation.synonyms}
+        items={linguisticItem.synonyms}
         renderMode="tags"
       />
 
       <TranslationSection
         icon={LuLink2}
         title="Collocations"
-        items={translation.collocations}
+        items={linguisticItem.collocations}
         renderMode="table"
       />
     </CardLayout>
