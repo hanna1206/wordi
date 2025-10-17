@@ -63,7 +63,7 @@ export const SidebarContent = ({
         overflow="hidden"
       >
         <Flex direction="column">
-          <Link href="/words">
+          <Link href="/vocabulary">
             <Button variant="ghost" width="250px" p={2} justifyContent="start">
               <Flex justifyContent="start" align="center" gap={2}>
                 <LuLibrary />
