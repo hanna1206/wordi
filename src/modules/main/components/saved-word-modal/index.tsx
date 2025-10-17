@@ -8,22 +8,22 @@ import type {
   NounLinguisticItem,
 } from '@/modules/linguistics/linguistics.types';
 import { getGenderProperties } from '@/modules/linguistics/utils/get-gender-properties';
-import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
+import type { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
 
-import { useSavedWordModal } from '../../hooks/use-saved-word-modal';
-import { SavedWordContent } from '../saved-word-content';
+import { useVocabularyItemModal } from '../../hooks/use-saved-word-modal';
+import { VocabularyItemContent } from '../saved-word-content';
 import { DeleteConfirmation } from './delete-confirmation';
 import { ModalFooter } from './modal-footer';
 
-interface SavedWordModalProps {
+interface VocabularyItemModalProps {
   isOpen: boolean;
-  savedWord: SavedWord | null;
+  savedWord: VocabularyItem | null;
   onClose: () => void;
   onWordDeleted: () => void;
 }
 
-const convertSavedWordToTranslationResult = (
-  savedWord: SavedWord,
+const convertVocabularyItemToTranslationResult = (
+  savedWord: VocabularyItem,
 ): LinguisticItem => {
   const baseTranslation: LinguisticItem = {
     normalizedWord: savedWord.normalizedWord,
@@ -35,7 +35,7 @@ const convertSavedWordToTranslationResult = (
   return baseTranslation;
 };
 
-export const SavedWordModal: React.FC<SavedWordModalProps> = ({
+export const VocabularyItemModal: React.FC<VocabularyItemModalProps> = ({
   isOpen,
   savedWord,
   onClose,
@@ -48,11 +48,11 @@ export const SavedWordModal: React.FC<SavedWordModalProps> = ({
     handleDeleteConfirm,
     handleDeleteCancel,
     handleClose,
-  } = useSavedWordModal({ savedWord, onClose, onWordDeleted });
+  } = useVocabularyItemModal({ savedWord, onClose, onWordDeleted });
 
   if (!savedWord) return null;
 
-  const translation = convertSavedWordToTranslationResult(savedWord);
+  const translation = convertVocabularyItemToTranslationResult(savedWord);
   const isNoun = translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const gender = isNoun
     ? (translation as NounLinguisticItem).gender
@@ -114,7 +114,7 @@ export const SavedWordModal: React.FC<SavedWordModalProps> = ({
               {showDeleteConfirm ? (
                 <DeleteConfirmation savedWord={savedWord} />
               ) : (
-                <SavedWordContent linguisticItem={translation} />
+                <VocabularyItemContent linguisticItem={translation} />
               )}
             </Dialog.Body>
 

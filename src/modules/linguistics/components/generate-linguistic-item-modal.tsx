@@ -48,7 +48,7 @@ export const GenerateLinguisticItemModal: React.FC<
     ? `${genderProps.colorScheme}.400`
     : undefined;
 
-  const handleSaveWord = async () => {
+  const handleVocabularyItem = async () => {
     if (!linguisticItem) return;
 
     setIsSaving(true);
@@ -168,7 +168,7 @@ export const GenerateLinguisticItemModal: React.FC<
                   h={{ base: '48px', md: '44px' }}
                   borderRadius={{ base: 'xl', md: 'md' }}
                   w={{ base: 'full', md: 'auto' }}
-                  onClick={handleSaveWord}
+                  onClick={handleVocabularyItem}
                   loading={isSaving}
                   disabled={isSaving}
                   flex={{ base: 'none', md: '1' }}

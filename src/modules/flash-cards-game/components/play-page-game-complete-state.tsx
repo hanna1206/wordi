@@ -3,10 +3,10 @@
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 
-import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
+import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
 
 interface PlayPageGameCompleteStateProps {
-  needsReviewWords: SavedWord[];
+  needsReviewWords: VocabularyItem[];
 }
 
 export const PlayPageGameCompleteState = ({

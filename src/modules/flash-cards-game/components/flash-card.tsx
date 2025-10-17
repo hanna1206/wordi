@@ -4,12 +4,12 @@ import { forwardRef, useCallback, useState } from 'react';
 
 import { Box, Text } from '@chakra-ui/react';
 
-import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
+import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
 
 import { CardSide } from '../flash-cards-game.const';
 
 type FlashCardProps = {
-  word: SavedWord;
+  word: VocabularyItem;
   cardSide: CardSide;
   allWordIds: string[];
   onFlip?: (wordId: string, isFlipped: boolean) => void;

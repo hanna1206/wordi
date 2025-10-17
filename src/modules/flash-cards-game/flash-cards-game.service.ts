@@ -1,5 +1,5 @@
 import { ExistingProgress } from '@/modules/flash-cards-game/flash-cards-game.types';
-import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
+import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
 import { createClient } from '@/services/supabase/server';
 import type { ActionResult } from '@/shared-types';
 import { convertKeysToCamelCase } from '@/utils/case-conversion';
@@ -73,7 +73,7 @@ export const getWordsForGameService = async ({
   userId,
   mode,
   limit,
-}: GetWordsForGameParams): Promise<ActionResult<SavedWord[]>> => {
+}: GetWordsForGameParams): Promise<ActionResult<VocabularyItem[]>> => {
   try {
     const supabase = await createClient();
 
@@ -99,7 +99,7 @@ export const getWordsForGameService = async ({
             (item) =>
               convertKeysToCamelCase(
                 item as Record<string, unknown>,
-              ) as unknown as SavedWord,
+              ) as unknown as VocabularyItem,
           ) || [],
       };
     }
@@ -122,7 +122,7 @@ export const getWordsForGameService = async ({
           (item) =>
             convertKeysToCamelCase(
               item as Record<string, unknown>,
-            ) as unknown as SavedWord,
+            ) as unknown as VocabularyItem,
         )
         .sort(() => 0.5 - Math.random());
 
@@ -164,10 +164,10 @@ export const getWordsForGameService = async ({
             ? progressItem.words[0]
             : progressItem.words;
           return dbWord
-            ? (convertKeysToCamelCase(dbWord) as unknown as SavedWord)
+            ? (convertKeysToCamelCase(dbWord) as unknown as VocabularyItem)
             : null;
         })
-        .filter(Boolean) as SavedWord[];
+        .filter(Boolean) as VocabularyItem[];
 
       return {
         success: true,

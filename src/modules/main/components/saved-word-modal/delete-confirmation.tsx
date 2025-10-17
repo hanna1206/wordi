@@ -1,9 +1,9 @@
 import { Text, VStack } from '@chakra-ui/react';
 
-import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
+import type { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
 
 interface DeleteConfirmationProps {
-  savedWord: SavedWord;
+  savedWord: VocabularyItem;
 }
 
 export const DeleteConfirmation = ({ savedWord }: DeleteConfirmationProps) => {

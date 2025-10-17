@@ -5,7 +5,7 @@ import { forwardRef } from 'react';
 import { Box } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
 
-import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
+import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
 
 import { CardSide, QualityScore } from '../flash-cards-game.const';
 import { useGestureHandling } from '../hooks/use-gesture-handling';
@@ -13,7 +13,7 @@ import { FlashCard } from './flash-card';
 import { PlayPageQualityFeedbackButtons } from './play-page-quality-feedback-buttons';
 
 interface GameContentProps {
-  currentWord: SavedWord;
+  currentWord: VocabularyItem;
   allWordIds: string[];
   cardSide: CardSide;
   onCardFlip: () => void;

@@ -1,20 +1,20 @@
 import { useState } from 'react';
 
 import { toaster } from '@/components/toaster';
+import type { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
 import { deleteWord } from '@/modules/words-persistence/words-persistence.actions';
-import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
 
-interface UseSavedWordModalProps {
-  savedWord: SavedWord | null;
+interface UseVocabularyItemModalProps {
+  savedWord: VocabularyItem | null;
   onClose: () => void;
   onWordDeleted: () => void;
 }
 
-export const useSavedWordModal = ({
+export const useVocabularyItemModal = ({
   savedWord,
   onClose,
   onWordDeleted,
-}: UseSavedWordModalProps) => {
+}: UseVocabularyItemModalProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 

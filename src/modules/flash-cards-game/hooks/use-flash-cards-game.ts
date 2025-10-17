@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import { toaster } from '@/components/toaster';
-import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
+import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
 
 import {
   getWordsForGame,
@@ -15,12 +15,14 @@ import { CardSide, GameMode, QualityScore } from '../flash-cards-game.const';
 
 export const useFlashCardsGame = () => {
   const searchParams = useSearchParams();
-  const [words, setWords] = useState<SavedWord[]>([]);
+  const [words, setWords] = useState<VocabularyItem[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isGameFinished, setIsGameFinished] = useState(false);
-  const [needsReviewWords, setNeedsReviewWords] = useState<SavedWord[]>([]);
+  const [needsReviewWords, setNeedsReviewWords] = useState<VocabularyItem[]>(
+    [],
+  );
   const [isCurrentFlipped, setIsCurrentFlipped] = useState(false);
   const cardButtonRef = useRef<HTMLDivElement | null>(null);
   const switchTimeoutRef = useRef<number | null>(null);

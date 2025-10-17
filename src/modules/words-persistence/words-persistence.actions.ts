@@ -6,59 +6,60 @@ import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
 
+import type {
+  CachedWord,
+  VocabularyItem,
+  VocabularyItemInput,
+} from './vocabulary.types';
 import {
   deleteUserWord,
   getCachedWord,
-  getUserSavedWords,
+  getUserVocabularyItems,
   saveWordToDatabase,
 } from './words-persistence.service';
-import type {
-  CachedWord,
-  SavedWord,
-  SaveWordInput,
-} from './words-persistence.types';
 
 // Save word for learning
-export const saveWordForLearning = withUserSettings<SaveWordInput, SavedWord>(
-  async (context, input): Promise<ActionResult<SavedWord>> => {
-    const { linguisticItem } = input;
+export const saveWordForLearning = withUserSettings<
+  VocabularyItemInput,
+  VocabularyItem
+>(async (context, input): Promise<ActionResult<VocabularyItem>> => {
+  const { linguisticItem } = input;
 
-    // Validate input
-    if (!linguisticItem || !linguisticItem.normalizedWord) {
-      const error = 'Valid translation result is required';
+  // Validate input
+  if (!linguisticItem || !linguisticItem.normalizedWord) {
+    const error = 'Valid translation result is required';
 
-      return {
-        success: false,
-        error,
-      };
-    }
+    return {
+      success: false,
+      error,
+    };
+  }
 
-    try {
-      const saveResult = await saveWordToDatabase(
-        input,
+  try {
+    const saveResult = await saveWordToDatabase(
+      input,
+      context.userId,
+      context.userSettings.native_language as LanguageCode,
+    );
+
+    // If the word was saved successfully, create its initial progress record
+    if (saveResult.success && saveResult.data) {
+      await createInitialWordProgressService(
         context.userId,
-        context.userSettings.native_language as LanguageCode,
+        saveResult.data.id,
       );
-
-      // If the word was saved successfully, create its initial progress record
-      if (saveResult.success && saveResult.data) {
-        await createInitialWordProgressService(
-          context.userId,
-          saveResult.data.id,
-        );
-      }
-
-      return saveResult;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error in saveWordForLearning action:', error);
-      return {
-        success: false,
-        error: 'Failed to save word',
-      };
     }
-  },
-);
+
+    return saveResult;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error in saveWordForLearning action:', error);
+    return {
+      success: false,
+      error: 'Failed to save word',
+    };
+  }
+});
 
 // Note: Word duplicate checking is handled by database constraints
 // No need for separate checkWordSaved action
@@ -73,9 +74,9 @@ export const getWordFromCache = async (
 };
 
 // Get user saved words
-export const fetchUserSavedWords = withAuth<void, SavedWord[]>(
-  async (context): Promise<ActionResult<SavedWord[]>> => {
-    const result = await getUserSavedWords(context.userId);
+export const fetchUserVocabularyItems = withAuth<void, VocabularyItem[]>(
+  async (context): Promise<ActionResult<VocabularyItem[]>> => {
+    const result = await getUserVocabularyItems(context.userId);
     return result;
   },
 );

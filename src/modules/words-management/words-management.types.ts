@@ -1,7 +1,7 @@
-import type { SavedWord } from '../words-persistence/words-persistence.types';
+import type { VocabularyItem } from '../words-persistence/vocabulary.types';
 
 // Combines word data with progress data for the management view
-export interface WordWithProgress extends SavedWord {
+export interface WordWithProgress extends VocabularyItem {
   // Flattened common data for easier access
   mainTranslation: string;
   additionalTranslations: string[];

@@ -3,12 +3,12 @@ import { LuBrain, LuLibrary } from 'react-icons/lu';
 
 import { Box, Button, Flex, Link, Spinner, Text } from '@chakra-ui/react';
 
-import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
+import type { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
 
-import { SavedWordModal } from './saved-word-modal';
+import { VocabularyItemModal } from './saved-word-modal';
 
 interface SidebarContentProps {
-  savedWords: SavedWord[];
+  savedWords: VocabularyItem[];
   isLoadingWords: boolean;
   onWordDeleted: () => void;
 }
@@ -18,10 +18,10 @@ export const SidebarContent = ({
   isLoadingWords,
   onWordDeleted,
 }: SidebarContentProps) => {
-  const [selectedWord, setSelectedWord] = useState<SavedWord | null>(null);
+  const [selectedWord, setSelectedWord] = useState<VocabularyItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleWordClick = (word: SavedWord) => {
+  const handleWordClick = (word: VocabularyItem) => {
     setSelectedWord(word);
     setIsModalOpen(true);
   };
@@ -135,7 +135,7 @@ export const SidebarContent = ({
         )}
       </Box>
 
-      <SavedWordModal
+      <VocabularyItemModal
         isOpen={isModalOpen}
         savedWord={selectedWord}
         onClose={handleModalClose}

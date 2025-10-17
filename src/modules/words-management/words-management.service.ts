@@ -1,6 +1,6 @@
 import { createClient } from '@/services/supabase/server';
 
-import type { CommonWordData } from '../words-persistence/words-persistence.types';
+import type { CommonWordData } from '../words-persistence/vocabulary.types';
 import type {
   BulkActionPayload,
   WordsFilterOptions,

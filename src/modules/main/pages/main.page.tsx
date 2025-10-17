@@ -10,12 +10,12 @@ import { InstallPrompt } from '@/components/install-prompt';
 import { Sidebar } from '@/components/sidebar';
 import { GenerateLinguisticItemForm } from '@/modules/linguistics/components/generate-linguistic-item-form';
 import { SidebarContent } from '@/modules/main/components/sidebar-content';
-import { fetchUserSavedWords } from '@/modules/words-persistence/words-persistence.actions';
-import type { SavedWord } from '@/modules/words-persistence/words-persistence.types';
+import type { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
+import { fetchUserVocabularyItems } from '@/modules/words-persistence/words-persistence.actions';
 
 export const MainPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [savedWords, setSavedWords] = useState<SavedWord[]>([]);
+  const [savedWords, setVocabularyItems] = useState<VocabularyItem[]>([]);
   const [isLoadingWords, setIsLoadingWords] = useState(true);
 
   const handleSidebarToggle = () => {
@@ -44,10 +44,10 @@ export const MainPage = () => {
   const loadUserWords = async () => {
     try {
       setIsLoadingWords(true);
-      const result = await fetchUserSavedWords();
+      const result = await fetchUserVocabularyItems();
 
       if (result.success && result.data) {
-        setSavedWords(result.data);
+        setVocabularyItems(result.data);
       } else {
         // eslint-disable-next-line no-console
         console.error('Failed to load user words:', result.error);

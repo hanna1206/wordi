@@ -16,11 +16,11 @@ import type {
   VerbLinguisticItem,
 } from '@/modules/linguistics/linguistics.types';
 
-interface SavedWordContentProps {
+interface VocabularyItemContentProps {
   linguisticItem: LinguisticItem;
 }
 
-export const SavedWordContent: React.FC<SavedWordContentProps> = ({
+export const VocabularyItemContent: React.FC<VocabularyItemContentProps> = ({
   linguisticItem,
 }) => {
   const partOfSpeech = linguisticItem.partOfSpeech || [];

@@ -9,12 +9,12 @@ import { LanguageCode } from '../user-settings/user-settings.const';
 import type {
   CachedWord,
   CommonWordData,
-  SavedWord,
-  SaveWordInput,
-} from './words-persistence.types';
+  VocabularyItem,
+  VocabularyItemInput,
+} from './vocabulary.types';
 
 const transformTranslationToDbFormat = (
-  input: SaveWordInput,
+  input: VocabularyItemInput,
   userId: string,
   targetLanguage: LanguageCode,
 ) => {
@@ -62,10 +62,10 @@ const transformTranslationToDbFormat = (
 };
 
 export const saveWordToDatabase = async (
-  input: SaveWordInput,
+  input: VocabularyItemInput,
   userId: string,
   targetLanguage: LanguageCode,
-): Promise<ActionResult<SavedWord>> => {
+): Promise<ActionResult<VocabularyItem>> => {
   try {
     const supabase = await createClient();
     const wordData = transformTranslationToDbFormat(
@@ -97,7 +97,7 @@ export const saveWordToDatabase = async (
       success: true,
       data: convertKeysToCamelCase(
         data as Record<string, unknown>,
-      ) as unknown as SavedWord,
+      ) as unknown as VocabularyItem,
     };
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -151,11 +151,11 @@ export const getCachedWord = async (
 };
 
 // Get user's saved words
-export const getUserSavedWords = async (
+export const getUserVocabularyItems = async (
   userId: string,
   limit = 50,
   offset = 0,
-): Promise<ActionResult<SavedWord[]>> => {
+): Promise<ActionResult<VocabularyItem[]>> => {
   try {
     const supabase = await createClient();
 
@@ -177,7 +177,7 @@ export const getUserSavedWords = async (
           (item) =>
             convertKeysToCamelCase(
               item as Record<string, unknown>,
-            ) as unknown as SavedWord,
+            ) as unknown as VocabularyItem,
         ) || [],
     };
   } catch (error) {

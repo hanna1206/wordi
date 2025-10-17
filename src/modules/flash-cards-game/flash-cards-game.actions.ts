@@ -1,7 +1,7 @@
 'use server';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
-import { SavedWord } from '@/modules/words-persistence/words-persistence.types';
+import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
 import type { ActionResult } from '@/shared-types';
 
 import { GameMode, QualityScore } from './flash-cards-game.const';
@@ -33,15 +33,16 @@ export const createInitialWordProgress = withAuth<{ wordId: string }, void>(
   },
 );
 
-export const getWordsForGame = withAuth<GetWordsForGameParams, SavedWord[]>(
-  async (context, { mode, limit }): Promise<ActionResult<SavedWord[]>> => {
-    return getWordsForGameService({
-      userId: context.userId,
-      mode,
-      limit,
-    });
-  },
-);
+export const getWordsForGame = withAuth<
+  GetWordsForGameParams,
+  VocabularyItem[]
+>(async (context, { mode, limit }): Promise<ActionResult<VocabularyItem[]>> => {
+  return getWordsForGameService({
+    userId: context.userId,
+    mode,
+    limit,
+  });
+});
 
 export const saveQualityFeedback = withAuth<SaveQualityFeedbackParams, void>(
   async (context, { wordId, qualityScore }): Promise<ActionResult<void>> => {
