@@ -6,6 +6,7 @@ import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
 
+import { LinguisticItem } from '../linguistics/linguistics.types';
 import {
   deleteUserWord,
   getCachedWord,
@@ -15,16 +16,13 @@ import {
 import type {
   VocabularyItem,
   VocabularyItemAnonymized,
-  VocabularyItemInput,
 } from './vocabulary.types';
 
 // Save word for learning
 export const saveWordForLearning = withUserSettings<
-  VocabularyItemInput,
+  LinguisticItem,
   VocabularyItem
->(async (context, input): Promise<ActionResult<VocabularyItem>> => {
-  const { linguisticItem } = input;
-
+>(async (context, linguisticItem): Promise<ActionResult<VocabularyItem>> => {
   // Validate input
   if (!linguisticItem || !linguisticItem.normalizedWord) {
     const error = 'Valid translation result is required';
@@ -37,7 +35,7 @@ export const saveWordForLearning = withUserSettings<
 
   try {
     const saveResult = await saveWordToDatabase(
-      input,
+      linguisticItem,
       context.userId,
       context.userSettings.native_language as LanguageCode,
     );

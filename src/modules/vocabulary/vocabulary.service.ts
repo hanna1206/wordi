@@ -1,3 +1,4 @@
+import { LinguisticItem } from '@/modules/linguistics/linguistics.types';
 import { createClient } from '@/services/supabase/server';
 import type { ActionResult } from '@/shared-types';
 import {
@@ -6,77 +7,32 @@ import {
 } from '@/utils/case-conversion';
 
 import { LanguageCode } from '../user-settings/user-settings.const';
+import { transformLinguisticItemToVocabularyItem } from './utils/transform-linguistic-item-to-vocabulary-item';
 import type {
-  CommonWordData,
   VocabularyItem,
   VocabularyItemAnonymized,
-  VocabularyItemInput,
 } from './vocabulary.types';
 
-const transformTranslationToDbFormat = (
-  input: VocabularyItemInput,
-  userId: string,
-  targetLanguage: LanguageCode,
-) => {
-  const { linguisticItem } = input;
-
-  // Extract common data
-  const commonData: CommonWordData = {
-    mainTranslation: linguisticItem.mainTranslation,
-    additionalTranslations: linguisticItem.additionalTranslations,
-    exampleSentences: linguisticItem.exampleSentences,
-    synonyms: linguisticItem.synonyms,
-    collocations: linguisticItem.collocations,
-  };
-
-  // Build part-specific data object (everything except common fields)
-  const specificData: Record<string, unknown> = {};
-  const commonFields = new Set([
-    'normalizedWord',
-    'mainTranslation',
-    'additionalTranslations',
-    'exampleSentences',
-    'synonyms',
-    'collocations',
-    'partOfSpeech',
-  ]);
-
-  Object.entries(linguisticItem).forEach(([key, value]) => {
-    if (!commonFields.has(key)) {
-      specificData[key] = value;
-    }
-  });
-
-  // Create camelCase object first, then convert to snake_case for database
-  const camelCaseData = {
-    userId,
-    normalizedWord: linguisticItem.normalizedWord,
-    partOfSpeech: linguisticItem.partOfSpeech[0] || 'other', // Use first part of speech
-    commonData,
-    partSpecificData: specificData,
-    targetLanguage,
-  };
-
-  // Convert to snake_case for database
-  return convertKeysToSnakeCase(camelCaseData);
-};
-
 export const saveWordToDatabase = async (
-  input: VocabularyItemInput,
+  linguisticItem: LinguisticItem,
   userId: string,
   targetLanguage: LanguageCode,
 ): Promise<ActionResult<VocabularyItem>> => {
   try {
     const supabase = await createClient();
-    const wordData = transformTranslationToDbFormat(
-      input,
+    const newVocabularyItem = transformLinguisticItemToVocabularyItem(
+      linguisticItem,
       userId,
       targetLanguage,
     );
 
+    const databaseData = convertKeysToSnakeCase(
+      newVocabularyItem as unknown as Record<string, unknown>,
+    );
+
     const { data, error } = await supabase
       .from('words')
-      .insert(wordData)
+      .insert(databaseData)
       .select()
       .single();
 

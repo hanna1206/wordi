@@ -53,9 +53,7 @@ export const GenerateLinguisticItemModal: React.FC<
 
     setIsSaving(true);
     try {
-      const result = await saveWordForLearning({
-        linguisticItem,
-      });
+      const result = await saveWordForLearning(linguisticItem);
 
       if (result.success) {
         toaster.create({

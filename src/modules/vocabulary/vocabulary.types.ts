@@ -1,18 +1,20 @@
-import type { LinguisticItem } from '../linguistics/linguistics.types';
+import { PartOfSpeech } from '../linguistics/linguistics.const';
 import { LanguageCode } from '../user-settings/user-settings.const';
 
-export interface VocabularyItem {
-  id: string;
+export interface VocabularyItemDatabaseInput {
   userId: string;
   normalizedWord: string;
-  partOfSpeech: string;
+  partOfSpeech: PartOfSpeech;
   commonData: CommonWordData;
   partSpecificData: Record<string, unknown>;
-  createdAt: string;
-  updatedAt: string;
-  targetLanguage?: LanguageCode;
+  targetLanguage: LanguageCode;
 }
 
+export interface VocabularyItem extends VocabularyItemDatabaseInput {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
 export interface CommonWordData {
   mainTranslation: string;
   additionalTranslations: string[];
@@ -24,18 +26,9 @@ export interface CommonWordData {
   }>;
 }
 
-export interface VocabularyItemInput {
-  linguisticItem: LinguisticItem;
-}
-
-export interface VocabularyItemAnonymized {
+export interface VocabularyItemAnonymized extends VocabularyItemDatabaseInput {
   id: string;
-  normalizedWord: string;
-  partOfSpeech: string;
-  commonData: CommonWordData;
-  partSpecificData: Record<string, unknown>;
   createdAt: string;
-  targetLanguage: LanguageCode;
 }
 
 export interface UserWordCheck {
