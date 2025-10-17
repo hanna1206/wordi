@@ -7,9 +7,9 @@ import {
 
 import { LanguageCode } from '../user-settings/user-settings.const';
 import type {
-  CachedWord,
   CommonWordData,
   VocabularyItem,
+  VocabularyItemAnonymized,
   VocabularyItemInput,
 } from './vocabulary.types';
 
@@ -112,19 +112,16 @@ export const saveWordToDatabase = async (
 // Get cached word (from any user)
 export const getCachedWord = async (
   normalizedWord: string,
-  partOfSpeech?: string,
-): Promise<ActionResult<CachedWord | null>> => {
+  targetLanguage: LanguageCode,
+): Promise<ActionResult<VocabularyItemAnonymized | null>> => {
   try {
     const supabase = await createClient();
 
-    let query = supabase
+    const query = supabase
       .from('word_cache')
       .select('*')
-      .eq('normalized_word', normalizedWord);
-
-    if (partOfSpeech) {
-      query = query.eq('part_of_speech', partOfSpeech);
-    }
+      .eq('normalized_word', normalizedWord)
+      .eq('target_language', targetLanguage);
 
     const { data, error } = await query.maybeSingle();
 
@@ -137,7 +134,7 @@ export const getCachedWord = async (
       data: data
         ? (convertKeysToCamelCase(
             data as Record<string, unknown>,
-          ) as unknown as CachedWord)
+          ) as unknown as VocabularyItemAnonymized)
         : null,
     };
   } catch (error) {

@@ -10,8 +10,8 @@ import { InstallPrompt } from '@/components/install-prompt';
 import { Sidebar } from '@/components/sidebar';
 import { GenerateLinguisticItemForm } from '@/modules/linguistics/components/generate-linguistic-item-form';
 import { SidebarContent } from '@/modules/main/components/sidebar-content';
-import type { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
-import { fetchUserVocabularyItems } from '@/modules/words-persistence/words-persistence.actions';
+import { fetchUserVocabularyItems } from '@/modules/vocabulary/vocabulary.actions';
+import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 export const MainPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

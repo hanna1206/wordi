@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { toaster } from '@/components/toaster';
-import type { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
-import { deleteWord } from '@/modules/words-persistence/words-persistence.actions';
+import { deleteWord } from '@/modules/vocabulary/vocabulary.actions';
+import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 interface UseVocabularyItemModalProps {
   savedWord: VocabularyItem | null;

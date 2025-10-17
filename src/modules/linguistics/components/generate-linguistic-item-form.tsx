@@ -11,7 +11,7 @@ import { GenerateLinguisticItemModal } from '@/modules/linguistics/components/ge
 import { generateLinguisticItem } from '@/modules/linguistics/linguistics.actions';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type { LinguisticItem } from '@/modules/linguistics/linguistics.types';
-import { getWordFromCache } from '@/modules/words-persistence/words-persistence.actions';
+import { getWordFromCache } from '@/modules/vocabulary/vocabulary.actions';
 
 interface FormData {
   word: string;

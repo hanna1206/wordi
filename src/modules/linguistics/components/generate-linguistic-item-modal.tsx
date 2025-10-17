@@ -12,7 +12,7 @@ import type {
   NounLinguisticItem,
 } from '@/modules/linguistics/linguistics.types';
 import { getGenderProperties } from '@/modules/linguistics/utils/get-gender-properties';
-import { saveWordForLearning } from '@/modules/words-persistence/words-persistence.actions';
+import { saveWordForLearning } from '@/modules/vocabulary/vocabulary.actions';
 
 interface GenerateLinguisticItemModalProps {
   isOpen: boolean;

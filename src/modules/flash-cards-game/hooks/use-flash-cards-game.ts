@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import { toaster } from '@/components/toaster';
-import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
+import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 import {
   getWordsForGame,

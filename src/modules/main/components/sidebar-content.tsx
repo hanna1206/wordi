@@ -3,7 +3,7 @@ import { LuBrain, LuLibrary } from 'react-icons/lu';
 
 import { Box, Button, Flex, Link, Spinner, Text } from '@chakra-ui/react';
 
-import type { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
+import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 import { VocabularyItemModal } from './saved-word-modal';
 

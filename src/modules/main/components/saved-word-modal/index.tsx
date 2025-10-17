@@ -8,7 +8,7 @@ import type {
   NounLinguisticItem,
 } from '@/modules/linguistics/linguistics.types';
 import { getGenderProperties } from '@/modules/linguistics/utils/get-gender-properties';
-import type { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
+import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 import { useVocabularyItemModal } from '../../hooks/use-saved-word-modal';
 import { VocabularyItemContent } from '../saved-word-content';

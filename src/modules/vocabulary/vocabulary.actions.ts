@@ -6,17 +6,17 @@ import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
 
-import type {
-  CachedWord,
-  VocabularyItem,
-  VocabularyItemInput,
-} from './vocabulary.types';
 import {
   deleteUserWord,
   getCachedWord,
   getUserVocabularyItems,
   saveWordToDatabase,
-} from './words-persistence.service';
+} from './vocabulary.service';
+import type {
+  VocabularyItem,
+  VocabularyItemAnonymized,
+  VocabularyItemInput,
+} from './vocabulary.types';
 
 // Save word for learning
 export const saveWordForLearning = withUserSettings<
@@ -65,13 +65,21 @@ export const saveWordForLearning = withUserSettings<
 // No need for separate checkWordSaved action
 
 // Get cached word
-export const getWordFromCache = async (
-  normalizedWord: string,
-  partOfSpeech?: string,
-): Promise<ActionResult<CachedWord | null>> => {
-  const result = await getCachedWord(normalizedWord, partOfSpeech);
-  return result;
-};
+export const getWordFromCache = withUserSettings<
+  string,
+  VocabularyItemAnonymized | null
+>(
+  async (
+    context,
+    normalizedWord: string,
+  ): Promise<ActionResult<VocabularyItemAnonymized | null>> => {
+    const result = await getCachedWord(
+      normalizedWord,
+      context.userSettings.native_language as LanguageCode,
+    );
+    return result;
+  },
+);
 
 // Get user saved words
 export const fetchUserVocabularyItems = withAuth<void, VocabularyItem[]>(

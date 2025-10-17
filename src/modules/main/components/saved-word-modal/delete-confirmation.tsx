@@ -1,6 +1,6 @@
 import { Text, VStack } from '@chakra-ui/react';
 
-import type { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
+import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 interface DeleteConfirmationProps {
   savedWord: VocabularyItem;

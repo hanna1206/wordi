@@ -1,5 +1,5 @@
 import { ExistingProgress } from '@/modules/flash-cards-game/flash-cards-game.types';
-import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
+import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 import { createClient } from '@/services/supabase/server';
 import type { ActionResult } from '@/shared-types';
 import { convertKeysToCamelCase } from '@/utils/case-conversion';

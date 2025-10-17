@@ -5,7 +5,7 @@ import { forwardRef } from 'react';
 import { Box } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
 
-import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
+import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 import { CardSide, QualityScore } from '../flash-cards-game.const';
 import { useGestureHandling } from '../hooks/use-gesture-handling';

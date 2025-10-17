@@ -4,7 +4,7 @@ import { forwardRef, useCallback, useState } from 'react';
 
 import { Box, Text } from '@chakra-ui/react';
 
-import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
+import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 import { CardSide } from '../flash-cards-game.const';
 

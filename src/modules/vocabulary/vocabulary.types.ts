@@ -1,4 +1,5 @@
 import type { LinguisticItem } from '../linguistics/linguistics.types';
+import { LanguageCode } from '../user-settings/user-settings.const';
 
 export interface VocabularyItem {
   id: string;
@@ -9,7 +10,7 @@ export interface VocabularyItem {
   partSpecificData: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
-  targetLanguage?: string;
+  targetLanguage?: LanguageCode;
 }
 
 export interface CommonWordData {
@@ -27,13 +28,14 @@ export interface VocabularyItemInput {
   linguisticItem: LinguisticItem;
 }
 
-export interface CachedWord {
+export interface VocabularyItemAnonymized {
   id: string;
   normalizedWord: string;
   partOfSpeech: string;
   commonData: CommonWordData;
   partSpecificData: Record<string, unknown>;
   createdAt: string;
+  targetLanguage: LanguageCode;
 }
 
 export interface UserWordCheck {

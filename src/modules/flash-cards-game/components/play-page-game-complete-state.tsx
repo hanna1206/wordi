@@ -3,7 +3,7 @@
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 
-import { VocabularyItem } from '@/modules/words-persistence/vocabulary.types';
+import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 interface PlayPageGameCompleteStateProps {
   needsReviewWords: VocabularyItem[];
