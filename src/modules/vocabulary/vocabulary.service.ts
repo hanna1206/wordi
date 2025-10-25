@@ -1,6 +1,6 @@
 import { LinguisticItem } from '@/modules/linguistics/linguistics.types';
 import { createClient } from '@/services/supabase/server';
-import type { ActionResult } from '@/shared-types';
+// ActionResult no longer used in services; services throw on error
 import {
   convertKeysToCamelCase,
   convertKeysToSnakeCase,
@@ -17,90 +17,62 @@ export const saveWordToDatabase = async (
   linguisticItem: LinguisticItem,
   userId: string,
   targetLanguage: LanguageCode,
-): Promise<ActionResult<VocabularyItem>> => {
-  try {
-    const supabase = await createClient();
-    const newVocabularyItem = transformLinguisticItemToVocabularyItem(
-      linguisticItem,
-      userId,
-      targetLanguage,
-    );
+): Promise<VocabularyItem> => {
+  const supabase = await createClient();
+  const newVocabularyItem = transformLinguisticItemToVocabularyItem(
+    linguisticItem,
+    userId,
+    targetLanguage,
+  );
 
-    const databaseData = convertKeysToSnakeCase(
-      newVocabularyItem as unknown as Record<string, unknown>,
-    );
+  const databaseData = convertKeysToSnakeCase(
+    newVocabularyItem as unknown as Record<string, unknown>,
+  );
 
-    const { data, error } = await supabase
-      .from('words')
-      .insert(databaseData)
-      .select()
-      .single();
+  const { data, error } = await supabase
+    .from('words')
+    .insert(databaseData)
+    .select()
+    .single();
 
-    if (error) {
-      // Check if it's a duplicate word error
-      if (error.code === '23505') {
-        // Unique constraint violation
-        return {
-          success: false,
-          error: 'Word already saved for learning',
-        };
-      }
-
-      throw error;
+  if (error) {
+    if (error.code === '23505') {
+      const duplicate = new Error('Word already saved for learning');
+      duplicate.name = 'DuplicateWordError';
+      throw duplicate;
     }
-
-    return {
-      success: true,
-      data: convertKeysToCamelCase(
-        data as Record<string, unknown>,
-      ) as unknown as VocabularyItem,
-    };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error saving word to database:', error);
-    return {
-      success: false,
-      error: 'Failed to save word',
-    };
+    throw new Error('Failed to save word');
   }
+
+  return convertKeysToCamelCase(
+    data as Record<string, unknown>,
+  ) as unknown as VocabularyItem;
 };
 
 // Get cached word (from any user)
 export const getCachedWord = async (
   normalizedWord: string,
   targetLanguage: LanguageCode,
-): Promise<ActionResult<VocabularyItemAnonymized | null>> => {
-  try {
-    const supabase = await createClient();
+): Promise<VocabularyItemAnonymized | null> => {
+  const supabase = await createClient();
 
-    const query = supabase
-      .from('word_cache')
-      .select('*')
-      .eq('normalized_word', normalizedWord)
-      .eq('target_language', targetLanguage);
+  const query = supabase
+    .from('word_cache')
+    .select('*')
+    .eq('normalized_word', normalizedWord)
+    .eq('target_language', targetLanguage);
 
-    const { data, error } = await query.maybeSingle();
+  const { data, error } = await query.maybeSingle();
 
-    if (error) {
-      throw error;
-    }
-
-    return {
-      success: true,
-      data: data
-        ? (convertKeysToCamelCase(
-            data as Record<string, unknown>,
-          ) as unknown as VocabularyItemAnonymized)
-        : null,
-    };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error getting cached word:', error);
-    return {
-      success: false,
-      error: 'Failed to get cached word',
-    };
+  if (error) {
+    throw new Error('Failed to get cached word');
   }
+
+  return data
+    ? (convertKeysToCamelCase(
+        data as Record<string, unknown>,
+      ) as unknown as VocabularyItemAnonymized)
+    : null;
 };
 
 // Get user's saved words
@@ -108,69 +80,44 @@ export const getUserVocabularyItems = async (
   userId: string,
   limit = 50,
   offset = 0,
-): Promise<ActionResult<VocabularyItem[]>> => {
-  try {
-    const supabase = await createClient();
+): Promise<VocabularyItem[]> => {
+  const supabase = await createClient();
 
-    const { data, error } = await supabase
-      .from('words')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1);
+  const { data, error } = await supabase
+    .from('words')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1);
 
-    if (error) {
-      throw error;
-    }
-
-    return {
-      success: true,
-      data:
-        data?.map(
-          (item) =>
-            convertKeysToCamelCase(
-              item as Record<string, unknown>,
-            ) as unknown as VocabularyItem,
-        ) || [],
-    };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error getting user saved words:', error);
-    return {
-      success: false,
-      error: 'Failed to get saved words',
-    };
+  if (error) {
+    throw new Error('Failed to get saved words');
   }
+
+  return (
+    data?.map(
+      (item) =>
+        convertKeysToCamelCase(
+          item as Record<string, unknown>,
+        ) as unknown as VocabularyItem,
+    ) || []
+  );
 };
 
 // Delete user's saved word
 export const deleteUserWord = async (
   wordId: string,
   userId: string,
-): Promise<ActionResult<void>> => {
-  try {
-    const supabase = await createClient();
+): Promise<void> => {
+  const supabase = await createClient();
 
-    const { error } = await supabase
-      .from('words')
-      .delete()
-      .eq('id', wordId)
-      .eq('user_id', userId); // Ensure user can only delete their own words
+  const { error } = await supabase
+    .from('words')
+    .delete()
+    .eq('id', wordId)
+    .eq('user_id', userId);
 
-    if (error) {
-      throw error;
-    }
-
-    return {
-      success: true,
-      data: undefined,
-    };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error deleting word:', error);
-    return {
-      success: false,
-      error: 'Failed to delete word',
-    };
+  if (error) {
+    throw new Error('Failed to delete word');
   }
 };

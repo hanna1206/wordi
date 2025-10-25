@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -10,36 +11,41 @@ import {
 } from '@/modules/auth/auth.service';
 
 export const logout = async () => {
-  const result = await logoutService();
-
-  if (!result.success) {
-    redirect('/error?message=' + encodeURIComponent(result.error || 'Error'));
+  try {
+    await logoutService();
+    revalidatePath('/', 'layout');
+    redirect('/login');
+  } catch (error) {
+    Sentry.captureException(error);
+    redirect('/error?message=' + encodeURIComponent('Failed to logout'));
   }
-
-  revalidatePath('/', 'layout');
-  redirect('/login');
 };
 
 export const requestPasswordReset = async (email: string) => {
-  const result = await requestPasswordResetService(email);
-
-  if (!result.success) {
-    redirect('/error?message=' + encodeURIComponent(result.error || 'Error'));
+  try {
+    await requestPasswordResetService(email);
+    return {
+      success: true,
+      message: 'Password reset link sent. Please check your email.',
+    };
+  } catch (error) {
+    Sentry.captureException(error);
+    redirect(
+      '/error?message=' +
+        encodeURIComponent('Failed to request password reset'),
+    );
   }
-
-  return {
-    success: true,
-    message: 'Password reset link sent. Please check your email.',
-  };
 };
 
 export const updatePassword = async (password: string) => {
-  const result = await updatePasswordService(password);
-
-  if (!result.success) {
-    redirect('/error?message=' + encodeURIComponent(result.error || 'Error'));
+  try {
+    await updatePasswordService(password);
+    revalidatePath('/', 'layout');
+    redirect('/');
+  } catch (error) {
+    Sentry.captureException(error);
+    redirect(
+      '/error?message=' + encodeURIComponent('Failed to update password'),
+    );
   }
-
-  revalidatePath('/', 'layout');
-  redirect('/');
 };

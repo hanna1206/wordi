@@ -22,20 +22,6 @@ export const withAuth = <TInput, TOutput>(
       userId: authResult.user.id,
     };
 
-    try {
-      return await handler(context, input);
-    } catch (error) {
-      // Re-throw redirect errors to let Next.js handle them
-      if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
-        throw error;
-      }
-
-      // eslint-disable-next-line no-console
-      console.error('Action error:', error);
-      return {
-        success: false,
-        error: 'An unexpected error occurred',
-      };
-    }
+    return await handler(context, input);
   };
 };

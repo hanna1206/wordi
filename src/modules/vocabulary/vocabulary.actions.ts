@@ -1,5 +1,7 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
+
 import { withAuth } from '@/modules/auth/utils/with-auth';
 import { createInitialWordProgressService } from '@/modules/flash-cards-game/flash-cards-game.service';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
@@ -34,27 +36,20 @@ export const saveWordForLearning = withUserSettings<
   }
 
   try {
-    const saveResult = await saveWordToDatabase(
+    const saved = await saveWordToDatabase(
       linguisticItem,
       context.userId,
       context.userSettings.native_language as LanguageCode,
     );
 
-    // If the word was saved successfully, create its initial progress record
-    if (saveResult.success && saveResult.data) {
-      await createInitialWordProgressService(
-        context.userId,
-        saveResult.data.id,
-      );
-    }
+    await createInitialWordProgressService(context.userId, saved.id);
 
-    return saveResult;
+    return { success: true, data: saved };
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error in saveWordForLearning action:', error);
+    Sentry.captureException(error);
     return {
       success: false,
-      error: 'Failed to save word',
+      error: error instanceof Error ? error.message : 'Failed to save word',
     };
   }
 });
@@ -71,26 +66,41 @@ export const getWordFromCache = withUserSettings<
     context,
     normalizedWord: string,
   ): Promise<ActionResult<VocabularyItemAnonymized | null>> => {
-    const result = await getCachedWord(
-      normalizedWord,
-      context.userSettings.native_language as LanguageCode,
-    );
-    return result;
+    try {
+      const data = await getCachedWord(
+        normalizedWord,
+        context.userSettings.native_language as LanguageCode,
+      );
+      return { success: true, data };
+    } catch (error) {
+      Sentry.captureException(error);
+      return { success: false, error: 'Failed to get cached word' };
+    }
   },
 );
 
 // Get user saved words
 export const fetchUserVocabularyItems = withAuth<void, VocabularyItem[]>(
   async (context): Promise<ActionResult<VocabularyItem[]>> => {
-    const result = await getUserVocabularyItems(context.userId);
-    return result;
+    try {
+      const data = await getUserVocabularyItems(context.userId);
+      return { success: true, data };
+    } catch (error) {
+      Sentry.captureException(error);
+      return { success: false, error: 'Failed to get saved words' };
+    }
   },
 );
 
 // Delete user word
 export const deleteWord = withAuth<{ wordId: string }, void>(
   async (context, { wordId }): Promise<ActionResult<void>> => {
-    const result = await deleteUserWord(wordId, context.userId);
-    return result;
+    try {
+      await deleteUserWord(wordId, context.userId);
+      return { success: true };
+    } catch (error) {
+      Sentry.captureException(error);
+      return { success: false, error: 'Failed to delete word' };
+    }
   },
 );

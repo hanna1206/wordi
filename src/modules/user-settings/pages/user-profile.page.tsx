@@ -25,7 +25,7 @@ export const UserSettings = async () => {
     );
   }
 
-  const { data: userSettings } = await getUserSettings(user.id);
+  const userSettings = await getUserSettings(user.id);
 
   if (!userSettings) {
     return (

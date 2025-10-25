@@ -2,7 +2,6 @@ import type { User } from '@supabase/supabase-js';
 
 import { environment } from '@/config/environment.config';
 import { createClient } from '@/services/supabase/server';
-import type { ActionResult } from '@/shared-types';
 
 interface AuthResult {
   success: boolean;
@@ -40,80 +39,38 @@ export const getAuthenticatedUser = async (): Promise<AuthResult> => {
   }
 };
 
-export const logoutService = async (): Promise<ActionResult<void>> => {
-  try {
-    const supabase = await createClient();
+export const logoutService = async (): Promise<void> => {
+  const supabase = await createClient();
 
-    const { error } = await supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut();
 
-    if (error) {
-      return {
-        success: false,
-        error: error.message,
-      };
-    }
-
-    return { success: true };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Logout error:', error);
-    return {
-      success: false,
-      error: 'Failed to logout',
-    };
+  if (error) {
+    throw new Error(error.message || 'Failed to logout');
   }
 };
 
 export const requestPasswordResetService = async (
   email: string,
-): Promise<ActionResult<void>> => {
-  try {
-    const supabase = await createClient();
+): Promise<void> => {
+  const supabase = await createClient();
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${environment.appUrl}/auth/reset-password`,
-    });
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${environment.appUrl}/auth/reset-password`,
+  });
 
-    if (error) {
-      return {
-        success: false,
-        error: error.message,
-      };
-    }
-
-    return { success: true };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Request password reset error:', error);
-    return {
-      success: false,
-      error: 'Failed to request password reset',
-    };
+  if (error) {
+    throw new Error(error.message || 'Failed to request password reset');
   }
 };
 
 export const updatePasswordService = async (
   password: string,
-): Promise<ActionResult<void>> => {
-  try {
-    const supabase = await createClient();
+): Promise<void> => {
+  const supabase = await createClient();
 
-    const { error } = await supabase.auth.updateUser({ password });
+  const { error } = await supabase.auth.updateUser({ password });
 
-    if (error) {
-      return {
-        success: false,
-        error: error.message,
-      };
-    }
-
-    return { success: true };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Update password error:', error);
-    return {
-      success: false,
-      error: 'Failed to update password',
-    };
+  if (error) {
+    throw new Error(error.message || 'Failed to update password');
   }
 };

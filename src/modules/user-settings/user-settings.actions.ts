@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import { redirect } from 'next/navigation';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
@@ -29,37 +30,32 @@ export const completeProfile = withAuth<
     };
   }
 
-  const result = await completeUserProfile(context.userId, {
-    name: name.trim(),
-    native_language: nativeLanguage,
-  });
+  try {
+    await completeUserProfile(context.userId, {
+      name: name.trim(),
+      native_language: nativeLanguage,
+    });
 
-  if (!result.success) {
+    // Redirect to home page after successful completion
+    // Note: redirect() throws and prevents execution of code after it
+    redirect('/');
+  } catch (error) {
+    Sentry.captureException(error);
     return {
       success: false,
-      error: result.error || 'Failed to complete profile',
+      error: 'Failed to complete profile',
     };
   }
-
-  // Redirect to home page after successful completion
-  // Note: redirect() throws and prevents execution of code after it
-  redirect('/');
 });
 
 export const fetchUserSettings = withAuth<void, UserSettings>(
   async (context): Promise<ActionResult<UserSettings>> => {
-    const result = await getUserSettings(context.userId);
-
-    if (!result.success) {
-      return {
-        success: false,
-        error: result.error || 'Failed to fetch user settings',
-      };
+    try {
+      const data = await getUserSettings(context.userId);
+      return { success: true, data };
+    } catch (error) {
+      Sentry.captureException(error);
+      return { success: false, error: 'Failed to fetch user settings' };
     }
-
-    return {
-      success: true,
-      data: result.data,
-    };
   },
 );

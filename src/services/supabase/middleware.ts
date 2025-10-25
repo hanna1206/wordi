@@ -63,12 +63,8 @@ export const updateSession = async (request: NextRequest) => {
     !request.nextUrl.pathname.startsWith('/_next')
   ) {
     try {
-      const userSettingsResult = await getUserSettings(user.id);
-      if (
-        userSettingsResult.success &&
-        userSettingsResult.data &&
-        !isProfileComplete(userSettingsResult.data)
-      ) {
+      const userSettings = await getUserSettings(user.id);
+      if (!isProfileComplete(userSettings)) {
         const url = request.nextUrl.clone();
         url.pathname = '/onboarding';
         return NextResponse.redirect(url);

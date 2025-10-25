@@ -1,5 +1,7 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
+
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { getLanguageName } from '@/modules/user-settings/utils/get-language-name';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
@@ -37,28 +39,17 @@ export const generateLinguisticItem = withUserSettings<string, LinguisticItem>(
     );
 
     try {
-      // Call OpenAI for translation
       const response = await generateLinguisticItemService(
         serializedWord,
         targetLanguage,
       );
-
-      if (!response) {
-        const error = 'Translation service unavailable';
-
-        return {
-          success: false,
-          error,
-        };
-      }
 
       return {
         success: true,
         data: response,
       };
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('OpenAI translation error:', error);
+      Sentry.captureException(error);
       return {
         success: false,
         error: 'Translation service failed',

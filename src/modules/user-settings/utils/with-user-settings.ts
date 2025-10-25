@@ -13,7 +13,7 @@ export const withUserSettings = <TInput, TOutput>(
   return withAuth<TInput, TOutput>(async (context, input) => {
     const userSettings = await getUserSettings(context.userId);
 
-    if (!userSettings || !userSettings.data) {
+    if (!userSettings) {
       return {
         success: false,
         error: 'User profile not found',
@@ -22,23 +22,9 @@ export const withUserSettings = <TInput, TOutput>(
 
     const nextContext: UserSettingsContext = {
       ...context,
-      userSettings: userSettings.data,
+      userSettings,
     };
 
-    try {
-      return await handler(nextContext, input);
-    } catch (error) {
-      // Re-throw redirect errors to let Next.js handle them
-      if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
-        throw error;
-      }
-
-      // eslint-disable-next-line no-console
-      console.error('Action error:', error);
-      return {
-        success: false,
-        error: 'An unexpected error occurred',
-      };
-    }
+    return handler(nextContext, input);
   });
 };

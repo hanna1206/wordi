@@ -1,12 +1,11 @@
 import { createClient } from '@/services/supabase/server';
-import type { ActionResult } from '@/shared-types';
 
 import { USER_SETTINGS_TABLE_NAME } from './user-settings.const';
 import type { UserSettings } from './user-settings.types';
 
 export const getUserSettings = async (
   userId: string,
-): Promise<ActionResult<UserSettings>> => {
+): Promise<UserSettings> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -16,22 +15,16 @@ export const getUserSettings = async (
     .single();
 
   if (!data || error) {
-    return {
-      success: false,
-      error: error?.message || "Couldn't fetch user settings",
-    };
+    throw new Error(error?.message || "Couldn't fetch user settings");
   }
 
-  return {
-    success: true,
-    data,
-  };
+  return data;
 };
 
 export const completeUserProfile = async (
   userId: string,
   profileData: { name: string; native_language: string },
-): Promise<ActionResult<UserSettings>> => {
+): Promise<UserSettings> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -45,14 +38,8 @@ export const completeUserProfile = async (
     .single();
 
   if (!data || error) {
-    return {
-      success: false,
-      error: error?.message || "Couldn't update user settings",
-    };
+    throw new Error(error?.message || "Couldn't update user settings");
   }
 
-  return {
-    success: true,
-    data,
-  };
+  return data;
 };

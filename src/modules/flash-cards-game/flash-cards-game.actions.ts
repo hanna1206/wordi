@@ -1,5 +1,7 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
+
 import { withAuth } from '@/modules/auth/utils/with-auth';
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 import type { ActionResult } from '@/shared-types';
@@ -29,7 +31,13 @@ type DueWordsCount = {
 
 export const createInitialWordProgress = withAuth<{ wordId: string }, void>(
   async (context, { wordId }): Promise<ActionResult<void>> => {
-    return createInitialWordProgressService(context.userId, wordId);
+    try {
+      await createInitialWordProgressService(context.userId, wordId);
+      return { success: true };
+    } catch (error) {
+      Sentry.captureException(error);
+      return { success: false, error: 'Failed to init word progress' };
+    }
   },
 );
 
@@ -37,25 +45,43 @@ export const getWordsForGame = withAuth<
   GetWordsForGameParams,
   VocabularyItem[]
 >(async (context, { mode, limit }): Promise<ActionResult<VocabularyItem[]>> => {
-  return getWordsForGameService({
-    userId: context.userId,
-    mode,
-    limit,
-  });
+  try {
+    const data = await getWordsForGameService({
+      userId: context.userId,
+      mode,
+      limit,
+    });
+    return { success: true, data };
+  } catch (error) {
+    Sentry.captureException(error);
+    return { success: false, error: 'Failed to fetch words for game' };
+  }
 });
 
 export const saveQualityFeedback = withAuth<SaveQualityFeedbackParams, void>(
   async (context, { wordId, qualityScore }): Promise<ActionResult<void>> => {
-    return saveQualityFeedbackService({
-      userId: context.userId,
-      wordId,
-      qualityScore,
-    });
+    try {
+      await saveQualityFeedbackService({
+        userId: context.userId,
+        wordId,
+        qualityScore,
+      });
+      return { success: true };
+    } catch (error) {
+      Sentry.captureException(error);
+      return { success: false, error: 'Failed to save quality feedback' };
+    }
   },
 );
 
 export const getDueWordsCount = withAuth<void, DueWordsCount>(
   async (context): Promise<ActionResult<DueWordsCount>> => {
-    return getDueWordsCountService(context.userId);
+    try {
+      const data = await getDueWordsCountService(context.userId);
+      return { success: true, data };
+    } catch (error) {
+      Sentry.captureException(error);
+      return { success: false, error: 'Failed to get due words count' };
+    }
   },
 );
