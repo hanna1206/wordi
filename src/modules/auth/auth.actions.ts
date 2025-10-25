@@ -3,16 +3,17 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import { environment } from '@/config/environment.config';
-import { createClient } from '@/services/supabase/server';
+import {
+  logoutService,
+  requestPasswordResetService,
+  updatePasswordService,
+} from '@/modules/auth/auth.service';
 
 export const logout = async () => {
-  const supabase = await createClient();
+  const result = await logoutService();
 
-  const { error } = await supabase.auth.signOut();
-
-  if (error) {
-    redirect('/error?message=' + encodeURIComponent(error.message));
+  if (!result.success) {
+    redirect('/error?message=' + encodeURIComponent(result.error || 'Error'));
   }
 
   revalidatePath('/', 'layout');
@@ -20,14 +21,10 @@ export const logout = async () => {
 };
 
 export const requestPasswordReset = async (email: string) => {
-  const supabase = await createClient();
+  const result = await requestPasswordResetService(email);
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${environment.appUrl}/auth/reset-password`,
-  });
-
-  if (error) {
-    redirect('/error?message=' + encodeURIComponent(error.message));
+  if (!result.success) {
+    redirect('/error?message=' + encodeURIComponent(result.error || 'Error'));
   }
 
   return {
@@ -37,12 +34,10 @@ export const requestPasswordReset = async (email: string) => {
 };
 
 export const updatePassword = async (password: string) => {
-  const supabase = await createClient();
+  const result = await updatePasswordService(password);
 
-  const { error } = await supabase.auth.updateUser({ password });
-
-  if (error) {
-    redirect('/error?message=' + encodeURIComponent(error.message));
+  if (!result.success) {
+    redirect('/error?message=' + encodeURIComponent(result.error || 'Error'));
   }
 
   revalidatePath('/', 'layout');
