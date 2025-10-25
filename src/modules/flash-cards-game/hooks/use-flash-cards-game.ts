@@ -24,6 +24,7 @@ export const useFlashCardsGame = () => {
     [],
   );
   const [isCurrentFlipped, setIsCurrentFlipped] = useState(false);
+  const [flippedWordIds, setFlippedWordIds] = useState<Set<string>>(new Set());
   const cardButtonRef = useRef<HTMLDivElement | null>(null);
   const switchTimeoutRef = useRef<number | null>(null);
 
@@ -123,10 +124,18 @@ export const useFlashCardsGame = () => {
         setNeedsReviewWords((prev) => [...prev, currentWord]);
       }
 
-      // For HARD: if card isn't flipped, flip to reveal answer, then advance after delay
-      if (qualityScore === QualityScore.Hard && !isCurrentFlipped) {
+      const wasEverFlipped = flippedWordIds.has(currentWord.id);
+
+      // For HARD and GOOD: if card was never flipped before, flip to reveal answer, then advance after delay
+      if (
+        (qualityScore === QualityScore.Hard ||
+          qualityScore === QualityScore.Good) &&
+        !wasEverFlipped &&
+        !isCurrentFlipped
+      ) {
         cardButtonRef.current?.click();
         setIsCurrentFlipped(true);
+        setFlippedWordIds((prev) => new Set(prev).add(currentWord.id));
         const id = window.setTimeout(() => {
           if (currentCardIndex < words.length - 1) {
             setCurrentCardIndex((prev) => prev + 1);
@@ -160,13 +169,17 @@ export const useFlashCardsGame = () => {
           console.error('Failed to save quality feedback:', error);
         });
     },
-    [words, currentCardIndex, focusCard, isCurrentFlipped],
+    [words, currentCardIndex, focusCard, flippedWordIds, isCurrentFlipped],
   );
 
   const handleCardFlip = useCallback(() => {
+    const currentWord = words[currentCardIndex];
+    if (currentWord) {
+      setFlippedWordIds((prev) => new Set(prev).add(currentWord.id));
+    }
     cardButtonRef.current?.click();
     setIsCurrentFlipped((v) => !v);
-  }, []);
+  }, [words, currentCardIndex]);
 
   return {
     // State
