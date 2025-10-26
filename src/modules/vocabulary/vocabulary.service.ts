@@ -1,6 +1,5 @@
 import { LinguisticItem } from '@/modules/linguistics/linguistics.types';
 import { createClient } from '@/services/supabase/server';
-// ActionResult no longer used in services; services throw on error
 import {
   convertKeysToCamelCase,
   convertKeysToSnakeCase,
@@ -9,6 +8,7 @@ import {
 import { LanguageCode } from '../user-settings/user-settings.const';
 import { transformLinguisticItemToVocabularyItem } from './utils/transform-linguistic-item-to-vocabulary-item';
 import type {
+  MinimalVocabularyWord,
   VocabularyItem,
   VocabularyItemAnonymized,
 } from './vocabulary.types';
@@ -102,6 +102,31 @@ export const getUserVocabularyItems = async (
         ) as unknown as VocabularyItem,
     ) || []
   );
+};
+
+export const getUserMinimalVocabulary = async (
+  userId: string,
+  limit = 20,
+  offset = 0,
+): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {
+  const supabase = await createClient();
+
+  const { data, error, count } = await supabase
+    .from('words')
+    .select('normalized_word, part_of_speech, common_data', { count: 'exact' })
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (error) {
+    throw new Error('Failed to get saved words');
+  }
+
+  const items: MinimalVocabularyWord[] = data.map((datum) =>
+    convertKeysToCamelCase(datum),
+  ) as unknown as MinimalVocabularyWord[];
+
+  return { items, total: count || 0 };
 };
 
 // Delete user's saved word

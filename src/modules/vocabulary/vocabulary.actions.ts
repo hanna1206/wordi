@@ -12,10 +12,12 @@ import { LinguisticItem } from '../linguistics/linguistics.types';
 import {
   deleteUserWord,
   getCachedWord,
+  getUserMinimalVocabulary,
   getUserVocabularyItems,
   saveWordToDatabase,
 } from './vocabulary.service';
 import type {
+  MinimalVocabularyWord,
   VocabularyItem,
   VocabularyItemAnonymized,
 } from './vocabulary.types';
@@ -84,6 +86,35 @@ export const fetchUserVocabularyItems = withAuth<void, VocabularyItem[]>(
   async (context): Promise<ActionResult<VocabularyItem[]>> => {
     try {
       const data = await getUserVocabularyItems(context.userId);
+      return { success: true, data };
+    } catch (error) {
+      Sentry.captureException(error);
+      return { success: false, error: 'Failed to get saved words' };
+    }
+  },
+);
+
+type FetchMinimalVocabularyParams = {
+  limit?: number;
+  offset?: number;
+};
+
+export const fetchUserMinimalVocabulary = withAuth<
+  FetchMinimalVocabularyParams,
+  { items: MinimalVocabularyWord[]; total: number }
+>(
+  async (
+    context,
+    { limit = 20, offset = 0 },
+  ): Promise<
+    ActionResult<{ items: MinimalVocabularyWord[]; total: number }>
+  > => {
+    try {
+      const data = await getUserMinimalVocabulary(
+        context.userId,
+        limit,
+        offset,
+      );
       return { success: true, data };
     } catch (error) {
       Sentry.captureException(error);

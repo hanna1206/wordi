@@ -35,3 +35,9 @@ export interface UserWordCheck {
   exists: boolean;
   word?: VocabularyItem;
 }
+
+export interface MinimalVocabularyWord {
+  normalizedWord: string;
+  partOfSpeech: PartOfSpeech;
+  commonData: CommonWordData;
+}
