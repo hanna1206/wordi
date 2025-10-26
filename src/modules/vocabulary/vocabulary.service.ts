@@ -129,6 +129,33 @@ export const getUserMinimalVocabulary = async (
   return { items, total: count || 0 };
 };
 
+// Get a single user's saved word by normalized word and part of speech
+export const getUserWordByNormalizedWordAndPos = async (
+  userId: string,
+  normalizedWord: string,
+  partOfSpeech: string,
+): Promise<VocabularyItem | null> => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('words')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('normalized_word', normalizedWord)
+    .eq('part_of_speech', partOfSpeech)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error('Failed to get word');
+  }
+
+  return data
+    ? (convertKeysToCamelCase(
+        data as Record<string, unknown>,
+      ) as unknown as VocabularyItem)
+    : null;
+};
+
 // Delete user's saved word
 export const deleteUserWord = async (
   wordId: string,

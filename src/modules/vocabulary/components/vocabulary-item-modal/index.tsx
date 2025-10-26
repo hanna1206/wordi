@@ -10,8 +10,8 @@ import type {
 import { getGenderProperties } from '@/modules/linguistics/utils/get-gender-properties';
 import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
-import { useVocabularyItemModal } from '../../hooks/use-saved-word-modal';
-import { VocabularyItemContent } from '../saved-word-content';
+import { useVocabularyItemModal } from '../../../main/hooks/use-saved-word-modal';
+import { VocabularyItemContent } from '../vocabulary-item-content';
 import { DeleteConfirmation } from './delete-confirmation';
 import { ModalFooter } from './modal-footer';
 

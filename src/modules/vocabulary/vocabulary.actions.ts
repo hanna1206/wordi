@@ -14,6 +14,7 @@ import {
   getCachedWord,
   getUserMinimalVocabulary,
   getUserVocabularyItems,
+  getUserWordByNormalizedWordAndPos,
   saveWordToDatabase,
 } from './vocabulary.service';
 import type {
@@ -119,6 +120,33 @@ export const fetchUserMinimalVocabulary = withAuth<
     } catch (error) {
       Sentry.captureException(error);
       return { success: false, error: 'Failed to get saved words' };
+    }
+  },
+);
+
+type FetchWordParams = {
+  normalizedWord: string;
+  partOfSpeech: string;
+};
+
+export const fetchUserWordByNormalizedWordAndPos = withAuth<
+  FetchWordParams,
+  VocabularyItem | null
+>(
+  async (
+    context,
+    { normalizedWord, partOfSpeech },
+  ): Promise<ActionResult<VocabularyItem | null>> => {
+    try {
+      const data = await getUserWordByNormalizedWordAndPos(
+        context.userId,
+        normalizedWord,
+        partOfSpeech,
+      );
+      return { success: true, data };
+    } catch (error) {
+      Sentry.captureException(error);
+      return { success: false, error: 'Failed to get word' };
     }
   },
 );

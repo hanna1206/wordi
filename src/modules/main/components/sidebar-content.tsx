@@ -3,9 +3,8 @@ import { LuBrain, LuLibrary } from 'react-icons/lu';
 
 import { Box, Button, Flex, Link, Spinner, Text } from '@chakra-ui/react';
 
+import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
 import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
-
-import { VocabularyItemModal } from './saved-word-modal';
 
 interface SidebarContentProps {
   savedWords: VocabularyItem[];
