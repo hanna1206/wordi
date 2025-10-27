@@ -10,13 +10,9 @@ import { InstallPrompt } from '@/components/install-prompt';
 import { Sidebar } from '@/components/sidebar';
 import { GenerateLinguisticItemForm } from '@/modules/linguistics/components/generate-linguistic-item-form';
 import { SidebarContent } from '@/modules/main/components/sidebar-content';
-import { fetchUserVocabularyItems } from '@/modules/vocabulary/vocabulary.actions';
-import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 export const MainPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [savedWords, setVocabularyItems] = useState<VocabularyItem[]>([]);
-  const [isLoadingWords, setIsLoadingWords] = useState(true);
 
   const handleSidebarToggle = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -40,30 +36,6 @@ export const MainPage = () => {
     };
   }, []);
 
-  // Load user's saved words when component mounts
-  const loadUserWords = async () => {
-    try {
-      setIsLoadingWords(true);
-      const result = await fetchUserVocabularyItems();
-
-      if (result.success && result.data) {
-        setVocabularyItems(result.data);
-      } else {
-        // eslint-disable-next-line no-console
-        console.error('Failed to load user words:', result.error);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error loading user words:', error);
-    } finally {
-      setIsLoadingWords(false);
-    }
-  };
-
-  useEffect(() => {
-    loadUserWords();
-  }, []);
-
   return (
     <GradientBackground variant="primary">
       <Box h="100svh" overflow="hidden">
@@ -77,11 +49,7 @@ export const MainPage = () => {
           onClose={handleSidebarClose}
           onToggle={handleSidebarToggle}
         >
-          <SidebarContent
-            savedWords={savedWords}
-            isLoadingWords={isLoadingWords}
-            onWordDeleted={loadUserWords}
-          />
+          <SidebarContent />
         </Sidebar>
 
         <Box
@@ -95,7 +63,7 @@ export const MainPage = () => {
           <Box h="full" overflow="auto">
             <Center h="full">
               <Container maxW="4xl" w="full">
-                <GenerateLinguisticItemForm onWordSaved={loadUserWords} />
+                <GenerateLinguisticItemForm />
               </Container>
             </Center>
           </Box>

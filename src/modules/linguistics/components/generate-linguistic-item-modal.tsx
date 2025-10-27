@@ -22,7 +22,6 @@ interface GenerateLinguisticItemModalProps {
   linguisticItem: LinguisticItem | null;
   onClose: () => void;
   onRegenerate: (word: string) => void;
-  onWordSaved: () => void;
 }
 
 export const GenerateLinguisticItemModal: React.FC<
@@ -35,7 +34,6 @@ export const GenerateLinguisticItemModal: React.FC<
   linguisticItem,
   onClose,
   onRegenerate,
-  onWordSaved,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
 
@@ -62,7 +60,6 @@ export const GenerateLinguisticItemModal: React.FC<
           type: 'success',
           duration: 3000,
         });
-        onWordSaved();
         onClose();
       } else {
         toaster.create({

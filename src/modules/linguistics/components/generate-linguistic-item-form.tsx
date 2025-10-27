@@ -17,13 +17,7 @@ interface FormData {
   word: string;
 }
 
-interface GenerateLinguisticItemFormProps {
-  onWordSaved: () => void;
-}
-
-export const GenerateLinguisticItemForm = ({
-  onWordSaved,
-}: GenerateLinguisticItemFormProps) => {
+export const GenerateLinguisticItemForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [word, setWord] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -191,7 +185,6 @@ export const GenerateLinguisticItemForm = ({
         linguisticItem={linguisticItem}
         onClose={onClose}
         onRegenerate={handleSubmit}
-        onWordSaved={onWordSaved}
       />
     </>
   );

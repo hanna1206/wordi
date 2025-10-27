@@ -75,35 +75,6 @@ export const getCachedWord = async (
     : null;
 };
 
-// Get user's saved words
-export const getUserVocabularyItems = async (
-  userId: string,
-  limit = 50,
-  offset = 0,
-): Promise<VocabularyItem[]> => {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from('words')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-    .range(offset, offset + limit - 1);
-
-  if (error) {
-    throw new Error('Failed to get saved words');
-  }
-
-  return (
-    data?.map(
-      (item) =>
-        convertKeysToCamelCase(
-          item as Record<string, unknown>,
-        ) as unknown as VocabularyItem,
-    ) || []
-  );
-};
-
 export const getUserMinimalVocabulary = async (
   userId: string,
   limit = 20,

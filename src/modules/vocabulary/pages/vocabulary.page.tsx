@@ -2,33 +2,23 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import {
-  Badge,
-  Box,
-  Button,
-  Card,
-  Flex,
-  Heading,
-  HStack,
-  Spinner,
-  Table,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 
 import { toaster } from '@/components/toaster';
+import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
+import { VocabularyPageControls } from '@/modules/vocabulary/components/vocabulary-page-controls';
+import { VocabularyPageHeader } from '@/modules/vocabulary/components/vocabulary-page-header';
+import { VocabularyPagination } from '@/modules/vocabulary/components/vocabulary-pagination';
+import { VocabularyTable } from '@/modules/vocabulary/components/vocabulary-table';
 import {
   fetchUserMinimalVocabulary,
   fetchUserWordByNormalizedWordAndPos,
 } from '@/modules/vocabulary/vocabulary.actions';
+import { DEFAULT_PAGE_SIZE } from '@/modules/vocabulary/vocabulary.const';
 import type {
   MinimalVocabularyWord,
   VocabularyItem,
 } from '@/modules/vocabulary/vocabulary.types';
-
-import { VocabularyItemModal } from '../components/vocabulary-item-modal';
-
-const DEFAULT_PAGE_SIZE = 20;
-const PAGE_SIZE_OPTIONS = [10, 20, 50, 100] as const;
 
 export const VocabularyPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -75,11 +65,16 @@ export const VocabularyPage = () => {
     fetchWords();
   }, [fetchWords]);
 
-  const onPrevPage = useCallback(() => {
+  const handlePageSizeChange = useCallback((size: number) => {
+    setPageSize(size);
+    setPage(0);
+  }, []);
+
+  const handlePrevPage = useCallback(() => {
     setPage((p) => Math.max(0, p - 1));
   }, []);
 
-  const onNextPage = useCallback(() => {
+  const handleNextPage = useCallback(() => {
     setPage((p) => Math.min(totalPages - 1, p + 1));
   }, [totalPages]);
 
@@ -144,212 +139,25 @@ export const VocabularyPage = () => {
 
   return (
     <Box p={{ base: 4, md: 8 }} maxW="1400px" mx="auto">
-      {/* Page Header */}
-      <Box mb={8}>
-        <Flex align="center" justify="space-between" mb={2}>
-          <Heading
-            size="2xl"
-            fontWeight="bold"
-            bgGradient="to-r"
-            gradientFrom="blue.500"
-            gradientTo="purple.500"
-            bgClip="text"
-          >
-            My Vocabulary
-          </Heading>
-          <Badge
-            size="lg"
-            colorPalette="purple"
-            variant="solid"
-            px={3}
-            py={1}
-            borderRadius="full"
-          >
-            {total} {total === 1 ? 'word' : 'words'}
-          </Badge>
-        </Flex>
-        <Text color="fg.muted" fontSize="lg">
-          Track and review all the words you&apos;ve learned
-        </Text>
-      </Box>
+      <VocabularyPageHeader total={total} />
 
-      {/* Controls Card */}
-      <Card.Root mb={6} borderWidth="1px" shadow="sm">
-        <Card.Body>
-          <Flex
-            direction={{ base: 'column', md: 'row' }}
-            gap={4}
-            align={{ base: 'stretch', md: 'center' }}
-            justify="space-between"
-          >
-            {/* Items per page selector */}
-            <Flex align="center" gap={3} flexWrap="wrap">
-              <Text fontWeight="medium" color="fg.muted" whiteSpace="nowrap">
-                Items per page:
-              </Text>
-              <HStack gap={2}>
-                {PAGE_SIZE_OPTIONS.map((size) => (
-                  <Button
-                    key={size}
-                    size="sm"
-                    variant={pageSize === size ? 'solid' : 'outline'}
-                    colorPalette={pageSize === size ? 'blue' : 'gray'}
-                    onClick={() => {
-                      setPageSize(size);
-                      setPage(0);
-                    }}
-                    minW="50px"
-                  >
-                    {size}
-                  </Button>
-                ))}
-              </HStack>
-            </Flex>
+      <VocabularyPageControls
+        page={page}
+        pageSize={pageSize}
+        totalPages={totalPages}
+        onPageSizeChange={handlePageSizeChange}
+        onPrevPage={handlePrevPage}
+        onNextPage={handleNextPage}
+      />
 
-            {/* Page info and navigation */}
-            <Flex
-              align="center"
-              gap={4}
-              justify={{ base: 'space-between', md: 'flex-end' }}
-            >
-              <Text
-                fontWeight="medium"
-                color="fg.muted"
-                fontSize="sm"
-                whiteSpace="nowrap"
-              >
-                Page {page + 1} of {totalPages}
-              </Text>
-              <HStack gap={2}>
-                <Button
-                  onClick={onPrevPage}
-                  disabled={page === 0}
-                  colorPalette="blue"
-                  variant="outline"
-                  size="sm"
-                >
-                  Previous
-                </Button>
-                <Button
-                  onClick={onNextPage}
-                  disabled={page + 1 >= totalPages}
-                  colorPalette="blue"
-                  variant="outline"
-                  size="sm"
-                >
-                  Next
-                </Button>
-              </HStack>
-            </Flex>
-          </Flex>
-        </Card.Body>
-      </Card.Root>
+      <VocabularyTable items={items} onWordClick={handleWordClick} />
 
-      {/* Table Card */}
-      <Card.Root borderWidth="1px" shadow="sm" overflow="hidden">
-        <Table.Root size="lg" variant="line" striped>
-          <Table.Header bg="bg.muted">
-            <Table.Row>
-              <Table.ColumnHeader
-                fontWeight="semibold"
-                fontSize="sm"
-                textTransform="uppercase"
-                letterSpacing="wide"
-                color="fg.muted"
-              >
-                Word
-              </Table.ColumnHeader>
-              <Table.ColumnHeader
-                fontWeight="semibold"
-                fontSize="sm"
-                textTransform="uppercase"
-                letterSpacing="wide"
-                color="fg.muted"
-              >
-                Part of Speech
-              </Table.ColumnHeader>
-              <Table.ColumnHeader
-                fontWeight="semibold"
-                fontSize="sm"
-                textTransform="uppercase"
-                letterSpacing="wide"
-                color="fg.muted"
-              >
-                Translation
-              </Table.ColumnHeader>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {items.length === 0 ? (
-              <Table.Row>
-                <Table.Cell colSpan={3}>
-                  <Flex justify="center" py={8}>
-                    <Text color="fg.muted" fontSize="lg">
-                      No words found. Start learning to build your vocabulary!
-                    </Text>
-                  </Flex>
-                </Table.Cell>
-              </Table.Row>
-            ) : (
-              items.map((item) => (
-                <Table.Row
-                  key={`${item.normalizedWord}-${item.partOfSpeech}`}
-                  onClick={() =>
-                    handleWordClick(item.normalizedWord, item.partOfSpeech)
-                  }
-                  cursor="pointer"
-                  _hover={{ bg: 'bg.muted' }}
-                  transition="background 0.2s"
-                >
-                  <Table.Cell fontWeight="medium" fontSize="md">
-                    {item.normalizedWord}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Badge
-                      colorPalette="teal"
-                      variant="subtle"
-                      textTransform="capitalize"
-                      size="sm"
-                    >
-                      {item.partOfSpeech}
-                    </Badge>
-                  </Table.Cell>
-                  <Table.Cell color="fg.muted">
-                    {item.commonData?.mainTranslation || '-'}
-                  </Table.Cell>
-                </Table.Row>
-              ))
-            )}
-          </Table.Body>
-        </Table.Root>
-      </Card.Root>
-
-      {/* Bottom Pagination */}
-      <Flex mt={6} justify="center">
-        <HStack gap={2}>
-          <Button
-            onClick={onPrevPage}
-            disabled={page === 0}
-            colorPalette="blue"
-            variant="ghost"
-            size="sm"
-          >
-            ← Previous
-          </Button>
-          <Text fontSize="sm" color="fg.muted" px={4}>
-            Page {page + 1} of {totalPages}
-          </Text>
-          <Button
-            onClick={onNextPage}
-            disabled={page + 1 >= totalPages}
-            colorPalette="blue"
-            variant="ghost"
-            size="sm"
-          >
-            Next →
-          </Button>
-        </HStack>
-      </Flex>
+      <VocabularyPagination
+        page={page}
+        totalPages={totalPages}
+        onPrevPage={handlePrevPage}
+        onNextPage={handleNextPage}
+      />
 
       {/* Loading overlay when fetching word details */}
       {isLoadingWord && (
@@ -368,7 +176,6 @@ export const VocabularyPage = () => {
         </Flex>
       )}
 
-      {/* Word Details Modal */}
       <VocabularyItemModal
         isOpen={isModalOpen}
         savedWord={selectedWord}

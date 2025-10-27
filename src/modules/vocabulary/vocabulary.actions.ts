@@ -13,7 +13,6 @@ import {
   deleteUserWord,
   getCachedWord,
   getUserMinimalVocabulary,
-  getUserVocabularyItems,
   getUserWordByNormalizedWordAndPos,
   saveWordToDatabase,
 } from './vocabulary.service';
@@ -78,19 +77,6 @@ export const getWordFromCache = withUserSettings<
     } catch (error) {
       Sentry.captureException(error);
       return { success: false, error: 'Failed to get cached word' };
-    }
-  },
-);
-
-// Get user saved words
-export const fetchUserVocabularyItems = withAuth<void, VocabularyItem[]>(
-  async (context): Promise<ActionResult<VocabularyItem[]>> => {
-    try {
-      const data = await getUserVocabularyItems(context.userId);
-      return { success: true, data };
-    } catch (error) {
-      Sentry.captureException(error);
-      return { success: false, error: 'Failed to get saved words' };
     }
   },
 );
