@@ -96,7 +96,7 @@ export const Sidebar = ({
       flexDirection="column"
     >
       {isOpen && (
-        <Heading position="absolute" top={4} left={6}>
+        <Heading position="absolute" top={4} left={6} fontSize="3xl">
           Wordi
         </Heading>
       )}
@@ -121,7 +121,7 @@ export const Sidebar = ({
 
       {/* Sidebar Content */}
       <Box
-        pt={12}
+        pt={16}
         // pl={2}
         flex="1"
         overflow="hidden"

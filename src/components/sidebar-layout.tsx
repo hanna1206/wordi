@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { Box, type BoxProps } from '@chakra-ui/react';
 
@@ -10,6 +10,7 @@ import { GradientBackground } from '@/components/gradient-background';
 import { InstallPrompt } from '@/components/install-prompt';
 import { Sidebar } from '@/components/sidebar';
 import { SidebarContent } from '@/components/sidebar-content';
+import { useSidebar } from '@/contexts/sidebar-context';
 
 interface SidebarLayoutProps {
   children: ReactNode;
@@ -23,15 +24,7 @@ export const SidebarLayout = ({
   children,
   contentProps,
 }: SidebarLayoutProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const handleSidebarToggle = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
-
-  const handleSidebarClose = () => {
-    setIsSidebarOpen(false);
-  };
+  const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar();
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
@@ -45,12 +38,12 @@ export const SidebarLayout = ({
   return (
     <GradientBackground variant="primary">
       <Box h="100svh" overflow="hidden">
-        <AppHeader onSidebarToggle={handleSidebarToggle} showSidebarToggle />
+        <AppHeader onSidebarToggle={toggleSidebar} showSidebarToggle />
 
         <Sidebar
           isOpen={isSidebarOpen}
-          onClose={handleSidebarClose}
-          onToggle={handleSidebarToggle}
+          onClose={closeSidebar}
+          onToggle={toggleSidebar}
         >
           <SidebarContent />
         </Sidebar>
