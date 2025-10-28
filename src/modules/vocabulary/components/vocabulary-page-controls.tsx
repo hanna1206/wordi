@@ -3,21 +3,13 @@ import { Button, Card, Flex, HStack, Text } from '@chakra-ui/react';
 import { PAGE_SIZE_OPTIONS } from '../vocabulary.const';
 
 interface VocabularyPageControlsProps {
-  page: number;
   pageSize: number;
-  totalPages: number;
   onPageSizeChange: (size: number) => void;
-  onPrevPage: () => void;
-  onNextPage: () => void;
 }
 
 export const VocabularyPageControls = ({
-  page,
   pageSize,
-  totalPages,
   onPageSizeChange,
-  onPrevPage,
-  onNextPage,
 }: VocabularyPageControlsProps) => {
   return (
     <Card.Root mb={6} borderWidth="1px" shadow="sm">
@@ -46,42 +38,6 @@ export const VocabularyPageControls = ({
                   {size}
                 </Button>
               ))}
-            </HStack>
-          </Flex>
-
-          {/* Page info and navigation */}
-          <Flex
-            align="center"
-            gap={4}
-            justify={{ base: 'space-between', md: 'flex-end' }}
-          >
-            <Text
-              fontWeight="medium"
-              color="fg.muted"
-              fontSize="sm"
-              whiteSpace="nowrap"
-            >
-              Page {page + 1} of {totalPages}
-            </Text>
-            <HStack gap={2}>
-              <Button
-                onClick={onPrevPage}
-                disabled={page === 0}
-                colorPalette="blue"
-                variant="outline"
-                size="sm"
-              >
-                Previous
-              </Button>
-              <Button
-                onClick={onNextPage}
-                disabled={page + 1 >= totalPages}
-                colorPalette="blue"
-                variant="outline"
-                size="sm"
-              >
-                Next
-              </Button>
             </HStack>
           </Flex>
         </Flex>

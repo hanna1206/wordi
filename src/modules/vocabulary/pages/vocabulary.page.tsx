@@ -148,12 +148,8 @@ export const VocabularyPage = () => {
         <VocabularyPageHeader total={total} />
 
         <VocabularyPageControls
-          page={page}
           pageSize={pageSize}
-          totalPages={totalPages}
           onPageSizeChange={handlePageSizeChange}
-          onPrevPage={handlePrevPage}
-          onNextPage={handleNextPage}
         />
 
         <VocabularyTable items={items} onWordClick={handleWordClick} />
