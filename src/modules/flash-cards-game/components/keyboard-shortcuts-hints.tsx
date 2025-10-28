@@ -1,8 +1,17 @@
 'use client';
 
-import { Flex, HStack, Kbd, Text } from '@chakra-ui/react';
+import { Flex, HStack, Kbd, Text, useMediaQuery } from '@chakra-ui/react';
 
 export const KeyboardShortcutsHints = () => {
+  const [isDesktopWidth] = useMediaQuery(['(min-width: 992px)']);
+  const [hasFinePointer] = useMediaQuery([
+    '(hover: hover) and (pointer: fine)',
+  ]);
+
+  if (!isDesktopWidth || !hasFinePointer) {
+    return null;
+  }
+
   return (
     <Flex
       display={{ base: 'none', lg: 'flex' }}

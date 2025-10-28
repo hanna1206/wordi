@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
-import { toaster } from '@/components/toaster';
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 import {
@@ -88,30 +87,6 @@ export const useFlashCardsGame = () => {
       }
     };
   }, [currentCardIndex]);
-
-  // First-time helper toast
-  useEffect(() => {
-    const STORAGE_KEY = 'flashcards_helper_v1';
-    if (typeof window === 'undefined') return;
-    try {
-      const shown = window.localStorage.getItem(STORAGE_KEY);
-      if (shown) return;
-
-      const isDesktop = window.innerWidth >= 992;
-      const description = isDesktop
-        ? 'Flip: Space / Enter / ↑ / ↓ • Rate: 1=Hard, 2=Good, 3=Easy • Next: →'
-        : 'Swipe up/down to flip • Swipe left = Hard • Swipe right = Easy';
-
-      toaster.create({
-        title: 'Tips',
-        description,
-        type: 'info',
-        duration: 6000,
-        closable: true,
-      });
-      window.localStorage.setItem(STORAGE_KEY, '1');
-    } catch {}
-  }, []);
 
   const handleNextCard = useCallback(
     (qualityScore: QualityScore) => {
