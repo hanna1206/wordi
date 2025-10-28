@@ -95,11 +95,19 @@ export const Sidebar = ({
       display="flex"
       flexDirection="column"
     >
-      {isOpen && (
-        <Heading position="absolute" top={4} left={6} fontSize="3xl">
-          Wordi
-        </Heading>
-      )}
+      <Heading
+        position="absolute"
+        top={4}
+        left={6}
+        fontSize="3xl"
+        opacity={isOpen ? 1 : 0}
+        transform={isOpen ? 'translateX(0)' : 'translateX(-12px)'}
+        transition="opacity 0.2s ease, transform 0.2s ease"
+        transitionDelay={isOpen ? '0.3s' : '0s'}
+        pointerEvents="none"
+      >
+        Wordi
+      </Heading>
       {/* Collapse/Expand Button */}
       <Box
         position="absolute"
