@@ -3,15 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { LuCookie, LuX } from 'react-icons/lu';
 
-import {
-  Box,
-  Button,
-  HStack,
-  Icon,
-  Link,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Text, VStack } from '@chakra-ui/react';
+import Link from 'next/link';
 
 const COOKIE_CONSENT_KEY = 'cookie-consent';
 
@@ -130,11 +123,7 @@ export const CookieConsent: React.FC = () => {
 
               <Text fontSize="xs" color="gray.500" textAlign="left">
                 You can review our{' '}
-                <Link
-                  href="/privacy-policy"
-                  color="blue.500"
-                  fontWeight="medium"
-                >
+                <Link href="/privacy-policy" color="blue.500">
                   Privacy Policy
                 </Link>{' '}
                 for more details about our data practices.
@@ -223,7 +212,7 @@ export const CookieConsent: React.FC = () => {
             </Text>
 
             <Text fontSize="xs" color="gray.500" textAlign="left">
-              <Link href="/privacy-policy" color="blue.500" fontWeight="medium">
+              <Link href="/privacy-policy" color="blue.500">
                 Learn more about our privacy practices
               </Link>{' '}
               and how we handle your data.

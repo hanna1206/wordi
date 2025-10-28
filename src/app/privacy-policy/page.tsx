@@ -1,6 +1,7 @@
 'use client';
 
-import { Box, Container, Heading, Link, Text, VStack } from '@chakra-ui/react';
+import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react';
+import Link from 'next/link';
 
 import { CookieConsent } from '@/components/cookie-consent';
 

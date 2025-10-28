@@ -3,7 +3,8 @@
 import { type ReactNode } from 'react';
 import { LuBrain, LuHouse, LuLibrary } from 'react-icons/lu';
 
-import { Box, Button, Flex, Link, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 interface SidebarNavigationItemProps {
@@ -21,7 +22,7 @@ const SidebarNavigationItem = ({
   isActive,
   isCollapsed,
 }: SidebarNavigationItemProps) => (
-  <Link href={href} textDecoration="none">
+  <Link href={href}>
     <Button
       variant={isActive ? 'subtle' : 'ghost'}
       py={2}
@@ -29,6 +30,7 @@ const SidebarNavigationItem = ({
       px={2}
       justifyContent="start"
       width="100%"
+      textDecoration="none"
     >
       <Flex justifyContent="flex-start" gap={2}>
         {icon}

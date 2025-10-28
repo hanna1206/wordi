@@ -1,6 +1,7 @@
 'use client';
 
-import { Box, Container, Heading, Link, Text, VStack } from '@chakra-ui/react';
+import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react';
+import Link from 'next/link';
 
 import { CookieConsent } from '@/components/cookie-consent';
 
@@ -102,11 +103,7 @@ const TermsOfServicePage = () => {
             <Section title="Privacy">
               <Text>
                 Your privacy is important to us. Please review our{' '}
-                <Link
-                  href="/privacy-policy"
-                  color="blue.500"
-                  textDecoration="underline"
-                >
+                <Link href="/privacy-policy" color="blue.500">
                   Privacy Policy
                 </Link>
                 , which also governs your use of our service.
