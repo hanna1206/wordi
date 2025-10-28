@@ -2,7 +2,7 @@
 
 import { LuPanelLeftClose, LuX } from 'react-icons/lu';
 
-import { Box, IconButton, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Heading, IconButton, useBreakpointValue } from '@chakra-ui/react';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -80,7 +80,7 @@ export const Sidebar = ({
       left={0}
       top={0}
       h="100svh"
-      w={isOpen ? '280px' : '60px'}
+      w={isOpen ? '260px' : '60px'}
       bg={isOpen ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.9)'}
       backdropFilter="blur(10px)"
       borderRight="1px solid"
@@ -95,6 +95,11 @@ export const Sidebar = ({
       display="flex"
       flexDirection="column"
     >
+      {isOpen && (
+        <Heading position="absolute" top={4} left={6}>
+          Wordi
+        </Heading>
+      )}
       {/* Collapse/Expand Button */}
       <Box
         position="absolute"
