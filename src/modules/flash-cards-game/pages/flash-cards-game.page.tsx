@@ -2,12 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { FaBrain, FaRandom, FaRegClock } from 'react-icons/fa';
-import { FaArrowLeft } from 'react-icons/fa';
 
 import {
   Badge,
   Box,
-  Button,
   Flex,
   Heading,
   HStack,
@@ -15,10 +13,9 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { GradientBackground } from '@/components/gradient-background';
+import { SidebarLayout } from '@/components/sidebar-layout';
 
 import { GameModeCard } from '../components/game-mode-card';
 import { getDueWordsCount } from '../flash-cards-game.actions';
@@ -93,20 +90,9 @@ export const FlashCardsGamePage = () => {
   };
 
   return (
-    <GradientBackground variant="primary">
+    <SidebarLayout>
       <Box as="main" py={8}>
         <Box mx="auto" px={4} maxW="3xl">
-          <Box mb={8}>
-            <Button asChild variant="ghost">
-              <Link href="/">
-                <HStack>
-                  <FaArrowLeft />
-                  <Text>Back to Home</Text>
-                </HStack>
-              </Link>
-            </Button>
-          </Box>
-
           <Box w="full" mx="auto">
             <Flex direction="column" gap={10}>
               <Flex direction="column" gap={2} textAlign="center">
@@ -250,6 +236,6 @@ export const FlashCardsGamePage = () => {
           </Box>
         </Box>
       </Box>
-    </GradientBackground>
+    </SidebarLayout>
   );
 };

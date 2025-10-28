@@ -1,7 +1,4 @@
-import { FaArrowLeft } from 'react-icons/fa';
-
-import { Badge, Box, Flex, Heading, IconButton, Text } from '@chakra-ui/react';
-import Link from 'next/link';
+import { Badge, Box, Flex, Heading, Text } from '@chakra-ui/react';
 
 interface VocabularyPageHeaderProps {
   total: number;
@@ -11,17 +8,6 @@ export const VocabularyPageHeader = ({ total }: VocabularyPageHeaderProps) => {
   return (
     <Box mb={8}>
       <Flex align="center" gap={4} mb={4}>
-        <IconButton
-          asChild
-          aria-label="Back to home"
-          variant="ghost"
-          size="lg"
-          colorPalette="blue"
-        >
-          <Link href="/">
-            <FaArrowLeft />
-          </Link>
-        </IconButton>
         <Heading
           size="2xl"
           fontWeight="bold"
@@ -31,7 +17,7 @@ export const VocabularyPageHeader = ({ total }: VocabularyPageHeaderProps) => {
           bgClip="text"
           flex="1"
         >
-          My Vocabulary
+          Vocabulary
         </Heading>
         <Badge
           size="lg"

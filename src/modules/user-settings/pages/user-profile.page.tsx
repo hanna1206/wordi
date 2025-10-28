@@ -1,6 +1,6 @@
 import { Card, Container, Text, VStack } from '@chakra-ui/react';
 
-import { AppHeader } from '@/components/app-header';
+import { SidebarLayout } from '@/components/sidebar-layout';
 import { getAuthenticatedUser } from '@/modules/auth/auth.service';
 
 import { LanguageCode } from '../user-settings.const';
@@ -12,8 +12,7 @@ export const UserSettings = async () => {
 
   if (!user) {
     return (
-      <>
-        <AppHeader />
+      <SidebarLayout>
         <Container maxW="4xl" py={8}>
           <Card.Root>
             <Card.Body>
@@ -21,7 +20,7 @@ export const UserSettings = async () => {
             </Card.Body>
           </Card.Root>
         </Container>
-      </>
+      </SidebarLayout>
     );
   }
 
@@ -29,8 +28,7 @@ export const UserSettings = async () => {
 
   if (!userSettings) {
     return (
-      <>
-        <AppHeader />
+      <SidebarLayout>
         <Container maxW="4xl" py={8}>
           <Card.Root>
             <Card.Body>
@@ -38,13 +36,12 @@ export const UserSettings = async () => {
             </Card.Body>
           </Card.Root>
         </Container>
-      </>
+      </SidebarLayout>
     );
   }
 
   return (
-    <>
-      <AppHeader />
+    <SidebarLayout>
       <Container maxW="4xl" py={8}>
         <Card.Root>
           <Card.Header>
@@ -77,6 +74,6 @@ export const UserSettings = async () => {
           </Card.Body>
         </Card.Root>
       </Container>
-    </>
+    </SidebarLayout>
   );
 };

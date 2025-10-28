@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 
+import { SidebarLayout } from '@/components/sidebar-layout';
 import { toaster } from '@/components/toaster';
 import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
 import { VocabularyPageControls } from '@/modules/vocabulary/components/vocabulary-page-controls';
@@ -123,65 +124,71 @@ export const VocabularyPage = () => {
 
   if (isLoading) {
     return (
-      <Flex align="center" justify="center" minH="60vh">
-        <Spinner size="lg" colorPalette="blue" />
-      </Flex>
+      <SidebarLayout>
+        <Flex align="center" justify="center" minH="60vh">
+          <Spinner size="lg" colorPalette="blue" />
+        </Flex>
+      </SidebarLayout>
     );
   }
 
   if (error) {
     return (
-      <Flex align="center" justify="center" minH="60vh">
-        <Text color="red.500">{error}</Text>
-      </Flex>
+      <SidebarLayout>
+        <Flex align="center" justify="center" minH="60vh">
+          <Text color="red.500">{error}</Text>
+        </Flex>
+      </SidebarLayout>
     );
   }
 
   return (
-    <Box p={{ base: 4, md: 8 }} maxW="1400px" mx="auto">
-      <VocabularyPageHeader total={total} />
+    <SidebarLayout>
+      <Box p={{ base: 4, md: 8 }} maxW="1400px" mx="auto">
+        <VocabularyPageHeader total={total} />
 
-      <VocabularyPageControls
-        page={page}
-        pageSize={pageSize}
-        totalPages={totalPages}
-        onPageSizeChange={handlePageSizeChange}
-        onPrevPage={handlePrevPage}
-        onNextPage={handleNextPage}
-      />
+        <VocabularyPageControls
+          page={page}
+          pageSize={pageSize}
+          totalPages={totalPages}
+          onPageSizeChange={handlePageSizeChange}
+          onPrevPage={handlePrevPage}
+          onNextPage={handleNextPage}
+        />
 
-      <VocabularyTable items={items} onWordClick={handleWordClick} />
+        <VocabularyTable items={items} onWordClick={handleWordClick} />
 
-      <VocabularyPagination
-        page={page}
-        totalPages={totalPages}
-        onPrevPage={handlePrevPage}
-        onNextPage={handleNextPage}
-      />
+        <VocabularyPagination
+          page={page}
+          totalPages={totalPages}
+          onPrevPage={handlePrevPage}
+          onNextPage={handleNextPage}
+        />
 
-      {/* Loading overlay when fetching word details */}
-      {isLoadingWord && (
-        <Flex
-          position="fixed"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          bg="blackAlpha.300"
-          align="center"
-          justify="center"
-          zIndex={9999}
-        >
-          <Spinner size="xl" colorPalette="blue" />
-        </Flex>
-      )}
+        {/* Loading overlay when fetching word details */}
+        {isLoadingWord && (
+          <Flex
+            position="fixed"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bg="blackAlpha.300"
+            align="center"
+            justify="center"
+            zIndex={9999}
+          >
+            <Spinner size="xl" colorPalette="blue" />
+          </Flex>
+        )}
 
-      <VocabularyItemModal
-        isOpen={isModalOpen}
-        savedWord={selectedWord}
-        onClose={handleModalClose}
-        onWordDeleted={handleWordDeleted}
-      />
-    </Box>
+        <VocabularyItemModal
+          isOpen={isModalOpen}
+          savedWord={selectedWord}
+          onClose={handleModalClose}
+          onWordDeleted={handleWordDeleted}
+        />
+      </Box>
+    </SidebarLayout>
   );
 };
