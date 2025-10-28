@@ -7,23 +7,27 @@ import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 interface UseVocabularyItemModalProps {
   savedWord: VocabularyItem | null;
   onClose: () => void;
-  onWordDeleted: () => void;
+  onWordDeleted?: () => void;
+  allowDelete?: boolean;
 }
 
 export const useVocabularyItemModal = ({
   savedWord,
   onClose,
   onWordDeleted,
+  allowDelete = true,
 }: UseVocabularyItemModalProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const handleWordDeleted = onWordDeleted ?? (() => undefined);
 
   const handleDeleteClick = () => {
+    if (!allowDelete) return;
     setShowDeleteConfirm(true);
   };
 
   const handleDeleteConfirm = async () => {
-    if (!savedWord) return;
+    if (!savedWord || !allowDelete) return;
 
     setIsDeleting(true);
     try {
@@ -36,7 +40,7 @@ export const useVocabularyItemModal = ({
           type: 'success',
           duration: 3000,
         });
-        onWordDeleted();
+        handleWordDeleted();
         onClose();
       } else {
         toaster.create({
@@ -60,6 +64,7 @@ export const useVocabularyItemModal = ({
   };
 
   const handleDeleteCancel = () => {
+    if (!allowDelete) return;
     setShowDeleteConfirm(false);
   };
 

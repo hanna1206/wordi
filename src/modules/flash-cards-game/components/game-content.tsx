@@ -1,8 +1,9 @@
 'use client';
 
 import { forwardRef } from 'react';
+import { LuBookOpen } from 'react-icons/lu';
 
-import { Box } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
 
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
@@ -19,6 +20,7 @@ interface GameContentProps {
   onCardFlip: () => void;
   onQualitySelect: (score: QualityScore) => void;
   onFlip: (wordId: string, isFlipped: boolean) => void;
+  onOpenDetails: (word: VocabularyItem) => void;
 }
 
 const slideIn = keyframes`
@@ -28,7 +30,15 @@ const slideIn = keyframes`
 
 export const GameContent = forwardRef<HTMLDivElement, GameContentProps>(
   (
-    { currentWord, allWordIds, cardSide, onCardFlip, onQualitySelect, onFlip },
+    {
+      currentWord,
+      allWordIds,
+      cardSide,
+      onCardFlip,
+      onQualitySelect,
+      onFlip,
+      onOpenDetails,
+    },
     ref,
   ) => {
     const { onTouchStart, onTouchEnd } = useGestureHandling({
@@ -64,6 +74,17 @@ export const GameContent = forwardRef<HTMLDivElement, GameContentProps>(
         </Box>
 
         <PlayPageQualityFeedbackButtons onQualitySelect={onQualitySelect} />
+
+        <Button
+          onClick={() => onOpenDetails(currentWord)}
+          alignSelf="center"
+          variant="ghost"
+          size="sm"
+          gap={2}
+        >
+          <LuBookOpen />
+          View full entry
+        </Button>
       </Box>
     );
   },

@@ -9,6 +9,7 @@ interface ModalFooterProps {
   onDeleteConfirm: () => void;
   onDeleteCancel: () => void;
   onClose: () => void;
+  allowDelete: boolean;
 }
 
 export const ModalFooter = ({
@@ -18,7 +19,40 @@ export const ModalFooter = ({
   onDeleteConfirm,
   onDeleteCancel,
   onClose,
+  allowDelete,
 }: ModalFooterProps) => {
+  if (!allowDelete) {
+    return (
+      <Dialog.Footer
+        px={{ base: 4, md: 6 }}
+        py={{ base: 4, md: 4 }}
+        borderTopWidth="1px"
+        borderColor="gray.100"
+        bg="gray.100"
+        mt="auto"
+        display="flex"
+        gap={3}
+        flexDirection={{ base: 'column', md: 'row' }}
+        alignItems="stretch"
+      >
+        <Dialog.ActionTrigger asChild>
+          <Button
+            variant="subtle"
+            onClick={onClose}
+            w={{ base: 'full', md: 'auto' }}
+            flex={{ base: 'none', md: '1' }}
+            size={{ base: 'lg', md: 'lg' }}
+            h={{ base: '48px', md: '44px' }}
+            px={{ base: 6, md: 8 }}
+            fontWeight="medium"
+          >
+            Close
+          </Button>
+        </Dialog.ActionTrigger>
+      </Dialog.Footer>
+    );
+  }
+
   return (
     <Dialog.Footer
       px={{ base: 4, md: 6 }}

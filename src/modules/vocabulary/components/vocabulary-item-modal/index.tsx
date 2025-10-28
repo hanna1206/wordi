@@ -19,7 +19,8 @@ interface VocabularyItemModalProps {
   isOpen: boolean;
   savedWord: VocabularyItem | null;
   onClose: () => void;
-  onWordDeleted: () => void;
+  onWordDeleted?: () => void;
+  allowDelete?: boolean;
 }
 
 const convertVocabularyItemToTranslationResult = (
@@ -40,6 +41,7 @@ export const VocabularyItemModal: React.FC<VocabularyItemModalProps> = ({
   savedWord,
   onClose,
   onWordDeleted,
+  allowDelete = true,
 }) => {
   const {
     isDeleting,
@@ -48,7 +50,12 @@ export const VocabularyItemModal: React.FC<VocabularyItemModalProps> = ({
     handleDeleteConfirm,
     handleDeleteCancel,
     handleClose,
-  } = useVocabularyItemModal({ savedWord, onClose, onWordDeleted });
+  } = useVocabularyItemModal({
+    savedWord,
+    onClose,
+    onWordDeleted,
+    allowDelete,
+  });
 
   if (!savedWord) return null;
 
@@ -119,6 +126,7 @@ export const VocabularyItemModal: React.FC<VocabularyItemModalProps> = ({
             </Dialog.Body>
 
             <ModalFooter
+              allowDelete={allowDelete}
               showDeleteConfirm={showDeleteConfirm}
               isDeleting={isDeleting}
               onDeleteClick={handleDeleteClick}

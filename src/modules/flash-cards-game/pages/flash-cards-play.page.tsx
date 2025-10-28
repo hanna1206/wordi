@@ -1,6 +1,11 @@
 'use client';
 
+import { useCallback, useState } from 'react';
+
 import { Flex } from '@chakra-ui/react';
+
+import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
+import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 import { GameContent } from '../components/game-content';
 import { KeyboardShortcutsHints } from '../components/keyboard-shortcuts-hints';
@@ -26,6 +31,16 @@ export const FlashCardsPlayPage = () => {
     handleCardFlip,
     setIsCurrentFlipped,
   } = useFlashCardsGame();
+
+  const [selectedWord, setSelectedWord] = useState<VocabularyItem | null>(null);
+
+  const handleOpenDetails = useCallback((word: VocabularyItem) => {
+    setSelectedWord(word);
+  }, []);
+
+  const handleCloseDetails = useCallback(() => {
+    setSelectedWord(null);
+  }, []);
 
   useKeyboardShortcuts({
     isLoading,
@@ -74,9 +89,17 @@ export const FlashCardsPlayPage = () => {
         onCardFlip={handleCardFlip}
         onQualitySelect={handleNextCard}
         onFlip={(_, flipped) => setIsCurrentFlipped(flipped)}
+        onOpenDetails={handleOpenDetails}
       />
 
       <KeyboardShortcutsHints />
+
+      <VocabularyItemModal
+        isOpen={Boolean(selectedWord)}
+        savedWord={selectedWord}
+        onClose={handleCloseDetails}
+        allowDelete={false}
+      />
     </Flex>
   );
 };
