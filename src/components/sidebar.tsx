@@ -80,7 +80,7 @@ export const Sidebar = ({
       left={0}
       top={0}
       h="100svh"
-      w={isOpen ? '260px' : '60px'}
+      w={isOpen ? '260px' : '57px'}
       bg={isOpen ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.9)'}
       backdropFilter="blur(10px)"
       borderRight="1px solid"
@@ -130,22 +130,22 @@ export const Sidebar = ({
       {/* Sidebar Content */}
       <Box
         pt={16}
-        // pl={2}
         flex="1"
         overflow="hidden"
         display="flex"
         flexDirection="column"
+        alignItems={isOpen ? 'flex-start' : 'center'}
       >
-        {isOpen && (
-          <Box flex="1" overflow="hidden" display="flex" flexDirection="column">
-            {children}
-          </Box>
-        )}
-        {!isOpen && (
-          <Box textAlign="center" opacity={0.6}>
-            {/* Collapsed state - could show icons only */}
-          </Box>
-        )}
+        <Box
+          flex="1"
+          overflow="hidden"
+          display="flex"
+          flexDirection="column"
+          w="full"
+          alignItems={isOpen ? 'flex-start' : 'center'}
+        >
+          {children}
+        </Box>
       </Box>
     </Box>
   );

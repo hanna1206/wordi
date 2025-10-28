@@ -11,6 +11,7 @@ interface SidebarNavigationItemProps {
   icon: ReactNode;
   label: string;
   isActive: boolean;
+  isCollapsed: boolean;
 }
 
 const SidebarNavigationItem = ({
@@ -18,22 +19,20 @@ const SidebarNavigationItem = ({
   icon,
   label,
   isActive,
+  isCollapsed,
 }: SidebarNavigationItemProps) => (
-  <Link
-    href={href}
-    textDecoration="none"
-    aria-current={isActive ? 'page' : undefined}
-  >
+  <Link href={href} textDecoration="none">
     <Button
       variant={isActive ? 'subtle' : 'ghost'}
-      width="90%"
-      p={2}
+      py={2}
       m={0.5}
+      px={2}
       justifyContent="start"
+      width="100%"
     >
-      <Flex justifyContent="start" align="center" gap={2}>
+      <Flex justifyContent="flex-start" gap={2}>
         {icon}
-        <Text>{label}</Text>
+        <Text display={isCollapsed ? 'none' : 'block'}>{label}</Text>
       </Flex>
     </Button>
   </Link>
@@ -57,30 +56,36 @@ const isNavItemActive = (pathname: string | null, href: string) => {
   return pathname === href || pathname.startsWith(`${href}/`);
 };
 
-export const SidebarContent = () => {
+interface SidebarContentProps {
+  isCollapsed?: boolean;
+}
+
+export const SidebarContent = ({
+  isCollapsed = false,
+}: SidebarContentProps) => {
   const pathname = usePathname();
 
   return (
     <Box
       pt={2}
       pb={8}
-      pl={4}
-      flex="1"
+      px={2}
       display="flex"
       flexDirection="column"
       overflow="hidden"
+      alignItems="stretch"
+      width="100%"
     >
-      <Flex direction="column">
-        {NAV_ITEMS.map((item) => (
-          <SidebarNavigationItem
-            key={item.href}
-            href={item.href}
-            icon={item.icon}
-            label={item.label}
-            isActive={isNavItemActive(pathname, item.href)}
-          />
-        ))}
-      </Flex>
+      {NAV_ITEMS.map((item) => (
+        <SidebarNavigationItem
+          key={item.href}
+          href={item.href}
+          icon={item.icon}
+          label={item.label}
+          isActive={isNavItemActive(pathname, item.href)}
+          isCollapsed={isCollapsed}
+        />
+      ))}
     </Box>
   );
 };

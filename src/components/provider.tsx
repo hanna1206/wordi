@@ -6,7 +6,6 @@ import type { ThemeProviderProps } from 'next-themes';
 import { system } from '@/theme';
 
 import { SidebarProvider } from '../contexts/sidebar-context';
-// import { ColorModeProvider, type ColorModeProviderProps } from './color-mode';
 import { ColorModeProvider } from './color-mode';
 
 export const Provider = (props: ThemeProviderProps) => {

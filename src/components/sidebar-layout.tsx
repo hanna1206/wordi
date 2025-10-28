@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 
-import { Box, type BoxProps } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 
 import { AppHeader } from '@/components/app-header';
 import { GradientBackground } from '@/components/gradient-background';
@@ -14,16 +14,9 @@ import { useSidebar } from '@/contexts/sidebar-context';
 
 interface SidebarLayoutProps {
   children: ReactNode;
-  /**
-   * Optional props for the scrollable content container. Useful for adding paddings or spacing.
-   */
-  contentProps?: BoxProps;
 }
 
-export const SidebarLayout = ({
-  children,
-  contentProps,
-}: SidebarLayoutProps) => {
+export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   const { isSidebarOpen, toggleSidebar, closeSidebar } = useSidebar();
 
   useEffect(() => {
@@ -45,7 +38,7 @@ export const SidebarLayout = ({
           onClose={closeSidebar}
           onToggle={toggleSidebar}
         >
-          <SidebarContent />
+          <SidebarContent isCollapsed={!isSidebarOpen} />
         </Sidebar>
 
         <Box
@@ -56,7 +49,7 @@ export const SidebarLayout = ({
           overflow="hidden"
           position="relative"
         >
-          <Box h="full" overflow="auto" {...contentProps}>
+          <Box h="full" overflow="auto">
             {children}
           </Box>
           <InstallPrompt />
