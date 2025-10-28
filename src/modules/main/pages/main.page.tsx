@@ -8,8 +8,8 @@ import { AppHeader } from '@/components/app-header';
 import { GradientBackground } from '@/components/gradient-background';
 import { InstallPrompt } from '@/components/install-prompt';
 import { Sidebar } from '@/components/sidebar';
+import { SidebarContent } from '@/components/sidebar-content';
 import { GenerateLinguisticItemForm } from '@/modules/linguistics/components/generate-linguistic-item-form';
-import { SidebarContent } from '@/modules/main/components/sidebar-content';
 
 export const MainPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
