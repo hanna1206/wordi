@@ -5,9 +5,14 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
+
+import { useBreakpointValue } from '@chakra-ui/react';
+import { usePathname } from 'next/navigation';
 
 interface SidebarContextValue {
   isSidebarOpen: boolean;
@@ -25,7 +30,10 @@ interface SidebarProviderProps {
 }
 
 export const SidebarProvider = ({ children }: SidebarProviderProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const lastDesktopStateRef = useRef(true);
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const pathname = usePathname();
 
   const openSidebar = useCallback(() => {
     setIsSidebarOpen(true);
@@ -38,6 +46,41 @@ export const SidebarProvider = ({ children }: SidebarProviderProps) => {
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen((prev) => !prev);
   }, []);
+
+  useEffect(() => {
+    if (isMobile === undefined) {
+      return;
+    }
+
+    if (isMobile) {
+      setIsSidebarOpen(false);
+      return;
+    }
+
+    setIsSidebarOpen((prev) => {
+      if (prev === lastDesktopStateRef.current) {
+        return prev;
+      }
+
+      return lastDesktopStateRef.current;
+    });
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (isMobile || isMobile === undefined) {
+      return;
+    }
+
+    lastDesktopStateRef.current = isSidebarOpen;
+  }, [isSidebarOpen, isMobile]);
+
+  useEffect(() => {
+    if (!isMobile) {
+      return;
+    }
+
+    setIsSidebarOpen(false);
+  }, [pathname, isMobile]);
 
   const value = useMemo(
     () => ({ isSidebarOpen, openSidebar, closeSidebar, toggleSidebar }),
