@@ -1,4 +1,4 @@
-import { LuArrowDownNarrowWide } from 'react-icons/lu';
+import { LuArrowDownNarrowWide, LuSlidersHorizontal } from 'react-icons/lu';
 
 import { Button, Flex, Icon, Input, Menu, Text } from '@chakra-ui/react';
 
@@ -14,12 +14,7 @@ export const VocabularySearchBar = ({
   onSortSelect,
 }: VocabularySearchBarProps) => {
   return (
-    <Flex
-      direction={{ base: 'column', md: 'row' }}
-      gap={4}
-      mb={6}
-      align={{ base: 'stretch', md: 'center' }}
-    >
+    <Flex direction="row" gap={2} mb={6} align="center">
       <Input
         placeholder="Search vocabulary"
         flex="1"
@@ -27,39 +22,32 @@ export const VocabularySearchBar = ({
         backgroundColor="white"
       />
 
-      <Flex gap={2} justify="flex-end" w={{ base: 'full', md: 'auto' }}>
-        <Menu.Root>
-          <Menu.Trigger asChild>
-            <Button
-              variant="outline"
-              size="lg"
-              w={{ base: 'full', md: 'auto' }}
-              aria-label="Sort"
+      <Menu.Root>
+        <Menu.Trigger asChild>
+          <Button variant="outline" size="lg" aria-label="Sort">
+            <Icon as={LuArrowDownNarrowWide} fontSize="md" />
+            <Text display={{ base: 'none', md: 'block' }}>{sortOption}</Text>
+          </Button>
+        </Menu.Trigger>
+        <Menu.Positioner>
+          <Menu.Content>
+            <Menu.Item
+              value="Alphabetical"
+              onClick={() => onSortSelect('Alphabetical')}
             >
-              <Flex align="center" justify="space-between" w="full" gap={1}>
-                <Icon as={LuArrowDownNarrowWide} fontSize="md" />
-                <Text>{sortOption}</Text>
-              </Flex>
-            </Button>
-          </Menu.Trigger>
-          <Menu.Positioner>
-            <Menu.Content>
-              <Menu.Item
-                value="Alphabetical"
-                onClick={() => onSortSelect('Alphabetical')}
-              >
-                Alphabetical
-              </Menu.Item>
-              <Menu.Item value="Latest" onClick={() => onSortSelect('Latest')}>
-                Latest
-              </Menu.Item>
-            </Menu.Content>
-          </Menu.Positioner>
-        </Menu.Root>
-        <Button variant="outline" size="lg" w={{ base: 'full', md: 'auto' }}>
-          Filters
-        </Button>
-      </Flex>
+              Alphabetical
+            </Menu.Item>
+            <Menu.Item value="Latest" onClick={() => onSortSelect('Latest')}>
+              Latest
+            </Menu.Item>
+          </Menu.Content>
+        </Menu.Positioner>
+      </Menu.Root>
+
+      <Button variant="outline" size="lg">
+        <Icon as={LuSlidersHorizontal} fontSize="md" />
+        <Text display={{ base: 'none', md: 'block' }}>Filters</Text>
+      </Button>
     </Flex>
   );
 };
