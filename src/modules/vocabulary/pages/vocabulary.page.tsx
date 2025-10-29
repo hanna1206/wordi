@@ -295,7 +295,7 @@ export const VocabularyPage = () => {
           </Flex>
         )}
 
-        <Box ref={sentinelRef} w="full" h="1px" border={'2px solid black'} />
+        <Box ref={sentinelRef} w="full" h="1px" />
 
         {isFetchingMore && (
           <Flex justify="center" py={4}>
