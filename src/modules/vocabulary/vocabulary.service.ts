@@ -11,6 +11,7 @@ import type {
   MinimalVocabularyWord,
   VocabularyItem,
   VocabularyItemAnonymized,
+  VocabularySortOption,
 } from './vocabulary.types';
 
 export const saveWordToDatabase = async (
@@ -79,15 +80,22 @@ export const getUserMinimalVocabulary = async (
   userId: string,
   limit = 20,
   offset = 0,
+  sort: VocabularySortOption = 'Latest',
 ): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {
   const supabase = await createClient();
 
-  const { data, error, count } = await supabase
+  let query = supabase
     .from('words')
     .select('normalized_word, part_of_speech, common_data', { count: 'exact' })
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-    .range(offset, offset + limit - 1);
+    .eq('user_id', userId);
+
+  if (sort === 'Alphabetical') {
+    query = query.order('normalized_word', { ascending: true });
+  } else {
+    query = query.order('created_at', { ascending: false });
+  }
+
+  const { data, error, count } = await query.range(offset, offset + limit - 1);
 
   if (error) {
     throw new Error('Failed to get saved words');

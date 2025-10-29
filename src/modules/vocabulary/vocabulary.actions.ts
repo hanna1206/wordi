@@ -20,6 +20,7 @@ import type {
   MinimalVocabularyWord,
   VocabularyItem,
   VocabularyItemAnonymized,
+  VocabularySortOption,
 } from './vocabulary.types';
 
 // Save word for learning
@@ -84,6 +85,7 @@ export const getWordFromCache = withUserSettings<
 type FetchMinimalVocabularyParams = {
   limit?: number;
   offset?: number;
+  sort?: VocabularySortOption;
 };
 
 export const fetchUserMinimalVocabulary = withAuth<
@@ -92,7 +94,7 @@ export const fetchUserMinimalVocabulary = withAuth<
 >(
   async (
     context,
-    { limit = 20, offset = 0 },
+    { limit = 20, offset = 0, sort = 'Latest' },
   ): Promise<
     ActionResult<{ items: MinimalVocabularyWord[]; total: number }>
   > => {
@@ -101,6 +103,7 @@ export const fetchUserMinimalVocabulary = withAuth<
         context.userId,
         limit,
         offset,
+        sort,
       );
       return { success: true, data };
     } catch (error) {

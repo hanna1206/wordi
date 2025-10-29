@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { LuArrowDownNarrowWide } from 'react-icons/lu';
 
 import {
@@ -17,80 +17,148 @@ import {
 import { SidebarLayout } from '@/components/sidebar-layout';
 import { toaster } from '@/components/toaster';
 import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
-import { VocabularyPageControls } from '@/modules/vocabulary/components/vocabulary-page-controls';
 import { VocabularyPageHeader } from '@/modules/vocabulary/components/vocabulary-page-header';
-import { VocabularyPagination } from '@/modules/vocabulary/components/vocabulary-pagination';
 import { VocabularyTable } from '@/modules/vocabulary/components/vocabulary-table';
 import {
   fetchUserMinimalVocabulary,
   fetchUserWordByNormalizedWordAndPos,
 } from '@/modules/vocabulary/vocabulary.actions';
-import { DEFAULT_PAGE_SIZE } from '@/modules/vocabulary/vocabulary.const';
 import type {
   MinimalVocabularyWord,
   VocabularyItem,
+  VocabularySortOption,
 } from '@/modules/vocabulary/vocabulary.types';
 
+const DEFAULT_PAGE_SIZE = 20;
+
 export const VocabularyPage = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<MinimalVocabularyWord[]>([]);
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
-  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWord, setSelectedWord] = useState<VocabularyItem | null>(null);
   const [isLoadingWord, setIsLoadingWord] = useState(false);
-  const [sortOption, setSortOption] = useState<'Latest' | 'Alphabetical'>(
-    'Latest',
+  const [sortOption, setSortOption] = useState<VocabularySortOption>('Latest');
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const itemsCountRef = useRef(0);
+  const isInitialLoadingRef = useRef(true);
+  const isFetchingMoreRef = useRef(false);
+  const hasMoreRef = useRef(true);
+
+  const loadWords = useCallback(
+    async ({ reset = false }: { reset?: boolean } = {}) => {
+      if (
+        !reset &&
+        (isFetchingMoreRef.current ||
+          isInitialLoadingRef.current ||
+          !hasMoreRef.current)
+      ) {
+        return;
+      }
+
+      if (reset) {
+        setError(null);
+        setItems([]);
+        setHasMore(true);
+        setIsInitialLoading(true);
+        isInitialLoadingRef.current = true;
+        itemsCountRef.current = 0;
+        hasMoreRef.current = true;
+      } else {
+        setIsFetchingMore(true);
+        isFetchingMoreRef.current = true;
+      }
+
+      const offset = reset ? 0 : itemsCountRef.current;
+
+      try {
+        const result = await fetchUserMinimalVocabulary({
+          limit: DEFAULT_PAGE_SIZE,
+          offset,
+          sort: sortOption,
+        });
+
+        if (result.success && result.data) {
+          const fetchedItems = result.data.items ?? [];
+          itemsCountRef.current = reset
+            ? fetchedItems.length
+            : itemsCountRef.current + fetchedItems.length;
+          setItems((prev) =>
+            reset ? fetchedItems : [...prev, ...fetchedItems],
+          );
+          const canLoadMore = itemsCountRef.current < result.data.total;
+          setHasMore(canLoadMore);
+          hasMoreRef.current = canLoadMore;
+          if (!reset && fetchedItems.length === 0) {
+            toaster.create({
+              type: 'info',
+              title: 'Info',
+              description: 'Новых слов не найдено',
+            });
+          }
+        } else {
+          throw new Error(result.error || 'Failed to load words');
+        }
+      } catch (e) {
+        const message = e instanceof Error ? e.message : 'Failed to load words';
+        if (reset) {
+          setError(message);
+        }
+        toaster.create({
+          type: 'error',
+          title: 'Error',
+          description: message,
+        });
+      } finally {
+        if (reset) {
+          setIsInitialLoading(false);
+          isInitialLoadingRef.current = false;
+        } else {
+          setIsFetchingMore(false);
+          isFetchingMoreRef.current = false;
+        }
+      }
+    },
+    [sortOption],
   );
 
-  const totalPages = useMemo(() => {
-    return total > 0 ? Math.ceil(total / pageSize) : 1;
-  }, [total, pageSize]);
-
-  const fetchWords = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const offset = page * pageSize;
-      const result = await fetchUserMinimalVocabulary({
-        limit: pageSize,
-        offset,
-      });
-
-      if (result.success && result.data) {
-        setItems(result.data.items);
-        setTotal(result.data.total);
-      } else {
-        throw new Error(result.error || 'Failed to load words');
-      }
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'Failed to load words';
-      setError(message);
-      toaster.create({ type: 'error', title: 'Error', description: message });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [page, pageSize]);
+  useEffect(() => {
+    loadWords({ reset: true });
+  }, [loadWords]);
 
   useEffect(() => {
-    fetchWords();
-  }, [fetchWords]);
+    if (isInitialLoading) {
+      return;
+    }
 
-  const handlePageSizeChange = useCallback((size: number) => {
-    setPageSize(size);
-    setPage(0);
-  }, []);
+    const sentinel = sentinelRef.current;
+    const scrollContainer = sentinel?.closest<HTMLElement>(
+      '[data-scroll-container="true"]',
+    );
 
-  const handlePrevPage = useCallback(() => {
-    setPage((p) => Math.max(0, p - 1));
-  }, []);
+    if (!sentinel || !scrollContainer) {
+      return;
+    }
 
-  const handleNextPage = useCallback(() => {
-    setPage((p) => Math.min(totalPages - 1, p + 1));
-  }, [totalPages]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          void loadWords();
+        }
+      },
+      { root: scrollContainer, rootMargin: '200px' },
+    );
+
+    observer.observe(sentinel);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isInitialLoading, loadWords]);
 
   const handleWordClick = useCallback(
     async (normalizedWord: string, partOfSpeech: string) => {
@@ -132,14 +200,14 @@ export const VocabularyPage = () => {
   const handleWordDeleted = useCallback(() => {
     setIsModalOpen(false);
     setSelectedWord(null);
-    fetchWords();
-  }, [fetchWords]);
+    void loadWords({ reset: true });
+  }, [loadWords]);
 
   const handleSortSelect = useCallback((option: 'Latest' | 'Alphabetical') => {
     setSortOption(option);
   }, []);
 
-  if (isLoading) {
+  if (isInitialLoading) {
     return (
       <SidebarLayout>
         <Flex align="center" justify="center" minH="60vh">
@@ -219,19 +287,29 @@ export const VocabularyPage = () => {
 
         <VocabularyPageHeader />
 
-        <VocabularyPageControls
-          pageSize={pageSize}
-          onPageSizeChange={handlePageSizeChange}
-        />
-
         <VocabularyTable items={items} onWordClick={handleWordClick} />
 
-        <VocabularyPagination
-          page={page}
-          totalPages={totalPages}
-          onPrevPage={handlePrevPage}
-          onNextPage={handleNextPage}
-        />
+        {items.length === 0 && !hasMore && (
+          <Flex align="center" justify="center" py={8}>
+            <Text color="fg.muted">Пока что слов нет.</Text>
+          </Flex>
+        )}
+
+        <Box ref={sentinelRef} w="full" h="1px" border={'2px solid black'} />
+
+        {isFetchingMore && (
+          <Flex justify="center" py={4}>
+            <Spinner size="md" colorPalette="blue" />
+          </Flex>
+        )}
+
+        {!isFetchingMore && !hasMore && items.length > 0 && (
+          <Flex justify="center" py={4}>
+            <Text fontSize="sm" color="fg.muted">
+              You have reached the end of your vocabulary.
+            </Text>
+          </Flex>
+        )}
 
         {/* Loading overlay when fetching word details */}
         {isLoadingWord && (

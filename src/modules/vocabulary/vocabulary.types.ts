@@ -31,6 +31,8 @@ export interface VocabularyItemAnonymized extends VocabularyItemDatabaseInput {
   createdAt: string;
 }
 
+export type VocabularySortOption = 'Latest' | 'Alphabetical';
+
 export interface UserWordCheck {
   exists: boolean;
   word?: VocabularyItem;

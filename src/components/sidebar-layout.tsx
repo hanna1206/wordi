@@ -49,7 +49,7 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
           overflow="hidden"
           position="relative"
         >
-          <Box h="full" overflow="auto">
+          <Box h="full" overflow="auto" data-scroll-container="true">
             {children}
           </Box>
           <InstallPrompt />
