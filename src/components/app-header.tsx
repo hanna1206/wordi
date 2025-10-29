@@ -3,22 +3,17 @@
 import { useState } from 'react';
 import { LuAlignLeft, LuInfo, LuPanelLeft, LuPowerOff } from 'react-icons/lu';
 
-import { Box, HStack, IconButton, useBreakpointValue } from '@chakra-ui/react';
+import { Box, HStack, IconButton } from '@chakra-ui/react';
 
 import { logout } from '@/modules/auth/auth.actions';
 
 import { AIInfoModal } from './ai-info-modal';
 
 interface AppHeaderProps {
-  onSidebarToggle?: () => void;
-  showSidebarToggle?: boolean;
+  onSidebarToggle: () => void;
 }
 
-export const AppHeader = ({
-  onSidebarToggle,
-  showSidebarToggle = false,
-}: AppHeaderProps) => {
-  const isMobile = useBreakpointValue({ base: true, md: false });
+export const AppHeader = ({ onSidebarToggle }: AppHeaderProps) => {
   const [showAIInfoModal, setShowAIInfoModal] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -50,26 +45,33 @@ export const AppHeader = ({
         top={0}
         left={0}
         right={0}
-        zIndex={showSidebarToggle ? 1000 : 100}
+        zIndex={1000}
         p={{ base: 4, md: 2 }}
       >
         <HStack justify="space-between" w="full">
-          {/* Left side - Sidebar toggle (only show if prop is true) */}
           <Box>
-            {showSidebarToggle && onSidebarToggle && (
+            <>
               <IconButton
                 aria-label="Toggle sidebar"
                 variant="ghost"
                 size="md"
                 onClick={onSidebarToggle}
+                display={{ base: 'block', md: 'none' }}
+                ml={2}
               >
-                {isMobile ? (
-                  <LuAlignLeft size={16} />
-                ) : (
-                  <LuPanelLeft size={16} />
-                )}
+                <LuAlignLeft size={16} />
               </IconButton>
-            )}
+              <IconButton
+                aria-label="Toggle sidebar"
+                variant="ghost"
+                size="md"
+                onClick={onSidebarToggle}
+                display={{ base: 'none', md: 'block' }}
+                ml={2}
+              >
+                <LuPanelLeft size={16} />
+              </IconButton>
+            </>
           </Box>
 
           {/* Right side - Help and Logout */}

@@ -12,7 +12,7 @@ interface SidebarNavigationItemProps {
   icon: ReactNode;
   label: string;
   isActive: boolean;
-  isCollapsed: boolean;
+  isSidebarOpen: boolean;
 }
 
 const SidebarNavigationItem = ({
@@ -20,7 +20,7 @@ const SidebarNavigationItem = ({
   icon,
   label,
   isActive,
-  isCollapsed,
+  isSidebarOpen,
 }: SidebarNavigationItemProps) => (
   <Link href={href}>
     <Button
@@ -34,7 +34,7 @@ const SidebarNavigationItem = ({
     >
       <Flex justifyContent="flex-start" gap={2}>
         {icon}
-        <Text display={isCollapsed ? 'none' : 'block'}>{label}</Text>
+        <Text display={isSidebarOpen ? 'block' : 'none'}>{label}</Text>
       </Flex>
     </Button>
   </Link>
@@ -59,12 +59,10 @@ const isNavItemActive = (pathname: string | null, href: string) => {
 };
 
 interface SidebarContentProps {
-  isCollapsed?: boolean;
+  isSidebarOpen: boolean;
 }
 
-export const SidebarContent = ({
-  isCollapsed = false,
-}: SidebarContentProps) => {
+export const SidebarContent = ({ isSidebarOpen }: SidebarContentProps) => {
   const pathname = usePathname();
 
   return (
@@ -85,7 +83,7 @@ export const SidebarContent = ({
           icon={item.icon}
           label={item.label}
           isActive={isNavItemActive(pathname, item.href)}
-          isCollapsed={isCollapsed}
+          isSidebarOpen={isSidebarOpen}
         />
       ))}
     </Box>
