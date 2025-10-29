@@ -1,8 +1,18 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { LuArrowDownNarrowWide } from 'react-icons/lu';
 
-import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Input,
+  Menu,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 
 import { SidebarLayout } from '@/components/sidebar-layout';
 import { toaster } from '@/components/toaster';
@@ -31,6 +41,9 @@ export const VocabularyPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWord, setSelectedWord] = useState<VocabularyItem | null>(null);
   const [isLoadingWord, setIsLoadingWord] = useState(false);
+  const [sortOption, setSortOption] = useState<'Latest' | 'Alphabetical'>(
+    'Latest',
+  );
 
   const totalPages = useMemo(() => {
     return total > 0 ? Math.ceil(total / pageSize) : 1;
@@ -122,6 +135,10 @@ export const VocabularyPage = () => {
     fetchWords();
   }, [fetchWords]);
 
+  const handleSortSelect = useCallback((option: 'Latest' | 'Alphabetical') => {
+    setSortOption(option);
+  }, []);
+
   if (isLoading) {
     return (
       <SidebarLayout>
@@ -145,7 +162,62 @@ export const VocabularyPage = () => {
   return (
     <SidebarLayout>
       <Box p={{ base: 4, md: 8 }} maxW="1400px" mx="auto">
-        <VocabularyPageHeader total={total} />
+        <Flex
+          direction={{ base: 'column', md: 'row' }}
+          gap={4}
+          mb={6}
+          align={{ base: 'stretch', md: 'center' }}
+        >
+          <Input
+            placeholder="Search vocabulary"
+            flex="1"
+            size="lg"
+            backgroundColor="white"
+          />
+
+          <Flex gap={2} justify="flex-end" w={{ base: 'full', md: 'auto' }}>
+            <Menu.Root>
+              <Menu.Trigger asChild>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  w={{ base: 'full', md: 'auto' }}
+                  aria-label="Sort"
+                >
+                  <Flex align="center" justify="space-between" w="full" gap={1}>
+                    <Icon as={LuArrowDownNarrowWide} fontSize="md" />
+                    <Text>{sortOption}</Text>
+                  </Flex>
+                </Button>
+              </Menu.Trigger>
+              <Menu.Positioner>
+                <Menu.Content>
+                  <Menu.Item
+                    value="Alphabetical"
+                    onClick={() => handleSortSelect('Alphabetical')}
+                  >
+                    Alphabetical
+                  </Menu.Item>
+                  <Menu.Item
+                    value="Latest"
+                    onClick={() => handleSortSelect('Latest')}
+                  >
+                    Latest
+                  </Menu.Item>
+                </Menu.Content>
+              </Menu.Positioner>
+            </Menu.Root>
+            <Button
+              variant="outline"
+              size="lg"
+              w={{ base: 'full', md: 'auto' }}
+            >
+              Filters
+            </Button>
+          </Flex>
+        </Flex>
+
+        <VocabularyPageHeader />
 
         <VocabularyPageControls
           pageSize={pageSize}
