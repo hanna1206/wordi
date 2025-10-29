@@ -9,6 +9,7 @@ I use Cursor a lot to generate code. Sometimes the code isn’t 100% clean becau
 ### What it does
 
 An application to help users learn German words.
+
 - Flash‑card game powered by a spaced repetition algorithm.
 
 ### AI in the app
