@@ -1,19 +1,21 @@
 'use client';
 
+import type { ReactNode } from 'react';
+
 import { ChakraProvider } from '@chakra-ui/react';
-import type { ThemeProviderProps } from 'next-themes';
 
 import { system } from '@/theme';
 
 import { SidebarProvider } from '../contexts/sidebar-context';
-import { ColorModeProvider } from './color-mode';
 
-export const Provider = (props: ThemeProviderProps) => {
+interface ProviderProps {
+  children: ReactNode;
+}
+
+export const Provider: React.FC<ProviderProps> = ({ children }) => {
   return (
     <ChakraProvider value={system}>
-      <SidebarProvider>
-        <ColorModeProvider {...props} />
-      </SidebarProvider>
+      <SidebarProvider>{children}</SidebarProvider>
     </ChakraProvider>
   );
 };
