@@ -14,7 +14,7 @@ import type {
 import { getGenderProperties } from '@/modules/linguistics/utils/get-gender-properties';
 import { saveWordForLearning } from '@/modules/vocabulary/vocabulary.actions';
 
-interface GenerateLinguisticItemModalProps {
+export interface GenerateLinguisticItemModalProps {
   isOpen: boolean;
   word: string;
   isLoading: boolean;

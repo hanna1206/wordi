@@ -5,13 +5,25 @@ import { useForm } from 'react-hook-form';
 import { LuArrowRight } from 'react-icons/lu';
 
 import { Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
+import dynamic from 'next/dynamic';
 
 import { ExampleWords } from '@/modules/linguistics/components/example-words';
-import { GenerateLinguisticItemModal } from '@/modules/linguistics/components/generate-linguistic-item-modal';
+import type { GenerateLinguisticItemModalProps } from '@/modules/linguistics/components/generate-linguistic-item-modal';
 import { generateLinguisticItem } from '@/modules/linguistics/linguistics.actions';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type { LinguisticItem } from '@/modules/linguistics/linguistics.types';
 import { getWordFromCache } from '@/modules/vocabulary/vocabulary.actions';
+
+const GenerateLinguisticItemModal = dynamic<GenerateLinguisticItemModalProps>(
+  () =>
+    import(
+      '@/modules/linguistics/components/generate-linguistic-item-modal'
+    ).then((mod) => mod.GenerateLinguisticItemModal),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
 
 interface FormData {
   word: string;
@@ -177,15 +189,17 @@ export const GenerateLinguisticItemForm = () => {
         </form>
       </VStack>
 
-      <GenerateLinguisticItemModal
-        isOpen={isOpen}
-        word={word}
-        isLoading={isLoading}
-        error={error}
-        linguisticItem={linguisticItem}
-        onClose={onClose}
-        onRegenerate={handleSubmit}
-      />
+      {(isOpen || isLoading || linguisticItem || error) && (
+        <GenerateLinguisticItemModal
+          isOpen={isOpen}
+          word={word}
+          isLoading={isLoading}
+          error={error}
+          linguisticItem={linguisticItem}
+          onClose={onClose}
+          onRegenerate={handleSubmit}
+        />
+      )}
     </>
   );
 };

@@ -1,17 +1,29 @@
 'use client';
 
-import type { ReactNode } from 'react';
-import { useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
 
 import { Box } from '@chakra-ui/react';
+import dynamic from 'next/dynamic';
 
 import { AppHeader } from '@/components/app-header';
 import { GradientBackground } from '@/components/gradient-background';
-import { InstallPrompt } from '@/components/install-prompt';
 import { useSidebar } from '@/contexts/sidebar-context';
 
-import { DesktopSidebar } from './desktop-sidebar';
-import { MobileSidebar } from './mobile-sidebar';
+const DesktopSidebar = dynamic<{ isOpen: boolean; onToggle: () => void }>(
+  () =>
+    import('@/components/desktop-sidebar').then((mod) => mod.DesktopSidebar),
+  { ssr: false, loading: () => null },
+);
+
+const MobileSidebar = dynamic<{ isOpen: boolean; onToggle: () => void }>(
+  () => import('@/components/mobile-sidebar').then((mod) => mod.MobileSidebar),
+  { ssr: false, loading: () => null },
+);
+
+const InstallPrompt = dynamic(
+  () => import('@/components/install-prompt').then((mod) => mod.InstallPrompt),
+  { ssr: false, loading: () => null },
+);
 
 interface SidebarLayoutProps {
   children: ReactNode;
