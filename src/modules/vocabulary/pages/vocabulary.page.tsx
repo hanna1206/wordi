@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 
 import { Box } from '@chakra-ui/react';
 
+import { PageHeader } from '@/components/page-header';
 import { SidebarLayout } from '@/components/sidebar-layout';
 import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
 import {
@@ -15,7 +16,6 @@ import {
   VocabularyScrollSentinel,
   VocabularyWordLoadingOverlay,
 } from '@/modules/vocabulary/components/vocabulary-loading-states';
-import { VocabularyPageHeader } from '@/modules/vocabulary/components/vocabulary-page-header';
 import { VocabularySearchBar } from '@/modules/vocabulary/components/vocabulary-search-bar';
 import { VocabularyTable } from '@/modules/vocabulary/components/vocabulary-table';
 import { useInfiniteScroll } from '@/modules/vocabulary/hooks/use-infinite-scroll';
@@ -75,7 +75,10 @@ export const VocabularyPage = () => {
           onSortSelect={handleSortSelect}
         />
 
-        <VocabularyPageHeader />
+        <PageHeader
+          title="Vocabulary"
+          description="Track and review all the words you've learned"
+        />
 
         <VocabularyTable items={items} onWordClick={handleWordClick} />
 
