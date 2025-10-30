@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 
+import { PageHeader } from '@/components/page-header';
 import { SidebarLayout } from '@/components/sidebar-layout';
 
 import { GameModeCard } from '../components/game-mode-card';
@@ -91,19 +92,14 @@ export const FlashCardsGameSettingsPage = () => {
 
   return (
     <SidebarLayout>
-      <Box as="main" py={8}>
+      <Box as="main" p={8}>
+        <PageHeader
+          title="Flashcards Game"
+          description="Practice smarter with daily review or quick modes."
+        />
         <Box mx="auto" px={4} maxW="3xl">
           <Box w="full" mx="auto">
             <Flex direction="column" gap={10}>
-              <Flex direction="column" gap={2} textAlign="center">
-                <Heading as="h1" size="2xl" lineHeight="shorter">
-                  Flashcards Game
-                </Heading>
-                <Text fontSize="md" color="gray.600">
-                  Practice smarter with daily review or quick modes.
-                </Text>
-              </Flex>
-
               <Flex direction="column" gap={2}>
                 <Heading as="h3" size="md" textAlign="center">
                   Choose what to show on the front
