@@ -28,7 +28,7 @@ const CARD_SIDE_OPTIONS = [
   { label: 'Show Translation', value: CardSide.Translation },
 ];
 
-export const FlashCardsGamePage = () => {
+export const FlashCardsGameSettingsPage = () => {
   const router = useRouter();
   const [cardSide, setCardSide] = useState<string | null>(CardSide.Word);
   const [dueCount, setDueCount] = useState<number>(0);

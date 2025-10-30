@@ -1,3 +1,3 @@
-import { FlashCardsGamePage } from '@/modules/flash-cards-game/pages/flash-cards-game.page';
+import { FlashCardsGameSettingsPage } from '@/modules/flash-cards-game/pages/flash-cards-game-settings.page';
 
-export default FlashCardsGamePage;
+export default FlashCardsGameSettingsPage;
