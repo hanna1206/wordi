@@ -10,9 +10,14 @@ interface DesktopSidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   children?: React.ReactNode;
+  onFlashCardsClick?: (e: React.MouseEvent) => void;
 }
 
-export const DesktopSidebar = ({ isOpen, onToggle }: DesktopSidebarProps) => {
+export const DesktopSidebar = ({
+  isOpen,
+  onToggle,
+  onFlashCardsClick,
+}: DesktopSidebarProps) => {
   return (
     <Box
       position="fixed"
@@ -80,7 +85,10 @@ export const DesktopSidebar = ({ isOpen, onToggle }: DesktopSidebarProps) => {
           w="full"
           alignItems={isOpen ? 'flex-start' : 'center'}
         >
-          <SidebarContent isSidebarOpen={isOpen} />
+          <SidebarContent
+            isSidebarOpen={isOpen}
+            onFlashCardsClick={onFlashCardsClick}
+          />
         </Box>
       </Box>
     </Box>

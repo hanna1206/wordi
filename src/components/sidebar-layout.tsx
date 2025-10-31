@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { Box } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
@@ -8,14 +8,21 @@ import dynamic from 'next/dynamic';
 import { AppHeader } from '@/components/app-header';
 import { GradientBackground } from '@/components/gradient-background';
 import { useSidebar } from '@/contexts/sidebar-context';
+import { FlashCardsSettingsDialog } from '@/modules/flash-cards-game/components/flash-cards-settings-dialog';
 
-const DesktopSidebar = dynamic<{ isOpen: boolean; onToggle: () => void }>(
+interface SidebarProps {
+  isOpen: boolean;
+  onToggle: () => void;
+  onFlashCardsClick?: (e: React.MouseEvent) => void;
+}
+
+const DesktopSidebar = dynamic<SidebarProps>(
   () =>
     import('@/components/desktop-sidebar').then((mod) => mod.DesktopSidebar),
   { ssr: false, loading: () => null },
 );
 
-const MobileSidebar = dynamic<{ isOpen: boolean; onToggle: () => void }>(
+const MobileSidebar = dynamic<SidebarProps>(
   () => import('@/components/mobile-sidebar').then((mod) => mod.MobileSidebar),
   { ssr: false, loading: () => null },
 );
@@ -33,6 +40,17 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   const { isDesktopSidebarOpen, isMobileSidebarOpen, toggleSidebar } =
     useSidebar();
 
+  const [isFlashCardsDialogOpen, setIsFlashCardsDialogOpen] = useState(false);
+
+  const handleFlashCardsClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsFlashCardsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsFlashCardsDialogOpen(false);
+  };
+
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -43,7 +61,7 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   }, []);
 
   return (
-    <GradientBackground variant="primary">
+    <GradientBackground variant="primary" data-debug="gradient-background">
       <Box h="100svh" overflow="hidden">
         <AppHeader onSidebarToggle={toggleSidebar} />
 
@@ -51,10 +69,12 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
           <MobileSidebar
             isOpen={isMobileSidebarOpen}
             onToggle={toggleSidebar}
+            onFlashCardsClick={handleFlashCardsClick}
           />
           <DesktopSidebar
             isOpen={isDesktopSidebarOpen}
             onToggle={toggleSidebar}
+            onFlashCardsClick={handleFlashCardsClick}
           />
         </>
 
@@ -66,12 +86,22 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
           overflow="hidden"
           position="relative"
         >
-          <Box h="full" overflow="auto" data-scroll-container="true">
+          <Box
+            h="full"
+            overflow="auto"
+            data-scroll-container="true"
+            maxW="1256px"
+            mx="auto"
+          >
             {children}
           </Box>
           <InstallPrompt />
         </Box>
       </Box>
+      <FlashCardsSettingsDialog
+        isOpen={isFlashCardsDialogOpen}
+        onClose={handleCloseDialog}
+      />
     </GradientBackground>
   );
 };

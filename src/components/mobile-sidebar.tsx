@@ -10,9 +10,14 @@ interface MobileSidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   children?: React.ReactNode;
+  onFlashCardsClick?: (e: React.MouseEvent) => void;
 }
 
-export const MobileSidebar = ({ isOpen, onToggle }: MobileSidebarProps) => {
+export const MobileSidebar = ({
+  isOpen,
+  onToggle,
+  onFlashCardsClick,
+}: MobileSidebarProps) => {
   return (
     <>
       {/* Overlay */}
@@ -59,7 +64,10 @@ export const MobileSidebar = ({ isOpen, onToggle }: MobileSidebarProps) => {
           </IconButton>
         </Box>
         <Box flex="1" overflow="hidden" display="flex" flexDirection="column">
-          <SidebarContent isSidebarOpen={isOpen} />
+          <SidebarContent
+            isSidebarOpen={isOpen}
+            onFlashCardsClick={onFlashCardsClick}
+          />
         </Box>
       </Box>
     </>

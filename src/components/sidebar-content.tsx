@@ -13,6 +13,8 @@ interface SidebarNavigationItemProps {
   label: string;
   isActive: boolean;
   isSidebarOpen: boolean;
+  isDialog?: boolean;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 const SidebarNavigationItem = ({
@@ -21,29 +23,45 @@ const SidebarNavigationItem = ({
   label,
   isActive,
   isSidebarOpen,
-}: SidebarNavigationItemProps) => (
-  <Link href={href}>
-    <Button
-      variant={isActive ? 'subtle' : 'ghost'}
-      py={2}
-      m={0.5}
-      px={2}
-      justifyContent="start"
-      width="100%"
-      textDecoration="none"
-    >
-      <Flex justifyContent="flex-start" gap={2}>
-        {icon}
-        <Text display={isSidebarOpen ? 'block' : 'none'}>{label}</Text>
-      </Flex>
-    </Button>
-  </Link>
-);
+  isDialog,
+  onClick,
+}: SidebarNavigationItemProps) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (isDialog && onClick) {
+      e.preventDefault();
+      onClick(e);
+    }
+  };
+
+  return (
+    <Link href={href} onClick={handleClick}>
+      <Button
+        variant={isActive ? 'subtle' : 'ghost'}
+        py={2}
+        m={0.5}
+        px={2}
+        justifyContent="start"
+        width="100%"
+        textDecoration="none"
+      >
+        <Flex justifyContent="flex-start" gap={2}>
+          {icon}
+          <Text display={isSidebarOpen ? 'block' : 'none'}>{label}</Text>
+        </Flex>
+      </Button>
+    </Link>
+  );
+};
 
 const NAV_ITEMS = [
   { href: '/', icon: <LuHouse />, label: 'Home' },
   { href: '/vocabulary', icon: <LuLibrary />, label: 'Vocabulary' },
-  { href: '/flash-cards-game', icon: <LuBrain />, label: 'Flash Cards Game' },
+  {
+    href: '/flash-cards-game',
+    icon: <LuBrain />,
+    label: 'Flashcards',
+    isDialog: true,
+  },
 ];
 
 const isNavItemActive = (pathname: string | null, href: string) => {
@@ -60,9 +78,13 @@ const isNavItemActive = (pathname: string | null, href: string) => {
 
 interface SidebarContentProps {
   isSidebarOpen: boolean;
+  onFlashCardsClick?: (e: React.MouseEvent) => void;
 }
 
-export const SidebarContent = ({ isSidebarOpen }: SidebarContentProps) => {
+export const SidebarContent = ({
+  isSidebarOpen,
+  onFlashCardsClick,
+}: SidebarContentProps) => {
   const pathname = usePathname();
 
   return (
@@ -84,6 +106,8 @@ export const SidebarContent = ({ isSidebarOpen }: SidebarContentProps) => {
           label={item.label}
           isActive={isNavItemActive(pathname, item.href)}
           isSidebarOpen={isSidebarOpen}
+          isDialog={item.isDialog}
+          onClick={item.isDialog ? onFlashCardsClick : undefined}
         />
       ))}
     </Box>
