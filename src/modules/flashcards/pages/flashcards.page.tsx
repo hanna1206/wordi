@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 
 import { Flex } from '@chakra-ui/react';
 
@@ -64,42 +64,44 @@ export const FlashcardsPage = () => {
   }
 
   return (
-    <Flex
-      direction="column"
-      h="100svh"
-      p={4}
-      pt={2}
-      background={
-        cardSide === CardSide.Word
-          ? 'linear-gradient(135deg, #f0f9ff, #faf5ff)'
-          : 'linear-gradient(135deg, #f0fdfa, #f7fee7)'
-      }
-      transition="background 0.5s ease-in-out"
-    >
-      <PlayPageNavigation
-        currentIndex={currentCardIndex}
-        totalCount={words.length}
-      />
+    <Suspense fallback={<PlayPageLoadingState />}>
+      <Flex
+        direction="column"
+        h="100svh"
+        p={4}
+        pt={2}
+        background={
+          cardSide === CardSide.Word
+            ? 'linear-gradient(135deg, #f0f9ff, #faf5ff)'
+            : 'linear-gradient(135deg, #f0fdfa, #f7fee7)'
+        }
+        transition="background 0.5s ease-in-out"
+      >
+        <PlayPageNavigation
+          currentIndex={currentCardIndex}
+          totalCount={words.length}
+        />
 
-      <GameContent
-        ref={cardButtonRef}
-        currentWord={words[currentCardIndex]}
-        allWordIds={words.map((w) => w.id)}
-        cardSide={cardSide}
-        onCardFlip={handleCardFlip}
-        onQualitySelect={handleNextCard}
-        onFlip={(_, flipped) => setIsCurrentFlipped(flipped)}
-        onOpenDetails={handleOpenDetails}
-      />
+        <GameContent
+          ref={cardButtonRef}
+          currentWord={words[currentCardIndex]}
+          allWordIds={words.map((w) => w.id)}
+          cardSide={cardSide}
+          onCardFlip={handleCardFlip}
+          onQualitySelect={handleNextCard}
+          onFlip={(_, flipped) => setIsCurrentFlipped(flipped)}
+          onOpenDetails={handleOpenDetails}
+        />
 
-      <KeyboardShortcutsHints />
+        <KeyboardShortcutsHints />
 
-      <VocabularyItemModal
-        isOpen={Boolean(selectedWord)}
-        savedWord={selectedWord}
-        onClose={handleCloseDetails}
-        allowDelete={false}
-      />
-    </Flex>
+        <VocabularyItemModal
+          isOpen={Boolean(selectedWord)}
+          savedWord={selectedWord}
+          onClose={handleCloseDetails}
+          allowDelete={false}
+        />
+      </Flex>
+    </Suspense>
   );
 };
