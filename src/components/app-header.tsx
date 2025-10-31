@@ -67,7 +67,7 @@ export const AppHeader = ({ onSidebarToggle }: AppHeaderProps) => {
                 size="md"
                 onClick={onSidebarToggle}
                 display={{ base: 'none', md: 'block' }}
-                ml={2}
+                pl={2}
               >
                 <LuPanelLeft size={16} />
               </IconButton>

@@ -63,7 +63,7 @@ export const DesktopSidebar = ({
         transition="opacity 0.3s ease"
         zIndex={1}
       >
-        <IconButton size="md" variant="ghost" onClick={onToggle}>
+        <IconButton size="md" variant="ghost" onClick={onToggle} mr={2}>
           <LuPanelLeftClose />
         </IconButton>
       </Box>
