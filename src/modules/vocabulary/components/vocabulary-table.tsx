@@ -62,14 +62,12 @@ export const VocabularyTable = ({
       {/* Desktop Table Layout */}
       <Box display={{ base: 'none', md: 'block' }}>
         <Card.Root borderWidth="1px" shadow="sm" overflow="hidden">
-          <Table.Root size="lg" variant="line" striped>
+          <Table.Root size="lg" variant="outline">
             <Table.Header bg="bg.muted">
               <Table.Row>
                 <Table.ColumnHeader
                   fontWeight="semibold"
                   fontSize="sm"
-                  textTransform="uppercase"
-                  letterSpacing="wide"
                   color="fg.muted"
                 >
                   Word
@@ -77,8 +75,6 @@ export const VocabularyTable = ({
                 <Table.ColumnHeader
                   fontWeight="semibold"
                   fontSize="sm"
-                  textTransform="uppercase"
-                  letterSpacing="wide"
                   color="fg.muted"
                 >
                   Part of Speech
@@ -86,8 +82,6 @@ export const VocabularyTable = ({
                 <Table.ColumnHeader
                   fontWeight="semibold"
                   fontSize="sm"
-                  textTransform="uppercase"
-                  letterSpacing="wide"
                   color="fg.muted"
                 >
                   Translation

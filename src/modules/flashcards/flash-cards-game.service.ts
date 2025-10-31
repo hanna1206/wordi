@@ -1,4 +1,4 @@
-import { ExistingProgress } from '@/modules/flash-cards-game/flash-cards-game.types';
+import { ExistingProgress } from '@/modules/flashcards/flash-cards-game.types';
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 import { createClient } from '@/services/supabase/server';
 import { convertKeysToCamelCase } from '@/utils/case-conversion';

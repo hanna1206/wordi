@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic';
 import { AppHeader } from '@/components/app-header';
 import { GradientBackground } from '@/components/gradient-background';
 import { useSidebar } from '@/contexts/sidebar-context';
-import { FlashCardsSettingsDialog } from '@/modules/flash-cards-game/components/flash-cards-settings-dialog';
+import { FlashCardsSettingsDialog } from '@/modules/flashcards/components/flash-cards-settings-dialog';
 
 interface SidebarProps {
   isOpen: boolean;

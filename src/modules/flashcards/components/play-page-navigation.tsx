@@ -1,8 +1,8 @@
 'use client';
 
-import { FaArrowLeft, FaTimes } from 'react-icons/fa';
+import { FaTimes } from 'react-icons/fa';
 
-import { Box, Button, Flex, HStack, IconButton, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, IconButton } from '@chakra-ui/react';
 import Link from 'next/link';
 
 interface PlayPageNavigationProps {
@@ -22,21 +22,22 @@ export const PlayPageNavigation = ({
 
   return (
     <Box mb={4}>
-      <Flex align="center" justify="space-between" mb={2} gap={2}>
-        <IconButton
-          asChild
-          aria-label="Back to game selection"
-          variant="ghost"
-          size="lg"
+      <Flex
+        align="center"
+        justify="flex-end"
+        mb={2}
+        gap={2}
+        position="relative"
+      >
+        {/* <Text
+          position="absolute"
+          fontSize="sm"
+          color="gray.600"
+          minW="72px"
+          textAlign="center"
         >
-          <Link href="/flash-cards-game">
-            <FaArrowLeft />
-          </Link>
-        </IconButton>
-
-        <Text fontSize="sm" color="gray.600" minW="72px" textAlign="center">
           {currentIndex + 1} / {totalCount}
-        </Text>
+        </Text> */}
 
         <HStack gap={2}>
           {onUndo && (

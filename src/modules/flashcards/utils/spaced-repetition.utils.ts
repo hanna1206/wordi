@@ -1,8 +1,8 @@
-import { QualityScore } from '@/modules/flash-cards-game/flash-cards-game.const';
+import { QualityScore } from '@/modules/flashcards/flash-cards-game.const';
 import type {
   ExistingProgress,
   ProgressUpdate,
-} from '@/modules/flash-cards-game/flash-cards-game.types';
+} from '@/modules/flashcards/flash-cards-game.types';
 
 /**
  * Spaced Repetition Utilities

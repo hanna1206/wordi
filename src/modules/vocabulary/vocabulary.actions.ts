@@ -3,7 +3,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
-import { createInitialWordProgressService } from '@/modules/flash-cards-game/flash-cards-game.service';
+import { createInitialWordProgressService } from '@/modules/flashcards/flash-cards-game.service';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';

@@ -17,7 +17,7 @@ import { CardSide } from '../flash-cards-game.const';
 import { useFlashCardsGame } from '../hooks/use-flash-cards-game';
 import { useKeyboardShortcuts } from '../hooks/use-keyboard-shortcuts';
 
-export const FlashCardsPlayPage = () => {
+export const FlashcardsPage = () => {
   const {
     words,
     currentCardIndex,

@@ -29,6 +29,8 @@ import { useRouter } from 'next/navigation';
 import { getDueWordsCount } from '../flash-cards-game.actions';
 import { CardSide, GameMode } from '../flash-cards-game.const';
 
+const STORAGE_KEY = 'flashcards_due_meta_v1';
+
 interface GameModeOption {
   id: string;
   mode: GameMode;
@@ -76,7 +78,6 @@ export const FlashCardsSettingsDialog = ({
         icon: FaBrain,
         title: 'Daily Review',
         description: dailyReviewDescription,
-        subtext: 'Best for maintaining progress daily with spaced repetition.',
         disabled: dueCount === 0,
         badge: isLoading
           ? undefined
@@ -92,7 +93,6 @@ export const FlashCardsSettingsDialog = ({
         icon: FaRegClock,
         title: 'Practice 10 Latest Words',
         description: "Review the most recent words you've saved.",
-        subtext: 'A quick warm-up with your newest vocabulary.',
       },
       {
         id: 'latest-20',
@@ -101,7 +101,6 @@ export const FlashCardsSettingsDialog = ({
         icon: FaRegClock,
         title: 'Practice 20 Latest Words',
         description: 'A longer session with your newest words.',
-        subtext: 'Great when you just added many words.',
       },
       {
         id: 'random-10',
@@ -110,7 +109,6 @@ export const FlashCardsSettingsDialog = ({
         icon: FaRandom,
         title: 'Practice 10 Random Words',
         description: 'Shuffle your saved words for a surprise review.',
-        subtext: 'Good for variety and effective spaced retrieval practice.',
       },
       {
         id: 'random-20',
@@ -119,7 +117,6 @@ export const FlashCardsSettingsDialog = ({
         icon: FaRandom,
         title: 'Practice 20 Random Words',
         description: 'A bigger random set for a more robust practice.',
-        subtext: 'Use when you want a longer, mixed session.',
       },
     ];
   }, [dueCount, totalWords, isLoading]);
@@ -134,8 +131,6 @@ export const FlashCardsSettingsDialog = ({
 
   useEffect(() => {
     if (!isOpen) return;
-
-    const STORAGE_KEY = 'flashcards_due_meta_v1';
 
     // Try to load from localStorage first
     try {
@@ -204,7 +199,7 @@ export const FlashCardsSettingsDialog = ({
 
     // Navigate to game
     router.push(
-      `/flash-cards-game?mode=${selectedOption.mode}&limit=${selectedOption.limit}&cardSide=${cardSide}`,
+      `/flashcards?mode=${selectedOption.mode}&limit=${selectedOption.limit}&cardSide=${cardSide}`,
     );
   };
 
@@ -212,20 +207,12 @@ export const FlashCardsSettingsDialog = ({
     <DialogRoot
       open={isOpen}
       onOpenChange={handleOpenChange}
-      // size={{ base: 'full', md: 'md' }}
-      size="md"
+      size={{ mdDown: 'full', md: 'lg' }}
     >
       <Portal>
         <DialogBackdrop />
         <DialogPositioner>
-          <DialogContent
-            w={{ base: '100vw', md: 'auto' }}
-            h={{ base: '100vh', md: 'auto' }}
-            maxH={{ base: '100vh', md: '85vh' }}
-            m={{ base: 0, md: 'auto' }}
-            borderRadius={{ base: 0, md: 'lg' }}
-            overflowY="auto"
-          >
+          <DialogContent borderRadius={{ base: 0, md: 'lg' }} overflowY="auto">
             <DialogHeader>
               <DialogTitle>Flashcards Settings</DialogTitle>
               <DialogCloseTrigger />
@@ -234,7 +221,7 @@ export const FlashCardsSettingsDialog = ({
             <DialogBody py={{ base: 6, md: 4 }}>
               <Flex direction="column" gap={{ base: 6, md: 4 }}>
                 {/* Card Side Selector */}
-                <Flex direction="column" gap={2}>
+                <Flex direction="column" gap={2} alignItems="flex-start">
                   <Text fontWeight="medium" fontSize="sm">
                     Card Side
                   </Text>
@@ -243,24 +230,20 @@ export const FlashCardsSettingsDialog = ({
                     onValueChange={(e) => setCardSide(e.value)}
                     size="md"
                   >
-                    <SegmentGroup.Indicator />
+                    <SegmentGroup.Indicator bg="white" />
                     <SegmentGroup.Item value={CardSide.Word}>
-                      <SegmentGroup.ItemText>
-                        Show German Word
-                      </SegmentGroup.ItemText>
+                      <SegmentGroup.ItemText>German Word</SegmentGroup.ItemText>
                       <SegmentGroup.ItemHiddenInput />
                     </SegmentGroup.Item>
                     <SegmentGroup.Item value={CardSide.Translation}>
-                      <SegmentGroup.ItemText>
-                        Show Translation
-                      </SegmentGroup.ItemText>
+                      <SegmentGroup.ItemText>Translation</SegmentGroup.ItemText>
                       <SegmentGroup.ItemHiddenInput />
                     </SegmentGroup.Item>
                   </SegmentGroup.Root>
                 </Flex>
 
                 {/* Game Mode Options */}
-                <Flex direction="column" gap={2}>
+                <Flex direction="column" gap={2} mt={4}>
                   <Text fontWeight="medium" fontSize="sm">
                     Game Mode
                   </Text>
@@ -274,9 +257,15 @@ export const FlashCardsSettingsDialog = ({
                           key={option.id}
                           value={option.id}
                           disabled={option.disabled || isLoading}
+                          p={4}
                         >
                           <RadioCard.ItemHiddenInput />
-                          <Flex align="flex-start" gap={3} w="full">
+                          <Flex
+                            justifyContent="flex-start"
+                            gap={3}
+                            w="full"
+                            alignItems="center"
+                          >
                             {/* Icon container */}
                             <Flex
                               align="center"
@@ -344,11 +333,6 @@ export const FlashCardsSettingsDialog = ({
                               >
                                 {option.description}
                               </Text>
-                              {option.subtext && (
-                                <Text fontSize="xs" color="gray.500">
-                                  {option.subtext}
-                                </Text>
-                              )}
                             </Flex>
 
                             <RadioCard.ItemIndicator />
