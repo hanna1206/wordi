@@ -7,64 +7,44 @@ import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-interface SidebarNavigationItemProps {
+type SidebarLinkConfig = {
+  type: 'link';
   href: string;
   icon: ReactNode;
   label: string;
-  isActive: boolean;
-  isSidebarOpen: boolean;
-  isDialog?: boolean;
-  onClick?: (e: React.MouseEvent) => void;
-}
-
-const SidebarNavigationItem = ({
-  href,
-  icon,
-  label,
-  isActive,
-  isSidebarOpen,
-  isDialog,
-  onClick,
-}: SidebarNavigationItemProps) => {
-  const handleClick = (e: React.MouseEvent) => {
-    if (isDialog && onClick) {
-      e.preventDefault();
-      onClick(e);
-    }
-  };
-
-  return (
-    <Link href={href} onClick={handleClick}>
-      <Button
-        variant={isActive ? 'subtle' : 'ghost'}
-        py={2}
-        m={0.5}
-        px={2}
-        justifyContent="start"
-        width="100%"
-        textDecoration="none"
-      >
-        <Flex justifyContent="flex-start" gap={2}>
-          {icon}
-          <Text display={isSidebarOpen ? 'block' : 'none'}>{label}</Text>
-        </Flex>
-      </Button>
-    </Link>
-  );
 };
 
-const NAV_ITEMS = [
-  { href: '/', icon: <LuHouse />, label: 'Home' },
-  { href: '/vocabulary', icon: <LuLibrary />, label: 'Vocabulary' },
+type SidebarActionConfig = {
+  type: 'action';
+  id: string;
+  icon: ReactNode;
+  label: string;
+};
+
+type SidebarItemConfig = SidebarLinkConfig | SidebarActionConfig;
+
+const NAVIGATION_ITEMS: SidebarItemConfig[] = [
   {
-    href: '/flash-cards-game',
+    type: 'link',
+    href: '/',
+    icon: <LuHouse />,
+    label: 'Home',
+  },
+  {
+    type: 'link',
+    href: '/vocabulary',
+    icon: <LuLibrary />,
+    label: 'Vocabulary',
+  },
+  {
+    type: 'action',
+    id: 'flashcards',
     icon: <LuBrain />,
     label: 'Flashcards',
-    isDialog: true,
   },
 ];
 
-const isNavItemActive = (pathname: string | null, href: string) => {
+const isLinkActive = (pathname: string | null, href: string) => {
   if (!pathname) {
     return false;
   }
@@ -76,15 +56,89 @@ const isNavItemActive = (pathname: string | null, href: string) => {
   return pathname === href || pathname.startsWith(`${href}/`);
 };
 
-interface SidebarContentProps {
+const SidebarItemContent = ({
+  icon,
+  label,
+  isSidebarOpen,
+}: {
+  icon: ReactNode;
+  label: string;
   isSidebarOpen: boolean;
-  onFlashCardsClick?: (e: React.MouseEvent) => void;
-}
+}) => (
+  <Flex justifyContent="flex-start" gap={2}>
+    {icon}
+    <Text display={isSidebarOpen ? 'block' : 'none'}>{label}</Text>
+  </Flex>
+);
+
+const SidebarLink = ({
+  href,
+  icon,
+  label,
+  isActive,
+  isSidebarOpen,
+}: {
+  href: string;
+  icon: ReactNode;
+  label: string;
+  isActive: boolean;
+  isSidebarOpen: boolean;
+}) => (
+  <Link href={href}>
+    <Button
+      variant={isActive ? 'subtle' : 'ghost'}
+      py={2}
+      m={0.5}
+      px={2}
+      justifyContent="start"
+      width="100%"
+    >
+      <SidebarItemContent
+        icon={icon}
+        label={label}
+        isSidebarOpen={isSidebarOpen}
+      />
+    </Button>
+  </Link>
+);
+
+const SidebarAction = ({
+  icon,
+  label,
+  isActive,
+  isSidebarOpen,
+  onClick,
+}: {
+  icon: ReactNode;
+  label: string;
+  isActive: boolean;
+  isSidebarOpen: boolean;
+  onClick: (e: React.MouseEvent) => void;
+}) => (
+  <Button
+    variant={isActive ? 'subtle' : 'ghost'}
+    py={2}
+    m={0.5}
+    px={2}
+    justifyContent="start"
+    width="100%"
+    onClick={onClick}
+  >
+    <SidebarItemContent
+      icon={icon}
+      label={label}
+      isSidebarOpen={isSidebarOpen}
+    />
+  </Button>
+);
 
 export const SidebarContent = ({
   isSidebarOpen,
   onFlashCardsClick,
-}: SidebarContentProps) => {
+}: {
+  isSidebarOpen: boolean;
+  onFlashCardsClick?: (e: React.MouseEvent) => void;
+}) => {
   const pathname = usePathname();
 
   return (
@@ -98,18 +152,36 @@ export const SidebarContent = ({
       alignItems="stretch"
       width="100%"
     >
-      {NAV_ITEMS.map((item) => (
-        <SidebarNavigationItem
-          key={item.href}
-          href={item.href}
-          icon={item.icon}
-          label={item.label}
-          isActive={isNavItemActive(pathname, item.href)}
-          isSidebarOpen={isSidebarOpen}
-          isDialog={item.isDialog}
-          onClick={item.isDialog ? onFlashCardsClick : undefined}
-        />
-      ))}
+      {NAVIGATION_ITEMS.map((item) => {
+        if (item.type === 'link') {
+          return (
+            <SidebarLink
+              key={item.href}
+              href={item.href}
+              icon={item.icon}
+              label={item.label}
+              isActive={isLinkActive(pathname, item.href)}
+              isSidebarOpen={isSidebarOpen}
+            />
+          );
+        }
+
+        // type === 'action'
+        return (
+          <SidebarAction
+            key={item.id}
+            icon={item.icon}
+            label={item.label}
+            isActive={false}
+            isSidebarOpen={isSidebarOpen}
+            onClick={(e) => {
+              if (item.id === 'flashcards' && onFlashCardsClick) {
+                onFlashCardsClick(e);
+              }
+            }}
+          />
+        );
+      })}
     </Box>
   );
 };

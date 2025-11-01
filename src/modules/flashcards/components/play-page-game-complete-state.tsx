@@ -1,7 +1,6 @@
 'use client';
 
-import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
-import Link from 'next/link';
+import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
@@ -31,9 +30,6 @@ export const PlayPageGameCompleteState = ({
       ) : (
         <Text mt={4}>Great job! You knew all the words.</Text>
       )}
-      <Button asChild mt={8} colorScheme="blue">
-        <Link href="/flash-cards-game">Play Again</Link>
-      </Button>
     </Flex>
   );
 };

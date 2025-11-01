@@ -4,9 +4,11 @@ import { PlayPageLoadingState } from '@/modules/flashcards/components/play-page-
 import { FlashcardsPage } from '@/modules/flashcards/pages/flashcards.page';
 
 const FlashcardsPageWrapper = () => {
-  <Suspense fallback={<PlayPageLoadingState />}>
-    <FlashcardsPage />
-  </Suspense>;
+  return (
+    <Suspense fallback={<PlayPageLoadingState />}>
+      <FlashcardsPage />
+    </Suspense>
+  );
 };
 
 export default FlashcardsPageWrapper;
