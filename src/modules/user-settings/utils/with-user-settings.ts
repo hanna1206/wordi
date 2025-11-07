@@ -1,7 +1,7 @@
 import { withAuth } from '@/modules/auth/utils/with-auth';
 import type { ActionResult } from '@/shared-types';
 
-import { getUserSettings } from '../user-settings.service';
+import * as userSettingsRepository from '../user-settings.repository';
 import { UserSettingsContext } from '../user-settings.types';
 
 export const withUserSettings = <TInput, TOutput>(
@@ -11,7 +11,9 @@ export const withUserSettings = <TInput, TOutput>(
   ) => Promise<ActionResult<TOutput>>,
 ) => {
   return withAuth<TInput, TOutput>(async (context, input) => {
-    const userSettings = await getUserSettings(context.userId);
+    const userSettings = await userSettingsRepository.getByUserId(
+      context.userId,
+    );
 
     if (!userSettings) {
       return {

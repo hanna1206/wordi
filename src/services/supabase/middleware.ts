@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { environment } from '@/config/environment.config';
-import { getUserSettings } from '@/modules/user-settings/user-settings.service';
+import * as userSettingsRepository from '@/modules/user-settings/user-settings.repository';
 import { isProfileComplete } from '@/modules/user-settings/utils/is-profile-complete';
 
 export const updateSession = async (request: NextRequest) => {
@@ -63,8 +63,8 @@ export const updateSession = async (request: NextRequest) => {
     !request.nextUrl.pathname.startsWith('/_next')
   ) {
     try {
-      const userSettings = await getUserSettings(user.id);
-      if (!isProfileComplete(userSettings)) {
+      const userSettings = await userSettingsRepository.getByUserId(user.id);
+      if (userSettings && !isProfileComplete(userSettings)) {
         const url = request.nextUrl.clone();
         url.pathname = '/onboarding';
         return NextResponse.redirect(url);

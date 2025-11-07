@@ -1,13 +1,15 @@
-export interface UserSettings {
-  id: string;
-  email: string;
-  name: string | null;
-  native_language: string | null;
-  created_at: string;
-  updated_at: string;
-}
+// user-settings.types.ts
+import { AuthenticatedContext } from '@/modules/auth/auth.types';
 
-export interface UserSettingsContext {
-  userId: string;
+import { userSettingsTable } from './user-settings.schema';
+
+export type UserSettings = typeof userSettingsTable.$inferSelect;
+export type InsertUserSettings = typeof userSettingsTable.$inferInsert;
+export type UpdateUserSettings = Partial<
+  Pick<InsertUserSettings, 'name' | 'nativeLanguage'>
+>;
+
+// For your withUserSettings helper
+export interface UserSettingsContext extends AuthenticatedContext {
   userSettings: UserSettings;
 }

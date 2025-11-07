@@ -24,7 +24,7 @@ export const generateLinguisticItem = withUserSettings<string, LinguisticItem>(
 
     const { userSettings } = context;
 
-    if (!userSettings.native_language) {
+    if (!userSettings.nativeLanguage) {
       const error =
         'Please complete your profile setup to use the translation feature';
 
@@ -35,7 +35,7 @@ export const generateLinguisticItem = withUserSettings<string, LinguisticItem>(
     }
 
     const targetLanguage = getLanguageName(
-      userSettings.native_language as LanguageCode,
+      userSettings.nativeLanguage as LanguageCode,
     );
 
     try {

@@ -42,7 +42,7 @@ export const saveWordForLearning = withUserSettings<
     const saved = await saveWordToDatabase(
       linguisticItem,
       context.userId,
-      context.userSettings.native_language as LanguageCode,
+      context.userSettings.nativeLanguage as LanguageCode,
     );
 
     await createInitialWordProgressService(context.userId, saved.id);
@@ -72,7 +72,7 @@ export const getWordFromCache = withUserSettings<
     try {
       const data = await getCachedWord(
         normalizedWord,
-        context.userSettings.native_language as LanguageCode,
+        context.userSettings.nativeLanguage as LanguageCode,
       );
       return { success: true, data };
     } catch (error) {

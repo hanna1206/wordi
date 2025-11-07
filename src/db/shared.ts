@@ -1,18 +1,14 @@
 import { pgEnum } from 'drizzle-orm/pg-core';
 
-export const languageCodeEnum = pgEnum('language_code', [
-  'russian',
-  'english',
-  'ukrainian',
-  'turkish',
-  'portuguese',
-]);
+import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
+import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 
-export const partOfSpeechEnum = pgEnum('part_of_speech_enum', [
-  'noun',
-  'verb',
-  'adjective',
-  'personal pronoun',
-  'demonstrative pronoun',
-  'other',
-]);
+export const languageCodeEnum = pgEnum(
+  'language_code',
+  Object.values(LanguageCode) as [string, ...string[]],
+);
+
+export const partOfSpeechEnum = pgEnum(
+  'part_of_speech_enum',
+  Object.values(PartOfSpeech) as [string, ...string[]],
+);

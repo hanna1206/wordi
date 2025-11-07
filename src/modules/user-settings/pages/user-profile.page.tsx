@@ -60,7 +60,7 @@ export const UserSettings = async () => {
               </Text>
               <Text>
                 <strong>Native Language:</strong>{' '}
-                {getLanguageName(userSettings.native_language as LanguageCode)}
+                {getLanguageName(userSettings.nativeLanguage as LanguageCode)}
               </Text>
               <Text>
                 <strong>Created:</strong>{' '}
@@ -68,7 +68,7 @@ export const UserSettings = async () => {
               </Text>
               <Text>
                 <strong>Updated:</strong>{' '}
-                {new Date(userSettings.updated_at).toLocaleDateString()}
+                {new Date(userSettings.updatedAt).toLocaleDateString()}
               </Text>
             </VStack>
           </Card.Body>
