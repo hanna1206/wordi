@@ -9,13 +9,8 @@ import { withUserSettings } from '@/modules/user-settings/utils/with-user-settin
 import type { ActionResult } from '@/shared-types';
 
 import { LinguisticItem } from '../linguistics/linguistics.types';
-import {
-  deleteUserWord,
-  getCachedWord,
-  getUserMinimalVocabulary,
-  getUserWordByNormalizedWordAndPos,
-  saveWordToDatabase,
-} from './vocabulary.service';
+import { transformLinguisticItemToVocabularyItem } from './utils/transform-linguistic-item-to-vocabulary-item';
+import * as vocabularyRepository from './vocabulary.repository';
 import type {
   MinimalVocabularyWord,
   VocabularyItem,
@@ -39,17 +34,28 @@ export const saveWordForLearning = withUserSettings<
   }
 
   try {
-    const saved = await saveWordToDatabase(
+    const vocabularyItem = transformLinguisticItemToVocabularyItem(
       linguisticItem,
       context.userId,
       context.userSettings.nativeLanguage as LanguageCode,
     );
+
+    const saved = await vocabularyRepository.create(vocabularyItem);
 
     await createInitialWordProgressService(context.userId, saved.id);
 
     return { success: true, data: saved };
   } catch (error) {
     Sentry.captureException(error);
+
+    // Handle duplicate word error
+    if (error instanceof Error && error.message.includes('duplicate')) {
+      return {
+        success: false,
+        error: 'Word already saved for learning',
+      };
+    }
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to save word',
@@ -70,7 +76,7 @@ export const getWordFromCache = withUserSettings<
     normalizedWord: string,
   ): Promise<ActionResult<VocabularyItemAnonymized | null>> => {
     try {
-      const data = await getCachedWord(
+      const data = await vocabularyRepository.getCachedWord(
         normalizedWord,
         context.userSettings.nativeLanguage as LanguageCode,
       );
@@ -99,7 +105,7 @@ export const fetchUserMinimalVocabulary = withAuth<
     ActionResult<{ items: MinimalVocabularyWord[]; total: number }>
   > => {
     try {
-      const data = await getUserMinimalVocabulary(
+      const data = await vocabularyRepository.getUserMinimalVocabulary(
         context.userId,
         limit,
         offset,
@@ -127,7 +133,7 @@ export const fetchUserWordByNormalizedWordAndPos = withAuth<
     { normalizedWord, partOfSpeech },
   ): Promise<ActionResult<VocabularyItem | null>> => {
     try {
-      const data = await getUserWordByNormalizedWordAndPos(
+      const data = await vocabularyRepository.getByNormalizedWordAndPos(
         context.userId,
         normalizedWord,
         partOfSpeech,
@@ -144,7 +150,7 @@ export const fetchUserWordByNormalizedWordAndPos = withAuth<
 export const deleteWord = withAuth<{ wordId: string }, void>(
   async (context, { wordId }): Promise<ActionResult<void>> => {
     try {
-      await deleteUserWord(wordId, context.userId);
+      await vocabularyRepository.deleteItem(wordId, context.userId);
       return { success: true };
     } catch (error) {
       Sentry.captureException(error);

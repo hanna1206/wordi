@@ -1,5 +1,6 @@
 import { PartOfSpeech } from '../linguistics/linguistics.const';
 import { LanguageCode } from '../user-settings/user-settings.const';
+import { wordsTable } from './vocabulary.schema';
 
 export interface VocabularyItemDatabaseInput {
   userId: string;
@@ -15,6 +16,7 @@ export interface VocabularyItem extends VocabularyItemDatabaseInput {
   createdAt: string;
   updatedAt: string;
 }
+
 export interface CommonWordData {
   mainTranslation: string;
   additionalTranslations: string[];
@@ -43,3 +45,6 @@ export interface MinimalVocabularyWord {
   partOfSpeech: PartOfSpeech;
   commonData: CommonWordData;
 }
+
+export type Word = typeof wordsTable.$inferSelect;
+export type InsertWord = typeof wordsTable.$inferInsert;
