@@ -26,8 +26,8 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 
-import { getDueWordsCount } from '../flash-cards-game.actions';
-import { CardSide, GameMode } from '../flash-cards-game.const';
+import { getDueWordsCount } from '../flashcards.actions';
+import { CardSide, GameMode } from '../flashcards.const';
 
 const STORAGE_KEY = 'flashcards_due_meta_v1';
 

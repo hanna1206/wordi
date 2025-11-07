@@ -7,7 +7,6 @@ import {
   integer,
   jsonb,
   numeric,
-  pgPolicy,
   pgTable,
   text,
   timestamp,
@@ -53,20 +52,12 @@ export const userWordProgressTable = pgTable(
     }).defaultNow(),
   },
   (table) => [
-    index('idx_user_word_progress_next_review').using(
-      'btree',
-      table.userId.asc().nullsLast().op('timestamptz_ops'),
-      table.nextReviewDate.asc().nullsLast().op('timestamptz_ops'),
+    index('idx_user_word_progress_next_review').on(
+      table.userId,
+      table.nextReviewDate,
     ),
-    index('idx_user_word_progress_status').using(
-      'btree',
-      table.userId.asc().nullsLast().op('uuid_ops'),
-      table.status.asc().nullsLast().op('uuid_ops'),
-    ),
-    index('idx_user_word_progress_user_id').using(
-      'btree',
-      table.userId.asc().nullsLast().op('uuid_ops'),
-    ),
+    index('idx_user_word_progress_status').on(table.userId, table.status),
+    index('idx_user_word_progress_user_id').on(table.userId),
     foreignKey({
       columns: [table.wordId],
       foreignColumns: [wordsTable.id],
@@ -76,27 +67,6 @@ export const userWordProgressTable = pgTable(
       table.userId,
       table.wordId,
     ),
-    pgPolicy('Users can delete their own word progress', {
-      as: 'permissive',
-      for: 'delete',
-      to: ['public'],
-      using: sql`(auth.uid() = user_id)`,
-    }),
-    pgPolicy('Users can update their own word progress', {
-      as: 'permissive',
-      for: 'update',
-      to: ['public'],
-    }),
-    pgPolicy('Users can insert their own word progress', {
-      as: 'permissive',
-      for: 'insert',
-      to: ['public'],
-    }),
-    pgPolicy('Users can view their own word progress', {
-      as: 'permissive',
-      for: 'select',
-      to: ['public'],
-    }),
     check(
       'user_word_progress_status_check',
       sql`status = ANY (ARRAY['new'::text, 'learning'::text, 'review'::text, 'graduated'::text, 'lapsed'::text])`,

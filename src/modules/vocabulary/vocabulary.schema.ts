@@ -3,7 +3,6 @@ import {
   check,
   index,
   jsonb,
-  pgPolicy,
   pgTable,
   pgView,
   text,
@@ -37,72 +36,36 @@ export const wordsTable = pgTable(
       .notNull(),
   },
   (table) => [
-    index('idx_words_cache_lookup').using(
-      'btree',
-      table.normalizedWord.asc().nullsLast().op('enum_ops'),
-      table.partOfSpeech.asc().nullsLast().op('text_ops'),
-      table.targetLanguage.asc().nullsLast().op('enum_ops'),
+    // Composite index for cache lookup
+    index('idx_words_cache_lookup').on(
+      table.normalizedWord,
+      table.partOfSpeech,
+      table.targetLanguage,
     ),
-    index('idx_words_common_data_gin').using(
-      'gin',
-      table.commonData.asc().nullsLast().op('jsonb_ops'),
-    ),
-    index('idx_words_normalized_word').using(
-      'btree',
-      table.normalizedWord.asc().nullsLast().op('text_ops'),
-    ),
-    index('idx_words_part_of_speech').using(
-      'btree',
-      table.partOfSpeech.asc().nullsLast().op('enum_ops'),
-    ),
+    // GIN indexes for JSONB
+    index('idx_words_common_data_gin').using('gin', table.commonData),
     index('idx_words_part_specific_data_gin').using(
       'gin',
-      table.partSpecificData.asc().nullsLast().op('jsonb_ops'),
+      table.partSpecificData,
     ),
+    // Full-text search
     index('idx_words_search').using(
       'gin',
       sql`to_tsvector('simple'::regconfig, normalized_word)`,
     ),
-    index('idx_words_target_language').using(
-      'btree',
-      table.targetLanguage.asc().nullsLast().op('enum_ops'),
+    // Simple indexes
+    index('idx_words_normalized_word').on(table.normalizedWord),
+    index('idx_words_part_of_speech').on(table.partOfSpeech),
+    index('idx_words_target_language').on(table.targetLanguage),
+    index('idx_words_user_id').on(table.userId),
+    // Composite index for user word lookup
+    index('idx_words_user_word_lookup').on(table.userId, table.normalizedWord),
+    // Unique constraint
+    uniqueIndex('idx_words_user_normalized_target_unique').on(
+      table.userId,
+      table.normalizedWord,
+      table.targetLanguage,
     ),
-    index('idx_words_user_id').using(
-      'btree',
-      table.userId.asc().nullsLast().op('uuid_ops'),
-    ),
-    uniqueIndex('idx_words_user_normalized_target_unique').using(
-      'btree',
-      table.userId.asc().nullsLast().op('text_ops'),
-      table.normalizedWord.asc().nullsLast().op('uuid_ops'),
-      table.targetLanguage.asc().nullsLast().op('enum_ops'),
-    ),
-    index('idx_words_user_word_lookup').using(
-      'btree',
-      table.userId.asc().nullsLast().op('uuid_ops'),
-      table.normalizedWord.asc().nullsLast().op('uuid_ops'),
-    ),
-    pgPolicy('words_delete_own', {
-      as: 'permissive',
-      for: 'delete',
-      to: ['public'],
-      using: sql`(( SELECT auth.uid() AS uid) = user_id)`,
-    }),
-    pgPolicy('words_update_own', {
-      as: 'permissive',
-      for: 'update',
-      to: ['public'],
-    }),
-    pgPolicy('words_insert_own', {
-      as: 'permissive',
-      for: 'insert',
-      to: ['public'],
-    }),
-    pgPolicy('words_select_own_or_cache', {
-      as: 'permissive',
-      for: 'select',
-      to: ['public'],
-    }),
     check('words_normalized_word_check', sql`length(normalized_word) > 0`),
   ],
 );

@@ -6,7 +6,7 @@ import { Box, Text } from '@chakra-ui/react';
 
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
-import { CardSide } from '../flash-cards-game.const';
+import { CardSide } from '../flashcards.const';
 
 type FlashCardProps = {
   word: VocabularyItem;

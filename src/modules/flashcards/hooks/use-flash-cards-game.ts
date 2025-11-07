@@ -6,11 +6,8 @@ import { useSearchParams } from 'next/navigation';
 
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
-import {
-  getWordsForGame,
-  saveQualityFeedback,
-} from '../flash-cards-game.actions';
-import { CardSide, GameMode, QualityScore } from '../flash-cards-game.const';
+import { getWordsForGame, saveQualityFeedback } from '../flashcards.actions';
+import { CardSide, GameMode, QualityScore } from '../flashcards.const';
 
 export const useFlashCardsGame = () => {
   const searchParams = useSearchParams();

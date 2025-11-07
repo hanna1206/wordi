@@ -1,7 +1,6 @@
 import { sql } from 'drizzle-orm';
 import {
   check,
-  pgPolicy,
   pgTable,
   text,
   timestamp,
@@ -31,17 +30,6 @@ export const userSettingsTable = pgTable(
   },
   (table) => [
     unique('user_settings_user_id_key').on(table.userId),
-    pgPolicy('user_settings_update_own', {
-      as: 'permissive',
-      for: 'update',
-      to: ['public'],
-      using: sql`(( SELECT auth.uid() AS uid) = user_id)`,
-    }),
-    pgPolicy('user_settings_select_own', {
-      as: 'permissive',
-      for: 'select',
-      to: ['public'],
-    }),
     check(
       'user_settings_email_check',
       sql`email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'::text`,

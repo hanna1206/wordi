@@ -1,6 +1,6 @@
 {
-  "id": "00000000-0000-0000-0000-000000000000",
-  "prevId": "",
+  "id": "69829ee7-111b-42b2-80c1-d9369a64f275",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -56,48 +56,25 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "user_settings_user_id_fkey": {
-          "name": "user_settings_user_id_fkey",
-          "tableFrom": "user_settings",
-          "tableTo": "users",
-          "schemaTo": "auth",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "user_settings_user_id_key": {
-          "columns": ["user_id"],
+          "name": "user_settings_user_id_key",
           "nullsNotDistinct": false,
-          "name": "user_settings_user_id_key"
+          "columns": [
+            "user_id"
+          ]
         }
       },
+      "policies": {},
       "checkConstraints": {
         "user_settings_email_check": {
           "name": "user_settings_email_check",
-          "value": "email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'::text"
+          "value": "email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$'::text"
         }
       },
-      "policies": {
-        "user_settings_update_own": {
-          "name": "user_settings_update_own",
-          "as": "PERMISSIVE",
-          "for": "UPDATE",
-          "to": ["public"],
-          "using": "(( SELECT auth.uid() AS uid) = user_id)"
-        },
-        "user_settings_select_own": {
-          "name": "user_settings_select_own",
-          "as": "PERMISSIVE",
-          "for": "SELECT",
-          "to": ["public"]
-        }
-      },
-      "isRLSEnabled": true
+      "isRLSEnabled": false
     },
     "public.user_word_progress": {
       "name": "user_word_progress",
@@ -219,17 +196,15 @@
           "columns": [
             {
               "expression": "user_id",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "timestamptz_ops",
-              "isExpression": false
+              "nulls": "last"
             },
             {
               "expression": "next_review_date",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "timestamptz_ops",
-              "isExpression": false
+              "nulls": "last"
             }
           ],
           "isUnique": false,
@@ -242,17 +217,15 @@
           "columns": [
             {
               "expression": "user_id",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "uuid_ops",
-              "isExpression": false
+              "nulls": "last"
             },
             {
               "expression": "status",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "uuid_ops",
-              "isExpression": false
+              "nulls": "last"
             }
           ],
           "isUnique": false,
@@ -265,10 +238,9 @@
           "columns": [
             {
               "expression": "user_id",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "uuid_ops",
-              "isExpression": false
+              "nulls": "last"
             }
           ],
           "isUnique": false,
@@ -278,23 +250,16 @@
         }
       },
       "foreignKeys": {
-        "user_word_progress_user_id_fkey": {
-          "name": "user_word_progress_user_id_fkey",
-          "tableFrom": "user_word_progress",
-          "tableTo": "users",
-          "schemaTo": "auth",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "user_word_progress_word_id_fkey": {
           "name": "user_word_progress_word_id_fkey",
           "tableFrom": "user_word_progress",
           "tableTo": "words",
-          "schemaTo": "public",
-          "columnsFrom": ["word_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "word_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -302,45 +267,22 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "user_word_progress_user_id_word_id_key": {
-          "columns": ["user_id", "word_id"],
+          "name": "user_word_progress_user_id_word_id_key",
           "nullsNotDistinct": false,
-          "name": "user_word_progress_user_id_word_id_key"
+          "columns": [
+            "user_id",
+            "word_id"
+          ]
         }
       },
+      "policies": {},
       "checkConstraints": {
         "user_word_progress_status_check": {
           "name": "user_word_progress_status_check",
           "value": "status = ANY (ARRAY['new'::text, 'learning'::text, 'review'::text, 'graduated'::text, 'lapsed'::text])"
         }
       },
-      "policies": {
-        "Users can delete their own word progress": {
-          "name": "Users can delete their own word progress",
-          "as": "PERMISSIVE",
-          "for": "DELETE",
-          "to": ["public"],
-          "using": "(auth.uid() = user_id)"
-        },
-        "Users can update their own word progress": {
-          "name": "Users can update their own word progress",
-          "as": "PERMISSIVE",
-          "for": "UPDATE",
-          "to": ["public"]
-        },
-        "Users can insert their own word progress": {
-          "name": "Users can insert their own word progress",
-          "as": "PERMISSIVE",
-          "for": "INSERT",
-          "to": ["public"]
-        },
-        "Users can view their own word progress": {
-          "name": "Users can view their own word progress",
-          "as": "PERMISSIVE",
-          "for": "SELECT",
-          "to": ["public"]
-        }
-      },
-      "isRLSEnabled": true
+      "isRLSEnabled": false
     },
     "public.words": {
       "name": "words",
@@ -415,24 +357,21 @@
           "columns": [
             {
               "expression": "normalized_word",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "enum_ops",
-              "isExpression": false
+              "nulls": "last"
             },
             {
               "expression": "part_of_speech",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
+              "nulls": "last"
             },
             {
               "expression": "target_language",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "enum_ops",
-              "isExpression": false
+              "nulls": "last"
             }
           ],
           "isUnique": false,
@@ -445,10 +384,9 @@
           "columns": [
             {
               "expression": "common_data",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "jsonb_ops",
-              "isExpression": false
+              "nulls": "last"
             }
           ],
           "isUnique": false,
@@ -456,47 +394,14 @@
           "method": "gin",
           "with": {}
         },
-        "idx_words_normalized_word": {
-          "name": "idx_words_normalized_word",
-          "columns": [
-            {
-              "expression": "normalized_word",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_words_part_of_speech": {
-          "name": "idx_words_part_of_speech",
-          "columns": [
-            {
-              "expression": "part_of_speech",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "enum_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "idx_words_part_specific_data_gin": {
           "name": "idx_words_part_specific_data_gin",
           "columns": [
             {
               "expression": "part_specific_data",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "jsonb_ops",
-              "isExpression": false
+              "nulls": "last"
             }
           ],
           "isUnique": false,
@@ -510,9 +415,8 @@
             {
               "expression": "to_tsvector('simple'::regconfig, normalized_word)",
               "asc": true,
-              "nulls": "last",
-              "opclass": "tsvector_ops",
-              "isExpression": true
+              "isExpression": true,
+              "nulls": "last"
             }
           ],
           "isUnique": false,
@@ -520,15 +424,44 @@
           "method": "gin",
           "with": {}
         },
+        "idx_words_normalized_word": {
+          "name": "idx_words_normalized_word",
+          "columns": [
+            {
+              "expression": "normalized_word",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_words_part_of_speech": {
+          "name": "idx_words_part_of_speech",
+          "columns": [
+            {
+              "expression": "part_of_speech",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "idx_words_target_language": {
           "name": "idx_words_target_language",
           "columns": [
             {
               "expression": "target_language",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "enum_ops",
-              "isExpression": false
+              "nulls": "last"
             }
           ],
           "isUnique": false,
@@ -541,10 +474,30 @@
           "columns": [
             {
               "expression": "user_id",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "uuid_ops",
-              "isExpression": false
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_words_user_word_lookup": {
+          "name": "idx_words_user_word_lookup",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "normalized_word",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
             }
           ],
           "isUnique": false,
@@ -557,113 +510,57 @@
           "columns": [
             {
               "expression": "user_id",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
+              "nulls": "last"
             },
             {
               "expression": "normalized_word",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "uuid_ops",
-              "isExpression": false
+              "nulls": "last"
             },
             {
               "expression": "target_language",
+              "isExpression": false,
               "asc": true,
-              "nulls": "last",
-              "opclass": "enum_ops",
-              "isExpression": false
+              "nulls": "last"
             }
           ],
           "isUnique": true,
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "idx_words_user_word_lookup": {
-          "name": "idx_words_user_word_lookup",
-          "columns": [
-            {
-              "expression": "user_id",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "uuid_ops",
-              "isExpression": false
-            },
-            {
-              "expression": "normalized_word",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "uuid_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
-      "foreignKeys": {
-        "words_user_id_fkey": {
-          "name": "words_user_id_fkey",
-          "tableFrom": "words",
-          "tableTo": "users",
-          "schemaTo": "auth",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "policies": {},
       "checkConstraints": {
         "words_normalized_word_check": {
           "name": "words_normalized_word_check",
           "value": "length(normalized_word) > 0"
         }
       },
-      "policies": {
-        "words_delete_own": {
-          "name": "words_delete_own",
-          "as": "PERMISSIVE",
-          "for": "DELETE",
-          "to": ["public"],
-          "using": "(( SELECT auth.uid() AS uid) = user_id)"
-        },
-        "words_update_own": {
-          "name": "words_update_own",
-          "as": "PERMISSIVE",
-          "for": "UPDATE",
-          "to": ["public"]
-        },
-        "words_insert_own": {
-          "name": "words_insert_own",
-          "as": "PERMISSIVE",
-          "for": "INSERT",
-          "to": ["public"]
-        },
-        "words_select_own_or_cache": {
-          "name": "words_select_own_or_cache",
-          "as": "PERMISSIVE",
-          "for": "SELECT",
-          "to": ["public"]
-        }
-      },
-      "isRLSEnabled": true
+      "isRLSEnabled": false
     }
   },
   "enums": {
     "public.language_code": {
       "name": "language_code",
-      "values": ["russian", "english", "ukrainian", "turkish", "portuguese"],
-      "schema": "public"
+      "schema": "public",
+      "values": [
+        "russian",
+        "english",
+        "ukrainian",
+        "turkish",
+        "portuguese"
+      ]
     },
     "public.part_of_speech_enum": {
       "name": "part_of_speech_enum",
+      "schema": "public",
       "values": [
         "noun",
         "verb",
@@ -671,8 +568,7 @@
         "personal pronoun",
         "demonstrative pronoun",
         "other"
-      ],
-      "schema": "public"
+      ]
     }
   },
   "schemas": {},
@@ -681,8 +577,6 @@
   "policies": {},
   "views": {
     "public.word_cache": {
-      "name": "word_cache",
-      "schema": "public",
       "columns": {
         "id": {
           "name": "id",
@@ -729,17 +623,16 @@
           "notNull": false
         }
       },
-      "isExisting": false,
       "definition": "SELECT DISTINCT ON (words.normalized_word, words.part_of_speech, words.target_language) words.id, words.normalized_word, words.part_of_speech, words.target_language, words.common_data, words.part_specific_data, words.created_at FROM words ORDER BY words.normalized_word, words.part_of_speech, words.target_language, words.created_at",
+      "name": "word_cache",
+      "schema": "public",
+      "isExisting": false,
       "materialized": false
     }
   },
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
-  },
-  "internal": {
     "tables": {}
   }
 }

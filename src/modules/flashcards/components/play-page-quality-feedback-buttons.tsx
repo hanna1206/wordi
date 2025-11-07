@@ -9,7 +9,7 @@ import {
 import { Button, chakra, Flex, Icon, Text } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
 
-import { QUALITY_OPTIONS, QualityScore } from '../flash-cards-game.const';
+import { QUALITY_OPTIONS, QualityScore } from '../flashcards.const';
 
 interface PlayPageQualityFeedbackButtonsProps {
   onQualitySelect: (qualityScore: QualityScore) => void;

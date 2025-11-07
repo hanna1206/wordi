@@ -1,9 +1,9 @@
-import { ExistingProgress } from '@/modules/flashcards/flash-cards-game.types';
+import { ExistingProgress } from '@/modules/flashcards/flashcards.types';
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 import { createClient } from '@/services/supabase/server';
 import { convertKeysToCamelCase } from '@/utils/case-conversion';
 
-import { GameMode, QualityScore } from './flash-cards-game.const';
+import { GameMode, QualityScore } from './flashcards.const';
 import { calculateProgressUpdate } from './utils/spaced-repetition.utils';
 
 type GetWordsForGameParams = {

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { QualityScore } from '../flash-cards-game.const';
+import { QualityScore } from '../flashcards.const';
 
 interface UseKeyboardShortcutsProps {
   isLoading: boolean;

@@ -2,7 +2,7 @@
 
 import { useCallback, useRef } from 'react';
 
-import { QualityScore } from '../flash-cards-game.const';
+import { QualityScore } from '../flashcards.const';
 
 interface UseGestureHandlingProps {
   onCardFlip: () => void;

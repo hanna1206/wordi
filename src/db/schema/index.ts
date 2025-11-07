@@ -5,4 +5,13 @@ import {
   wordsTable,
 } from '@/modules/vocabulary/vocabulary.schema';
 
-export { userSettingsTable, userWordProgressTable, wordCacheView, wordsTable };
+import { languageCodeEnum, partOfSpeechEnum } from '../shared';
+
+export {
+  languageCodeEnum,
+  partOfSpeechEnum,
+  userSettingsTable,
+  userWordProgressTable,
+  wordCacheView,
+  wordsTable,
+};

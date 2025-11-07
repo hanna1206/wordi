@@ -13,7 +13,7 @@ import { PlayPageErrorState } from '../components/play-page-error-state';
 import { PlayPageGameCompleteState } from '../components/play-page-game-complete-state';
 import { PlayPageLoadingState } from '../components/play-page-loading-state';
 import { PlayPageNavigation } from '../components/play-page-navigation';
-import { CardSide } from '../flash-cards-game.const';
+import { CardSide } from '../flashcards.const';
 import { useFlashCardsGame } from '../hooks/use-flash-cards-game';
 import { useKeyboardShortcuts } from '../hooks/use-keyboard-shortcuts';
 

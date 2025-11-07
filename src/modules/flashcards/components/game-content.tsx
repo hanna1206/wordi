@@ -8,7 +8,7 @@ import { keyframes } from '@emotion/react';
 
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
-import { CardSide, QualityScore } from '../flash-cards-game.const';
+import { CardSide, QualityScore } from '../flashcards.const';
 import { useGestureHandling } from '../hooks/use-gesture-handling';
 import { FlashCard } from './flash-card';
 import { PlayPageQualityFeedbackButtons } from './play-page-quality-feedback-buttons';

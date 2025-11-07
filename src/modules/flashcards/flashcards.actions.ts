@@ -6,13 +6,13 @@ import { withAuth } from '@/modules/auth/utils/with-auth';
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 import type { ActionResult } from '@/shared-types';
 
-import { GameMode, QualityScore } from './flash-cards-game.const';
+import { GameMode, QualityScore } from './flashcards.const';
 import {
   createInitialWordProgressService,
   getDueWordsCountService,
   getWordsForGameService,
   saveQualityFeedbackService,
-} from './flash-cards-game.service';
+} from './flashcards.service';
 
 type GetWordsForGameParams = {
   mode: GameMode;
