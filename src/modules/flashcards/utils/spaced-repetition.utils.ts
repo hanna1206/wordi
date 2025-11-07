@@ -12,15 +12,15 @@ import type {
  */
 
 interface InitialProgress {
-  easiness_factor: number;
-  interval_days: number;
-  repetition_count: number;
-  total_reviews: number;
-  correct_reviews: number;
-  consecutive_correct: number;
-  quality_scores: number[];
+  easinessFactor: number;
+  intervalDays: number;
+  repetitionCount: number;
+  totalReviews: number;
+  correctReviews: number;
+  consecutiveCorrect: number;
+  qualityScores: number[];
   status: 'new' | 'learning' | 'review';
-  next_review_date: string;
+  nextReviewDate: string;
 }
 
 /**
@@ -39,18 +39,21 @@ export const calculateProgressUpdate = (
   existingProgress: ExistingProgress,
   qualityScore: QualityScore,
 ): ProgressUpdate => {
-  const newQualityScores = [...existingProgress.quality_scores, qualityScore];
+  const currentScores = Array.isArray(existingProgress.qualityScores)
+    ? existingProgress.qualityScores
+    : [];
+  const newQualityScores = [...currentScores, qualityScore];
   const wasCorrect = qualityScore > QualityScore.Hard;
   const newCorrectReviews = wasCorrect
-    ? existingProgress.correct_reviews + 1
-    : existingProgress.correct_reviews;
+    ? existingProgress.correctReviews + 1
+    : existingProgress.correctReviews;
   const newConsecutiveCorrect = wasCorrect
-    ? existingProgress.consecutive_correct + 1
+    ? existingProgress.consecutiveCorrect + 1
     : 0;
 
   // Simple spaced repetition algorithm based on SM-2
-  let newEasinessFactor = existingProgress.easiness_factor;
-  let newIntervalDays = existingProgress.interval_days;
+  let newEasinessFactor = parseFloat(existingProgress.easinessFactor);
+  let newIntervalDays = existingProgress.intervalDays;
   let newStatus = existingProgress.status;
 
   if (qualityScore === QualityScore.Hard) {
@@ -73,15 +76,15 @@ export const calculateProgressUpdate = (
   const nextReviewDate = calculateNextReviewDate(newIntervalDays);
 
   return {
-    easiness_factor: newEasinessFactor,
-    interval_days: newIntervalDays,
-    repetition_count: existingProgress.repetition_count + 1,
-    total_reviews: existingProgress.total_reviews + 1,
-    correct_reviews: newCorrectReviews,
-    consecutive_correct: newConsecutiveCorrect,
-    quality_scores: newQualityScores,
+    easinessFactor: newEasinessFactor.toFixed(2),
+    intervalDays: newIntervalDays,
+    repetitionCount: existingProgress.repetitionCount + 1,
+    totalReviews: existingProgress.totalReviews + 1,
+    correctReviews: newCorrectReviews,
+    consecutiveCorrect: newConsecutiveCorrect,
+    qualityScores: newQualityScores,
     status: newStatus,
-    next_review_date: nextReviewDate,
+    nextReviewDate,
   };
 };
 
@@ -107,15 +110,15 @@ export const calculateInitialProgress = (
   const nextReviewDate = calculateNextReviewDate(initialIntervalDays);
 
   return {
-    easiness_factor: initialEasinessFactor,
-    interval_days: initialIntervalDays,
-    repetition_count: 1,
-    total_reviews: 1,
-    correct_reviews: qualityScore > QualityScore.Hard ? 1 : 0,
-    consecutive_correct: qualityScore > QualityScore.Hard ? 1 : 0,
-    quality_scores: [qualityScore],
+    easinessFactor: initialEasinessFactor,
+    intervalDays: initialIntervalDays,
+    repetitionCount: 1,
+    totalReviews: 1,
+    correctReviews: qualityScore > QualityScore.Hard ? 1 : 0,
+    consecutiveCorrect: qualityScore > QualityScore.Hard ? 1 : 0,
+    qualityScores: [qualityScore],
     status: initialStatus,
-    next_review_date: nextReviewDate,
+    nextReviewDate,
   };
 };
 
