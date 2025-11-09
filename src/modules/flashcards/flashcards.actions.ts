@@ -3,6 +3,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
+import * as vocabularyRepository from '@/modules/vocabulary/vocabulary.repository';
 import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 import type { ActionResult } from '@/shared-types';
 
@@ -45,7 +46,7 @@ export const getWordsForGame = withAuth<
     let words: VocabularyItem[] = [];
 
     if (mode === GameMode.Latest) {
-      const result = await flashcardsRepository.getLatestWords(
+      const result = await vocabularyRepository.getLatestWords(
         context.userId,
         limit,
       );

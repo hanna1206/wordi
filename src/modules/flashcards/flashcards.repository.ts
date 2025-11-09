@@ -1,4 +1,4 @@
-import { and, count, eq, lte } from 'drizzle-orm';
+import { and, asc, count, desc, eq, inArray, lte } from 'drizzle-orm';
 
 import { db } from '@/db/client';
 import { wordsTable } from '@/modules/vocabulary/vocabulary.schema';
@@ -29,40 +29,6 @@ const createInitialProgress = async (
   }
 };
 
-const getLatestWords = async (userId: string, limit: number) => {
-  return db
-    .select()
-    .from(wordsTable)
-    .where(eq(wordsTable.userId, userId))
-    .orderBy(wordsTable.createdAt)
-    .limit(limit);
-};
-
-const getAllUserWords = async (userId: string) => {
-  return db.select().from(wordsTable).where(eq(wordsTable.userId, userId));
-};
-
-const getDueWords = async (userId: string, limit: number) => {
-  const now = new Date().toISOString();
-
-  return db
-    .select({
-      word: wordsTable,
-      progress: userWordProgressTable,
-    })
-    .from(userWordProgressTable)
-    .innerJoin(wordsTable, eq(userWordProgressTable.wordId, wordsTable.id))
-    .where(
-      and(
-        eq(userWordProgressTable.userId, userId),
-        lte(userWordProgressTable.nextReviewDate, now),
-        eq(userWordProgressTable.isArchived, false),
-      ),
-    )
-    .orderBy(userWordProgressTable.nextReviewDate)
-    .limit(limit);
-};
-
 const getProgressByUserAndWord = async (
   userId: string,
   wordId: string,
@@ -91,6 +57,99 @@ const updateProgress = async (
       updatedAt: new Date().toISOString(),
     })
     .where(eq(userWordProgressTable.id, progressId));
+};
+
+const getLatestWords = async (userId: string, limit: number) => {
+  return db
+    .select()
+    .from(wordsTable)
+    .where(eq(wordsTable.userId, userId))
+    .orderBy(desc(wordsTable.createdAt))
+    .limit(limit);
+};
+
+const getAllUserWords = async (userId: string) => {
+  return db.select().from(wordsTable).where(eq(wordsTable.userId, userId));
+};
+
+const getDueWords = async (userId: string, limit: number) => {
+  const now = new Date().toISOString();
+
+  return db
+    .select({
+      word: wordsTable,
+      progress: userWordProgressTable,
+    })
+    .from(userWordProgressTable)
+    .innerJoin(wordsTable, eq(userWordProgressTable.wordId, wordsTable.id))
+    .where(
+      and(
+        eq(userWordProgressTable.userId, userId),
+        lte(userWordProgressTable.nextReviewDate, now),
+        eq(userWordProgressTable.isArchived, false),
+      ),
+    )
+    .orderBy(asc(userWordProgressTable.nextReviewDate))
+    .limit(limit);
+};
+
+const getWordsWithProgress = async (
+  userId: string,
+  limit: number,
+  offset: number,
+  sortBy: 'latest' | 'alphabetical' = 'latest',
+) => {
+  const orderBy =
+    sortBy === 'alphabetical'
+      ? asc(wordsTable.normalizedWord)
+      : desc(wordsTable.createdAt);
+
+  const [items, [{ total }]] = await Promise.all([
+    db
+      .select({
+        word: {
+          id: wordsTable.id,
+          normalizedWord: wordsTable.normalizedWord,
+          partOfSpeech: wordsTable.partOfSpeech,
+          commonData: wordsTable.commonData,
+          createdAt: wordsTable.createdAt,
+        },
+        progress: userWordProgressTable,
+      })
+      .from(wordsTable)
+      .leftJoin(
+        userWordProgressTable,
+        and(
+          eq(wordsTable.id, userWordProgressTable.wordId),
+          eq(userWordProgressTable.userId, userId),
+        ),
+      )
+      .where(eq(wordsTable.userId, userId))
+      .orderBy(orderBy)
+      .limit(limit)
+      .offset(offset),
+
+    db
+      .select({ total: count() })
+      .from(wordsTable)
+      .where(eq(wordsTable.userId, userId)),
+  ]);
+
+  return { items, total: total ?? 0 };
+};
+
+const getProgressForWords = async (userId: string, wordIds: string[]) => {
+  if (wordIds.length === 0) return [];
+
+  return db
+    .select()
+    .from(userWordProgressTable)
+    .where(
+      and(
+        eq(userWordProgressTable.userId, userId),
+        inArray(userWordProgressTable.wordId, wordIds),
+      ),
+    );
 };
 
 const getDueWordsCount = async (userId: string): Promise<number> => {
@@ -126,6 +185,8 @@ export {
   getDueWordsCount,
   getLatestWords,
   getProgressByUserAndWord,
+  getProgressForWords,
   getTotalWordsCount,
+  getWordsWithProgress,
   updateProgress,
 };

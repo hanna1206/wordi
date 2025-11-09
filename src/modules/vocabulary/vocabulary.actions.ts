@@ -3,7 +3,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
-import { createInitialWordProgressService } from '@/modules/flashcards/flashcards.service';
+import * as flashcardsRepository from '@/modules/flashcards/flashcards.repository';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
@@ -18,12 +18,10 @@ import type {
   VocabularySortOption,
 } from './vocabulary.types';
 
-// Save word for learning
 export const saveWordForLearning = withUserSettings<
   LinguisticItem,
   VocabularyItem
 >(async (context, linguisticItem): Promise<ActionResult<VocabularyItem>> => {
-  // Validate input
   if (!linguisticItem || !linguisticItem.normalizedWord) {
     const error = 'Valid translation result is required';
 
@@ -42,13 +40,12 @@ export const saveWordForLearning = withUserSettings<
 
     const saved = await vocabularyRepository.create(vocabularyItem);
 
-    await createInitialWordProgressService(context.userId, saved.id);
+    await flashcardsRepository.createInitialProgress(context.userId, saved.id);
 
     return { success: true, data: saved };
   } catch (error) {
     Sentry.captureException(error);
 
-    // Handle duplicate word error
     if (error instanceof Error && error.message.includes('duplicate')) {
       return {
         success: false,
@@ -66,7 +63,6 @@ export const saveWordForLearning = withUserSettings<
 // Note: Word duplicate checking is handled by database constraints
 // No need for separate checkWordSaved action
 
-// Get cached word
 export const getWordFromCache = withUserSettings<
   string,
   VocabularyItemAnonymized | null
@@ -155,6 +151,39 @@ export const deleteWord = withAuth<{ wordId: string }, void>(
     } catch (error) {
       Sentry.captureException(error);
       return { success: false, error: 'Failed to delete word' };
+    }
+  },
+);
+
+type FetchVocabularyWithProgressParams = {
+  limit?: number;
+  offset?: number;
+  sort?: VocabularySortOption;
+};
+
+export const fetchUserVocabularyWithProgress = withAuth<
+  FetchVocabularyWithProgressParams,
+  { items: unknown[]; total: number }
+>(
+  async (
+    context,
+    { limit = 20, offset = 0, sort = 'Latest' },
+  ): Promise<ActionResult<{ items: unknown[]; total: number }>> => {
+    try {
+      const sortBy = sort === 'Alphabetical' ? 'alphabetical' : 'latest';
+      const data = await flashcardsRepository.getWordsWithProgress(
+        context.userId,
+        limit,
+        offset,
+        sortBy,
+      );
+      return { success: true, data };
+    } catch (error) {
+      Sentry.captureException(error);
+      return {
+        success: false,
+        error: 'Failed to get vocabulary with progress',
+      };
     }
   },
 );

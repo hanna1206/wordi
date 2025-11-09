@@ -96,10 +96,20 @@ const deleteItem = async (wordId: string, userId: string): Promise<void> => {
     .where(and(eq(wordsTable.id, wordId), eq(wordsTable.userId, userId)));
 };
 
+const getLatestWords = async (userId: string, limit: number) => {
+  return db
+    .select()
+    .from(wordsTable)
+    .where(eq(wordsTable.userId, userId))
+    .orderBy(wordsTable.createdAt)
+    .limit(limit);
+};
+
 export {
   create,
   deleteItem,
   getByNormalizedWordAndPos,
   getCachedWord,
+  getLatestWords,
   getUserMinimalVocabulary,
 };
