@@ -1,3 +1,5 @@
+import type { User } from '@supabase/supabase-js';
+
 export interface AuthenticatedContext {
-  userId: string;
+  user: User;
 }

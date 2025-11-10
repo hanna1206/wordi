@@ -1,14 +1,21 @@
+// Content of this file is copied from
+// https://supabase.com/docs/guides/auth/server-side/nextjs
+
 import { createServerClient } from '@supabase/ssr';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { environment } from '@/config/environment.config';
-import * as userSettingsRepository from '@/modules/user-settings/user-settings.repository';
-import { isProfileComplete } from '@/modules/user-settings/utils/is-profile-complete';
 
 export const updateSession = async (request: NextRequest) => {
   const { supabaseApiUrl, supabaseAnonKey } = environment;
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-pathname', request.nextUrl.pathname);
+
   let supabaseResponse = NextResponse.next({
-    request,
+    request: {
+      headers: requestHeaders,
+    },
   });
 
   const supabase = createServerClient(supabaseApiUrl!, supabaseAnonKey!, {
@@ -51,29 +58,6 @@ export const updateSession = async (request: NextRequest) => {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
-  }
-
-  // Check if authenticated user has incomplete profile
-  if (
-    user &&
-    !request.nextUrl.pathname.startsWith('/onboarding') &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/api') &&
-    !request.nextUrl.pathname.startsWith('/_next')
-  ) {
-    try {
-      const userSettings = await userSettingsRepository.getByUserId(user.id);
-      if (userSettings && !isProfileComplete(userSettings)) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/onboarding';
-        return NextResponse.redirect(url);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error checking user profile:', error);
-      // Continue without redirect on error
-    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.

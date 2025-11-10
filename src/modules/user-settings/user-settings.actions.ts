@@ -1,7 +1,6 @@
 'use server';
 
 import * as Sentry from '@sentry/nextjs';
-import { redirect } from 'next/navigation';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
 import type { ActionResult } from '@/shared-types';
@@ -31,12 +30,14 @@ export const completeProfile = withAuth<
   }
 
   try {
-    await userSettingsRepository.update(context.userId, {
+    const newUserSettings = await userSettingsRepository.upsert({
+      userId: context.user.id,
+      email: context.user.email || '',
       name: name.trim(),
       nativeLanguage,
     });
 
-    redirect('/');
+    return { success: true, data: newUserSettings };
   } catch (error) {
     Sentry.captureException(error);
     return {
@@ -49,7 +50,9 @@ export const completeProfile = withAuth<
 export const fetchUserSettings = withAuth<void, UserSettings>(
   async (context): Promise<ActionResult<UserSettings>> => {
     try {
-      const settings = await userSettingsRepository.getByUserId(context.userId);
+      const settings = await userSettingsRepository.getByUserId(
+        context.user.id,
+      );
 
       if (!settings) {
         return {

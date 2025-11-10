@@ -14,6 +14,25 @@ const getByUserId = async (userId: string) => {
   return settings || null;
 };
 
+const create = async (data: {
+  userId: string;
+  email: string;
+  name: string;
+  nativeLanguage: LanguageCode;
+}) => {
+  const [created] = await db
+    .insert(userSettingsTable)
+    .values({
+      userId: data.userId,
+      email: data.email,
+      name: data.name,
+      nativeLanguage: data.nativeLanguage,
+    })
+    .returning();
+
+  return created;
+};
+
 const update = async (
   userId: string,
   data: {
@@ -33,4 +52,31 @@ const update = async (
   return updated;
 };
 
-export { getByUserId, update };
+const upsert = async (data: {
+  userId: string;
+  email: string;
+  name: string;
+  nativeLanguage: LanguageCode;
+}) => {
+  const { userId, email, name, nativeLanguage } = data;
+  const [upserted] = await db
+    .insert(userSettingsTable)
+    .values({
+      userId,
+      email,
+      name,
+      nativeLanguage,
+    })
+    .onConflictDoUpdate({
+      target: userSettingsTable.userId,
+      set: {
+        name: data.name,
+        nativeLanguage: data.nativeLanguage,
+      },
+    })
+    .returning();
+
+  return upserted;
+};
+
+export { create, getByUserId, update, upsert };

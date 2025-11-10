@@ -19,7 +19,7 @@ export const withAuth = <TInput, TOutput>(
     }
 
     const context: AuthenticatedContext = {
-      userId: authResult.user.id,
+      user: authResult.user,
     };
 
     return await handler(context, input);

@@ -12,7 +12,7 @@ export const withUserSettings = <TInput, TOutput>(
 ) => {
   return withAuth<TInput, TOutput>(async (context, input) => {
     const userSettings = await userSettingsRepository.getByUserId(
-      context.userId,
+      context.user.id,
     );
 
     if (!userSettings) {

@@ -34,13 +34,13 @@ export const saveWordForLearning = withUserSettings<
   try {
     const vocabularyItem = transformLinguisticItemToVocabularyItem(
       linguisticItem,
-      context.userId,
+      context.user.id,
       context.userSettings.nativeLanguage as LanguageCode,
     );
 
     const saved = await vocabularyRepository.create(vocabularyItem);
 
-    await flashcardsRepository.createInitialProgress(context.userId, saved.id);
+    await flashcardsRepository.createInitialProgress(context.user.id, saved.id);
 
     return { success: true, data: saved };
   } catch (error) {
@@ -102,7 +102,7 @@ export const fetchUserMinimalVocabulary = withAuth<
   > => {
     try {
       const data = await vocabularyRepository.getUserMinimalVocabulary(
-        context.userId,
+        context.user.id,
         limit,
         offset,
         sort,
@@ -130,7 +130,7 @@ export const fetchUserWordByNormalizedWordAndPos = withAuth<
   ): Promise<ActionResult<VocabularyItem | null>> => {
     try {
       const data = await vocabularyRepository.getByNormalizedWordAndPos(
-        context.userId,
+        context.user.id,
         normalizedWord,
         partOfSpeech,
       );
@@ -146,7 +146,7 @@ export const fetchUserWordByNormalizedWordAndPos = withAuth<
 export const deleteWord = withAuth<{ wordId: string }, void>(
   async (context, { wordId }): Promise<ActionResult<void>> => {
     try {
-      await vocabularyRepository.deleteItem(wordId, context.userId);
+      await vocabularyRepository.deleteItem(wordId, context.user.id);
       return { success: true };
     } catch (error) {
       Sentry.captureException(error);
@@ -172,7 +172,7 @@ export const fetchUserVocabularyWithProgress = withAuth<
     try {
       const sortBy = sort === 'Alphabetical' ? 'alphabetical' : 'latest';
       const data = await flashcardsRepository.getWordsWithProgress(
-        context.userId,
+        context.user.id,
         limit,
         offset,
         sortBy,

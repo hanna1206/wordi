@@ -29,7 +29,7 @@ type DueWordsCount = {
 export const createInitialWordProgress = withAuth<{ wordId: string }, void>(
   async (context, { wordId }): Promise<ActionResult<void>> => {
     try {
-      await flashcardsRepository.createInitialProgress(context.userId, wordId);
+      await flashcardsRepository.createInitialProgress(context.user.id, wordId);
       return { success: true };
     } catch (error) {
       Sentry.captureException(error);
@@ -47,13 +47,13 @@ export const getWordsForGame = withAuth<
 
     if (mode === GameMode.Latest) {
       const result = await vocabularyRepository.getLatestWords(
-        context.userId,
+        context.user.id,
         limit,
       );
       words = result as VocabularyItem[];
     } else if (mode === GameMode.Random) {
       const allWords = await flashcardsRepository.getAllUserWords(
-        context.userId,
+        context.user.id,
       );
       const shuffled = (allWords as VocabularyItem[]).sort(
         () => 0.5 - Math.random(),
@@ -61,7 +61,7 @@ export const getWordsForGame = withAuth<
       words = shuffled.slice(0, limit);
     } else if (mode === GameMode.DueReview) {
       const dueWords = await flashcardsRepository.getDueWords(
-        context.userId,
+        context.user.id,
         limit,
       );
       words = dueWords.map((item) => item.word as VocabularyItem);
@@ -81,7 +81,7 @@ export const saveQualityFeedback = withAuth<SaveQualityFeedbackParams, void>(
     try {
       const existingProgress =
         await flashcardsRepository.getProgressByUserAndWord(
-          context.userId,
+          context.user.id,
           wordId,
         );
 
@@ -114,8 +114,8 @@ export const getDueWordsCount = withAuth<void, DueWordsCount>(
   async (context): Promise<ActionResult<DueWordsCount>> => {
     try {
       const [dueCount, totalWords] = await Promise.all([
-        flashcardsRepository.getDueWordsCount(context.userId),
-        flashcardsRepository.getTotalWordsCount(context.userId),
+        flashcardsRepository.getDueWordsCount(context.user.id),
+        flashcardsRepository.getTotalWordsCount(context.user.id),
       ]);
 
       return {

@@ -14,6 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 
 import { AIInfoModal } from '@/components/ai-info-modal';
@@ -49,6 +50,7 @@ const onboardingSchema = z.object({
 type OnboardingFormData = z.infer<typeof onboardingSchema>;
 
 export const OnboardingPage = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string>('');
   const [showAIInfoModal, setShowAIInfoModal] = useState(false);
@@ -81,19 +83,10 @@ export const OnboardingPage = () => {
         setShowAIInfoModal(true);
       }
     } catch (error) {
-      // Check if this is a Next.js redirect error (which is expected)
-      if (error && typeof error === 'object' && 'digest' in error) {
-        const digest = (error as { digest: unknown }).digest;
-        if (typeof digest === 'string' && digest.startsWith('NEXT_REDIRECT')) {
-          // This is a redirect, don't show error - let it proceed
-          return;
-        }
-      }
-
       // eslint-disable-next-line no-console
       console.error('Profile completion error:', error);
-      setSubmitError('Something went wrong. Please try again.');
       setIsLoading(false);
+      setSubmitError('Something went wrong. Please try again.');
     }
   };
 
@@ -102,10 +95,8 @@ export const OnboardingPage = () => {
   };
 
   const handleAIInfoContinue = () => {
-    // The server action will redirect automatically after modal closes
     setShowAIInfoModal(false);
-    // Redirect will happen automatically via the server action
-    window.location.href = '/';
+    router.push('/');
   };
 
   return (

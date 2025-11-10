@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Onest, Roboto_Condensed } from 'next/font/google';
 
 import { FeedbackWidget } from '@/components/feedback-widget';
+import { OnboardingRedirect } from '@/components/onboarding-redirect';
 import { Provider } from '@/components/provider';
 import { Toaster } from '@/components/toaster';
 
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
   description: 'Learn German with Wordi',
 };
 
-const RootLayout = ({
+const RootLayout = async ({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -36,7 +37,7 @@ const RootLayout = ({
     >
       <body suppressHydrationWarning>
         <Provider>
-          {children}
+          <OnboardingRedirect>{children}</OnboardingRedirect>
           <Toaster />
         </Provider>
         <FeedbackWidget />
