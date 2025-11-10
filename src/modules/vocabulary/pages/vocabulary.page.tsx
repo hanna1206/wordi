@@ -8,7 +8,6 @@ import { PageHeader } from '@/components/page-header';
 import { SidebarLayout } from '@/components/sidebar-layout';
 import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
 import {
-  VocabularyEmptyState,
   VocabularyEndMessage,
   VocabularyError,
   VocabularyInitialLoader,
@@ -78,8 +77,6 @@ export const VocabularyPage = () => {
         ) : (
           <>
             <VocabularyTable items={items} onWordClick={handleWordClick} />
-
-            {items.length === 0 && !hasMore && <VocabularyEmptyState />}
 
             <VocabularyScrollSentinel sentinelRef={sentinelRef} />
 

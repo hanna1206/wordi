@@ -26,12 +26,6 @@ export const VocabularyEndMessage = () => (
   </Flex>
 );
 
-export const VocabularyEmptyState = () => (
-  <Flex align="center" justify="center" py={8}>
-    <Text color="fg.muted">Пока что слов нет.</Text>
-  </Flex>
-);
-
 export const VocabularyWordLoadingOverlay = () => (
   <Flex
     position="fixed"
