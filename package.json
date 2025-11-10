@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run db:migrate && next build",
+    "build:check": "next build",
     "start": "next start",
     "prettier": "prettier . --write",
     "lint:js": "eslint ./src --ext ts,tsx --fix --report-unused-disable-directives --max-warnings 0",
@@ -14,7 +15,11 @@
     "deps:orphans": "madge src --orphans --exclude '(\\.css$|\\.scss$|\\.svg$|\\.png$|\\.json$|stories/|__tests__|\\.test\\.(ts|tsx)$|\\.stories\\.(ts|tsx)$)|(\\.d\\.ts$)|(setupTest\\.ts$)|(main\\.tsx$)'",
     "deps:draw": "madge src --image deps-graph.png",
     "deps:all": "npm run deps:check && npm run deps:orphans",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.21.1",
