@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, or, sql } from 'drizzle-orm';
 
 import { db } from '@/db/client';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
@@ -23,11 +23,23 @@ const getUserMinimalVocabulary = async (
   limit = 20,
   offset = 0,
   sort: VocabularySortOption = 'Latest',
+  searchQuery?: string,
 ): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {
   const orderBy =
     sort === 'Alphabetical'
       ? asc(wordsTable.normalizedWord)
       : desc(wordsTable.createdAt);
+
+  const whereConditions = [eq(wordsTable.userId, userId)];
+
+  if (searchQuery && searchQuery.trim()) {
+    whereConditions.push(
+      or(
+        ilike(wordsTable.normalizedWord, `%${searchQuery}%`),
+        sql`${wordsTable.commonData}::text ilike ${`%${searchQuery}%`}`,
+      )!,
+    );
+  }
 
   const [items, [{ total }]] = await Promise.all([
     db
@@ -37,7 +49,7 @@ const getUserMinimalVocabulary = async (
         commonData: wordsTable.commonData,
       })
       .from(wordsTable)
-      .where(eq(wordsTable.userId, userId))
+      .where(and(...whereConditions))
       .orderBy(orderBy)
       .limit(limit)
       .offset(offset),
@@ -45,7 +57,7 @@ const getUserMinimalVocabulary = async (
     db
       .select({ total: count() })
       .from(wordsTable)
-      .where(eq(wordsTable.userId, userId)),
+      .where(and(...whereConditions)),
   ]);
 
   return {

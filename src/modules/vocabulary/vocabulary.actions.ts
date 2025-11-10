@@ -88,6 +88,7 @@ type FetchMinimalVocabularyParams = {
   limit?: number;
   offset?: number;
   sort?: VocabularySortOption;
+  searchQuery?: string;
 };
 
 export const fetchUserMinimalVocabulary = withAuth<
@@ -96,7 +97,7 @@ export const fetchUserMinimalVocabulary = withAuth<
 >(
   async (
     context,
-    { limit = 20, offset = 0, sort = 'Latest' },
+    { limit = 20, offset = 0, sort = 'Latest', searchQuery },
   ): Promise<
     ActionResult<{ items: MinimalVocabularyWord[]; total: number }>
   > => {
@@ -106,11 +107,17 @@ export const fetchUserMinimalVocabulary = withAuth<
         limit,
         offset,
         sort,
+        searchQuery,
       );
       return { success: true, data };
     } catch (error) {
       Sentry.captureException(error);
-      return { success: false, error: 'Failed to get saved words' };
+      // eslint-disable-next-line no-console
+      console.error(error);
+      return {
+        success: false,
+        error: 'Failed to get saved words. Error: ' + error,
+      };
     }
   },
 );

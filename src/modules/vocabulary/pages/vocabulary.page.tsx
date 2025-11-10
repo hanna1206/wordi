@@ -25,9 +25,10 @@ import type { VocabularySortOption } from '@/modules/vocabulary/vocabulary.types
 
 export const VocabularyPage = () => {
   const [sortOption, setSortOption] = useState<VocabularySortOption>('Latest');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { isInitialLoading, isFetchingMore, error, items, hasMore, loadWords } =
-    useVocabularyList(sortOption);
+    useVocabularyList(sortOption, searchQuery);
 
   const {
     isModalOpen,
@@ -51,21 +52,9 @@ export const VocabularyPage = () => {
     setSortOption(option);
   }, []);
 
-  if (isInitialLoading) {
-    return (
-      <SidebarLayout>
-        <VocabularyInitialLoader />
-      </SidebarLayout>
-    );
-  }
-
-  if (error) {
-    return (
-      <SidebarLayout>
-        <VocabularyError error={error} />
-      </SidebarLayout>
-    );
-  }
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
 
   return (
     <SidebarLayout>
@@ -73,6 +62,8 @@ export const VocabularyPage = () => {
         <VocabularySearchBar
           sortOption={sortOption}
           onSortSelect={handleSortSelect}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearchChange}
         />
 
         <PageHeader
@@ -80,16 +71,24 @@ export const VocabularyPage = () => {
           description="Track and review all the words you've learned"
         />
 
-        <VocabularyTable items={items} onWordClick={handleWordClick} />
+        {isInitialLoading ? (
+          <VocabularyInitialLoader />
+        ) : error ? (
+          <VocabularyError error={error} />
+        ) : (
+          <>
+            <VocabularyTable items={items} onWordClick={handleWordClick} />
 
-        {items.length === 0 && !hasMore && <VocabularyEmptyState />}
+            {items.length === 0 && !hasMore && <VocabularyEmptyState />}
 
-        <VocabularyScrollSentinel sentinelRef={sentinelRef} />
+            <VocabularyScrollSentinel sentinelRef={sentinelRef} />
 
-        {isFetchingMore && <VocabularyLoadMoreSpinner />}
+            {isFetchingMore && <VocabularyLoadMoreSpinner />}
 
-        {!isFetchingMore && !hasMore && items.length > 0 && (
-          <VocabularyEndMessage />
+            {!isFetchingMore && !hasMore && items.length > 0 && (
+              <VocabularyEndMessage />
+            )}
+          </>
         )}
 
         {isLoadingWord && <VocabularyWordLoadingOverlay />}

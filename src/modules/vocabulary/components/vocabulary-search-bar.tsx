@@ -7,11 +7,15 @@ import type { VocabularySortOption } from '@/modules/vocabulary/vocabulary.types
 interface VocabularySearchBarProps {
   sortOption: VocabularySortOption;
   onSortSelect: (option: VocabularySortOption) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 }
 
 export const VocabularySearchBar = ({
   sortOption,
   onSortSelect,
+  searchQuery,
+  onSearchChange,
 }: VocabularySearchBarProps) => {
   return (
     <Flex direction="row" gap={2} mb={6} align="center">
@@ -20,6 +24,8 @@ export const VocabularySearchBar = ({
         flex="1"
         size="lg"
         backgroundColor="white"
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
       />
 
       <Menu.Root>

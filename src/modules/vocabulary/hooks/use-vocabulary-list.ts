@@ -8,18 +8,32 @@ import type {
 } from '@/modules/vocabulary/vocabulary.types';
 
 const DEFAULT_PAGE_SIZE = 20;
+const DEBOUNCE_DELAY = 500;
 
-export const useVocabularyList = (sortOption: VocabularySortOption) => {
+export const useVocabularyList = (
+  sortOption: VocabularySortOption,
+  searchQuery?: string,
+) => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<MinimalVocabularyWord[]>([]);
   const [hasMore, setHasMore] = useState(true);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
 
   const itemsCountRef = useRef(0);
   const isInitialLoadingRef = useRef(true);
   const isFetchingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, DEBOUNCE_DELAY);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const loadWords = useCallback(
     async ({ reset = false }: { reset?: boolean } = {}) => {
@@ -52,6 +66,7 @@ export const useVocabularyList = (sortOption: VocabularySortOption) => {
           limit: DEFAULT_PAGE_SIZE,
           offset,
           sort: sortOption,
+          searchQuery: debouncedSearchQuery,
         });
 
         if (result.success && result.data) {
@@ -95,7 +110,7 @@ export const useVocabularyList = (sortOption: VocabularySortOption) => {
         }
       }
     },
-    [sortOption],
+    [sortOption, debouncedSearchQuery],
   );
 
   useEffect(() => {
