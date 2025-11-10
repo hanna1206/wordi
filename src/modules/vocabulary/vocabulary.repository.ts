@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, ilike, or, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike } from 'drizzle-orm';
 
 import { db } from '@/db/client';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
@@ -33,12 +33,7 @@ const getUserMinimalVocabulary = async (
   const whereConditions = [eq(wordsTable.userId, userId)];
 
   if (searchQuery && searchQuery.trim()) {
-    whereConditions.push(
-      or(
-        ilike(wordsTable.normalizedWord, `%${searchQuery}%`),
-        sql`${wordsTable.commonData}::text ilike ${`%${searchQuery}%`}`,
-      )!,
-    );
+    whereConditions.push(ilike(wordsTable.normalizedWord, `%${searchQuery}%`));
   }
 
   const [items, [{ total }]] = await Promise.all([
