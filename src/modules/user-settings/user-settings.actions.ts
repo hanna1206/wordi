@@ -6,11 +6,9 @@ import { revalidateTag } from 'next/cache';
 import { withAuth } from '@/modules/auth/utils/with-auth';
 import type { ActionResult } from '@/shared-types';
 
-import { LanguageCode } from './user-settings.const';
-import { USER_SETTINGS_CACHE_KEY } from './user-settings.const';
+import { LanguageCode, USER_SETTINGS_CACHE_KEY } from './user-settings.const';
 import * as userSettingsRepository from './user-settings.repository';
 import type { UserSettings } from './user-settings.types';
-import { setOnboardingCompleteCookie } from './utils/onboarding-cookie';
 
 export const completeProfile = withAuth<
   { name: string; nativeLanguage: LanguageCode },
@@ -40,7 +38,7 @@ export const completeProfile = withAuth<
       nativeLanguage,
     });
 
-    await setOnboardingCompleteCookie();
+    // Revalidate cache so next request gets fresh data
     revalidateTag(USER_SETTINGS_CACHE_KEY);
 
     return { success: true, data: newUserSettings };

@@ -16,5 +16,4 @@ export const LanguageLabels = {
   [LanguageCode.PORTUGUESE]: 'Portuguese',
 };
 
-export const ONBOARDING_COOKIE_KEY = 'onboarding_complete';
 export const USER_SETTINGS_CACHE_KEY = 'user-settings';
