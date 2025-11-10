@@ -12,6 +12,8 @@ jobs:
   test-and-lint:
     name: Run linters, check build
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
