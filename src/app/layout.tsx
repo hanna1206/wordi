@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Onest, Roboto_Condensed } from 'next/font/google';
 
 import { FeedbackWidget } from '@/components/feedback-widget';
-import { OnboardingRedirect } from '@/components/onboarding-redirect';
 import { Provider } from '@/components/provider';
 import { Toaster } from '@/components/toaster';
 
@@ -37,7 +36,7 @@ const RootLayout = async ({
     >
       <body suppressHydrationWarning>
         <Provider>
-          <OnboardingRedirect>{children}</OnboardingRedirect>
+          {children}
           <Toaster />
         </Provider>
         <FeedbackWidget />

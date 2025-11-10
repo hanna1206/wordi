@@ -8,14 +8,8 @@ import { environment } from '@/config/environment.config';
 
 export const updateSession = async (request: NextRequest) => {
   const { supabaseApiUrl, supabaseAnonKey } = environment;
-
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-pathname', request.nextUrl.pathname);
-
   let supabaseResponse = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
+    request,
   });
 
   const supabase = createServerClient(supabaseApiUrl!, supabaseAnonKey!, {
