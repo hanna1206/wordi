@@ -1,5 +1,6 @@
-import { LuArrowDownNarrowWide, LuSlidersHorizontal } from 'react-icons/lu';
+import { LuArrowDownNarrowWide } from 'react-icons/lu';
 
+// import { LuArrowDownNarrowWide, LuSlidersHorizontal } from 'react-icons/lu';
 import { Button, Flex, Icon, Input, Menu, Text } from '@chakra-ui/react';
 
 import type { VocabularySortOption } from '@/modules/vocabulary/vocabulary.types';
@@ -49,11 +50,11 @@ export const VocabularySearchBar = ({
           </Menu.Content>
         </Menu.Positioner>
       </Menu.Root>
-
-      <Button variant="outline" size="lg">
+      {/* Temporarily comment out, as filters are not implemented yet */}
+      {/* <Button variant="outline" size="lg">
         <Icon as={LuSlidersHorizontal} fontSize="md" />
         <Text display={{ base: 'none', md: 'block' }}>Filters</Text>
-      </Button>
+      </Button> */}
     </Flex>
   );
 };
