@@ -1,21 +1,21 @@
 import type { Metadata } from 'next';
-import { Onest, Roboto_Condensed } from 'next/font/google';
+import { Open_Sans, Sofia_Sans_Condensed } from 'next/font/google';
 
 import { FeedbackWidget } from '@/components/feedback-widget';
 import { Provider } from '@/components/provider';
 import { Toaster } from '@/components/toaster';
 
-const onest = Onest({
+const openSans = Open_Sans({
   subsets: ['latin', 'cyrillic'],
   display: 'swap',
-  variable: '--font-onest',
+  variable: '--font-open-sans',
 });
 
-const robotoCondensed = Roboto_Condensed({
+const sofiaSansCondensed = Sofia_Sans_Condensed({
   subsets: ['latin', 'cyrillic'],
   weight: ['400', '700'],
   display: 'swap',
-  variable: '--font-roboto-condensed',
+  variable: '--font-sofia-sans-condensed',
 });
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ const RootLayout = async ({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${onest.variable} ${onest.className} ${robotoCondensed.variable}`}
+      className={`${openSans.variable} ${sofiaSansCondensed.variable}`}
     >
       <body suppressHydrationWarning>
         <Provider>

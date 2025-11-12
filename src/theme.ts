@@ -4,8 +4,8 @@ const config = defineConfig({
   theme: {
     tokens: {
       fonts: {
-        body: { value: 'var(--font-onest), sans-serif' },
-        heading: { value: 'var(--font-roboto-condensed), sans-serif' },
+        body: { value: 'var(--font-open-sans), sans-serif' },
+        heading: { value: 'var(--font-sofia-sans-condensed), sans-serif' },
       },
       radii: {
         md: { value: '0.5rem' },
@@ -23,25 +23,25 @@ const config = defineConfig({
       colorPalette: 'blue',
     },
     body: {
-      fontFamily: 'var(--font-onest), sans-serif',
+      fontFamily: 'var(--font-open-sans), sans-serif',
     },
     h1: {
-      fontFamily: 'var(--font-roboto-condensed), sans-serif',
+      fontFamily: 'var(--font-sofia-sans-condensed), sans-serif',
     },
     h2: {
-      fontFamily: 'var(--font-roboto-condensed), sans-serif',
+      fontFamily: 'var(--font-sofia-sans-condensed), sans-serif',
     },
     h3: {
-      fontFamily: 'var(--font-roboto-condensed), sans-serif',
+      fontFamily: 'var(--font-sofia-sans-condensed), sans-serif',
     },
     h4: {
-      fontFamily: 'var(--font-roboto-condensed), sans-serif',
+      fontFamily: 'var(--font-sofia-sans-condensed), sans-serif',
     },
     h5: {
-      fontFamily: 'var(--font-roboto-condensed), sans-serif',
+      fontFamily: 'var(--font-sofia-sans-condensed), sans-serif',
     },
     h6: {
-      fontFamily: 'var(--font-roboto-condensed), sans-serif',
+      fontFamily: 'var(--font-sofia-sans-condensed), sans-serif',
     },
   },
 });
