@@ -9,7 +9,6 @@ import { AppHeader } from '@/components/app-header';
 import { GradientBackground } from '@/components/gradient-background';
 import { useSidebar } from '@/contexts/sidebar-context';
 import { FlashCardsSettingsDialog } from '@/modules/flashcards/components/flash-cards-settings-dialog';
-import { DueWordsCountProvider } from '@/modules/flashcards/context/due-words-count-context';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -66,43 +65,41 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
       <Box h="100svh" overflow="hidden">
         <AppHeader onSidebarToggle={toggleSidebar} />
 
-        <DueWordsCountProvider>
-          <MobileSidebar
-            isOpen={isMobileSidebarOpen}
-            onToggle={toggleSidebar}
-            onFlashCardsClick={handleFlashCardsClick}
-          />
-          <DesktopSidebar
-            isOpen={isDesktopSidebarOpen}
-            onToggle={toggleSidebar}
-            onFlashCardsClick={handleFlashCardsClick}
-          />
+        <MobileSidebar
+          isOpen={isMobileSidebarOpen}
+          onToggle={toggleSidebar}
+          onFlashCardsClick={handleFlashCardsClick}
+        />
+        <DesktopSidebar
+          isOpen={isDesktopSidebarOpen}
+          onToggle={toggleSidebar}
+          onFlashCardsClick={handleFlashCardsClick}
+        />
 
+        <Box
+          ml={{ base: 0, md: isDesktopSidebarOpen ? '280px' : '60px' }}
+          transition="margin-left 0.3s ease"
+          h="100svh"
+          pt="72px"
+          overflow="hidden"
+          position="relative"
+        >
           <Box
-            ml={{ base: 0, md: isDesktopSidebarOpen ? '280px' : '60px' }}
-            transition="margin-left 0.3s ease"
-            h="100svh"
-            pt="72px"
-            overflow="hidden"
-            position="relative"
+            h="full"
+            overflow="auto"
+            data-scroll-container="true"
+            maxW="1256px"
+            mx="auto"
           >
-            <Box
-              h="full"
-              overflow="auto"
-              data-scroll-container="true"
-              maxW="1256px"
-              mx="auto"
-            >
-              {children}
-            </Box>
-            <InstallPrompt />
+            {children}
           </Box>
+          <InstallPrompt />
+        </Box>
 
-          <FlashCardsSettingsDialog
-            isOpen={isFlashCardsDialogOpen}
-            onClose={handleCloseDialog}
-          />
-        </DueWordsCountProvider>
+        <FlashCardsSettingsDialog
+          isOpen={isFlashCardsDialogOpen}
+          onClose={handleCloseDialog}
+        />
       </Box>
     </GradientBackground>
   );
