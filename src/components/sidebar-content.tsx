@@ -9,6 +9,8 @@ import { usePathname } from 'next/navigation';
 
 import { useDueWordsCount } from '@/modules/flashcards/context/due-words-count-context';
 
+const MAX_DUE_COUNT_BADGE = 99;
+
 type SidebarLinkConfig = {
   type: 'link';
   href: string;
@@ -191,7 +193,9 @@ export const SidebarContent = ({
                 fontSize="xs"
                 aria-label={`${dueCount} words due for review`}
               >
-                {dueCount > 25 ? '25+' : dueCount}
+                {dueCount > MAX_DUE_COUNT_BADGE
+                  ? `${MAX_DUE_COUNT_BADGE}+`
+                  : dueCount}
               </Badge>
             )}
           </Flex>
@@ -227,7 +231,9 @@ export const SidebarContent = ({
                 aria-label={`${dueCount} words due for review`}
                 pointerEvents="none"
               >
-                {dueCount > 9 ? '9+' : dueCount}
+                {dueCount > MAX_DUE_COUNT_BADGE
+                  ? `${MAX_DUE_COUNT_BADGE}+`
+                  : dueCount}
               </Badge>
             )}
           </Box>
