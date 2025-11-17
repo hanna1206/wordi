@@ -18,9 +18,9 @@ export const useFlashCardsGame = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isGameFinished, setIsGameFinished] = useState(false);
-  const [needsReviewWords, setNeedsReviewWords] = useState<VocabularyItem[]>(
-    [],
-  );
+  const [qualityScoresByWord, setQualityScoresByWord] = useState<
+    Record<string, QualityScore>
+  >({});
   const [isCurrentFlipped, setIsCurrentFlipped] = useState(false);
   const [flippedWordIds, setFlippedWordIds] = useState<Set<string>>(new Set());
   const cardButtonRef = useRef<HTMLDivElement | null>(null);
@@ -87,10 +87,6 @@ export const useFlashCardsGame = () => {
     };
   }, [currentCardIndex]);
 
-  const markWordForReview = useCallback((word: VocabularyItem) => {
-    setNeedsReviewWords((prev) => [...prev, word]);
-  }, []);
-
   const markCardAsFlipped = useCallback((wordId: string) => {
     setFlippedWordIds((prev) => new Set(prev).add(wordId));
     setIsCurrentFlipped(true);
@@ -151,9 +147,11 @@ export const useFlashCardsGame = () => {
       const currentWord = words[currentCardIndex];
       if (!currentWord) return;
 
-      if (qualityScore === QualityScore.Hard) {
-        markWordForReview(currentWord);
-      }
+      // Record quality score for statistics
+      setQualityScoresByWord((prev) => ({
+        ...prev,
+        [currentWord.id]: qualityScore,
+      }));
 
       const wasCardFlippedBefore = flippedWordIds.has(currentWord.id);
 
@@ -169,7 +167,6 @@ export const useFlashCardsGame = () => {
       words,
       currentCardIndex,
       flippedWordIds,
-      markWordForReview,
       shouldAutoFlipCard,
       autoFlipAndAdvance,
       moveToNextCard,
@@ -193,7 +190,7 @@ export const useFlashCardsGame = () => {
     isLoading,
     error,
     isGameFinished,
-    needsReviewWords,
+    qualityScoresByWord,
     isCurrentFlipped,
     cardSide,
 

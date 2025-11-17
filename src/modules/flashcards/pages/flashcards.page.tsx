@@ -24,7 +24,7 @@ export const FlashcardsPage = () => {
     isLoading,
     error,
     isGameFinished,
-    needsReviewWords,
+    qualityScoresByWord,
     cardSide,
     cardButtonRef,
     handleNextCard,
@@ -59,7 +59,12 @@ export const FlashcardsPage = () => {
   }
 
   if (isGameFinished) {
-    return <PlayPageGameCompleteState needsReviewWords={needsReviewWords} />;
+    return (
+      <PlayPageGameCompleteState
+        totalCards={words.length}
+        qualityScores={qualityScoresByWord}
+      />
+    );
   }
 
   return (
