@@ -12,11 +12,11 @@ type FlashCardProps = {
   word: VocabularyItem;
   cardSide: CardSide;
   allWordIds: string[];
-  onFlip?: (wordId: string, isFlipped: boolean) => void;
+  onCardFlip?: (wordId: string, isFlipped: boolean) => void;
 };
 
 export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
-  ({ word, cardSide, allWordIds, onFlip }, ref) => {
+  ({ word, cardSide, allWordIds, onCardFlip }, ref) => {
     // Initialize flip states for all words with false as default
     const [flipStates, setFlipStates] = useState<Record<string, boolean>>(() =>
       allWordIds.reduce((acc, id) => ({ ...acc, [id]: false }), {}),
@@ -29,8 +29,8 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
       const next = !isFlipped;
       setFlipStates((prev) => ({ ...prev, [word.id]: next }));
       setHasFlippedAny(true);
-      if (onFlip) onFlip(word.id, next);
-    }, [isFlipped, onFlip, word.id]);
+      if (onCardFlip) onCardFlip(word.id, next);
+    }, [isFlipped, onCardFlip, word.id]);
 
     const frontContent =
       cardSide === CardSide.Word

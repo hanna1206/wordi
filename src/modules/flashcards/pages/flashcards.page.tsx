@@ -29,7 +29,6 @@ export const FlashcardsPage = () => {
     cardButtonRef,
     handleNextCard,
     handleCardFlip,
-    setIsCurrentFlipped,
   } = useFlashCardsGame();
 
   const [selectedWord, setSelectedWord] = useState<VocabularyItem | null>(null);
@@ -81,16 +80,17 @@ export const FlashcardsPage = () => {
         totalCount={words.length}
       />
 
-      <GameContent
-        ref={cardButtonRef}
-        currentWord={words[currentCardIndex]}
-        allWordIds={words.map((w) => w.id)}
-        cardSide={cardSide}
-        onCardFlip={handleCardFlip}
-        onQualitySelect={handleNextCard}
-        onFlip={(_, flipped) => setIsCurrentFlipped(flipped)}
-        onOpenDetails={handleOpenDetails}
-      />
+      {words[currentCardIndex] && (
+        <GameContent
+          ref={cardButtonRef}
+          currentWord={words[currentCardIndex]}
+          allWordIds={words.map((w) => w.id)}
+          cardSide={cardSide}
+          onCardFlip={handleCardFlip}
+          onQualitySelect={handleNextCard}
+          onOpenDetails={handleOpenDetails}
+        />
+      )}
 
       <KeyboardShortcutsHints />
 

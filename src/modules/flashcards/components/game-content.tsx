@@ -19,7 +19,6 @@ interface GameContentProps {
   cardSide: CardSide;
   onCardFlip: () => void;
   onQualitySelect: (score: QualityScore) => void;
-  onFlip: (wordId: string, isFlipped: boolean) => void;
   onOpenDetails: (word: VocabularyItem) => void;
 }
 
@@ -36,7 +35,6 @@ export const GameContent = forwardRef<HTMLDivElement, GameContentProps>(
       cardSide,
       onCardFlip,
       onQualitySelect,
-      onFlip,
       onOpenDetails,
     },
     ref,
@@ -69,7 +67,7 @@ export const GameContent = forwardRef<HTMLDivElement, GameContentProps>(
             word={currentWord}
             cardSide={cardSide}
             allWordIds={allWordIds}
-            onFlip={onFlip}
+            onCardFlip={onCardFlip}
           />
         </Box>
 

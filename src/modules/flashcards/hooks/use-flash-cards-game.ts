@@ -9,6 +9,8 @@ import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 import { getWordsForGame, saveQualityFeedback } from '../flashcards.actions';
 import { CardSide, GameMode, QualityScore } from '../flashcards.const';
 
+const REVEAL_DELAY_MS = 1400;
+
 export const useFlashCardsGame = () => {
   const searchParams = useSearchParams();
   const [words, setWords] = useState<VocabularyItem[]>([]);
@@ -85,51 +87,51 @@ export const useFlashCardsGame = () => {
     };
   }, [currentCardIndex]);
 
-  const handleNextCard = useCallback(
-    (qualityScore: QualityScore) => {
-      const currentWord = words[currentCardIndex];
+  const markWordForReview = useCallback((word: VocabularyItem) => {
+    setNeedsReviewWords((prev) => [...prev, word]);
+  }, []);
 
-      if (!currentWord) return;
+  const markCardAsFlipped = useCallback((wordId: string) => {
+    setFlippedWordIds((prev) => new Set(prev).add(wordId));
+    setIsCurrentFlipped(true);
+  }, []);
 
-      // Optimistically update UI first
-      if (qualityScore === QualityScore.Hard) {
-        setNeedsReviewWords((prev) => [...prev, currentWord]);
-      }
+  const moveToNextCard = useCallback(() => {
+    const hasMoreCards = currentCardIndex < words.length - 1;
 
-      const wasEverFlipped = flippedWordIds.has(currentWord.id);
+    if (hasMoreCards) {
+      setCurrentCardIndex((prev) => prev + 1);
+      setIsCurrentFlipped(false);
+      setTimeout(focusCard, 0);
+    } else {
+      setIsGameFinished(true);
+    }
+  }, [currentCardIndex, words.length, focusCard]);
 
-      // For HARD and GOOD: if card was never flipped before, flip to reveal answer, then advance after delay
-      if (
-        (qualityScore === QualityScore.Hard ||
-          qualityScore === QualityScore.Good) &&
-        !wasEverFlipped &&
-        !isCurrentFlipped
-      ) {
-        cardButtonRef.current?.click();
-        setIsCurrentFlipped(true);
-        setFlippedWordIds((prev) => new Set(prev).add(currentWord.id));
-        const id = window.setTimeout(() => {
-          if (currentCardIndex < words.length - 1) {
-            setCurrentCardIndex((prev) => prev + 1);
-            setIsCurrentFlipped(false);
-            setTimeout(focusCard, 0);
-          } else {
-            setIsGameFinished(true);
-          }
-        }, 1400);
-        switchTimeoutRef.current = id;
-      } else {
-        if (currentCardIndex < words.length - 1) {
-          setCurrentCardIndex((prev) => prev + 1);
-          setIsCurrentFlipped(false);
-          setTimeout(focusCard, 0);
-        } else {
-          setIsGameFinished(true);
-        }
-      }
+  const autoFlipAndAdvance = useCallback(
+    (wordId: string) => {
+      cardButtonRef.current?.click();
+      markCardAsFlipped(wordId);
 
-      // Save quality feedback in the background (non-blocking)
-      saveQualityFeedback({ wordId: currentWord.id, qualityScore })
+      const timeoutId = window.setTimeout(moveToNextCard, REVEAL_DELAY_MS);
+      switchTimeoutRef.current = timeoutId;
+    },
+    [markCardAsFlipped, moveToNextCard],
+  );
+
+  const shouldAutoFlipCard = useCallback(
+    (qualityScore: QualityScore, wasCardFlippedBefore: boolean) => {
+      const isHardOrGood =
+        qualityScore === QualityScore.Hard ||
+        qualityScore === QualityScore.Good;
+      return isHardOrGood && !wasCardFlippedBefore;
+    },
+    [],
+  );
+
+  const saveFeedbackInBackground = useCallback(
+    (wordId: string, qualityScore: QualityScore) => {
+      saveQualityFeedback({ wordId, qualityScore })
         .then((result) => {
           if (!result.success) {
             // eslint-disable-next-line no-console
@@ -141,7 +143,38 @@ export const useFlashCardsGame = () => {
           console.error('Failed to save quality feedback:', error);
         });
     },
-    [words, currentCardIndex, focusCard, flippedWordIds, isCurrentFlipped],
+    [],
+  );
+
+  const handleNextCard = useCallback(
+    (qualityScore: QualityScore) => {
+      const currentWord = words[currentCardIndex];
+      if (!currentWord) return;
+
+      if (qualityScore === QualityScore.Hard) {
+        markWordForReview(currentWord);
+      }
+
+      const wasCardFlippedBefore = flippedWordIds.has(currentWord.id);
+
+      if (shouldAutoFlipCard(qualityScore, wasCardFlippedBefore)) {
+        autoFlipAndAdvance(currentWord.id);
+      } else {
+        moveToNextCard();
+      }
+
+      saveFeedbackInBackground(currentWord.id, qualityScore);
+    },
+    [
+      words,
+      currentCardIndex,
+      flippedWordIds,
+      markWordForReview,
+      shouldAutoFlipCard,
+      autoFlipAndAdvance,
+      moveToNextCard,
+      saveFeedbackInBackground,
+    ],
   );
 
   const handleCardFlip = useCallback(() => {
@@ -170,6 +203,5 @@ export const useFlashCardsGame = () => {
     // Handlers
     handleNextCard,
     handleCardFlip,
-    setIsCurrentFlipped,
   };
 };
