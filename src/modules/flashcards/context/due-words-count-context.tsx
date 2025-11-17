@@ -11,12 +11,6 @@ import {
 } from 'react';
 
 import { getDueWordsCount } from '@/modules/flashcards/flashcards.actions';
-import {
-  clearDueCountCache,
-  getCachedDueCount,
-  isCacheValid,
-  setCachedDueCount,
-} from '@/modules/flashcards/utils/due-words-cache.utils';
 
 interface DueWordsCountState {
   dueCount: number;
@@ -28,7 +22,6 @@ interface DueWordsCountState {
 
 interface DueWordsCountActions {
   refetchDueCount: () => Promise<void>;
-  invalidateDueCount: () => void;
   adjustDueCount: (delta: number) => void;
 }
 
@@ -67,8 +60,6 @@ export const DueWordsCountProvider = ({
           lastFetchedAt: new Date(),
           dueCountError: null,
         });
-
-        setCachedDueCount(result.data.dueCount, result.data.totalWords);
       } else {
         setState((prev) => ({
           ...prev,
@@ -85,17 +76,6 @@ export const DueWordsCountProvider = ({
     }
   }, []);
 
-  const invalidateDueCount = useCallback(() => {
-    clearDueCountCache();
-    setState({
-      dueCount: 0,
-      totalWords: 0,
-      isDueCountLoading: true,
-      lastFetchedAt: null,
-      dueCountError: null,
-    });
-  }, []);
-
   const adjustDueCount = useCallback((delta: number) => {
     setState((prev) => ({
       ...prev,
@@ -104,18 +84,6 @@ export const DueWordsCountProvider = ({
   }, []);
 
   useEffect(() => {
-    const cache = getCachedDueCount();
-
-    if (cache && isCacheValid(cache)) {
-      setState({
-        dueCount: cache.dueCount,
-        totalWords: cache.totalWords,
-        isDueCountLoading: false,
-        lastFetchedAt: null,
-        dueCountError: null,
-      });
-    }
-
     refetchDueCount();
   }, [refetchDueCount]);
 
@@ -139,21 +107,6 @@ export const DueWordsCountProvider = ({
     };
   }, [state.lastFetchedAt, refetchDueCount]);
 
-  useEffect(() => {
-    const checkDateChange = () => {
-      const cache = getCachedDueCount();
-
-      if (cache && !isCacheValid(cache)) {
-        invalidateDueCount();
-        refetchDueCount();
-      }
-    };
-
-    const interval = setInterval(checkDateChange, 60000);
-
-    return () => clearInterval(interval);
-  }, [invalidateDueCount, refetchDueCount]);
-
   const contextValue = useMemo(
     () => ({
       dueCount: state.dueCount,
@@ -162,7 +115,6 @@ export const DueWordsCountProvider = ({
       lastFetchedAt: state.lastFetchedAt,
       dueCountError: state.dueCountError,
       refetchDueCount,
-      invalidateDueCount,
       adjustDueCount,
     }),
     [
@@ -172,7 +124,6 @@ export const DueWordsCountProvider = ({
       state.lastFetchedAt,
       state.dueCountError,
       refetchDueCount,
-      invalidateDueCount,
       adjustDueCount,
     ],
   );
