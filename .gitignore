@@ -53,3 +53,6 @@ next-env.d.ts
 project-words.txt
 # Sentry Config File
 .env.sentry-build-plugin
+
+# temporarily ignore lock files
+package-lock.json
