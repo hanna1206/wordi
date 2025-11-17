@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { toaster } from '@/components/toaster';
+import { useDueWordsCount } from '@/modules/flashcards/context/due-words-count-context';
 import { deleteWord } from '@/modules/vocabulary/vocabulary.actions';
 import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
@@ -19,6 +20,7 @@ export const useVocabularyItemModal = ({
 }: UseVocabularyItemModalProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const { refetchDueCount } = useDueWordsCount();
   const handleWordDeleted = onWordDeleted ?? (() => undefined);
 
   const handleDeleteClick = () => {
@@ -42,6 +44,7 @@ export const useVocabularyItemModal = ({
         });
         handleWordDeleted();
         onClose();
+        refetchDueCount();
       } else {
         toaster.create({
           title: 'Error',

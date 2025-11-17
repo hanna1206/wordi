@@ -3,9 +3,11 @@
 import { type ReactNode } from 'react';
 import { LuBrain, LuHouse, LuLibrary } from 'react-icons/lu';
 
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+
+import { useDueWordsCount } from '@/modules/flashcards/context/due-words-count-context';
 
 type SidebarLinkConfig = {
   type: 'link';
@@ -62,12 +64,16 @@ const SidebarItemContent = ({
   isSidebarOpen,
 }: {
   icon: ReactNode;
-  label: string;
+  label: string | ReactNode;
   isSidebarOpen: boolean;
 }) => (
-  <Flex justifyContent="flex-start" gap={2}>
+  <Flex justifyContent="flex-start" gap={2} alignItems="center" width="100%">
     {icon}
-    <Text display={isSidebarOpen ? 'block' : 'none'}>{label}</Text>
+    {typeof label === 'string' ? (
+      <Text display={isSidebarOpen ? 'block' : 'none'}>{label}</Text>
+    ) : (
+      label
+    )}
   </Flex>
 );
 
@@ -80,7 +86,7 @@ const SidebarLink = ({
 }: {
   href: string;
   icon: ReactNode;
-  label: string;
+  label: string | ReactNode;
   isActive: boolean;
   isSidebarOpen: boolean;
 }) => (
@@ -110,7 +116,7 @@ const SidebarAction = ({
   onClick,
 }: {
   icon: ReactNode;
-  label: string;
+  label: string | ReactNode;
   isActive: boolean;
   isSidebarOpen: boolean;
   onClick: (e: React.MouseEvent) => void;
@@ -123,6 +129,7 @@ const SidebarAction = ({
     justifyContent="start"
     width="100%"
     onClick={onClick}
+    position="relative"
   >
     <SidebarItemContent
       icon={icon}
@@ -140,6 +147,7 @@ export const SidebarContent = ({
   onFlashCardsClick?: (e: React.MouseEvent) => void;
 }) => {
   const pathname = usePathname();
+  const { dueCount, isDueCountLoading } = useDueWordsCount();
 
   return (
     <Box
@@ -166,20 +174,63 @@ export const SidebarContent = ({
           );
         }
 
-        // type === 'action'
+        // type === 'action' (flashcards)
+        const isFlashcards = item.id === 'flashcards';
+        const showBadge = isFlashcards && !isDueCountLoading && dueCount > 0;
+
+        const labelContent = isFlashcards ? (
+          <Flex
+            align="center"
+            gap={2}
+            display={isSidebarOpen ? 'flex' : 'none'}
+          >
+            <Text>{item.label}</Text>
+            {showBadge && (
+              <Badge
+                borderRadius="full"
+                fontSize="xs"
+                aria-label={`${dueCount} words due for review`}
+              >
+                {dueCount > 25 ? '25+' : dueCount}
+              </Badge>
+            )}
+          </Flex>
+        ) : (
+          item.label
+        );
+
         return (
-          <SidebarAction
-            key={item.id}
-            icon={item.icon}
-            label={item.label}
-            isActive={false}
-            isSidebarOpen={isSidebarOpen}
-            onClick={(e) => {
-              if (item.id === 'flashcards' && onFlashCardsClick) {
-                onFlashCardsClick(e);
-              }
-            }}
-          />
+          <Box key={item.id} position="relative">
+            <SidebarAction
+              icon={item.icon}
+              label={labelContent}
+              isActive={false}
+              isSidebarOpen={isSidebarOpen}
+              onClick={(e) => {
+                if (item.id === 'flashcards' && onFlashCardsClick) {
+                  onFlashCardsClick(e);
+                }
+              }}
+            />
+            {!isSidebarOpen && showBadge && (
+              <Badge
+                position="absolute"
+                top="2px"
+                right="6px"
+                borderRadius="full"
+                fontSize="2xs"
+                minW="18px"
+                h="18px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                aria-label={`${dueCount} words due for review`}
+                pointerEvents="none"
+              >
+                {dueCount > 9 ? '9+' : dueCount}
+              </Badge>
+            )}
+          </Box>
         );
       })}
     </Box>

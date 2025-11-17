@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { IconType } from 'react-icons';
 import { FaBrain, FaRandom, FaRegClock } from 'react-icons/fa';
 
@@ -26,10 +26,9 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 
-import { getDueWordsCount } from '../flashcards.actions';
-import { CardSide, GameMode } from '../flashcards.const';
+import { useDueWordsCount } from '@/modules/flashcards/context/due-words-count-context';
 
-const STORAGE_KEY = 'flashcards_due_meta_v1';
+import { CardSide, GameMode } from '../flashcards.const';
 
 interface GameModeOption {
   id: string;
@@ -56,11 +55,9 @@ export const FlashCardsSettingsDialog = ({
   onClose,
 }: FlashCardsSettingsDialogProps) => {
   const router = useRouter();
+  const { dueCount, totalWords, isDueCountLoading } = useDueWordsCount();
   const [cardSide, setCardSide] = useState<string | null>(CardSide.Word);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
-  const [dueCount, setDueCount] = useState<number>(0);
-  const [totalWords, setTotalWords] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(true);
 
   const gameModeOptions = useMemo<GameModeOption[]>(() => {
     const dailyReviewDescription =
@@ -79,7 +76,7 @@ export const FlashCardsSettingsDialog = ({
         title: 'Daily Review',
         description: dailyReviewDescription,
         disabled: dueCount === 0,
-        badge: isLoading
+        badge: isDueCountLoading
           ? undefined
           : {
               text: `${dueCount} due`,
@@ -119,7 +116,7 @@ export const FlashCardsSettingsDialog = ({
         description: 'A bigger random set for a more robust practice.',
       },
     ];
-  }, [dueCount, totalWords, isLoading]);
+  }, [dueCount, totalWords, isDueCountLoading]);
 
   const isSelectedModeDisabled = useMemo(() => {
     if (!selectedMode) return false;
@@ -128,55 +125,6 @@ export const FlashCardsSettingsDialog = ({
     );
     return selectedOption?.disabled ?? false;
   }, [selectedMode, gameModeOptions]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    // Try to load from localStorage first
-    try {
-      const cachedRaw = window.localStorage.getItem(STORAGE_KEY);
-      if (cachedRaw) {
-        const cached = JSON.parse(cachedRaw);
-        const isSameDay =
-          new Date(cached.date).toDateString() === new Date().toDateString();
-        if (isSameDay) {
-          setDueCount(cached.dueCount);
-          setTotalWords(cached.totalWords);
-          setIsLoading(false);
-          return;
-        }
-      }
-    } catch {
-      // Silently fail if cache is corrupted
-    }
-
-    // Fetch fresh data if cache is stale or missing
-    const fetchDueWordsCount = async () => {
-      try {
-        const result = await getDueWordsCount();
-        if (result.success && result.data) {
-          setDueCount(result.data.dueCount);
-          setTotalWords(result.data.totalWords);
-
-          // Cache the result
-          window.localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify({
-              date: new Date().toISOString(),
-              dueCount: result.data.dueCount,
-              totalWords: result.data.totalWords,
-            }),
-          );
-        }
-      } catch {
-        // Silently fail if fetch fails
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDueWordsCount();
-  }, [isOpen]);
 
   const handleOpenChange = (details: { open: boolean }) => {
     if (!details.open) {
@@ -256,7 +204,7 @@ export const FlashCardsSettingsDialog = ({
                         <RadioCard.Item
                           key={option.id}
                           value={option.id}
-                          disabled={option.disabled || isLoading}
+                          disabled={option.disabled || isDueCountLoading}
                           p={4}
                         >
                           <RadioCard.ItemHiddenInput />
@@ -273,26 +221,27 @@ export const FlashCardsSettingsDialog = ({
                               boxSize={10}
                               borderRadius="full"
                               bg={
-                                option.disabled || isLoading
+                                option.disabled || isDueCountLoading
                                   ? 'gray.100'
                                   : 'blue.50'
                               }
                               border="1px solid"
                               borderColor={
-                                option.disabled || isLoading
+                                option.disabled || isDueCountLoading
                                   ? 'gray.200'
                                   : 'blue.200'
                               }
                               flexShrink={0}
                             >
-                              {isLoading && option.id === 'daily-review' ? (
+                              {isDueCountLoading &&
+                              option.id === 'daily-review' ? (
                                 <Spinner size="sm" color="blue.500" />
                               ) : (
                                 <Icon
                                   as={option.icon}
                                   boxSize={5}
                                   color={
-                                    option.disabled || isLoading
+                                    option.disabled || isDueCountLoading
                                       ? 'gray.400'
                                       : 'blue.600'
                                   }
@@ -307,14 +256,14 @@ export const FlashCardsSettingsDialog = ({
                                   fontSize="md"
                                   fontWeight="bold"
                                   color={
-                                    option.disabled || isLoading
+                                    option.disabled || isDueCountLoading
                                       ? 'gray.500'
                                       : 'gray.900'
                                   }
                                 >
                                   {option.title}
                                 </Text>
-                                {option.badge && !isLoading && (
+                                {option.badge && !isDueCountLoading && (
                                   <Badge
                                     colorScheme={option.badge.colorScheme}
                                     borderRadius="full"
@@ -326,7 +275,7 @@ export const FlashCardsSettingsDialog = ({
                               <Text
                                 fontSize="sm"
                                 color={
-                                  option.disabled || isLoading
+                                  option.disabled || isDueCountLoading
                                     ? 'gray.400'
                                     : 'gray.700'
                                 }
@@ -351,7 +300,9 @@ export const FlashCardsSettingsDialog = ({
                 colorScheme="blue"
                 w="full"
                 onClick={handleStartGame}
-                disabled={!selectedMode || isLoading || isSelectedModeDisabled}
+                disabled={
+                  !selectedMode || isDueCountLoading || isSelectedModeDisabled
+                }
               >
                 Start Practice
               </Button>

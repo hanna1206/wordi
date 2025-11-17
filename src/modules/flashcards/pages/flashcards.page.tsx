@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Flex } from '@chakra-ui/react';
 
@@ -13,6 +13,7 @@ import { PlayPageErrorState } from '../components/play-page-error-state';
 import { PlayPageGameCompleteState } from '../components/play-page-game-complete-state';
 import { PlayPageLoadingState } from '../components/play-page-loading-state';
 import { PlayPageNavigation } from '../components/play-page-navigation';
+import { useDueWordsCount } from '../context/due-words-count-context';
 import { CardSide } from '../flashcards.const';
 import { useFlashCardsGame } from '../hooks/use-flash-cards-game';
 import { useKeyboardShortcuts } from '../hooks/use-keyboard-shortcuts';
@@ -31,6 +32,8 @@ export const FlashcardsPage = () => {
     handleCardFlip,
   } = useFlashCardsGame();
 
+  const { refetchDueCount } = useDueWordsCount();
+
   const [selectedWord, setSelectedWord] = useState<VocabularyItem | null>(null);
 
   const handleOpenDetails = useCallback((word: VocabularyItem) => {
@@ -40,6 +43,12 @@ export const FlashcardsPage = () => {
   const handleCloseDetails = useCallback(() => {
     setSelectedWord(null);
   }, []);
+
+  useEffect(() => {
+    if (isGameFinished) {
+      refetchDueCount();
+    }
+  }, [isGameFinished, refetchDueCount]);
 
   useKeyboardShortcuts({
     isLoading,

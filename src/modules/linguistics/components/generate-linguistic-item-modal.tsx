@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
 import { toaster } from '@/components/toaster';
+import { useDueWordsCount } from '@/modules/flashcards/context/due-words-count-context';
 import { GenerateLinguisticItemError } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-error';
 import { GenerateLinguisticItemLoaded } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-loaded';
 import { GenerateLinguisticItemLoading } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-loading';
@@ -36,6 +37,7 @@ export const GenerateLinguisticItemModal: React.FC<
   onRegenerate,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
+  const { refetchDueCount } = useDueWordsCount();
 
   const isNoun = linguisticItem?.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const gender = isNoun
@@ -61,6 +63,7 @@ export const GenerateLinguisticItemModal: React.FC<
           duration: 3000,
         });
         onClose();
+        refetchDueCount();
       } else {
         toaster.create({
           title: 'Save failed',
