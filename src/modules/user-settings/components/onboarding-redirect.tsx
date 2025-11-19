@@ -1,21 +1,8 @@
-import { unstable_cache } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import { getAuthenticatedUser } from '@/modules/auth/auth.service';
-import { USER_SETTINGS_CACHE_KEY } from '@/modules/user-settings/user-settings.const';
-import * as userSettingsRepository from '@/modules/user-settings/user-settings.repository';
+import { getCachedUserSettings } from '@/modules/user-settings/user-settings.actions';
 import { isProfileComplete } from '@/modules/user-settings/utils/is-profile-complete';
-
-const getCachedUserSettings = unstable_cache(
-  async (userId: string) => {
-    return await userSettingsRepository.getByUserId(userId);
-  },
-  [USER_SETTINGS_CACHE_KEY],
-  {
-    revalidate: 86400 * 7, // one week - because profile rarely changes
-    tags: [USER_SETTINGS_CACHE_KEY],
-  },
-);
 
 export const OnboardingRedirect = async ({
   children,

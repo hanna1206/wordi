@@ -1,7 +1,7 @@
 'use server';
 
 import * as Sentry from '@sentry/nextjs';
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, unstable_cache } from 'next/cache';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
 import type { ActionResult } from '@/shared-types';
@@ -9,6 +9,17 @@ import type { ActionResult } from '@/shared-types';
 import { LanguageCode, USER_SETTINGS_CACHE_KEY } from './user-settings.const';
 import * as userSettingsRepository from './user-settings.repository';
 import type { UserSettings } from './user-settings.types';
+
+export const getCachedUserSettings = unstable_cache(
+  async (userId: string) => {
+    return await userSettingsRepository.getByUserId(userId);
+  },
+  [USER_SETTINGS_CACHE_KEY],
+  {
+    revalidate: 86400 * 7, // one week - because profile rarely changes
+    tags: [USER_SETTINGS_CACHE_KEY],
+  },
+);
 
 export const completeProfile = withAuth<
   { name: string; nativeLanguage: LanguageCode },
