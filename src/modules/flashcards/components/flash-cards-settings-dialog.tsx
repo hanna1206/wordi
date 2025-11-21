@@ -168,17 +168,17 @@ export const FlashCardsSettingsDialog = ({
               <DialogCloseTrigger />
             </DialogHeader>
 
-            <DialogBody py={{ base: 6, md: 4 }}>
-              <Flex direction="column" gap={{ base: 6, md: 4 }}>
+            <DialogBody py={{ base: 4, md: 3 }}>
+              <Flex direction="column" gap={{ base: 4, md: 3 }}>
                 {/* Card Side Selector */}
-                <Flex direction="column" gap={2} alignItems="flex-start">
+                <Flex direction="column" gap={1.5} alignItems="flex-start">
                   <Text fontWeight="medium" fontSize="sm">
                     Card Side
                   </Text>
                   <SegmentGroup.Root
                     value={cardSide}
                     onValueChange={(e) => setCardSide(e.value)}
-                    size="md"
+                    size="sm"
                   >
                     <SegmentGroup.Indicator bg="white" />
                     <SegmentGroup.Item value={CardSide.Word}>
@@ -193,7 +193,7 @@ export const FlashCardsSettingsDialog = ({
                 </Flex>
 
                 {/* Game Mode Options */}
-                <Flex direction="column" gap={2} mt={4}>
+                <Flex direction="column" gap={1.5} mt={2}>
                   <Text fontWeight="medium" fontSize="sm">
                     Game Mode
                   </Text>
@@ -201,18 +201,18 @@ export const FlashCardsSettingsDialog = ({
                     value={selectedMode}
                     onValueChange={(e) => setSelectedMode(e.value)}
                   >
-                    <Flex direction="column" gap={3}>
+                    <Flex direction="column" gap={2}>
                       {gameModeOptions.map((option) => (
                         <RadioCard.Item
                           key={option.id}
                           value={option.id}
                           disabled={option.disabled || isDueCountLoading}
-                          p={4}
+                          p={3}
                         >
                           <RadioCard.ItemHiddenInput />
                           <Flex
                             justifyContent="flex-start"
-                            gap={3}
+                            gap={2.5}
                             w="full"
                             alignItems="center"
                           >
@@ -220,7 +220,7 @@ export const FlashCardsSettingsDialog = ({
                             <Flex
                               align="center"
                               justify="center"
-                              boxSize={10}
+                              boxSize={8}
                               borderRadius="full"
                               bg={
                                 option.disabled || isDueCountLoading
@@ -237,11 +237,11 @@ export const FlashCardsSettingsDialog = ({
                             >
                               {isDueCountLoading &&
                               option.id === 'daily-review' ? (
-                                <Spinner size="sm" color="blue.500" />
+                                <Spinner size="xs" color="blue.500" />
                               ) : (
                                 <Icon
                                   as={option.icon}
-                                  boxSize={5}
+                                  boxSize={4}
                                   color={
                                     option.disabled || isDueCountLoading
                                       ? 'gray.400'
@@ -252,11 +252,16 @@ export const FlashCardsSettingsDialog = ({
                             </Flex>
 
                             {/* Content */}
-                            <Flex direction="column" gap={1} flex={1} minW={0}>
+                            <Flex
+                              direction="column"
+                              gap={0.5}
+                              flex={1}
+                              minW={0}
+                            >
                               <Flex align="center" gap={2} flexWrap="wrap">
                                 <Text
-                                  fontSize="md"
-                                  fontWeight="bold"
+                                  fontSize="sm"
+                                  fontWeight="semibold"
                                   color={
                                     option.disabled || isDueCountLoading
                                       ? 'gray.500'
@@ -269,17 +274,18 @@ export const FlashCardsSettingsDialog = ({
                                   <Badge
                                     colorScheme={option.badge.colorScheme}
                                     borderRadius="full"
+                                    size="sm"
                                   >
                                     {option.badge.text}
                                   </Badge>
                                 )}
                               </Flex>
                               <Text
-                                fontSize="sm"
+                                fontSize="xs"
                                 color={
                                   option.disabled || isDueCountLoading
                                     ? 'gray.400'
-                                    : 'gray.700'
+                                    : 'gray.600'
                                 }
                               >
                                 {option.description}
@@ -296,9 +302,9 @@ export const FlashCardsSettingsDialog = ({
               </Flex>
             </DialogBody>
 
-            <DialogFooter>
+            <DialogFooter pt={3}>
               <Button
-                size="lg"
+                size="md"
                 colorScheme="blue"
                 w="full"
                 onClick={handleStartGame}
