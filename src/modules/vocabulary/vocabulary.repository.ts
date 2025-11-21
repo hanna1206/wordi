@@ -108,7 +108,7 @@ const getLatestWords = async (userId: string, limit: number) => {
     .select()
     .from(wordsTable)
     .where(eq(wordsTable.userId, userId))
-    .orderBy(wordsTable.createdAt)
+    .orderBy(desc(wordsTable.createdAt))
     .limit(limit);
 };
 

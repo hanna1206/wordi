@@ -52,13 +52,11 @@ export const getWordsForGame = withAuth<
       );
       words = result as VocabularyItem[];
     } else if (mode === GameMode.Random) {
-      const allWords = await flashcardsRepository.getAllUserWords(
+      const result = await flashcardsRepository.getRandomWords(
         context.user.id,
+        limit,
       );
-      const shuffled = (allWords as VocabularyItem[]).sort(
-        () => 0.5 - Math.random(),
-      );
-      words = shuffled.slice(0, limit);
+      words = result as VocabularyItem[];
     } else if (mode === GameMode.DueReview) {
       const dueWords = await flashcardsRepository.getDueWords(
         context.user.id,

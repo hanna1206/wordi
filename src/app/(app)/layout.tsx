@@ -1,16 +1,12 @@
-import { SidebarLayout } from '@/components/sidebar-layout';
 import { DueWordsCountProvider } from '@/modules/flashcards/context/due-words-count-context';
 import { OnboardingRedirect } from '@/modules/user-settings/components/onboarding-redirect';
 
-// for onboarding redirect
 export const dynamic = 'force-dynamic';
 
 const AppLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <OnboardingRedirect>
-      <DueWordsCountProvider>
-        <SidebarLayout>{children}</SidebarLayout>
-      </DueWordsCountProvider>
+      <DueWordsCountProvider>{children}</DueWordsCountProvider>
     </OnboardingRedirect>
   );
 };

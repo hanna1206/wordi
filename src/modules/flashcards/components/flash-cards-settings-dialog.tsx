@@ -58,6 +58,7 @@ export const FlashCardsSettingsDialog = ({
   const { dueCount, totalWords, isDueCountLoading } = useDueWordsCount();
   const [cardSide, setCardSide] = useState<string | null>(CardSide.Word);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const [isStarting, setIsStarting] = useState(false);
 
   const gameModeOptions = useMemo<GameModeOption[]>(() => {
     const dailyReviewDescription =
@@ -130,6 +131,7 @@ export const FlashCardsSettingsDialog = ({
     if (!details.open) {
       onClose();
       setSelectedMode(null);
+      setIsStarting(false);
     }
   };
 
@@ -142,8 +144,8 @@ export const FlashCardsSettingsDialog = ({
 
     if (!selectedOption) return;
 
-    // Close dialog first
-    onClose();
+    // Show loading state
+    setIsStarting(true);
 
     // Navigate to game
     router.push(
@@ -301,10 +303,14 @@ export const FlashCardsSettingsDialog = ({
                 w="full"
                 onClick={handleStartGame}
                 disabled={
-                  !selectedMode || isDueCountLoading || isSelectedModeDisabled
+                  !selectedMode ||
+                  isDueCountLoading ||
+                  isSelectedModeDisabled ||
+                  isStarting
                 }
+                loading={isStarting}
               >
-                Start Practice
+                {isStarting ? 'Loading...' : 'Start Practice'}
               </Button>
             </DialogFooter>
           </DialogContent>

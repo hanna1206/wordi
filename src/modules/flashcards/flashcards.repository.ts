@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, inArray, lte } from 'drizzle-orm';
+import { and, asc, count, desc, eq, inArray, lte, sql } from 'drizzle-orm';
 
 import { db } from '@/db/client';
 import { wordsTable } from '@/modules/vocabulary/vocabulary.schema';
@@ -70,6 +70,15 @@ const getLatestWords = async (userId: string, limit: number) => {
 
 const getAllUserWords = async (userId: string) => {
   return db.select().from(wordsTable).where(eq(wordsTable.userId, userId));
+};
+
+const getRandomWords = async (userId: string, limit: number) => {
+  return db
+    .select()
+    .from(wordsTable)
+    .where(eq(wordsTable.userId, userId))
+    .orderBy(sql`RANDOM()`)
+    .limit(limit);
 };
 
 const getDueWords = async (userId: string, limit: number) => {
@@ -186,6 +195,7 @@ export {
   getLatestWords,
   getProgressByUserAndWord,
   getProgressForWords,
+  getRandomWords,
   getTotalWordsCount,
   getWordsWithProgress,
   updateProgress,

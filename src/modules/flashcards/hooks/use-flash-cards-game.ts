@@ -25,6 +25,7 @@ export const useFlashCardsGame = () => {
   const [flippedWordIds, setFlippedWordIds] = useState<Set<string>>(new Set());
   const cardButtonRef = useRef<HTMLDivElement | null>(null);
   const switchTimeoutRef = useRef<number | null>(null);
+  const hasFetchedRef = useRef(false);
 
   const mode = searchParams.get('mode') as GameMode;
   const limit = Number(searchParams.get('limit'));
@@ -36,6 +37,9 @@ export const useFlashCardsGame = () => {
 
   // Fetch words on mount
   useEffect(() => {
+    // Prevent double-fetching in development strict mode
+    if (hasFetchedRef.current) return;
+
     const fetchWords = async () => {
       if (!mode || !limit) {
         setError('Invalid game parameters.');
@@ -45,6 +49,7 @@ export const useFlashCardsGame = () => {
 
       try {
         setIsLoading(true);
+        hasFetchedRef.current = true;
         const result = await getWordsForGame({ mode, limit });
 
         if (result.success && result.data) {
