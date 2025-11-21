@@ -92,6 +92,7 @@ export const FlashcardsPage = () => {
       <PlayPageNavigation
         currentIndex={currentCardIndex}
         totalCount={words.length}
+        onClose={refetchDueCount}
       />
 
       {words[currentCardIndex] && (

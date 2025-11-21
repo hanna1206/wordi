@@ -10,6 +10,7 @@ interface PlayPageNavigationProps {
   totalCount: number;
   onUndo?: () => void;
   canUndo?: boolean;
+  onClose?: () => void;
 }
 
 export const PlayPageNavigation = ({
@@ -17,6 +18,7 @@ export const PlayPageNavigation = ({
   totalCount,
   onUndo,
   canUndo = false,
+  onClose,
 }: PlayPageNavigationProps) => {
   const progress = totalCount > 0 ? ((currentIndex + 1) / totalCount) * 100 : 0;
 
@@ -55,6 +57,7 @@ export const PlayPageNavigation = ({
             aria-label="Back to home"
             variant="ghost"
             size="lg"
+            onClick={onClose}
           >
             <Link href="/">
               <FaTimes />
