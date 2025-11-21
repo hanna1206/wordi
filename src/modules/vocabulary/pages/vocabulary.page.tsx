@@ -5,7 +5,6 @@ import { useCallback, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 
 import { PageHeader } from '@/components/page-header';
-import { SidebarLayout } from '@/components/sidebar-layout';
 import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
 import {
   VocabularyEndMessage,
@@ -56,47 +55,45 @@ export const VocabularyPage = () => {
   }, []);
 
   return (
-    <SidebarLayout>
-      <Box p={{ base: 4, md: 8 }} maxW="1400px" mx="auto">
-        <VocabularySearchBar
-          sortOption={sortOption}
-          onSortSelect={handleSortSelect}
-          searchQuery={searchQuery}
-          onSearchChange={handleSearchChange}
-        />
+    <Box p={{ base: 4, md: 8 }} maxW="1400px" mx="auto">
+      <VocabularySearchBar
+        sortOption={sortOption}
+        onSortSelect={handleSortSelect}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+      />
 
-        <PageHeader
-          title="Vocabulary"
-          description="Track and review all the words you've learned"
-        />
+      <PageHeader
+        title="Vocabulary"
+        description="Track and review all the words you've learned"
+      />
 
-        {isInitialLoading ? (
-          <VocabularyInitialLoader />
-        ) : error ? (
-          <VocabularyError error={error} />
-        ) : (
-          <>
-            <VocabularyTable items={items} onWordClick={handleWordClick} />
+      {isInitialLoading ? (
+        <VocabularyInitialLoader />
+      ) : error ? (
+        <VocabularyError error={error} />
+      ) : (
+        <>
+          <VocabularyTable items={items} onWordClick={handleWordClick} />
 
-            <VocabularyScrollSentinel sentinelRef={sentinelRef} />
+          <VocabularyScrollSentinel sentinelRef={sentinelRef} />
 
-            {isFetchingMore && <VocabularyLoadMoreSpinner />}
+          {isFetchingMore && <VocabularyLoadMoreSpinner />}
 
-            {!isFetchingMore && !hasMore && items.length > 0 && (
-              <VocabularyEndMessage />
-            )}
-          </>
-        )}
+          {!isFetchingMore && !hasMore && items.length > 0 && (
+            <VocabularyEndMessage />
+          )}
+        </>
+      )}
 
-        {isLoadingWord && <VocabularyWordLoadingOverlay />}
+      {isLoadingWord && <VocabularyWordLoadingOverlay />}
 
-        <VocabularyItemModal
-          isOpen={isModalOpen}
-          savedWord={selectedWord}
-          onClose={handleModalClose}
-          onWordDeleted={handleWordDeleted}
-        />
-      </Box>
-    </SidebarLayout>
+      <VocabularyItemModal
+        isOpen={isModalOpen}
+        savedWord={selectedWord}
+        onClose={handleModalClose}
+        onWordDeleted={handleWordDeleted}
+      />
+    </Box>
   );
 };

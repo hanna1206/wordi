@@ -1,13 +1,13 @@
 'use client';
 
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useState } from 'react';
 
 import { Box } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
+import { usePathname } from 'next/navigation';
 
 import { AppHeader } from '@/components/app-header';
 import { GradientBackground } from '@/components/gradient-background';
-import { useSidebar } from '@/contexts/sidebar-context';
 import { FlashCardsSettingsDialog } from '@/modules/flashcards/components/flash-cards-settings-dialog';
 
 interface SidebarProps {
@@ -37,10 +37,19 @@ interface SidebarLayoutProps {
 }
 
 export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
-  const { isDesktopSidebarOpen, isMobileSidebarOpen, toggleSidebar } =
-    useSidebar();
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const pathname = usePathname();
 
   const [isFlashCardsDialogOpen, setIsFlashCardsDialogOpen] = useState(false);
+
+  // Single toggle handler - the button visibility is controlled by CSS breakpoints
+  const toggleSidebar = useCallback(() => {
+    // Toggle desktop on desktop screens, mobile on mobile screens
+    // The actual button shown is controlled by display: { base: 'block', md: 'none' }
+    setIsDesktopSidebarOpen((prev) => !prev);
+    setIsMobileSidebarOpen((prev) => !prev);
+  }, []);
 
   const handleFlashCardsClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -50,6 +59,11 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   const handleCloseDialog = () => {
     setIsFlashCardsDialogOpen(false);
   };
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setIsMobileSidebarOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
