@@ -2,7 +2,7 @@ import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
 export const componentWordsPrompt = PromptTemplate.fromTemplate(
-  `Extract the component words from the German collocation and provide their out-of-context translations.
+  `Extract the component words from the German collocation and provide their out-of-context translations in {targetLanguage}.
 
 Collocation: "{collocation}"
 

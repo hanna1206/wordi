@@ -1,5 +1,3 @@
-import * as Sentry from '@sentry/nextjs';
-
 import { gpt41Model } from '@/services/llm/gpt-4.1';
 
 import { PartOfSpeech } from './linguistics.const';
@@ -23,10 +21,6 @@ import {
   componentWordsPrompt,
   outputStructure as componentWordsOutputStructure,
 } from './prompts/collocations/component-words.prompt';
-import {
-  outputStructure as usageNotesOutputStructure,
-  usageNotesPrompt,
-} from './prompts/collocations/usage-notes.prompt';
 import {
   adjectiveComparisonFormsPrompt,
   outputStructure as adjectiveComparisonFormsOutputStructure,
@@ -249,34 +243,23 @@ const componentWordsLlm = gpt41Model.withStructuredOutput(
 );
 const componentWordsChain = componentWordsPrompt.pipe(componentWordsLlm);
 
-const usageNotesLlm = gpt41Model.withStructuredOutput(
-  usageNotesOutputStructure,
-);
-const usageNotesChain = usageNotesPrompt.pipe(usageNotesLlm);
-
 export const generateLinguisticCollocationItem = async (
   collocation: string,
   targetLanguage: string,
 ): Promise<LinguisticCollocationItem> => {
   try {
-    const [
-      translationResult,
-      examplesResult,
-      componentWordsResult,
-      usageNotesResult,
-    ] = await Promise.all([
-      collocationTranslationChain.invoke({ collocation, targetLanguage }),
-      collocationExamplesChain.invoke({ collocation, targetLanguage }),
-      componentWordsChain.invoke({ collocation, targetLanguage }),
-      usageNotesChain.invoke({ collocation, targetLanguage }),
-    ]);
+    const [translationResult, examplesResult, componentWordsResult] =
+      await Promise.all([
+        collocationTranslationChain.invoke({ collocation, targetLanguage }),
+        collocationExamplesChain.invoke({ collocation, targetLanguage }),
+        componentWordsChain.invoke({ collocation, targetLanguage }),
+      ]);
 
     return {
       normalizedCollocation: collocation,
       mainTranslation: translationResult.mainTranslation,
       exampleSentences: examplesResult.exampleSentences,
       componentWords: componentWordsResult.componentWords,
-      usageNotes: usageNotesResult.usageNotes,
     };
   } catch (error) {
     Sentry.captureException(error, {
@@ -351,17 +334,6 @@ export const classifyInput = async (
       };
     }
   } catch (error) {
-    Sentry.captureException(error, {
-      tags: {
-        service: 'linguistics',
-        operation: 'classifyInput',
-        fallback: 'collocation',
-      },
-      extra: {
-        input: trimmedInput,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
-      },
-    });
     // eslint-disable-next-line no-console
     console.warn(
       `Classification failed for input "${trimmedInput}", defaulting to collocation processing`,

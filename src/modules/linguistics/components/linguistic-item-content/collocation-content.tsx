@@ -1,5 +1,5 @@
 import React from 'react';
-import { LuBookOpen, LuLayers, LuQuote } from 'react-icons/lu';
+import { LuLayers, LuQuote } from 'react-icons/lu';
 
 import { Box, Grid, Text, VStack } from '@chakra-ui/react';
 
@@ -84,16 +84,6 @@ export const CollocationContent: React.FC<CollocationContentProps> = ({
               )}
             </VStack>
           </Box>
-        </VStack>
-      )}
-
-      {/* Usage Notes */}
-      {linguisticCollocationItem.usageNotes && (
-        <VStack align="start" gap={1}>
-          <SectionHeader icon={LuBookOpen} title="Usage notes" />
-          <Text pl={6} fontSize="sm" color="gray.600">
-            {linguisticCollocationItem.usageNotes}
-          </Text>
         </VStack>
       )}
     </CardLayout>

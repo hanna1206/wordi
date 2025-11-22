@@ -117,7 +117,6 @@ export interface LinguisticCollocationItem {
   mainTranslation: string;
   exampleSentences: ExampleSentence[];
   componentWords: ComponentWord[];
-  usageNotes: string;
 }
 
 export type InputClassification =
