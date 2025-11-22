@@ -1,15 +1,31 @@
-import { Badge, Box, Card, Flex, Stack, Table, Text } from '@chakra-ui/react';
+import { LuEyeOff } from 'react-icons/lu';
+
+import {
+  Badge,
+  Box,
+  Card,
+  Flex,
+  Icon,
+  Stack,
+  Table,
+  Text,
+} from '@chakra-ui/react';
+
+import { Tooltip } from '@/components/tooltip';
 
 import type { MinimalVocabularyWord } from '../vocabulary.types';
+import { VocabularyActionMenu } from './vocabulary-action-menu';
 
 interface VocabularyTableProps {
   items: MinimalVocabularyWord[];
   onWordClick: (normalizedWord: string, partOfSpeech: string) => void;
+  onToggleHidden: (wordId: string, isHidden: boolean) => void;
 }
 
 export const VocabularyTable = ({
   items,
   onWordClick,
+  onToggleHidden,
 }: VocabularyTableProps) => {
   return (
     <>
@@ -36,18 +52,31 @@ export const VocabularyTable = ({
                 }
               >
                 <Card.Body>
-                  <Flex align="center" gap={2} mb={2}>
-                    <Text fontWeight="bold" fontSize="lg">
-                      {item.normalizedWord}
-                    </Text>
-                    <Badge
-                      colorPalette="teal"
-                      variant="subtle"
-                      textTransform="capitalize"
-                      size="sm"
-                    >
-                      {item.partOfSpeech}
-                    </Badge>
+                  <Flex align="center" justify="space-between" mb={2}>
+                    <Flex align="center" gap={2}>
+                      <Text fontWeight="bold" fontSize="lg">
+                        {item.normalizedWord}
+                      </Text>
+                      {item.isHidden && (
+                        <Tooltip content="Hidden word">
+                          <Icon as={LuEyeOff} color="fg.muted" fontSize="md" />
+                        </Tooltip>
+                      )}
+                      <Badge
+                        colorPalette="teal"
+                        variant="subtle"
+                        textTransform="capitalize"
+                        size="sm"
+                      >
+                        {item.partOfSpeech}
+                      </Badge>
+                    </Flex>
+                    <VocabularyActionMenu
+                      isHidden={item.isHidden}
+                      onToggleHidden={() =>
+                        onToggleHidden(item.id, !item.isHidden)
+                      }
+                    />
                   </Flex>
                   <Text color="fg.muted">
                     {item.commonData?.mainTranslation || '-'}
@@ -86,12 +115,20 @@ export const VocabularyTable = ({
                 >
                   Translation
                 </Table.ColumnHeader>
+                <Table.ColumnHeader
+                  fontWeight="semibold"
+                  fontSize="sm"
+                  color="fg.muted"
+                  width="80px"
+                >
+                  Actions
+                </Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
               {items.length === 0 ? (
                 <Table.Row>
-                  <Table.Cell colSpan={3}>
+                  <Table.Cell colSpan={4}>
                     <Flex justify="center" py={8}>
                       <Text color="fg.muted" fontSize="lg">
                         No words found. Start learning to build your vocabulary!
@@ -111,7 +148,18 @@ export const VocabularyTable = ({
                     transition="background 0.2s"
                   >
                     <Table.Cell fontWeight="medium" fontSize="md">
-                      {item.normalizedWord}
+                      <Flex align="center" gap={2}>
+                        {item.normalizedWord}
+                        {item.isHidden && (
+                          <Tooltip content="Hidden word">
+                            <Icon
+                              as={LuEyeOff}
+                              color="fg.muted"
+                              fontSize="md"
+                            />
+                          </Tooltip>
+                        )}
+                      </Flex>
                     </Table.Cell>
                     <Table.Cell>
                       <Badge
@@ -125,6 +173,14 @@ export const VocabularyTable = ({
                     </Table.Cell>
                     <Table.Cell color="fg.muted">
                       {item.commonData?.mainTranslation || '-'}
+                    </Table.Cell>
+                    <Table.Cell>
+                      <VocabularyActionMenu
+                        isHidden={item.isHidden}
+                        onToggleHidden={() =>
+                          onToggleHidden(item.id, !item.isHidden)
+                        }
+                      />
                     </Table.Cell>
                   </Table.Row>
                 ))

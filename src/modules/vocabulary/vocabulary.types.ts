@@ -15,6 +15,7 @@ export interface VocabularyItem extends VocabularyItemDatabaseInput {
   id: string;
   createdAt: string;
   updatedAt: string;
+  isHidden: boolean;
 }
 
 export interface CommonWordData {
@@ -41,9 +42,11 @@ export interface UserWordCheck {
 }
 
 export interface MinimalVocabularyWord {
+  id: string;
   normalizedWord: string;
   partOfSpeech: PartOfSpeech;
   commonData: CommonWordData;
+  isHidden: boolean;
 }
 
 export type Word = typeof wordsTable.$inferSelect;

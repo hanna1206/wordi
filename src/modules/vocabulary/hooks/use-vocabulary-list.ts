@@ -13,6 +13,7 @@ const DEBOUNCE_DELAY = 500;
 export const useVocabularyList = (
   sortOption: VocabularySortOption,
   searchQuery?: string,
+  showHidden = false,
 ) => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -67,6 +68,7 @@ export const useVocabularyList = (
           offset,
           sort: sortOption,
           searchQuery: debouncedSearchQuery,
+          showHidden,
         });
 
         if (result.success && result.data) {
@@ -110,7 +112,7 @@ export const useVocabularyList = (
         }
       }
     },
-    [sortOption, debouncedSearchQuery],
+    [sortOption, debouncedSearchQuery, showHidden],
   );
 
   useEffect(() => {

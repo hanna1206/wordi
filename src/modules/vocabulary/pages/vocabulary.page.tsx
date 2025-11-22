@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 
 import { PageHeader } from '@/components/page-header';
+import { toaster } from '@/components/toaster';
 import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
 import {
   VocabularyEndMessage,
@@ -21,12 +22,15 @@ import { useVocabularyList } from '@/modules/vocabulary/hooks/use-vocabulary-lis
 import { useVocabularyWordDetails } from '@/modules/vocabulary/hooks/use-vocabulary-word-details';
 import type { VocabularySortOption } from '@/modules/vocabulary/vocabulary.types';
 
+import { toggleWordHidden } from '../vocabulary.actions';
+
 export const VocabularyPage = () => {
   const [sortOption, setSortOption] = useState<VocabularySortOption>('Latest');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showHidden, setShowHidden] = useState(false);
 
   const { isInitialLoading, isFetchingMore, error, items, hasMore, loadWords } =
-    useVocabularyList(sortOption, searchQuery);
+    useVocabularyList(sortOption, searchQuery, showHidden);
 
   const {
     isModalOpen,
@@ -54,6 +58,26 @@ export const VocabularyPage = () => {
     setSearchQuery(query);
   }, []);
 
+  const handleShowHiddenChange = useCallback((checked: boolean) => {
+    setShowHidden(checked);
+  }, []);
+
+  const handleToggleHidden = useCallback(
+    async (wordId: string, isHidden: boolean) => {
+      const result = await toggleWordHidden({ wordId, isHidden });
+      if (result.success) {
+        await loadWords({ reset: true });
+      } else {
+        toaster.create({
+          type: 'error',
+          title: 'Failed to update word',
+          description: result.error,
+        });
+      }
+    },
+    [loadWords],
+  );
+
   return (
     <Box p={{ base: 4, md: 8 }} maxW="1400px" mx="auto">
       <VocabularySearchBar
@@ -61,6 +85,8 @@ export const VocabularyPage = () => {
         onSortSelect={handleSortSelect}
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
+        showHidden={showHidden}
+        onShowHiddenChange={handleShowHiddenChange}
       />
 
       <PageHeader
@@ -74,7 +100,11 @@ export const VocabularyPage = () => {
         <VocabularyError error={error} />
       ) : (
         <>
-          <VocabularyTable items={items} onWordClick={handleWordClick} />
+          <VocabularyTable
+            items={items}
+            onWordClick={handleWordClick}
+            onToggleHidden={handleToggleHidden}
+          />
 
           <VocabularyScrollSentinel sentinelRef={sentinelRef} />
 

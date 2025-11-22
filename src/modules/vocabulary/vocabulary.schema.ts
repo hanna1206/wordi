@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import {
+  boolean,
   check,
   index,
   jsonb,
@@ -34,6 +35,7 @@ export const wordsTable = pgTable(
     targetLanguage: languageCodeEnum('target_language')
       .default('english')
       .notNull(),
+    isHidden: boolean('is_hidden').default(false).notNull(),
   },
   (table) => [
     // Composite index for cache lookup
@@ -60,6 +62,10 @@ export const wordsTable = pgTable(
     index('idx_words_user_id').on(table.userId),
     // Composite index for user word lookup
     index('idx_words_user_word_lookup').on(table.userId, table.normalizedWord),
+    // Index for hidden flag
+    index('idx_words_is_hidden').on(table.isHidden),
+    // Composite index for user + hidden filtering
+    index('idx_words_user_hidden').on(table.userId, table.isHidden),
     // Unique constraint
     uniqueIndex('idx_words_user_normalized_target_unique').on(
       table.userId,

@@ -24,6 +24,7 @@ const getUserMinimalVocabulary = async (
   offset = 0,
   sort: VocabularySortOption = 'Latest',
   searchQuery?: string,
+  showHidden = false,
 ): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {
   const orderBy =
     sort === 'Alphabetical'
@@ -36,12 +37,18 @@ const getUserMinimalVocabulary = async (
     whereConditions.push(ilike(wordsTable.normalizedWord, `%${searchQuery}%`));
   }
 
+  if (!showHidden) {
+    whereConditions.push(eq(wordsTable.isHidden, false));
+  }
+
   const [items, [{ total }]] = await Promise.all([
     db
       .select({
+        id: wordsTable.id,
         normalizedWord: wordsTable.normalizedWord,
         partOfSpeech: wordsTable.partOfSpeech,
         commonData: wordsTable.commonData,
+        isHidden: wordsTable.isHidden,
       })
       .from(wordsTable)
       .where(and(...whereConditions))
@@ -112,6 +119,17 @@ const getLatestWords = async (userId: string, limit: number) => {
     .limit(limit);
 };
 
+const toggleWordHidden = async (
+  wordId: string,
+  userId: string,
+  isHidden: boolean,
+): Promise<void> => {
+  await db
+    .update(wordsTable)
+    .set({ isHidden, updatedAt: new Date().toISOString() })
+    .where(and(eq(wordsTable.id, wordId), eq(wordsTable.userId, userId)));
+};
+
 export {
   create,
   deleteItem,
@@ -119,4 +137,5 @@ export {
   getCachedWord,
   getLatestWords,
   getUserMinimalVocabulary,
+  toggleWordHidden,
 };

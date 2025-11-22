@@ -89,6 +89,7 @@ type FetchMinimalVocabularyParams = {
   offset?: number;
   sort?: VocabularySortOption;
   searchQuery?: string;
+  showHidden?: boolean;
 };
 
 export const fetchUserMinimalVocabulary = withAuth<
@@ -97,7 +98,7 @@ export const fetchUserMinimalVocabulary = withAuth<
 >(
   async (
     context,
-    { limit = 20, offset = 0, sort = 'Latest', searchQuery },
+    { limit = 20, offset = 0, sort = 'Latest', searchQuery, showHidden },
   ): Promise<
     ActionResult<{ items: MinimalVocabularyWord[]; total: number }>
   > => {
@@ -108,6 +109,7 @@ export const fetchUserMinimalVocabulary = withAuth<
         offset,
         sort,
         searchQuery,
+        showHidden,
       );
       return { success: true, data };
     } catch (error) {
@@ -161,6 +163,24 @@ export const deleteWord = withAuth<{ wordId: string }, void>(
     }
   },
 );
+
+// Toggle word hidden status
+export const toggleWordHidden = withAuth<
+  { wordId: string; isHidden: boolean },
+  void
+>(async (context, { wordId, isHidden }): Promise<ActionResult<void>> => {
+  try {
+    await vocabularyRepository.toggleWordHidden(
+      wordId,
+      context.user.id,
+      isHidden,
+    );
+    return { success: true };
+  } catch (error) {
+    Sentry.captureException(error);
+    return { success: false, error: 'Failed to update word visibility' };
+  }
+});
 
 type FetchVocabularyWithProgressParams = {
   limit?: number;

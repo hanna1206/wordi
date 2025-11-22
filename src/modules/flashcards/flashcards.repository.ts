@@ -63,20 +63,23 @@ const getLatestWords = async (userId: string, limit: number) => {
   return db
     .select()
     .from(wordsTable)
-    .where(eq(wordsTable.userId, userId))
+    .where(and(eq(wordsTable.userId, userId), eq(wordsTable.isHidden, false)))
     .orderBy(desc(wordsTable.createdAt))
     .limit(limit);
 };
 
 const getAllUserWords = async (userId: string) => {
-  return db.select().from(wordsTable).where(eq(wordsTable.userId, userId));
+  return db
+    .select()
+    .from(wordsTable)
+    .where(and(eq(wordsTable.userId, userId), eq(wordsTable.isHidden, false)));
 };
 
 const getRandomWords = async (userId: string, limit: number) => {
   return db
     .select()
     .from(wordsTable)
-    .where(eq(wordsTable.userId, userId))
+    .where(and(eq(wordsTable.userId, userId), eq(wordsTable.isHidden, false)))
     .orderBy(sql`RANDOM()`)
     .limit(limit);
 };
@@ -96,6 +99,7 @@ const getDueWords = async (userId: string, limit: number) => {
         eq(userWordProgressTable.userId, userId),
         lte(userWordProgressTable.nextReviewDate, now),
         eq(userWordProgressTable.isArchived, false),
+        eq(wordsTable.isHidden, false),
       ),
     )
     .orderBy(asc(userWordProgressTable.nextReviewDate))
@@ -167,11 +171,13 @@ const getDueWordsCount = async (userId: string): Promise<number> => {
   const [result] = await db
     .select({ count: count() })
     .from(userWordProgressTable)
+    .innerJoin(wordsTable, eq(userWordProgressTable.wordId, wordsTable.id))
     .where(
       and(
         eq(userWordProgressTable.userId, userId),
         lte(userWordProgressTable.nextReviewDate, now),
         eq(userWordProgressTable.isArchived, false),
+        eq(wordsTable.isHidden, false),
       ),
     );
 
@@ -182,7 +188,7 @@ const getTotalWordsCount = async (userId: string): Promise<number> => {
   const [result] = await db
     .select({ count: count() })
     .from(wordsTable)
-    .where(eq(wordsTable.userId, userId));
+    .where(and(eq(wordsTable.userId, userId), eq(wordsTable.isHidden, false)));
 
   return result?.count ?? 0;
 };
