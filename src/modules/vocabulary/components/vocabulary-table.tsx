@@ -32,41 +32,40 @@ export const VocabularyTable = ({
       {/* Mobile Card Layout */}
       <Box display={{ base: 'block', md: 'none' }}>
         {items.length === 0 ? (
-          <Flex justify="center" py={8}>
-            <Text color="fg.muted" fontSize="lg">
+          <Flex justify="center" py={6}>
+            <Text color="fg.muted" fontSize="sm">
               No words found. Start learning to build your vocabulary!
             </Text>
           </Flex>
         ) : (
-          <Stack gap={3}>
+          <Stack gap={2}>
             {items.map((item) => (
               <Card.Root
                 key={`${item.normalizedWord}-${item.partOfSpeech}`}
                 borderWidth="1px"
                 shadow="sm"
                 cursor="pointer"
-                _hover={{ bg: 'bg.muted' }}
                 transition="background 0.2s"
                 onClick={() =>
                   onWordClick(item.normalizedWord, item.partOfSpeech)
                 }
               >
-                <Card.Body>
-                  <Flex align="center" justify="space-between" mb={2}>
-                    <Flex align="center" gap={2}>
-                      <Text fontWeight="bold" fontSize="lg">
+                <Card.Body py={2} px={3}>
+                  <Flex align="center" justify="space-between" mb={1}>
+                    <Flex align="center" gap={1.5}>
+                      <Text fontWeight="semibold" fontSize="md">
                         {item.normalizedWord}
                       </Text>
                       {item.isHidden && (
                         <Tooltip content="Hidden word">
-                          <Icon as={LuEyeOff} color="fg.muted" fontSize="md" />
+                          <Icon as={LuEyeOff} color="fg.muted" fontSize="sm" />
                         </Tooltip>
                       )}
                       <Badge
                         colorPalette="teal"
                         variant="subtle"
                         textTransform="capitalize"
-                        size="sm"
+                        size="xs"
                       >
                         {item.partOfSpeech}
                       </Badge>
@@ -78,7 +77,7 @@ export const VocabularyTable = ({
                       }
                     />
                   </Flex>
-                  <Text color="fg.muted">
+                  <Text color="fg.muted" fontSize="sm">
                     {item.commonData?.mainTranslation || '-'}
                   </Text>
                 </Card.Body>
@@ -91,35 +90,35 @@ export const VocabularyTable = ({
       {/* Desktop Table Layout */}
       <Box display={{ base: 'none', md: 'block' }}>
         <Card.Root borderWidth="1px" shadow="sm" overflow="hidden">
-          <Table.Root size="lg" variant="outline">
+          <Table.Root size="sm" variant="outline">
             <Table.Header bg="bg.muted">
               <Table.Row>
                 <Table.ColumnHeader
                   fontWeight="semibold"
-                  fontSize="sm"
+                  fontSize="xs"
                   color="fg.muted"
                 >
                   Word
                 </Table.ColumnHeader>
                 <Table.ColumnHeader
                   fontWeight="semibold"
-                  fontSize="sm"
+                  fontSize="xs"
                   color="fg.muted"
                 >
                   Part of Speech
                 </Table.ColumnHeader>
                 <Table.ColumnHeader
                   fontWeight="semibold"
-                  fontSize="sm"
+                  fontSize="xs"
                   color="fg.muted"
                 >
                   Translation
                 </Table.ColumnHeader>
                 <Table.ColumnHeader
                   fontWeight="semibold"
-                  fontSize="sm"
+                  fontSize="xs"
                   color="fg.muted"
-                  width="80px"
+                  width="60px"
                 >
                   Actions
                 </Table.ColumnHeader>
@@ -129,8 +128,8 @@ export const VocabularyTable = ({
               {items.length === 0 ? (
                 <Table.Row>
                   <Table.Cell colSpan={4}>
-                    <Flex justify="center" py={8}>
-                      <Text color="fg.muted" fontSize="lg">
+                    <Flex justify="center" py={6}>
+                      <Text color="fg.muted" fontSize="sm">
                         No words found. Start learning to build your vocabulary!
                       </Text>
                     </Flex>
@@ -144,18 +143,17 @@ export const VocabularyTable = ({
                       onWordClick(item.normalizedWord, item.partOfSpeech)
                     }
                     cursor="pointer"
-                    _hover={{ bg: 'bg.muted' }}
                     transition="background 0.2s"
                   >
-                    <Table.Cell fontWeight="medium" fontSize="md">
-                      <Flex align="center" gap={2}>
+                    <Table.Cell fontWeight="medium" fontSize="sm">
+                      <Flex align="center" gap={1.5}>
                         {item.normalizedWord}
                         {item.isHidden && (
                           <Tooltip content="Hidden word">
                             <Icon
                               as={LuEyeOff}
                               color="fg.muted"
-                              fontSize="md"
+                              fontSize="sm"
                             />
                           </Tooltip>
                         )}
@@ -166,12 +164,12 @@ export const VocabularyTable = ({
                         colorPalette="teal"
                         variant="subtle"
                         textTransform="capitalize"
-                        size="sm"
+                        size="xs"
                       >
                         {item.partOfSpeech}
                       </Badge>
                     </Table.Cell>
-                    <Table.Cell color="fg.muted">
+                    <Table.Cell color="fg.muted" fontSize="sm">
                       {item.commonData?.mainTranslation || '-'}
                     </Table.Cell>
                     <Table.Cell>
