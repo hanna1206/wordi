@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
 import * as flashcardsRepository from '@/modules/flashcards/flashcards.repository';
+import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
@@ -13,10 +14,12 @@ import { transformLinguisticItemToVocabularyItem } from './utils/transform-lingu
 import * as vocabularyRepository from './vocabulary.repository';
 import type {
   MinimalVocabularyWord,
+  VisibilityFilter,
   VocabularyItem,
   VocabularyItemAnonymized,
   VocabularySortOption,
 } from './vocabulary.types';
+import { ALL_PARTS_OF_SPEECH } from './vocabulary.types';
 
 export const saveWordForLearning = withUserSettings<
   LinguisticItem,
@@ -89,7 +92,8 @@ type FetchMinimalVocabularyParams = {
   offset?: number;
   sort?: VocabularySortOption;
   searchQuery?: string;
-  showHidden?: boolean;
+  visibilityFilter?: VisibilityFilter;
+  partsOfSpeech?: PartOfSpeech[];
 };
 
 export const fetchUserMinimalVocabulary = withAuth<
@@ -98,7 +102,14 @@ export const fetchUserMinimalVocabulary = withAuth<
 >(
   async (
     context,
-    { limit = 20, offset = 0, sort = 'Latest', searchQuery, showHidden },
+    {
+      limit = 20,
+      offset = 0,
+      sort = 'Latest',
+      searchQuery,
+      visibilityFilter = 'visible-only',
+      partsOfSpeech = ALL_PARTS_OF_SPEECH,
+    },
   ): Promise<
     ActionResult<{ items: MinimalVocabularyWord[]; total: number }>
   > => {
@@ -109,7 +120,8 @@ export const fetchUserMinimalVocabulary = withAuth<
         offset,
         sort,
         searchQuery,
-        showHidden,
+        visibilityFilter,
+        partsOfSpeech,
       );
       return { success: true, data };
     } catch (error) {

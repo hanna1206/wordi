@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { toaster } from '@/components/toaster';
+import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { fetchUserMinimalVocabulary } from '@/modules/vocabulary/vocabulary.actions';
 import type {
   MinimalVocabularyWord,
+  VisibilityFilter,
   VocabularySortOption,
 } from '@/modules/vocabulary/vocabulary.types';
+import { ALL_PARTS_OF_SPEECH } from '@/modules/vocabulary/vocabulary.types';
 
 const DEFAULT_PAGE_SIZE = 20;
 const DEBOUNCE_DELAY = 500;
@@ -13,7 +16,8 @@ const DEBOUNCE_DELAY = 500;
 export const useVocabularyList = (
   sortOption: VocabularySortOption,
   searchQuery?: string,
-  showHidden = false,
+  visibilityFilter: VisibilityFilter = 'visible-only',
+  selectedPartsOfSpeech: PartOfSpeech[] = ALL_PARTS_OF_SPEECH,
 ) => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -68,7 +72,8 @@ export const useVocabularyList = (
           offset,
           sort: sortOption,
           searchQuery: debouncedSearchQuery,
-          showHidden,
+          visibilityFilter,
+          partsOfSpeech: selectedPartsOfSpeech,
         });
 
         if (result.success && result.data) {
@@ -112,7 +117,7 @@ export const useVocabularyList = (
         }
       }
     },
-    [sortOption, debouncedSearchQuery, showHidden],
+    [sortOption, debouncedSearchQuery, visibilityFilter, selectedPartsOfSpeech],
   );
 
   useEffect(() => {

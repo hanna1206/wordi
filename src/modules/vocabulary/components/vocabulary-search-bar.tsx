@@ -1,25 +1,30 @@
-import { LuArrowDownNarrowWide } from 'react-icons/lu';
+'use client';
 
-// import { LuArrowDownNarrowWide, LuSlidersHorizontal } from 'react-icons/lu';
-import {
-  Button,
-  Checkbox,
-  Flex,
-  Icon,
-  Input,
-  Menu,
-  Text,
-} from '@chakra-ui/react';
+import { useState } from 'react';
+import { LuArrowDownNarrowWide, LuSlidersHorizontal } from 'react-icons/lu';
 
-import type { VocabularySortOption } from '@/modules/vocabulary/vocabulary.types';
+import { Badge, Button, Flex, Icon, Input, Menu, Text } from '@chakra-ui/react';
+
+import type { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
+import type {
+  VisibilityFilter,
+  VocabularySortOption,
+} from '@/modules/vocabulary/vocabulary.types';
+
+import { VocabularyFilterDialog } from './vocabulary-filter-dialog';
 
 interface VocabularySearchBarProps {
   sortOption: VocabularySortOption;
   onSortSelect: (option: VocabularySortOption) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  showHidden: boolean;
-  onShowHiddenChange: (checked: boolean) => void;
+  visibilityFilter: VisibilityFilter;
+  selectedPartsOfSpeech: PartOfSpeech[];
+  onFilterChange: (
+    visibility: VisibilityFilter,
+    partsOfSpeech: PartOfSpeech[],
+  ) => void;
+  hasActiveFilters: boolean;
 }
 
 export const VocabularySearchBar = ({
@@ -27,12 +32,23 @@ export const VocabularySearchBar = ({
   onSortSelect,
   searchQuery,
   onSearchChange,
-  showHidden,
-  onShowHiddenChange,
+  visibilityFilter,
+  selectedPartsOfSpeech,
+  onFilterChange,
+  hasActiveFilters,
 }: VocabularySearchBarProps) => {
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
+
+  const handleFilterApply = (
+    visibility: VisibilityFilter,
+    partsOfSpeech: PartOfSpeech[],
+  ) => {
+    onFilterChange(visibility, partsOfSpeech);
+  };
+
   return (
-    <Flex direction="column" gap={3} mb={6}>
-      <Flex direction="row" gap={2} align="center">
+    <>
+      <Flex direction="row" gap={2} align="center" mb={6}>
         <Input
           placeholder="Search vocabulary"
           flex="1"
@@ -63,21 +79,44 @@ export const VocabularySearchBar = ({
             </Menu.Content>
           </Menu.Positioner>
         </Menu.Root>
-        {/* Temporarily comment out, as filters are not implemented yet */}
-        {/* <Button variant="outline" size="lg">
+
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => setIsFilterDialogOpen(true)}
+          aria-label="Filter"
+          position="relative"
+          colorScheme={hasActiveFilters ? 'blue' : undefined}
+        >
           <Icon as={LuSlidersHorizontal} fontSize="md" />
-          <Text display={{ base: 'none', md: 'block' }}>Filters</Text>
-        </Button> */}
+          <Text display={{ base: 'none', md: 'block' }}>Filter</Text>
+          {hasActiveFilters && (
+            <Badge
+              position="absolute"
+              top="-2"
+              right="-2"
+              borderRadius="full"
+              minW="4"
+              minH="4"
+              w="4"
+              h="4"
+              p="0"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              backgroundColor="blue.500"
+            />
+          )}
+        </Button>
       </Flex>
 
-      <Checkbox.Root
-        checked={showHidden}
-        onCheckedChange={(e) => onShowHiddenChange(!!e.checked)}
-      >
-        <Checkbox.HiddenInput />
-        <Checkbox.Control />
-        <Checkbox.Label>Show Hidden Words</Checkbox.Label>
-      </Checkbox.Root>
-    </Flex>
+      <VocabularyFilterDialog
+        isOpen={isFilterDialogOpen}
+        onClose={() => setIsFilterDialogOpen(false)}
+        visibilityFilter={visibilityFilter}
+        selectedPartsOfSpeech={selectedPartsOfSpeech}
+        onApply={handleFilterApply}
+      />
+    </>
   );
 };

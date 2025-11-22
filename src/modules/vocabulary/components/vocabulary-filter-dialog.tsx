@@ -1,0 +1,196 @@
+'use client';
+
+import { useState } from 'react';
+
+import {
+  Button,
+  CheckboxCard,
+  DialogBackdrop,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+  Flex,
+  Grid,
+  Portal,
+  SegmentGroup,
+  Text,
+} from '@chakra-ui/react';
+
+import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
+import type { VisibilityFilter } from '@/modules/vocabulary/vocabulary.types';
+import { ALL_PARTS_OF_SPEECH } from '@/modules/vocabulary/vocabulary.types';
+
+interface VocabularyFilterDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  visibilityFilter: VisibilityFilter;
+  selectedPartsOfSpeech: PartOfSpeech[];
+  onApply: (
+    visibility: VisibilityFilter,
+    partsOfSpeech: PartOfSpeech[],
+  ) => void;
+}
+
+export const VocabularyFilterDialog = ({
+  isOpen,
+  onClose,
+  visibilityFilter,
+  selectedPartsOfSpeech,
+  onApply,
+}: VocabularyFilterDialogProps) => {
+  // Local state for filter selections
+  const [localVisibilityFilter, setLocalVisibilityFilter] =
+    useState<VisibilityFilter>(visibilityFilter);
+  const [localSelectedPartsOfSpeech, setLocalSelectedPartsOfSpeech] = useState<
+    PartOfSpeech[]
+  >(selectedPartsOfSpeech);
+
+  // Reset local state when dialog opens
+  const handleOpenChange = (details: { open: boolean }) => {
+    if (details.open) {
+      setLocalVisibilityFilter(visibilityFilter);
+      setLocalSelectedPartsOfSpeech(selectedPartsOfSpeech);
+    } else {
+      onClose();
+    }
+  };
+
+  // Handle Apply button click
+  const handleApply = () => {
+    onApply(localVisibilityFilter, localSelectedPartsOfSpeech);
+    onClose();
+  };
+
+  // Handle Cancel button click
+  const handleCancel = () => {
+    onClose();
+  };
+
+  // Handle part of speech checkbox toggle
+  const handlePartOfSpeechToggle = (partOfSpeech: PartOfSpeech) => {
+    setLocalSelectedPartsOfSpeech((prev) => {
+      if (prev.includes(partOfSpeech)) {
+        // Remove if already selected
+        return prev.filter((pos) => pos !== partOfSpeech);
+      } else {
+        // Add if not selected
+        return [...prev, partOfSpeech];
+      }
+    });
+  };
+
+  // Helper to format part of speech labels
+  const formatPartOfSpeechLabel = (partOfSpeech: PartOfSpeech): string => {
+    // Capitalize first letter of each word
+    return partOfSpeech
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  return (
+    <DialogRoot
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+      size={{ mdDown: 'full', md: 'md' }}
+    >
+      <Portal>
+        <DialogBackdrop />
+        <DialogPositioner>
+          <DialogContent borderRadius={{ base: 0, md: 'lg' }} overflowY="auto">
+            <DialogHeader>
+              <DialogTitle>Filter Vocabulary</DialogTitle>
+              <DialogCloseTrigger />
+            </DialogHeader>
+
+            <DialogBody py={{ base: 4, md: 3 }}>
+              <Flex direction="column" gap={{ base: 4, md: 3 }}>
+                {/* Visibility Filter Section */}
+                <Flex direction="column" gap={1.5} alignItems="flex-start">
+                  <Text fontWeight="medium" fontSize="sm">
+                    Visibility
+                  </Text>
+                  <SegmentGroup.Root
+                    value={localVisibilityFilter}
+                    onValueChange={(e) =>
+                      setLocalVisibilityFilter(e.value as VisibilityFilter)
+                    }
+                    size="sm"
+                  >
+                    <SegmentGroup.Indicator bg="white" />
+                    <SegmentGroup.Item value="any">
+                      <SegmentGroup.ItemText>Any</SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                    <SegmentGroup.Item value="hidden-only">
+                      <SegmentGroup.ItemText>Hidden only</SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                    <SegmentGroup.Item value="visible-only">
+                      <SegmentGroup.ItemText>
+                        Visible only
+                      </SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                  </SegmentGroup.Root>
+                </Flex>
+
+                {/* Part of Speech Filter Section */}
+                <Flex direction="column" gap={1.5} mt={2}>
+                  <Text fontWeight="medium" fontSize="sm">
+                    Part of Speech
+                  </Text>
+                  <Grid
+                    templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)' }}
+                    gap={2}
+                  >
+                    {ALL_PARTS_OF_SPEECH.map((partOfSpeech) => (
+                      <CheckboxCard.Root
+                        key={partOfSpeech}
+                        checked={localSelectedPartsOfSpeech.includes(
+                          partOfSpeech,
+                        )}
+                        onCheckedChange={() =>
+                          handlePartOfSpeechToggle(partOfSpeech)
+                        }
+                      >
+                        <CheckboxCard.HiddenInput />
+                        <CheckboxCard.Control>
+                          <Flex
+                            direction="column"
+                            alignItems="flex-start"
+                            gap={0.5}
+                            w="full"
+                          >
+                            <Text fontSize="sm" fontWeight="medium">
+                              {formatPartOfSpeechLabel(partOfSpeech)}
+                            </Text>
+                          </Flex>
+                          <CheckboxCard.Indicator />
+                        </CheckboxCard.Control>
+                      </CheckboxCard.Root>
+                    ))}
+                  </Grid>
+                </Flex>
+              </Flex>
+            </DialogBody>
+
+            <DialogFooter pt={3} gap={2}>
+              <Button variant="outline" onClick={handleCancel} size="md">
+                Cancel
+              </Button>
+              <Button colorScheme="blue" onClick={handleApply} size="md">
+                Apply
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </DialogPositioner>
+      </Portal>
+    </DialogRoot>
+  );
+};

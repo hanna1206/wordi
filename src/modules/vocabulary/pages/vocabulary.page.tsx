@@ -6,6 +6,7 @@ import { Box } from '@chakra-ui/react';
 
 import { PageHeader } from '@/components/page-header';
 import { toaster } from '@/components/toaster';
+import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
 import {
   VocabularyEndMessage,
@@ -20,17 +21,37 @@ import { VocabularyTable } from '@/modules/vocabulary/components/vocabulary-tabl
 import { useInfiniteScroll } from '@/modules/vocabulary/hooks/use-infinite-scroll';
 import { useVocabularyList } from '@/modules/vocabulary/hooks/use-vocabulary-list';
 import { useVocabularyWordDetails } from '@/modules/vocabulary/hooks/use-vocabulary-word-details';
-import type { VocabularySortOption } from '@/modules/vocabulary/vocabulary.types';
+import type {
+  VisibilityFilter,
+  VocabularySortOption,
+} from '@/modules/vocabulary/vocabulary.types';
+import {
+  ALL_PARTS_OF_SPEECH,
+  areFiltersAtDefault,
+} from '@/modules/vocabulary/vocabulary.types';
 
 import { toggleWordHidden } from '../vocabulary.actions';
 
 export const VocabularyPage = () => {
   const [sortOption, setSortOption] = useState<VocabularySortOption>('Latest');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showHidden, setShowHidden] = useState(false);
+  const [visibilityFilter, setVisibilityFilter] =
+    useState<VisibilityFilter>('visible-only');
+  const [selectedPartsOfSpeech, setSelectedPartsOfSpeech] =
+    useState<PartOfSpeech[]>(ALL_PARTS_OF_SPEECH);
+
+  const hasActiveFilters = !areFiltersAtDefault(
+    visibilityFilter,
+    selectedPartsOfSpeech,
+  );
 
   const { isInitialLoading, isFetchingMore, error, items, hasMore, loadWords } =
-    useVocabularyList(sortOption, searchQuery, showHidden);
+    useVocabularyList(
+      sortOption,
+      searchQuery,
+      visibilityFilter,
+      selectedPartsOfSpeech,
+    );
 
   const {
     isModalOpen,
@@ -58,9 +79,13 @@ export const VocabularyPage = () => {
     setSearchQuery(query);
   }, []);
 
-  const handleShowHiddenChange = useCallback((checked: boolean) => {
-    setShowHidden(checked);
-  }, []);
+  const handleFilterChange = useCallback(
+    (visibility: VisibilityFilter, partsOfSpeech: PartOfSpeech[]) => {
+      setVisibilityFilter(visibility);
+      setSelectedPartsOfSpeech(partsOfSpeech);
+    },
+    [],
+  );
 
   const handleToggleHidden = useCallback(
     async (wordId: string, isHidden: boolean) => {
@@ -85,8 +110,10 @@ export const VocabularyPage = () => {
         onSortSelect={handleSortSelect}
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
-        showHidden={showHidden}
-        onShowHiddenChange={handleShowHiddenChange}
+        visibilityFilter={visibilityFilter}
+        selectedPartsOfSpeech={selectedPartsOfSpeech}
+        onFilterChange={handleFilterChange}
+        hasActiveFilters={hasActiveFilters}
       />
 
       <PageHeader

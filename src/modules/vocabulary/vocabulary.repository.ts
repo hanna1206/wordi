@@ -1,15 +1,18 @@
-import { and, asc, count, desc, eq, ilike } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray } from 'drizzle-orm';
 
 import { db } from '@/db/client';
+import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 
 import { wordCacheView, wordsTable } from './vocabulary.schema';
 import type {
   MinimalVocabularyWord,
+  VisibilityFilter,
   VocabularyItem,
   VocabularyItemAnonymized,
   VocabularySortOption,
 } from './vocabulary.types';
+import { ALL_PARTS_OF_SPEECH } from './vocabulary.types';
 
 const create = async (
   data: typeof wordsTable.$inferInsert,
@@ -24,7 +27,8 @@ const getUserMinimalVocabulary = async (
   offset = 0,
   sort: VocabularySortOption = 'Latest',
   searchQuery?: string,
-  showHidden = false,
+  visibilityFilter: VisibilityFilter = 'visible-only',
+  partsOfSpeech: PartOfSpeech[] = ALL_PARTS_OF_SPEECH,
 ): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {
   const orderBy =
     sort === 'Alphabetical'
@@ -37,9 +41,24 @@ const getUserMinimalVocabulary = async (
     whereConditions.push(ilike(wordsTable.normalizedWord, `%${searchQuery}%`));
   }
 
-  if (!showHidden) {
+  // Apply visibility filter
+  if (visibilityFilter === 'hidden-only') {
+    whereConditions.push(eq(wordsTable.isHidden, true));
+  } else if (visibilityFilter === 'visible-only') {
     whereConditions.push(eq(wordsTable.isHidden, false));
   }
+  // 'any' means no visibility filter is applied
+
+  // Apply parts of speech filter
+  // If empty array, no results should be returned
+  if (partsOfSpeech.length === 0) {
+    // Add a condition that will never match to return empty results
+    whereConditions.push(eq(wordsTable.id, 'impossible-id-that-never-exists'));
+  } else if (partsOfSpeech.length < ALL_PARTS_OF_SPEECH.length) {
+    // Only apply filter if it's a subset (not all parts of speech)
+    whereConditions.push(inArray(wordsTable.partOfSpeech, partsOfSpeech));
+  }
+  // If all parts of speech are selected, no filter is needed
 
   const [items, [{ total }]] = await Promise.all([
     db
