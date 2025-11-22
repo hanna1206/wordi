@@ -5,6 +5,7 @@ import { wordsTable } from './vocabulary.schema';
 export interface VocabularyItemDatabaseInput {
   userId: string;
   normalizedWord: string;
+  sortableWord: string;
   partOfSpeech: PartOfSpeech;
   commonData: CommonWordData;
   partSpecificData: Record<string, unknown>;

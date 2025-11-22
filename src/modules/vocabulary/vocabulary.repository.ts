@@ -32,7 +32,7 @@ const getUserMinimalVocabulary = async (
 ): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {
   const orderBy =
     sort === 'Alphabetical'
-      ? asc(wordsTable.normalizedWord)
+      ? asc(wordsTable.sortableWord)
       : desc(wordsTable.createdAt);
 
   const whereConditions = [eq(wordsTable.userId, userId)];

@@ -5,6 +5,7 @@ import type {
   CommonWordData,
   VocabularyItemDatabaseInput,
 } from '../vocabulary.types';
+import { extractSortableWord } from './extract-sortable-word';
 
 export const transformLinguisticWordItemToVocabularyItem = (
   linguisticItem: LinguisticWordItem,
@@ -40,6 +41,7 @@ export const transformLinguisticWordItemToVocabularyItem = (
   const vocabularyItem: VocabularyItemDatabaseInput = {
     userId,
     normalizedWord: linguisticItem.normalizedWord,
+    sortableWord: extractSortableWord(linguisticItem.normalizedWord),
     partOfSpeech: linguisticItem.partOfSpeech[0] || 'other',
     commonData,
     partSpecificData: specificData,

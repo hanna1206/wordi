@@ -15,6 +15,13 @@
       "when": 1763768360997,
       "tag": "0001_spooky_toad_men",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1763833672696,
+      "tag": "0002_typical_sentry",
+      "breakpoints": true
     }
   ]
 }

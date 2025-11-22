@@ -23,6 +23,7 @@ export const wordsTable = pgTable(
       .notNull(),
     userId: uuid('user_id').notNull(),
     normalizedWord: text('normalized_word').notNull(),
+    sortableWord: text('sortable_word').notNull(),
     partOfSpeech: partOfSpeechEnum('part_of_speech').notNull(),
     commonData: jsonb('common_data').default({}).notNull(),
     partSpecificData: jsonb('part_specific_data').default({}).notNull(),
@@ -57,6 +58,7 @@ export const wordsTable = pgTable(
     ),
     // Simple indexes
     index('idx_words_normalized_word').on(table.normalizedWord),
+    index('idx_words_sortable_word').on(table.sortableWord),
     index('idx_words_part_of_speech').on(table.partOfSpeech),
     index('idx_words_target_language').on(table.targetLanguage),
     index('idx_words_user_id').on(table.userId),
