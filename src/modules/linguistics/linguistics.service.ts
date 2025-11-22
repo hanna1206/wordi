@@ -247,45 +247,19 @@ export const generateLinguisticCollocationItem = async (
   collocation: string,
   targetLanguage: string,
 ): Promise<LinguisticCollocationItem> => {
-  try {
-    const [translationResult, examplesResult, componentWordsResult] =
-      await Promise.all([
-        collocationTranslationChain.invoke({ collocation, targetLanguage }),
-        collocationExamplesChain.invoke({ collocation, targetLanguage }),
-        componentWordsChain.invoke({ collocation, targetLanguage }),
-      ]);
+  const [translationResult, examplesResult, componentWordsResult] =
+    await Promise.all([
+      collocationTranslationChain.invoke({ collocation, targetLanguage }),
+      collocationExamplesChain.invoke({ collocation, targetLanguage }),
+      componentWordsChain.invoke({ collocation, targetLanguage }),
+    ]);
 
-    return {
-      normalizedCollocation: collocation,
-      mainTranslation: translationResult.mainTranslation,
-      exampleSentences: examplesResult.exampleSentences,
-      componentWords: componentWordsResult.componentWords,
-    };
-  } catch (error) {
-    Sentry.captureException(error, {
-      tags: {
-        service: 'linguistics',
-        operation: 'generateCollocationInfo',
-      },
-      extra: {
-        collocation,
-        targetLanguage,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
-        errorType:
-          error instanceof Error ? error.constructor.name : typeof error,
-      },
-    });
-
-    const errorMessage =
-      error instanceof Error && error.message.toLowerCase().includes('network')
-        ? 'Network error occurred while processing collocation'
-        : error instanceof Error &&
-            error.message.toLowerCase().includes('timeout')
-          ? 'Request timed out while processing collocation'
-          : 'Failed to generate collocation information';
-
-    throw new Error(errorMessage);
-  }
+  return {
+    normalizedCollocation: collocation,
+    mainTranslation: translationResult.mainTranslation,
+    exampleSentences: examplesResult.exampleSentences,
+    componentWords: componentWordsResult.componentWords,
+  };
 };
 
 export const classifyInput = async (
@@ -333,7 +307,7 @@ export const classifyInput = async (
         normalizedInput: classificationResult.normalizedForm,
       };
     }
-  } catch (error) {
+  } catch {
     // eslint-disable-next-line no-console
     console.warn(
       `Classification failed for input "${trimmedInput}", defaulting to collocation processing`,

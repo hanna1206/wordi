@@ -84,17 +84,24 @@ export const generateLinguisticItem = withUserSettings<
         extra: {
           input: trimmedInput,
           targetLanguage,
+          nativeLanguage: userSettings.nativeLanguage,
+          classificationType:
+            error instanceof Error && error.message.includes('classifyInput')
+              ? 'classification'
+              : 'generation',
           errorMessage:
             error instanceof Error ? error.message : 'Unknown error',
+          errorStack: error instanceof Error ? error.stack : undefined,
         },
       });
 
       const errorMessage =
-        error instanceof Error && error.message.includes('network')
+        error instanceof Error &&
+        error.message.toLowerCase().includes('network')
           ? 'Network error - please check your connection and try again'
           : error instanceof Error &&
-              error.message.includes('Failed to generate')
-            ? 'Unable to process your input. Please try again'
+              error.message.toLowerCase().includes('timeout')
+            ? 'Request timed out. Please try again'
             : 'Translation service is temporarily unavailable. Please try again';
 
       return {
