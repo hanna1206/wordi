@@ -255,7 +255,7 @@ export const generateLinguisticCollocationItem = async (
     ]);
 
   return {
-    normalizedCollocation: collocation,
+    normalizedCollocation: translationResult.normalizedCollocation,
     mainTranslation: translationResult.mainTranslation,
     exampleSentences: examplesResult.exampleSentences,
     componentWords: componentWordsResult.componentWords,
