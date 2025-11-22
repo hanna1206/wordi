@@ -1,7 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-import { AdjectiveType } from '../linguistics.const';
+import { AdjectiveType } from '../../linguistics.const';
 
 export const adjectiveTypePrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to classify the type of a German adjective.

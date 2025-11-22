@@ -1,27 +1,27 @@
 import React from 'react';
 import { LuLayers, LuLink2, LuQuote, LuReplace } from 'react-icons/lu';
 
-import type { LinguisticItem } from '@/modules/linguistics/linguistics.types';
+import type { LinguisticWordItem } from '@/modules/linguistics/linguistics.types';
 
 import { CardDivider, CardLayout } from './common/card-layout';
 import { LinguisticItemHeader } from './common/linguistic-item-header';
 import { TranslationSection } from './common/translation-section';
 
-interface GeneralContentProps {
-  linguisticItem: LinguisticItem;
+interface GeneralWordContentProps {
+  linguisticWordItem: LinguisticWordItem;
   onRegenerate?: () => void;
 }
 
-export const GeneralContent: React.FC<GeneralContentProps> = ({
-  linguisticItem,
+export const GeneralWordContent: React.FC<GeneralWordContentProps> = ({
+  linguisticWordItem,
   onRegenerate,
 }) => {
   return (
     <CardLayout>
       <LinguisticItemHeader
-        normalizedWord={linguisticItem.normalizedWord}
-        mainTranslation={linguisticItem.mainTranslation}
-        partOfSpeech={linguisticItem.partOfSpeech}
+        normalizedWord={linguisticWordItem.normalizedWord}
+        mainTranslation={linguisticWordItem.mainTranslation}
+        partOfSpeech={linguisticWordItem.partOfSpeech}
         onRegenerate={onRegenerate}
       />
 
@@ -30,28 +30,28 @@ export const GeneralContent: React.FC<GeneralContentProps> = ({
       <TranslationSection
         icon={LuLayers}
         title="Also means"
-        items={linguisticItem.additionalTranslations}
+        items={linguisticWordItem.additionalTranslations}
         renderMode="list"
       />
 
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
-        items={linguisticItem.exampleSentences}
+        items={linguisticWordItem.exampleSentences}
         renderMode="quotes"
       />
 
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
-        items={linguisticItem.synonyms}
+        items={linguisticWordItem.synonyms}
         renderMode="tags"
       />
 
       <TranslationSection
         icon={LuLink2}
         title="Collocations"
-        items={linguisticItem.collocations}
+        items={linguisticWordItem.collocations}
         renderMode="table"
       />
     </CardLayout>

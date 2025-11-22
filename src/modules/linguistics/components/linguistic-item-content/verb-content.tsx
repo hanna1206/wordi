@@ -16,30 +16,30 @@ import { LinguisticItemHeader } from './common/linguistic-item-header';
 import { TranslationSection } from './common/translation-section';
 
 interface VerbContentProps {
-  linguisticItem: VerbLinguisticItem;
+  linguisticWordItem: VerbLinguisticItem;
   onRegenerate?: () => void;
 }
 
 export const VerbContent: React.FC<VerbContentProps> = ({
-  linguisticItem,
+  linguisticWordItem,
   onRegenerate,
 }) => {
-  const prepositions = linguisticItem.prepositions || [];
-  const conjugationAsArray = linguisticItem.conjugation.split(', ');
+  const prepositions = linguisticWordItem.prepositions || [];
+  const conjugationAsArray = linguisticWordItem.conjugation.split(', ');
   const conjugationText =
-    linguisticItem.regular === 'regular'
+    linguisticWordItem.regular === 'regular'
       ? conjugationAsArray[conjugationAsArray.length - 1]
       : conjugationAsArray.join(', ');
 
   return (
     <CardLayout>
       <LinguisticItemHeader
-        normalizedWord={linguisticItem.normalizedWord}
-        mainTranslation={linguisticItem.mainTranslation}
-        partOfSpeech={linguisticItem.partOfSpeech}
-        regularOrIrregularVerb={linguisticItem.regular}
-        isReflexiveVerb={linguisticItem.isReflexive}
-        separablePrefix={linguisticItem.separablePrefix}
+        normalizedWord={linguisticWordItem.normalizedWord}
+        mainTranslation={linguisticWordItem.mainTranslation}
+        partOfSpeech={linguisticWordItem.partOfSpeech}
+        regularOrIrregularVerb={linguisticWordItem.regular}
+        isReflexiveVerb={linguisticWordItem.isReflexive}
+        separablePrefix={linguisticWordItem.separablePrefix}
         onRegenerate={onRegenerate}
       />
 
@@ -50,18 +50,18 @@ export const VerbContent: React.FC<VerbContentProps> = ({
 
       <CardDivider />
 
-      {linguisticItem.sichUsage && (
+      {linguisticWordItem.sichUsage && (
         <TranslationSection
           icon={LuBinary}
           title="Sich usage"
           items={[
             {
               rule: 'With sich',
-              explanation: linguisticItem.sichUsage.withSich,
+              explanation: linguisticWordItem.sichUsage.withSich,
             },
             {
               rule: 'Without sich',
-              explanation: linguisticItem.sichUsage.withoutSich,
+              explanation: linguisticWordItem.sichUsage.withoutSich,
             },
           ]}
           renderMode="table"
@@ -79,28 +79,28 @@ export const VerbContent: React.FC<VerbContentProps> = ({
       <TranslationSection
         icon={LuLayers}
         title="Also means"
-        items={linguisticItem.additionalTranslations}
+        items={linguisticWordItem.additionalTranslations}
         renderMode="list"
       />
 
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
-        items={linguisticItem.exampleSentences}
+        items={linguisticWordItem.exampleSentences}
         renderMode="quotes"
       />
 
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
-        items={linguisticItem.synonyms}
+        items={linguisticWordItem.synonyms}
         renderMode="tags"
       />
 
       <TranslationSection
         icon={LuLink2}
         title="Collocations"
-        items={linguisticItem.collocations}
+        items={linguisticWordItem.collocations}
         renderMode="table"
       />
     </CardLayout>

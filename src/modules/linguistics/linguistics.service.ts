@@ -1,88 +1,120 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { gpt41Model } from '@/services/llm/gpt-4.1';
 
 import { PartOfSpeech } from './linguistics.const';
 import {
+  InputClassification,
+  LinguisticCollocationItem,
+} from './linguistics.types';
+import {
+  classifyInputPrompt,
+  outputStructure as classifyInputOutputStructure,
+} from './prompts/collocations/classify-input.prompt';
+import {
+  collocationExamplesPrompt,
+  outputStructure as collocationExamplesOutputStructure,
+} from './prompts/collocations/collocation-examples.prompt';
+import {
+  collocationTranslationPrompt,
+  outputStructure as collocationTranslationOutputStructure,
+} from './prompts/collocations/collocation-translation.prompt';
+import {
+  componentWordsPrompt,
+  outputStructure as componentWordsOutputStructure,
+} from './prompts/collocations/component-words.prompt';
+import {
+  outputStructure as usageNotesOutputStructure,
+  usageNotesPrompt,
+} from './prompts/collocations/usage-notes.prompt';
+import {
   adjectiveComparisonFormsPrompt,
   outputStructure as adjectiveComparisonFormsOutputStructure,
-} from './prompts/adjective-comparison-forms.prompt';
+} from './prompts/words/adjective-comparison-forms.prompt';
 import {
   adjectivePrepositionsPrompt,
   outputStructure as adjectivePrepositionsOutputStructure,
-} from './prompts/adjective-prepositions.prompt';
+} from './prompts/words/adjective-prepositions.prompt';
 import {
   adjectiveTypePrompt,
   outputStructure as adjectiveTypeOutputStructure,
-} from './prompts/adjective-type.prompt';
+} from './prompts/words/adjective-type.prompt';
 import {
   basicTranslationPrompt,
   outputStructure as basicTranslationOutputStructure,
-} from './prompts/basic-translation.prompt';
+} from './prompts/words/basic-translation.prompt';
 import {
   collocationsPrompt,
   outputStructure as collocationsOutputStructure,
-} from './prompts/collocations.prompt';
+} from './prompts/words/collocations.prompt';
 import {
   demonstrativePronounDeclensionsPrompt,
   outputStructure as demonstrativePronounDeclensionsOutputStructure,
-} from './prompts/demonstrative-pronoun-declensions.prompt';
+} from './prompts/words/demonstrative-pronoun-declensions.prompt';
 import {
   exampleSentencesPrompt,
   outputStructure as exampleSentencesOutputStructure,
-} from './prompts/example-sentences.prompt';
+} from './prompts/words/example-sentences.prompt';
 import {
   normalizeWordPrompt,
   outputStructure as normalizeWordOutputStructure,
-} from './prompts/normalize-word.prompt';
+} from './prompts/words/normalize-word.prompt';
 import {
   nounGenderPrompt,
   outputStructure as nounGenderOutputStructure,
-} from './prompts/noun-gender.prompt';
+} from './prompts/words/noun-gender.prompt';
 import {
   nounPluralFormPrompt,
   outputStructure as nounPluralFormOutputStructure,
-} from './prompts/noun-plural-form.prompt';
+} from './prompts/words/noun-plural-form.prompt';
 import {
   nounPrepositionsPrompt,
   outputStructure as nounPrepositionsOutputStructure,
-} from './prompts/noun-prepositions.prompt';
+} from './prompts/words/noun-prepositions.prompt';
 import {
   outputStructure as pronounDeclensionsOutputStructure,
   pronounDeclensionsPrompt,
-} from './prompts/pronoun-declensions.prompt';
+} from './prompts/words/pronoun-declensions.prompt';
 import {
   outputStructure as pronounTypeOutputStructure,
   pronounTypePrompt,
-} from './prompts/pronoun-type.prompt';
+} from './prompts/words/pronoun-type.prompt';
 import {
   outputStructure as synonymsOutputStructure,
   synonymsPrompt,
-} from './prompts/synonyms.prompt';
+} from './prompts/words/synonyms.prompt';
 import {
   outputStructure as verbConjugationOutputStructure,
   verbConjugationPrompt,
-} from './prompts/verb-conjugation.prompt';
+} from './prompts/words/verb-conjugation.prompt';
 import {
   outputStructure as verbPrepositionsOutputStructure,
   verbPrepositionsPrompt,
-} from './prompts/verb-prepositions.prompt';
+} from './prompts/words/verb-prepositions.prompt';
 import {
   outputStructure as verbReflexivityOutputStructure,
   verbReflexivityPrompt,
-} from './prompts/verb-reflexivity.prompt';
+} from './prompts/words/verb-reflexivity.prompt';
 import {
   outputStructure as verbRegularityOutputStructure,
   verbRegularityPrompt,
-} from './prompts/verb-regularity.prompt';
+} from './prompts/words/verb-regularity.prompt';
 import {
   outputStructure as verbSeparablePrefixOutputStructure,
   verbSeparablePrefixPrompt,
-} from './prompts/verb-separable-prefix.prompt';
+} from './prompts/words/verb-separable-prefix.prompt';
 import {
   outputStructure as verbSichUsageOutputStructure,
   verbSichUsagePrompt,
-} from './prompts/verb-sich-usage.prompt';
+} from './prompts/words/verb-sich-usage.prompt';
 
 const WRONG_VERB_SEPARABLE_PREFIX_VALUES = ['null', '/', '/null'];
+
+// German articles for detection
+const GERMAN_ARTICLES = {
+  definite: ['der', 'die', 'das'],
+  indefinite: ['ein', 'eine'],
+} as const;
 
 const basicTranslationLlm = gpt41Model.withStructuredOutput(
   basicTranslationOutputStructure,
@@ -192,6 +224,155 @@ const demonstrativePronounDeclensionsChain =
   demonstrativePronounDeclensionsPrompt.pipe(
     demonstrativePronounDeclensionsLlm,
   );
+
+const classifyInputLlm = gpt41Model.withStructuredOutput(
+  classifyInputOutputStructure,
+);
+const classifyInputChain = classifyInputPrompt.pipe(classifyInputLlm);
+
+const collocationTranslationLlm = gpt41Model.withStructuredOutput(
+  collocationTranslationOutputStructure,
+);
+const collocationTranslationChain = collocationTranslationPrompt.pipe(
+  collocationTranslationLlm,
+);
+
+const collocationExamplesLlm = gpt41Model.withStructuredOutput(
+  collocationExamplesOutputStructure,
+);
+const collocationExamplesChain = collocationExamplesPrompt.pipe(
+  collocationExamplesLlm,
+);
+
+const componentWordsLlm = gpt41Model.withStructuredOutput(
+  componentWordsOutputStructure,
+);
+const componentWordsChain = componentWordsPrompt.pipe(componentWordsLlm);
+
+const usageNotesLlm = gpt41Model.withStructuredOutput(
+  usageNotesOutputStructure,
+);
+const usageNotesChain = usageNotesPrompt.pipe(usageNotesLlm);
+
+export const generateLinguisticCollocationItem = async (
+  collocation: string,
+  targetLanguage: string,
+): Promise<LinguisticCollocationItem> => {
+  try {
+    const [
+      translationResult,
+      examplesResult,
+      componentWordsResult,
+      usageNotesResult,
+    ] = await Promise.all([
+      collocationTranslationChain.invoke({ collocation, targetLanguage }),
+      collocationExamplesChain.invoke({ collocation, targetLanguage }),
+      componentWordsChain.invoke({ collocation, targetLanguage }),
+      usageNotesChain.invoke({ collocation, targetLanguage }),
+    ]);
+
+    return {
+      normalizedCollocation: collocation,
+      mainTranslation: translationResult.mainTranslation,
+      exampleSentences: examplesResult.exampleSentences,
+      componentWords: componentWordsResult.componentWords,
+      usageNotes: usageNotesResult.usageNotes,
+    };
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: {
+        service: 'linguistics',
+        operation: 'generateCollocationInfo',
+      },
+      extra: {
+        collocation,
+        targetLanguage,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        errorType:
+          error instanceof Error ? error.constructor.name : typeof error,
+      },
+    });
+
+    const errorMessage =
+      error instanceof Error && error.message.toLowerCase().includes('network')
+        ? 'Network error occurred while processing collocation'
+        : error instanceof Error &&
+            error.message.toLowerCase().includes('timeout')
+          ? 'Request timed out while processing collocation'
+          : 'Failed to generate collocation information';
+
+    throw new Error(errorMessage);
+  }
+};
+
+export const classifyInput = async (
+  input: string,
+): Promise<InputClassification> => {
+  const trimmedInput = input.trim();
+
+  const words = trimmedInput.split(/\s+/);
+  const wordCount = words.length;
+
+  if (wordCount === 1) {
+    return {
+      type: 'single-word',
+      normalizedInput: trimmedInput,
+    };
+  }
+
+  const firstWord = words[0].toLowerCase();
+  const allArticles: string[] = [
+    ...GERMAN_ARTICLES.definite,
+    ...GERMAN_ARTICLES.indefinite,
+  ];
+
+  if (wordCount === 2 && allArticles.includes(firstWord)) {
+    const noun = words[1];
+    return {
+      type: 'single-word',
+      normalizedInput: noun,
+    };
+  }
+
+  try {
+    const classificationResult = await classifyInputChain.invoke({
+      input: trimmedInput,
+    });
+
+    if (classificationResult.classification === 'compound-word') {
+      return {
+        type: 'single-word',
+        normalizedInput: classificationResult.normalizedForm,
+      };
+    } else {
+      return {
+        type: 'collocation',
+        normalizedInput: classificationResult.normalizedForm,
+      };
+    }
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: {
+        service: 'linguistics',
+        operation: 'classifyInput',
+        fallback: 'collocation',
+      },
+      extra: {
+        input: trimmedInput,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      },
+    });
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Classification failed for input "${trimmedInput}", defaulting to collocation processing`,
+    );
+
+    return {
+      type: 'collocation',
+      normalizedInput: trimmedInput,
+    };
+  }
+};
 
 export const generateLinguisticItem = async (
   word: string,

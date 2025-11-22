@@ -11,7 +11,10 @@ import { ExampleWords } from '@/modules/linguistics/components/example-words';
 import type { GenerateLinguisticItemModalProps } from '@/modules/linguistics/components/generate-linguistic-item-modal';
 import { generateLinguisticItem } from '@/modules/linguistics/linguistics.actions';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
-import type { LinguisticItem } from '@/modules/linguistics/linguistics.types';
+import type {
+  LinguisticCollocationItem,
+  LinguisticWordItem,
+} from '@/modules/linguistics/linguistics.types';
 import { getWordFromCache } from '@/modules/vocabulary/vocabulary.actions';
 
 const GenerateLinguisticItemModal = dynamic<GenerateLinguisticItemModalProps>(
@@ -33,9 +36,9 @@ export const GenerateLinguisticItemForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [word, setWord] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [linguisticItem, setLinguisticItem] = useState<LinguisticItem | null>(
-    null,
-  );
+  const [linguisticItem, setLinguisticItem] = useState<
+    LinguisticWordItem | LinguisticCollocationItem | null
+  >(null);
   const [error, setError] = useState<string | null>(null);
 
   const {
@@ -47,6 +50,7 @@ export const GenerateLinguisticItemForm = () => {
 
   const handleSubmit = async (wordToTranslate: string) => {
     if (!wordToTranslate.trim()) return;
+    if (isLoading) return;
 
     setWord(wordToTranslate);
     setIsOpen(true);
@@ -61,7 +65,7 @@ export const GenerateLinguisticItemForm = () => {
 
       if (cacheResult.success && cacheResult.data) {
         // Cache hit - convert cached data to TranslationResult format
-        const cachedTranslation: LinguisticItem = {
+        const cachedTranslation: LinguisticWordItem = {
           normalizedWord: cacheResult.data.normalizedWord,
           partOfSpeech: [cacheResult.data.partOfSpeech as PartOfSpeech],
           ...cacheResult.data.commonData,
@@ -178,6 +182,8 @@ export const GenerateLinguisticItemForm = () => {
                 _active={{ transform: 'scale(0.95)' }}
                 w={12}
                 h={12}
+                disabled={isLoading}
+                loading={isLoading}
               >
                 <LuArrowRight />
               </IconButton>

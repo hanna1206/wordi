@@ -2,7 +2,7 @@ import React from 'react';
 
 import { AdjectiveContent } from '@/modules/linguistics/components/linguistic-item-content/adjective-content';
 import { DemonstrativePronounContent } from '@/modules/linguistics/components/linguistic-item-content/demonstrative-pronoun-content';
-import { GeneralContent } from '@/modules/linguistics/components/linguistic-item-content/general-content';
+import { GeneralWordContent } from '@/modules/linguistics/components/linguistic-item-content/general-content';
 import { NounContent } from '@/modules/linguistics/components/linguistic-item-content/noun-content';
 import { PersonalPronounContent } from '@/modules/linguistics/components/linguistic-item-content/personal-pronoun-content';
 import { VerbContent } from '@/modules/linguistics/components/linguistic-item-content/verb-content';
@@ -10,37 +10,41 @@ import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
   AdjectiveLinguisticItem,
   DemonstrativePronounLinguisticItem,
-  LinguisticItem,
+  LinguisticWordItem,
   NounLinguisticItem,
   PronounLinguisticItem,
   VerbLinguisticItem,
 } from '@/modules/linguistics/linguistics.types';
 
 interface VocabularyItemContentProps {
-  linguisticItem: LinguisticItem;
+  linguisticWordItem: LinguisticWordItem;
 }
 
 export const VocabularyItemContent: React.FC<VocabularyItemContentProps> = ({
-  linguisticItem,
+  linguisticWordItem,
 }) => {
-  const partOfSpeech = linguisticItem.partOfSpeech || [];
+  const partOfSpeech = linguisticWordItem.partOfSpeech || [];
 
   if (partOfSpeech.includes(PartOfSpeech.NOUN)) {
     return (
-      <NounContent linguisticItem={linguisticItem as NounLinguisticItem} />
+      <NounContent
+        linguisticWordItem={linguisticWordItem as NounLinguisticItem}
+      />
     );
   }
 
   if (partOfSpeech.includes(PartOfSpeech.VERB)) {
     return (
-      <VerbContent linguisticItem={linguisticItem as VerbLinguisticItem} />
+      <VerbContent
+        linguisticWordItem={linguisticWordItem as VerbLinguisticItem}
+      />
     );
   }
 
   if (partOfSpeech.includes(PartOfSpeech.ADJECTIVE)) {
     return (
       <AdjectiveContent
-        linguisticItem={linguisticItem as AdjectiveLinguisticItem}
+        linguisticWordItem={linguisticWordItem as AdjectiveLinguisticItem}
       />
     );
   }
@@ -48,7 +52,7 @@ export const VocabularyItemContent: React.FC<VocabularyItemContentProps> = ({
   if (partOfSpeech.includes(PartOfSpeech.PERSONAL_PRONOUN)) {
     return (
       <PersonalPronounContent
-        linguisticItem={linguisticItem as PronounLinguisticItem}
+        linguisticWordItem={linguisticWordItem as PronounLinguisticItem}
       />
     );
   }
@@ -56,10 +60,12 @@ export const VocabularyItemContent: React.FC<VocabularyItemContentProps> = ({
   if (partOfSpeech.includes(PartOfSpeech.DEMONSTRATIVE_PRONOUN)) {
     return (
       <DemonstrativePronounContent
-        linguisticItem={linguisticItem as DemonstrativePronounLinguisticItem}
+        linguisticWordItem={
+          linguisticWordItem as DemonstrativePronounLinguisticItem
+        }
       />
     );
   }
 
-  return <GeneralContent linguisticItem={linguisticItem} />;
+  return <GeneralWordContent linguisticWordItem={linguisticWordItem} />;
 };

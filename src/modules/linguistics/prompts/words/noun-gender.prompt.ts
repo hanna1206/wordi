@@ -1,7 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-import { Gender } from '../linguistics.const';
+import { Gender } from '../../linguistics.const';
 
 export const nounGenderPrompt = PromptTemplate.fromTemplate(
   `You are a linguistic assistant. Your task is to determine the grammatical gender of a German noun.

@@ -9,8 +9,8 @@ import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
 
-import { LinguisticItem } from '../linguistics/linguistics.types';
-import { transformLinguisticItemToVocabularyItem } from './utils/transform-linguistic-item-to-vocabulary-item';
+import { LinguisticWordItem } from '../linguistics/linguistics.types';
+import { transformLinguisticWordItemToVocabularyItem } from './utils/transform-linguistic-word-item-to-vocabulary-item';
 import * as vocabularyRepository from './vocabulary.repository';
 import type {
   MinimalVocabularyWord,
@@ -22,7 +22,7 @@ import type {
 import { ALL_PARTS_OF_SPEECH } from './vocabulary.types';
 
 export const saveWordForLearning = withUserSettings<
-  LinguisticItem,
+  LinguisticWordItem,
   VocabularyItem
 >(async (context, linguisticItem): Promise<ActionResult<VocabularyItem>> => {
   if (!linguisticItem || !linguisticItem.normalizedWord) {
@@ -35,7 +35,7 @@ export const saveWordForLearning = withUserSettings<
   }
 
   try {
-    const vocabularyItem = transformLinguisticItemToVocabularyItem(
+    const vocabularyItem = transformLinguisticWordItemToVocabularyItem(
       linguisticItem,
       context.user.id,
       context.userSettings.nativeLanguage as LanguageCode,

@@ -93,10 +93,33 @@ export interface DemonstrativePronounLinguisticItem
   baseForm: string;
 }
 
-export type LinguisticItem =
+export type LinguisticWordItem =
   | BasicLinguisticItem
   | NounLinguisticItem
   | VerbLinguisticItem
   | AdjectiveLinguisticItem
   | PronounLinguisticItem
   | DemonstrativePronounLinguisticItem;
+
+// Collocation-specific types
+export interface ComponentWord {
+  word: string;
+  translation: string;
+}
+
+export interface ExampleSentence {
+  german: string;
+  translation: string;
+}
+
+export interface LinguisticCollocationItem {
+  normalizedCollocation: string;
+  mainTranslation: string;
+  exampleSentences: ExampleSentence[];
+  componentWords: ComponentWord[];
+  usageNotes: string;
+}
+
+export type InputClassification =
+  | { type: 'single-word'; normalizedInput: string }
+  | { type: 'collocation'; normalizedInput: string };

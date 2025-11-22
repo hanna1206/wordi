@@ -4,7 +4,7 @@ import { Dialog, Portal } from '@chakra-ui/react';
 
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
-  LinguisticItem,
+  LinguisticWordItem,
   NounLinguisticItem,
 } from '@/modules/linguistics/linguistics.types';
 import { getGenderProperties } from '@/modules/linguistics/utils/get-gender-properties';
@@ -25,8 +25,8 @@ interface VocabularyItemModalProps {
 
 const convertVocabularyItemToTranslationResult = (
   savedWord: VocabularyItem,
-): LinguisticItem => {
-  const baseTranslation: LinguisticItem = {
+): LinguisticWordItem => {
+  const baseTranslation: LinguisticWordItem = {
     normalizedWord: savedWord.normalizedWord,
     partOfSpeech: [savedWord.partOfSpeech as PartOfSpeech],
     ...savedWord.commonData,
@@ -121,7 +121,7 @@ export const VocabularyItemModal: React.FC<VocabularyItemModalProps> = ({
               {showDeleteConfirm ? (
                 <DeleteConfirmation savedWord={savedWord} />
               ) : (
-                <VocabularyItemContent linguisticItem={translation} />
+                <VocabularyItemContent linguisticWordItem={translation} />
               )}
             </Dialog.Body>
 

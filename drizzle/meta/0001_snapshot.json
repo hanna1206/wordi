@@ -62,9 +62,7 @@
         "user_settings_user_id_key": {
           "name": "user_settings_user_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
+          "columns": ["user_id"]
         }
       },
       "policies": {},
@@ -254,12 +252,8 @@
           "name": "user_word_progress_word_id_fkey",
           "tableFrom": "user_word_progress",
           "tableTo": "words",
-          "columnsFrom": [
-            "word_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["word_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -269,10 +263,7 @@
         "user_word_progress_user_id_word_id_key": {
           "name": "user_word_progress_user_id_word_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id",
-            "word_id"
-          ]
+          "columns": ["user_id", "word_id"]
         }
       },
       "policies": {},
@@ -593,13 +584,7 @@
     "public.language_code": {
       "name": "language_code",
       "schema": "public",
-      "values": [
-        "russian",
-        "english",
-        "ukrainian",
-        "turkish",
-        "portuguese"
-      ]
+      "values": ["russian", "english", "ukrainian", "turkish", "portuguese"]
     },
     "public.part_of_speech_enum": {
       "name": "part_of_speech_enum",

@@ -7,14 +7,27 @@ import { getLanguageName } from '@/modules/user-settings/utils/get-language-name
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
 
-import { generateLinguisticItem as generateLinguisticItemService } from './linguistics.service';
-import type { LinguisticItem } from './linguistics.types';
+import {
+  classifyInput,
+  generateLinguisticCollocationItem as generateLinguisticCollocationService,
+  generateLinguisticItem as generateLinguisticItemService,
+} from './linguistics.service';
+import type {
+  LinguisticCollocationItem,
+  LinguisticWordItem,
+} from './linguistics.types';
 
-export const generateLinguisticItem = withUserSettings<string, LinguisticItem>(
-  async (context, word): Promise<ActionResult<LinguisticItem>> => {
-    const serializedWord = word.trim().toLowerCase();
-    if (!serializedWord) {
-      const error = 'Word is required';
+export const generateLinguisticItem = withUserSettings<
+  string,
+  LinguisticWordItem | LinguisticCollocationItem
+>(
+  async (
+    context,
+    input,
+  ): Promise<ActionResult<LinguisticWordItem | LinguisticCollocationItem>> => {
+    const trimmedInput = input.trim();
+    if (!trimmedInput) {
+      const error = 'Input is required';
 
       return {
         success: false,
@@ -39,20 +52,54 @@ export const generateLinguisticItem = withUserSettings<string, LinguisticItem>(
     );
 
     try {
-      const response = await generateLinguisticItemService(
-        serializedWord,
-        targetLanguage,
-      );
+      const classification = await classifyInput(trimmedInput);
+
+      if (classification.type === 'single-word') {
+        const linguisticWordItem = await generateLinguisticItemService(
+          classification.normalizedInput.toLowerCase(),
+          targetLanguage,
+        );
+
+        return {
+          success: true,
+          data: linguisticWordItem,
+        };
+      } else {
+        const linguisticCollocationItem =
+          await generateLinguisticCollocationService(
+            classification.normalizedInput,
+            targetLanguage,
+          );
+
+        return {
+          success: true,
+          data: linguisticCollocationItem,
+        };
+      }
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: {
+          action: 'generateLinguisticItem',
+        },
+        extra: {
+          input: trimmedInput,
+          targetLanguage,
+          errorMessage:
+            error instanceof Error ? error.message : 'Unknown error',
+        },
+      });
+
+      const errorMessage =
+        error instanceof Error && error.message.includes('network')
+          ? 'Network error - please check your connection and try again'
+          : error instanceof Error &&
+              error.message.includes('Failed to generate')
+            ? 'Unable to process your input. Please try again'
+            : 'Translation service is temporarily unavailable. Please try again';
 
       return {
-        success: true,
-        data: response,
-      };
-    } catch (error) {
-      Sentry.captureException(error);
-      return {
         success: false,
-        error: 'Translation service failed',
+        error: errorMessage,
       };
     }
   },

@@ -15,31 +15,33 @@ import { LinguisticItemHeader } from './common/linguistic-item-header';
 import { TranslationSection } from './common/translation-section';
 
 interface NounContentProps {
-  linguisticItem: NounLinguisticItem;
+  linguisticWordItem: NounLinguisticItem;
   onRegenerate?: () => void;
 }
 
 export const NounContent: React.FC<NounContentProps> = ({
-  linguisticItem,
+  linguisticWordItem,
   onRegenerate,
 }) => {
-  const isNoun = linguisticItem.partOfSpeech?.includes(PartOfSpeech.NOUN);
+  const isNoun = linguisticWordItem.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const hasPluralForm =
-    'pluralForm' in linguisticItem && !!linguisticItem.pluralForm;
+    'pluralForm' in linguisticWordItem && !!linguisticWordItem.pluralForm;
   const hasPrepositions =
-    'prepositions' in linguisticItem && !!linguisticItem.prepositions;
+    'prepositions' in linguisticWordItem && !!linguisticWordItem.prepositions;
 
   // Extract plural form and prepositions safely
-  const pluralForm = hasPluralForm ? linguisticItem.pluralForm : '';
-  const prepositions = hasPrepositions ? linguisticItem.prepositions || [] : [];
+  const pluralForm = hasPluralForm ? linguisticWordItem.pluralForm : '';
+  const prepositions = hasPrepositions
+    ? linguisticWordItem.prepositions || []
+    : [];
 
   return (
     <CardLayout>
       <LinguisticItemHeader
-        normalizedWord={linguisticItem.normalizedWord}
-        mainTranslation={linguisticItem.mainTranslation}
-        partOfSpeech={linguisticItem.partOfSpeech}
-        gender={linguisticItem.gender as Gender}
+        normalizedWord={linguisticWordItem.normalizedWord}
+        mainTranslation={linguisticWordItem.mainTranslation}
+        partOfSpeech={linguisticWordItem.partOfSpeech}
+        gender={linguisticWordItem.gender as Gender}
         onRegenerate={onRegenerate}
       />
 
@@ -66,28 +68,28 @@ export const NounContent: React.FC<NounContentProps> = ({
       <TranslationSection
         icon={LuLayers}
         title="Also means"
-        items={linguisticItem.additionalTranslations}
+        items={linguisticWordItem.additionalTranslations}
         renderMode="list"
       />
 
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
-        items={linguisticItem.exampleSentences}
+        items={linguisticWordItem.exampleSentences}
         renderMode="quotes"
       />
 
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
-        items={linguisticItem.synonyms}
+        items={linguisticWordItem.synonyms}
         renderMode="tags"
       />
 
       <TranslationSection
         icon={LuLink2}
         title="Collocations"
-        items={linguisticItem.collocations}
+        items={linguisticWordItem.collocations}
         renderMode="table"
       />
     </CardLayout>

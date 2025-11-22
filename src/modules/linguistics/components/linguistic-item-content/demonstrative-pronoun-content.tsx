@@ -11,17 +11,17 @@ import { SectionHeader } from './common/section-header';
 import { TranslationSection } from './common/translation-section';
 
 interface DemonstrativePronounContentProps {
-  linguisticItem: DemonstrativePronounLinguisticItem;
+  linguisticWordItem: DemonstrativePronounLinguisticItem;
   onRegenerate?: () => void;
 }
 
 export const DemonstrativePronounContent: React.FC<
   DemonstrativePronounContentProps
-> = ({ linguisticItem, onRegenerate }) => {
+> = ({ linguisticWordItem, onRegenerate }) => {
   const hasDeclensions =
-    linguisticItem.declensions &&
-    linguisticItem.declensions.length > 0 &&
-    linguisticItem.declensions.some(
+    linguisticWordItem.declensions &&
+    linguisticWordItem.declensions.length > 0 &&
+    linguisticWordItem.declensions.some(
       (declension) =>
         declension.masculine ||
         declension.feminine ||
@@ -61,7 +61,7 @@ export const DemonstrativePronounContent: React.FC<
         </Grid>
         {/* Data rows */}
         <VStack gap={1} align="stretch">
-          {linguisticItem.declensions.map((declension, index) => (
+          {linguisticWordItem.declensions.map((declension, index) => (
             <Grid
               key={index}
               templateColumns="repeat(5, 1fr)"
@@ -102,14 +102,14 @@ export const DemonstrativePronounContent: React.FC<
   return (
     <CardLayout>
       <LinguisticItemHeader
-        normalizedWord={linguisticItem.normalizedWord}
-        mainTranslation={linguisticItem.mainTranslation}
-        partOfSpeech={linguisticItem.partOfSpeech}
+        normalizedWord={linguisticWordItem.normalizedWord}
+        mainTranslation={linguisticWordItem.mainTranslation}
+        partOfSpeech={linguisticWordItem.partOfSpeech}
         onRegenerate={onRegenerate}
       />
 
       <Text fontSize="md" color="gray.700">
-        {linguisticItem.pronounType}
+        {linguisticWordItem.pronounType}
       </Text>
       <CardDivider />
 
@@ -127,28 +127,28 @@ export const DemonstrativePronounContent: React.FC<
       <TranslationSection
         icon={LuLayers}
         title="Also means"
-        items={linguisticItem.additionalTranslations}
+        items={linguisticWordItem.additionalTranslations}
         renderMode="list"
       />
 
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
-        items={linguisticItem.exampleSentences}
+        items={linguisticWordItem.exampleSentences}
         renderMode="quotes"
       />
 
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
-        items={linguisticItem.synonyms}
+        items={linguisticWordItem.synonyms}
         renderMode="tags"
       />
 
       <TranslationSection
         icon={LuLink2}
         title="Collocations"
-        items={linguisticItem.collocations}
+        items={linguisticWordItem.collocations}
         renderMode="table"
       />
     </CardLayout>

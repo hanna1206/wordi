@@ -15,16 +15,16 @@ import { LinguisticItemHeader } from './common/linguistic-item-header';
 import { TranslationSection } from './common/translation-section';
 
 interface AdjectiveContentProps {
-  linguisticItem: AdjectiveLinguisticItem;
+  linguisticWordItem: AdjectiveLinguisticItem;
   onRegenerate?: () => void;
 }
 
 export const AdjectiveContent: React.FC<AdjectiveContentProps> = ({
-  linguisticItem,
+  linguisticWordItem,
   onRegenerate,
 }) => {
-  const prepositions = linguisticItem.prepositions || [];
-  const hasComparisonForms = linguisticItem.comparisonForms;
+  const prepositions = linguisticWordItem.prepositions || [];
+  const hasComparisonForms = linguisticWordItem.comparisonForms;
 
   // Create comparison forms data for table display
   const comparisonFormsTable = hasComparisonForms
@@ -40,9 +40,9 @@ export const AdjectiveContent: React.FC<AdjectiveContentProps> = ({
   return (
     <CardLayout>
       <LinguisticItemHeader
-        normalizedWord={linguisticItem.normalizedWord}
-        mainTranslation={linguisticItem.mainTranslation}
-        partOfSpeech={linguisticItem.partOfSpeech}
+        normalizedWord={linguisticWordItem.normalizedWord}
+        mainTranslation={linguisticWordItem.mainTranslation}
+        partOfSpeech={linguisticWordItem.partOfSpeech}
         onRegenerate={onRegenerate}
       />
       <CardDivider />
@@ -65,25 +65,25 @@ export const AdjectiveContent: React.FC<AdjectiveContentProps> = ({
       <TranslationSection
         icon={LuLayers}
         title="Also means"
-        items={linguisticItem.additionalTranslations}
+        items={linguisticWordItem.additionalTranslations}
         renderMode="list"
       />
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
-        items={linguisticItem.exampleSentences}
+        items={linguisticWordItem.exampleSentences}
         renderMode="quotes"
       />
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
-        items={linguisticItem.synonyms}
+        items={linguisticWordItem.synonyms}
         renderMode="tags"
       />
       <TranslationSection
         icon={LuLink2}
         title="Collocations"
-        items={linguisticItem.collocations}
+        items={linguisticWordItem.collocations}
         renderMode="table"
       />
     </CardLayout>

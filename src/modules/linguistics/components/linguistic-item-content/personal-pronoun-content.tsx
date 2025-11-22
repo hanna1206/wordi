@@ -10,29 +10,29 @@ import { LinguisticItemHeader } from './common/linguistic-item-header';
 import { TranslationSection } from './common/translation-section';
 
 interface PersonalPronounContentProps {
-  linguisticItem: PronounLinguisticItem;
+  linguisticWordItem: PronounLinguisticItem;
   onRegenerate?: () => void;
 }
 
 export const PersonalPronounContent: React.FC<PersonalPronounContentProps> = ({
-  linguisticItem,
+  linguisticWordItem,
   onRegenerate,
 }) => {
   const hasDeclensions =
-    linguisticItem.declensions && linguisticItem.declensions.length > 0;
+    linguisticWordItem.declensions && linguisticWordItem.declensions.length > 0;
 
   return (
     <CardLayout>
       <LinguisticItemHeader
-        normalizedWord={linguisticItem.normalizedWord}
-        mainTranslation={linguisticItem.mainTranslation}
-        partOfSpeech={linguisticItem.partOfSpeech}
+        normalizedWord={linguisticWordItem.normalizedWord}
+        mainTranslation={linguisticWordItem.mainTranslation}
+        partOfSpeech={linguisticWordItem.partOfSpeech}
         onRegenerate={onRegenerate}
       />
 
       {/* Pronoun Type */}
       <Text fontSize="md" color="gray.700">
-        {linguisticItem.pronounType}
+        {linguisticWordItem.pronounType}
       </Text>
 
       <CardDivider />
@@ -42,7 +42,7 @@ export const PersonalPronounContent: React.FC<PersonalPronounContentProps> = ({
         <TranslationSection
           icon={LuTable}
           title="Case Declensions"
-          items={linguisticItem.declensions}
+          items={linguisticWordItem.declensions}
           renderMode="table"
         />
       )}
@@ -50,28 +50,28 @@ export const PersonalPronounContent: React.FC<PersonalPronounContentProps> = ({
       <TranslationSection
         icon={LuLayers}
         title="Also means"
-        items={linguisticItem.additionalTranslations}
+        items={linguisticWordItem.additionalTranslations}
         renderMode="list"
       />
 
       <TranslationSection
         icon={LuQuote}
         title="Usage examples"
-        items={linguisticItem.exampleSentences}
+        items={linguisticWordItem.exampleSentences}
         renderMode="quotes"
       />
 
       <TranslationSection
         icon={LuReplace}
         title="Synonyms"
-        items={linguisticItem.synonyms}
+        items={linguisticWordItem.synonyms}
         renderMode="tags"
       />
 
       <TranslationSection
         icon={LuLink2}
         title="Collocations"
-        items={linguisticItem.collocations}
+        items={linguisticWordItem.collocations}
         renderMode="table"
       />
     </CardLayout>

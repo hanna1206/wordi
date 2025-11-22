@@ -1,14 +1,15 @@
 import React from 'react';
 
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Text, VStack } from '@chakra-ui/react';
 
 interface GenerateLinguisticItemErrorProps {
   error: string;
+  onRetry?: () => void;
 }
 
 export const GenerateLinguisticItemError: React.FC<
   GenerateLinguisticItemErrorProps
-> = ({ error }) => {
+> = ({ error, onRetry }) => {
   return (
     <VStack
       gap={{ base: 4, md: 4 }}
@@ -43,6 +44,12 @@ export const GenerateLinguisticItemError: React.FC<
       >
         {error}
       </Text>
+
+      {onRetry && (
+        <Button onClick={onRetry} size="md" colorScheme="blue" mt={2}>
+          Try Again
+        </Button>
+      )}
     </VStack>
   );
 };

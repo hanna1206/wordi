@@ -1,4 +1,4 @@
-import { LinguisticItem } from '@/modules/linguistics/linguistics.types';
+import { LinguisticWordItem } from '@/modules/linguistics/linguistics.types';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 
 import type {
@@ -6,8 +6,8 @@ import type {
   VocabularyItemDatabaseInput,
 } from '../vocabulary.types';
 
-export const transformLinguisticItemToVocabularyItem = (
-  linguisticItem: LinguisticItem,
+export const transformLinguisticWordItemToVocabularyItem = (
+  linguisticItem: LinguisticWordItem,
   userId: string,
   targetLanguage: LanguageCode,
 ) => {

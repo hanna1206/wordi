@@ -9,10 +9,12 @@ import { GenerateLinguisticItemLoaded } from '@/modules/linguistics/components/g
 import { GenerateLinguisticItemLoading } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-loading';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
-  LinguisticItem,
+  LinguisticCollocationItem,
+  LinguisticWordItem,
   NounLinguisticItem,
 } from '@/modules/linguistics/linguistics.types';
 import { getGenderProperties } from '@/modules/linguistics/utils/get-gender-properties';
+import { isLinguisticCollocationItem } from '@/modules/linguistics/utils/is-linguistic-collocation-item';
 import { saveWordForLearning } from '@/modules/vocabulary/vocabulary.actions';
 
 export interface GenerateLinguisticItemModalProps {
@@ -20,7 +22,7 @@ export interface GenerateLinguisticItemModalProps {
   word: string;
   isLoading: boolean;
   error: string | null;
-  linguisticItem: LinguisticItem | null;
+  linguisticItem: LinguisticWordItem | LinguisticCollocationItem | null;
   onClose: () => void;
   onRegenerate: (word: string) => void;
 }
@@ -39,7 +41,14 @@ export const GenerateLinguisticItemModal: React.FC<
   const [isSaving, setIsSaving] = useState(false);
   const { refetchDueCount } = useDueWordsCount();
 
-  const isNoun = linguisticItem?.partOfSpeech?.includes(PartOfSpeech.NOUN);
+  const isCollocation =
+    linguisticItem && isLinguisticCollocationItem(linguisticItem);
+
+  const isNoun =
+    !isCollocation &&
+    linguisticItem &&
+    'partOfSpeech' in linguisticItem &&
+    linguisticItem.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const gender = isNoun
     ? (linguisticItem as NounLinguisticItem).gender
     : undefined;
@@ -49,11 +58,13 @@ export const GenerateLinguisticItemModal: React.FC<
     : undefined;
 
   const handleVocabularyItem = async () => {
-    if (!linguisticItem) return;
+    if (!linguisticItem || isCollocation) return;
 
     setIsSaving(true);
     try {
-      const result = await saveWordForLearning(linguisticItem);
+      const result = await saveWordForLearning(
+        linguisticItem as LinguisticWordItem,
+      );
 
       if (result.success) {
         toaster.create({
@@ -139,7 +150,10 @@ export const GenerateLinguisticItemModal: React.FC<
               {isLoading ? (
                 <GenerateLinguisticItemLoading word={word} />
               ) : error ? (
-                <GenerateLinguisticItemError error={error} />
+                <GenerateLinguisticItemError
+                  error={error}
+                  onRetry={() => onRegenerate(word)}
+                />
               ) : linguisticItem ? (
                 <GenerateLinguisticItemLoaded
                   linguisticItem={linguisticItem}
@@ -160,7 +174,7 @@ export const GenerateLinguisticItemModal: React.FC<
               flexDirection={{ base: 'column', md: 'row' }}
               alignItems="stretch"
             >
-              {linguisticItem && (
+              {linguisticItem && !isCollocation && (
                 <Button
                   size={{ base: 'lg', md: 'lg' }}
                   h={{ base: '48px', md: '44px' }}
