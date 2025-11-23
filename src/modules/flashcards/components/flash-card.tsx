@@ -34,13 +34,13 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
 
     const frontContent =
       cardSide === CardSide.Word
-        ? word.normalizedWord
+        ? word.normalizedText
         : word.commonData.mainTranslation;
 
     const backContent =
       cardSide === CardSide.Word
         ? word.commonData.mainTranslation
-        : word.normalizedWord;
+        : word.normalizedText;
 
     const additionalTranslations = word.commonData.additionalTranslations || [];
     const hasAdditionalTranslations = additionalTranslations.length > 0;

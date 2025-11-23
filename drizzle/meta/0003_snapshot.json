@@ -1,6 +1,6 @@
 {
-  "id": "fd64d0a1-2795-43fb-8231-3a141ff0e30d",
-  "prevId": "a064c3e8-137a-4656-9e61-1f13b35a72e5",
+  "id": "8c9f2e3a-4b5d-4c7e-9f1a-2d3e4f5a6b7c",
+  "prevId": "fd64d0a1-2795-43fb-8231-3a141ff0e30d",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -251,7 +251,7 @@
         "user_word_progress_word_id_fkey": {
           "name": "user_word_progress_word_id_fkey",
           "tableFrom": "user_word_progress",
-          "tableTo": "words",
+          "tableTo": "vocabulary_items",
           "columnsFrom": ["word_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
@@ -275,8 +275,8 @@
       },
       "isRLSEnabled": false
     },
-    "public.words": {
-      "name": "words",
+    "public.vocabulary_items": {
+      "name": "vocabulary_items",
       "schema": "",
       "columns": {
         "id": {
@@ -292,14 +292,22 @@
           "primaryKey": false,
           "notNull": true
         },
-        "normalized_word": {
-          "name": "normalized_word",
+        "type": {
+          "name": "type",
+          "type": "vocabulary_item_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'word'"
+        },
+        "normalized_text": {
+          "name": "normalized_text",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "sortable_word": {
-          "name": "sortable_word",
+        "sortable_text": {
+          "name": "sortable_text",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -318,8 +326,8 @@
           "notNull": true,
           "default": "'{}'::jsonb"
         },
-        "part_specific_data": {
-          "name": "part_specific_data",
+        "specific_data": {
+          "name": "specific_data",
           "type": "jsonb",
           "primaryKey": false,
           "notNull": true,
@@ -356,11 +364,26 @@
         }
       },
       "indexes": {
-        "idx_words_cache_lookup": {
-          "name": "idx_words_cache_lookup",
+        "idx_vocabulary_items_type": {
+          "name": "idx_vocabulary_items_type",
           "columns": [
             {
-              "expression": "normalized_word",
+              "expression": "type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_vocabulary_items_cache_lookup": {
+          "name": "idx_vocabulary_items_cache_lookup",
+          "columns": [
+            {
+              "expression": "normalized_text",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -383,8 +406,8 @@
           "method": "btree",
           "with": {}
         },
-        "idx_words_common_data_gin": {
-          "name": "idx_words_common_data_gin",
+        "idx_vocabulary_items_common_data_gin": {
+          "name": "idx_vocabulary_items_common_data_gin",
           "columns": [
             {
               "expression": "common_data",
@@ -398,11 +421,11 @@
           "method": "gin",
           "with": {}
         },
-        "idx_words_part_specific_data_gin": {
-          "name": "idx_words_part_specific_data_gin",
+        "idx_vocabulary_items_specific_data_gin": {
+          "name": "idx_vocabulary_items_specific_data_gin",
           "columns": [
             {
-              "expression": "part_specific_data",
+              "expression": "specific_data",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -413,11 +436,11 @@
           "method": "gin",
           "with": {}
         },
-        "idx_words_search": {
-          "name": "idx_words_search",
+        "idx_vocabulary_items_search": {
+          "name": "idx_vocabulary_items_search",
           "columns": [
             {
-              "expression": "to_tsvector('simple'::regconfig, normalized_word)",
+              "expression": "to_tsvector('simple'::regconfig, normalized_text)",
               "asc": true,
               "isExpression": true,
               "nulls": "last"
@@ -428,11 +451,11 @@
           "method": "gin",
           "with": {}
         },
-        "idx_words_normalized_word": {
-          "name": "idx_words_normalized_word",
+        "idx_vocabulary_items_normalized_text": {
+          "name": "idx_vocabulary_items_normalized_text",
           "columns": [
             {
-              "expression": "normalized_word",
+              "expression": "normalized_text",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -443,11 +466,11 @@
           "method": "btree",
           "with": {}
         },
-        "idx_words_sortable_word": {
-          "name": "idx_words_sortable_word",
+        "idx_vocabulary_items_sortable_text": {
+          "name": "idx_vocabulary_items_sortable_text",
           "columns": [
             {
-              "expression": "sortable_word",
+              "expression": "sortable_text",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -458,8 +481,8 @@
           "method": "btree",
           "with": {}
         },
-        "idx_words_part_of_speech": {
-          "name": "idx_words_part_of_speech",
+        "idx_vocabulary_items_part_of_speech": {
+          "name": "idx_vocabulary_items_part_of_speech",
           "columns": [
             {
               "expression": "part_of_speech",
@@ -473,8 +496,8 @@
           "method": "btree",
           "with": {}
         },
-        "idx_words_target_language": {
-          "name": "idx_words_target_language",
+        "idx_vocabulary_items_target_language": {
+          "name": "idx_vocabulary_items_target_language",
           "columns": [
             {
               "expression": "target_language",
@@ -488,8 +511,8 @@
           "method": "btree",
           "with": {}
         },
-        "idx_words_user_id": {
-          "name": "idx_words_user_id",
+        "idx_vocabulary_items_user_id": {
+          "name": "idx_vocabulary_items_user_id",
           "columns": [
             {
               "expression": "user_id",
@@ -503,8 +526,8 @@
           "method": "btree",
           "with": {}
         },
-        "idx_words_user_word_lookup": {
-          "name": "idx_words_user_word_lookup",
+        "idx_vocabulary_items_user_text_lookup": {
+          "name": "idx_vocabulary_items_user_text_lookup",
           "columns": [
             {
               "expression": "user_id",
@@ -513,7 +536,7 @@
               "nulls": "last"
             },
             {
-              "expression": "normalized_word",
+              "expression": "normalized_text",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -524,8 +547,29 @@
           "method": "btree",
           "with": {}
         },
-        "idx_words_is_hidden": {
-          "name": "idx_words_is_hidden",
+        "idx_vocabulary_items_user_type": {
+          "name": "idx_vocabulary_items_user_type",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_vocabulary_items_is_hidden": {
+          "name": "idx_vocabulary_items_is_hidden",
           "columns": [
             {
               "expression": "is_hidden",
@@ -539,8 +583,8 @@
           "method": "btree",
           "with": {}
         },
-        "idx_words_user_hidden": {
-          "name": "idx_words_user_hidden",
+        "idx_vocabulary_items_user_hidden": {
+          "name": "idx_vocabulary_items_user_hidden",
           "columns": [
             {
               "expression": "user_id",
@@ -560,8 +604,8 @@
           "method": "btree",
           "with": {}
         },
-        "idx_words_user_normalized_target_unique": {
-          "name": "idx_words_user_normalized_target_unique",
+        "idx_vocabulary_items_user_normalized_target_unique": {
+          "name": "idx_vocabulary_items_user_normalized_target_unique",
           "columns": [
             {
               "expression": "user_id",
@@ -570,7 +614,7 @@
               "nulls": "last"
             },
             {
-              "expression": "normalized_word",
+              "expression": "normalized_text",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -593,9 +637,9 @@
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {
-        "words_normalized_word_check": {
-          "name": "words_normalized_word_check",
-          "value": "length(normalized_word) > 0"
+        "vocabulary_items_normalized_text_check": {
+          "name": "vocabulary_items_normalized_text_check",
+          "value": "length(normalized_text) > 0"
         }
       },
       "isRLSEnabled": false
@@ -618,6 +662,11 @@
         "demonstrative pronoun",
         "other"
       ]
+    },
+    "public.vocabulary_item_type": {
+      "name": "vocabulary_item_type",
+      "schema": "public",
+      "values": ["word", "collocation"]
     }
   },
   "schemas": {},
@@ -625,7 +674,7 @@
   "roles": {},
   "policies": {},
   "views": {
-    "public.word_cache": {
+    "public.vocabulary_cache": {
       "columns": {
         "id": {
           "name": "id",
@@ -633,8 +682,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "normalized_word": {
-          "name": "normalized_word",
+        "normalized_text": {
+          "name": "normalized_text",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -659,8 +708,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "part_specific_data": {
-          "name": "part_specific_data",
+        "specific_data": {
+          "name": "specific_data",
           "type": "jsonb",
           "primaryKey": false,
           "notNull": false
@@ -670,10 +719,17 @@
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false
+        },
+        "type": {
+          "name": "type",
+          "type": "vocabulary_item_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
         }
       },
-      "definition": "SELECT DISTINCT ON (words.normalized_word, words.part_of_speech, words.target_language) words.id, words.normalized_word, words.part_of_speech, words.target_language, words.common_data, words.part_specific_data, words.created_at FROM words ORDER BY words.normalized_word, words.part_of_speech, words.target_language, words.created_at",
-      "name": "word_cache",
+      "definition": "SELECT DISTINCT ON (normalized_text, part_of_speech, target_language) id, normalized_text, part_of_speech, target_language, common_data, specific_data, created_at, type FROM vocabulary_items ORDER BY normalized_text, part_of_speech, target_language, created_at",
+      "name": "vocabulary_cache",
       "schema": "public",
       "isExisting": false,
       "materialized": false

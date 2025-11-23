@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, inArray, lte, sql } from 'drizzle-orm';
 
 import { db } from '@/db/client';
-import { wordsTable } from '@/modules/vocabulary/vocabulary.schema';
+import { vocabularyItemsTable } from '@/modules/vocabulary/vocabulary.schema';
 
 import { userWordProgressTable } from './flashcards.schema';
 import type { ExistingProgress, ProgressUpdate } from './flashcards.types';
@@ -62,24 +62,39 @@ const updateProgress = async (
 const getLatestWords = async (userId: string, limit: number) => {
   return db
     .select()
-    .from(wordsTable)
-    .where(and(eq(wordsTable.userId, userId), eq(wordsTable.isHidden, false)))
-    .orderBy(desc(wordsTable.createdAt))
+    .from(vocabularyItemsTable)
+    .where(
+      and(
+        eq(vocabularyItemsTable.userId, userId),
+        eq(vocabularyItemsTable.isHidden, false),
+      ),
+    )
+    .orderBy(desc(vocabularyItemsTable.createdAt))
     .limit(limit);
 };
 
 const getAllUserWords = async (userId: string) => {
   return db
     .select()
-    .from(wordsTable)
-    .where(and(eq(wordsTable.userId, userId), eq(wordsTable.isHidden, false)));
+    .from(vocabularyItemsTable)
+    .where(
+      and(
+        eq(vocabularyItemsTable.userId, userId),
+        eq(vocabularyItemsTable.isHidden, false),
+      ),
+    );
 };
 
 const getRandomWords = async (userId: string, limit: number) => {
   return db
     .select()
-    .from(wordsTable)
-    .where(and(eq(wordsTable.userId, userId), eq(wordsTable.isHidden, false)))
+    .from(vocabularyItemsTable)
+    .where(
+      and(
+        eq(vocabularyItemsTable.userId, userId),
+        eq(vocabularyItemsTable.isHidden, false),
+      ),
+    )
     .orderBy(sql`RANDOM()`)
     .limit(limit);
 };
@@ -89,17 +104,20 @@ const getDueWords = async (userId: string, limit: number) => {
 
   return db
     .select({
-      word: wordsTable,
+      word: vocabularyItemsTable,
       progress: userWordProgressTable,
     })
     .from(userWordProgressTable)
-    .innerJoin(wordsTable, eq(userWordProgressTable.wordId, wordsTable.id))
+    .innerJoin(
+      vocabularyItemsTable,
+      eq(userWordProgressTable.wordId, vocabularyItemsTable.id),
+    )
     .where(
       and(
         eq(userWordProgressTable.userId, userId),
         lte(userWordProgressTable.nextReviewDate, now),
         eq(userWordProgressTable.isArchived, false),
-        eq(wordsTable.isHidden, false),
+        eq(vocabularyItemsTable.isHidden, false),
       ),
     )
     .orderBy(asc(userWordProgressTable.nextReviewDate))
@@ -114,38 +132,38 @@ const getWordsWithProgress = async (
 ) => {
   const orderBy =
     sortBy === 'alphabetical'
-      ? asc(wordsTable.normalizedWord)
-      : desc(wordsTable.createdAt);
+      ? asc(vocabularyItemsTable.sortableText)
+      : desc(vocabularyItemsTable.createdAt);
 
   const [items, [{ total }]] = await Promise.all([
     db
       .select({
         word: {
-          id: wordsTable.id,
-          normalizedWord: wordsTable.normalizedWord,
-          partOfSpeech: wordsTable.partOfSpeech,
-          commonData: wordsTable.commonData,
-          createdAt: wordsTable.createdAt,
+          id: vocabularyItemsTable.id,
+          normalizedText: vocabularyItemsTable.normalizedText,
+          partOfSpeech: vocabularyItemsTable.partOfSpeech,
+          commonData: vocabularyItemsTable.commonData,
+          createdAt: vocabularyItemsTable.createdAt,
         },
         progress: userWordProgressTable,
       })
-      .from(wordsTable)
+      .from(vocabularyItemsTable)
       .leftJoin(
         userWordProgressTable,
         and(
-          eq(wordsTable.id, userWordProgressTable.wordId),
+          eq(vocabularyItemsTable.id, userWordProgressTable.wordId),
           eq(userWordProgressTable.userId, userId),
         ),
       )
-      .where(eq(wordsTable.userId, userId))
+      .where(eq(vocabularyItemsTable.userId, userId))
       .orderBy(orderBy)
       .limit(limit)
       .offset(offset),
 
     db
       .select({ total: count() })
-      .from(wordsTable)
-      .where(eq(wordsTable.userId, userId)),
+      .from(vocabularyItemsTable)
+      .where(eq(vocabularyItemsTable.userId, userId)),
   ]);
 
   return { items, total: total ?? 0 };
@@ -171,13 +189,16 @@ const getDueWordsCount = async (userId: string): Promise<number> => {
   const [result] = await db
     .select({ count: count() })
     .from(userWordProgressTable)
-    .innerJoin(wordsTable, eq(userWordProgressTable.wordId, wordsTable.id))
+    .innerJoin(
+      vocabularyItemsTable,
+      eq(userWordProgressTable.wordId, vocabularyItemsTable.id),
+    )
     .where(
       and(
         eq(userWordProgressTable.userId, userId),
         lte(userWordProgressTable.nextReviewDate, now),
         eq(userWordProgressTable.isArchived, false),
-        eq(wordsTable.isHidden, false),
+        eq(vocabularyItemsTable.isHidden, false),
       ),
     );
 
@@ -187,8 +208,13 @@ const getDueWordsCount = async (userId: string): Promise<number> => {
 const getTotalWordsCount = async (userId: string): Promise<number> => {
   const [result] = await db
     .select({ count: count() })
-    .from(wordsTable)
-    .where(and(eq(wordsTable.userId, userId), eq(wordsTable.isHidden, false)));
+    .from(vocabularyItemsTable)
+    .where(
+      and(
+        eq(vocabularyItemsTable.userId, userId),
+        eq(vocabularyItemsTable.isHidden, false),
+      ),
+    );
 
   return result?.count ?? 0;
 };

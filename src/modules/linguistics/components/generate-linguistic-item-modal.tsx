@@ -15,7 +15,10 @@ import type {
 } from '@/modules/linguistics/linguistics.types';
 import { getGenderProperties } from '@/modules/linguistics/utils/get-gender-properties';
 import { isLinguisticCollocationItem } from '@/modules/linguistics/utils/is-linguistic-collocation-item';
-import { saveWordForLearning } from '@/modules/vocabulary/vocabulary.actions';
+import {
+  saveCollocationForLearning,
+  saveWordForLearning,
+} from '@/modules/vocabulary/vocabulary.actions';
 
 export interface GenerateLinguisticItemModalProps {
   isOpen: boolean;
@@ -58,18 +61,28 @@ export const GenerateLinguisticItemModal: React.FC<
     : undefined;
 
   const handleVocabularyItem = async () => {
-    if (!linguisticItem || isCollocation) return;
+    if (!linguisticItem) return;
 
     setIsSaving(true);
     try {
-      const result = await saveWordForLearning(
-        linguisticItem as LinguisticWordItem,
-      );
+      let result;
+
+      if (isCollocation) {
+        result = await saveCollocationForLearning(
+          linguisticItem as LinguisticCollocationItem,
+        );
+      } else {
+        result = await saveWordForLearning(
+          linguisticItem as LinguisticWordItem,
+        );
+      }
 
       if (result.success) {
         toaster.create({
-          title: 'Word saved!',
-          description: 'Word has been saved for learning',
+          title: isCollocation ? 'Collocation saved!' : 'Word saved!',
+          description: isCollocation
+            ? 'Collocation has been saved for learning'
+            : 'Word has been saved for learning',
           type: 'success',
           duration: 3000,
         });
@@ -174,7 +187,7 @@ export const GenerateLinguisticItemModal: React.FC<
               flexDirection={{ base: 'column', md: 'row' }}
               alignItems="stretch"
             >
-              {linguisticItem && !isCollocation && (
+              {linguisticItem && (
                 <Button
                   size={{ base: 'lg', md: 'lg' }}
                   h={{ base: '48px', md: '44px' }}

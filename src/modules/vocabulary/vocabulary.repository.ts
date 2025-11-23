@@ -4,20 +4,21 @@ import { db } from '@/db/client';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 
-import { wordCacheView, wordsTable } from './vocabulary.schema';
+import { vocabularyCacheView, vocabularyItemsTable } from './vocabulary.schema';
 import type {
   MinimalVocabularyWord,
   VisibilityFilter,
   VocabularyItem,
   VocabularyItemAnonymized,
   VocabularySortOption,
+  VocabularyTypeFilter,
 } from './vocabulary.types';
 import { ALL_PARTS_OF_SPEECH } from './vocabulary.types';
 
 const create = async (
-  data: typeof wordsTable.$inferInsert,
+  data: typeof vocabularyItemsTable.$inferInsert,
 ): Promise<VocabularyItem> => {
-  const [word] = await db.insert(wordsTable).values(data).returning();
+  const [word] = await db.insert(vocabularyItemsTable).values(data).returning();
   return word as VocabularyItem;
 };
 
@@ -29,47 +30,53 @@ const getUserMinimalVocabulary = async (
   searchQuery?: string,
   visibilityFilter: VisibilityFilter = 'visible-only',
   partsOfSpeech: PartOfSpeech[] = ALL_PARTS_OF_SPEECH,
+  typeFilter: VocabularyTypeFilter = 'all',
 ): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {
   const orderBy =
     sort === 'Alphabetical'
-      ? asc(wordsTable.sortableWord)
-      : desc(wordsTable.createdAt);
+      ? asc(vocabularyItemsTable.sortableText)
+      : desc(vocabularyItemsTable.createdAt);
 
-  const whereConditions = [eq(wordsTable.userId, userId)];
+  const whereConditions = [eq(vocabularyItemsTable.userId, userId)];
 
   if (searchQuery && searchQuery.trim()) {
-    whereConditions.push(ilike(wordsTable.normalizedWord, `%${searchQuery}%`));
+    whereConditions.push(
+      ilike(vocabularyItemsTable.normalizedText, `%${searchQuery}%`),
+    );
   }
-
-  // Apply visibility filter
   if (visibilityFilter === 'hidden-only') {
-    whereConditions.push(eq(wordsTable.isHidden, true));
+    whereConditions.push(eq(vocabularyItemsTable.isHidden, true));
   } else if (visibilityFilter === 'visible-only') {
-    whereConditions.push(eq(wordsTable.isHidden, false));
+    whereConditions.push(eq(vocabularyItemsTable.isHidden, false));
   }
-  // 'any' means no visibility filter is applied
 
-  // Apply parts of speech filter
-  // If empty array, no results should be returned
-  if (partsOfSpeech.length === 0) {
-    // Add a condition that will never match to return empty results
-    whereConditions.push(eq(wordsTable.id, 'impossible-id-that-never-exists'));
-  } else if (partsOfSpeech.length < ALL_PARTS_OF_SPEECH.length) {
-    // Only apply filter if it's a subset (not all parts of speech)
-    whereConditions.push(inArray(wordsTable.partOfSpeech, partsOfSpeech));
+  if (typeFilter === 'words-only') {
+    whereConditions.push(eq(vocabularyItemsTable.type, 'word'));
+  } else if (typeFilter === 'collocations-only') {
+    whereConditions.push(eq(vocabularyItemsTable.type, 'collocation'));
   }
-  // If all parts of speech are selected, no filter is needed
+
+  if (partsOfSpeech.length === 0) {
+    whereConditions.push(
+      eq(vocabularyItemsTable.id, 'impossible-id-that-never-exists'),
+    );
+  } else if (partsOfSpeech.length < ALL_PARTS_OF_SPEECH.length) {
+    whereConditions.push(
+      inArray(vocabularyItemsTable.partOfSpeech, partsOfSpeech),
+    );
+  }
 
   const [items, [{ total }]] = await Promise.all([
     db
       .select({
-        id: wordsTable.id,
-        normalizedWord: wordsTable.normalizedWord,
-        partOfSpeech: wordsTable.partOfSpeech,
-        commonData: wordsTable.commonData,
-        isHidden: wordsTable.isHidden,
+        id: vocabularyItemsTable.id,
+        type: vocabularyItemsTable.type,
+        normalizedText: vocabularyItemsTable.normalizedText,
+        partOfSpeech: vocabularyItemsTable.partOfSpeech,
+        commonData: vocabularyItemsTable.commonData,
+        isHidden: vocabularyItemsTable.isHidden,
       })
-      .from(wordsTable)
+      .from(vocabularyItemsTable)
       .where(and(...whereConditions))
       .orderBy(orderBy)
       .limit(limit)
@@ -77,7 +84,7 @@ const getUserMinimalVocabulary = async (
 
     db
       .select({ total: count() })
-      .from(wordsTable)
+      .from(vocabularyItemsTable)
       .where(and(...whereConditions)),
   ]);
 
@@ -94,12 +101,12 @@ const getByNormalizedWordAndPos = async (
 ): Promise<VocabularyItem | null> => {
   const [word] = await db
     .select()
-    .from(wordsTable)
+    .from(vocabularyItemsTable)
     .where(
       and(
-        eq(wordsTable.userId, userId),
-        eq(wordsTable.normalizedWord, normalizedWord),
-        eq(wordsTable.partOfSpeech, partOfSpeech),
+        eq(vocabularyItemsTable.userId, userId),
+        eq(vocabularyItemsTable.normalizedText, normalizedWord),
+        eq(vocabularyItemsTable.partOfSpeech, partOfSpeech),
       ),
     );
 
@@ -112,11 +119,11 @@ const getCachedWord = async (
 ): Promise<VocabularyItemAnonymized | null> => {
   const [word] = await db
     .select()
-    .from(wordCacheView)
+    .from(vocabularyCacheView)
     .where(
       and(
-        eq(wordCacheView.normalizedWord, normalizedWord),
-        eq(wordCacheView.targetLanguage, targetLanguage),
+        eq(vocabularyCacheView.normalizedText, normalizedWord),
+        eq(vocabularyCacheView.targetLanguage, targetLanguage),
       ),
     );
 
@@ -125,16 +132,21 @@ const getCachedWord = async (
 
 const deleteItem = async (wordId: string, userId: string): Promise<void> => {
   await db
-    .delete(wordsTable)
-    .where(and(eq(wordsTable.id, wordId), eq(wordsTable.userId, userId)));
+    .delete(vocabularyItemsTable)
+    .where(
+      and(
+        eq(vocabularyItemsTable.id, wordId),
+        eq(vocabularyItemsTable.userId, userId),
+      ),
+    );
 };
 
 const getLatestWords = async (userId: string, limit: number) => {
   return db
     .select()
-    .from(wordsTable)
-    .where(eq(wordsTable.userId, userId))
-    .orderBy(desc(wordsTable.createdAt))
+    .from(vocabularyItemsTable)
+    .where(eq(vocabularyItemsTable.userId, userId))
+    .orderBy(desc(vocabularyItemsTable.createdAt))
     .limit(limit);
 };
 
@@ -144,9 +156,14 @@ const toggleWordHidden = async (
   isHidden: boolean,
 ): Promise<void> => {
   await db
-    .update(wordsTable)
+    .update(vocabularyItemsTable)
     .set({ isHidden, updatedAt: new Date().toISOString() })
-    .where(and(eq(wordsTable.id, wordId), eq(wordsTable.userId, userId)));
+    .where(
+      and(
+        eq(vocabularyItemsTable.id, wordId),
+        eq(vocabularyItemsTable.userId, userId),
+      ),
+    );
 };
 
 export {

@@ -22,6 +22,13 @@
       "when": 1763833672696,
       "tag": "0002_typical_sentry",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1732406400000,
+      "tag": "0003_vocabulary_items_migration",
+      "breakpoints": true
     }
   ]
 }

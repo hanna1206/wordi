@@ -7,6 +7,7 @@ import type {
   MinimalVocabularyWord,
   VisibilityFilter,
   VocabularySortOption,
+  VocabularyTypeFilter,
 } from '@/modules/vocabulary/vocabulary.types';
 import { ALL_PARTS_OF_SPEECH } from '@/modules/vocabulary/vocabulary.types';
 
@@ -18,6 +19,7 @@ export const useVocabularyList = (
   searchQuery?: string,
   visibilityFilter: VisibilityFilter = 'visible-only',
   selectedPartsOfSpeech: PartOfSpeech[] = ALL_PARTS_OF_SPEECH,
+  typeFilter: VocabularyTypeFilter = 'all',
 ) => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -74,6 +76,7 @@ export const useVocabularyList = (
           searchQuery: debouncedSearchQuery,
           visibilityFilter,
           partsOfSpeech: selectedPartsOfSpeech,
+          typeFilter,
         });
 
         if (result.success && result.data) {
@@ -117,7 +120,13 @@ export const useVocabularyList = (
         }
       }
     },
-    [sortOption, debouncedSearchQuery, visibilityFilter, selectedPartsOfSpeech],
+    [
+      sortOption,
+      debouncedSearchQuery,
+      visibilityFilter,
+      selectedPartsOfSpeech,
+      typeFilter,
+    ],
   );
 
   useEffect(() => {

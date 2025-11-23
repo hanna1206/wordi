@@ -41,34 +41,45 @@ export const VocabularyTable = ({
           <Stack gap={2}>
             {items.map((item) => (
               <Card.Root
-                key={`${item.normalizedWord}-${item.partOfSpeech}`}
+                key={`${item.normalizedText}-${item.partOfSpeech}`}
                 borderWidth="1px"
                 shadow="sm"
                 cursor="pointer"
                 transition="background 0.2s"
                 onClick={() =>
-                  onWordClick(item.normalizedWord, item.partOfSpeech)
+                  onWordClick(item.normalizedText, item.partOfSpeech)
                 }
               >
                 <Card.Body py={2} px={3}>
                   <Flex align="center" justify="space-between" mb={1}>
                     <Flex align="center" gap={1.5}>
                       <Text fontWeight="semibold" fontSize="md">
-                        {item.normalizedWord}
+                        {item.normalizedText}
                       </Text>
                       {item.isHidden && (
                         <Tooltip content="Hidden word">
                           <Icon as={LuEyeOff} color="fg.muted" fontSize="sm" />
                         </Tooltip>
                       )}
-                      <Badge
-                        colorPalette="teal"
-                        variant="subtle"
-                        textTransform="capitalize"
-                        size="xs"
-                      >
-                        {item.partOfSpeech}
-                      </Badge>
+                      {item.type === 'collocation' ? (
+                        <Badge
+                          colorPalette="purple"
+                          variant="subtle"
+                          textTransform="capitalize"
+                          size="xs"
+                        >
+                          Collocation
+                        </Badge>
+                      ) : (
+                        <Badge
+                          colorPalette="teal"
+                          variant="subtle"
+                          textTransform="capitalize"
+                          size="xs"
+                        >
+                          {item.partOfSpeech}
+                        </Badge>
+                      )}
                     </Flex>
                     <VocabularyActionMenu
                       isHidden={item.isHidden}
@@ -138,16 +149,16 @@ export const VocabularyTable = ({
               ) : (
                 items.map((item) => (
                   <Table.Row
-                    key={`${item.normalizedWord}-${item.partOfSpeech}`}
+                    key={`${item.normalizedText}-${item.partOfSpeech}`}
                     onClick={() =>
-                      onWordClick(item.normalizedWord, item.partOfSpeech)
+                      onWordClick(item.normalizedText, item.partOfSpeech)
                     }
                     cursor="pointer"
                     transition="background 0.2s"
                   >
                     <Table.Cell fontWeight="medium" fontSize="sm">
                       <Flex align="center" gap={1.5}>
-                        {item.normalizedWord}
+                        {item.normalizedText}
                         {item.isHidden && (
                           <Tooltip content="Hidden word">
                             <Icon
@@ -160,14 +171,25 @@ export const VocabularyTable = ({
                       </Flex>
                     </Table.Cell>
                     <Table.Cell>
-                      <Badge
-                        colorPalette="teal"
-                        variant="subtle"
-                        textTransform="capitalize"
-                        size="xs"
-                      >
-                        {item.partOfSpeech}
-                      </Badge>
+                      {item.type === 'collocation' ? (
+                        <Badge
+                          colorPalette="purple"
+                          variant="subtle"
+                          textTransform="capitalize"
+                          size="xs"
+                        >
+                          Collocation
+                        </Badge>
+                      ) : (
+                        <Badge
+                          colorPalette="teal"
+                          variant="subtle"
+                          textTransform="capitalize"
+                          size="xs"
+                        >
+                          {item.partOfSpeech}
+                        </Badge>
+                      )}
                     </Table.Cell>
                     <Table.Cell color="fg.muted" fontSize="sm">
                       {item.commonData?.mainTranslation || '-'}

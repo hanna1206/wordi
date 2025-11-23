@@ -4,6 +4,7 @@ import {
   check,
   index,
   jsonb,
+  pgEnum,
   pgTable,
   pgView,
   text,
@@ -14,19 +15,25 @@ import {
 
 import { languageCodeEnum, partOfSpeechEnum } from '@/db/shared';
 
-export const wordsTable = pgTable(
-  'words',
+export const vocabularyItemTypeEnum = pgEnum('vocabulary_item_type', [
+  'word',
+  'collocation',
+]);
+
+export const vocabularyItemsTable = pgTable(
+  'vocabulary_items',
   {
     id: uuid()
       .default(sql`uuid_generate_v4()`)
       .primaryKey()
       .notNull(),
     userId: uuid('user_id').notNull(),
-    normalizedWord: text('normalized_word').notNull(),
-    sortableWord: text('sortable_word').notNull(),
+    type: vocabularyItemTypeEnum('type').default('word').notNull(),
+    normalizedText: text('normalized_text').notNull(),
+    sortableText: text('sortable_text').notNull(),
     partOfSpeech: partOfSpeechEnum('part_of_speech').notNull(),
     commonData: jsonb('common_data').default({}).notNull(),
-    partSpecificData: jsonb('part_specific_data').default({}).notNull(),
+    specificData: jsonb('specific_data').default({}).notNull(),
     createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
       .default(sql`timezone('utc'::text, now())`)
       .notNull(),
@@ -39,53 +46,67 @@ export const wordsTable = pgTable(
     isHidden: boolean('is_hidden').default(false).notNull(),
   },
   (table) => [
+    // Index for type field
+    index('idx_vocabulary_items_type').on(table.type),
     // Composite index for cache lookup
-    index('idx_words_cache_lookup').on(
-      table.normalizedWord,
+    index('idx_vocabulary_items_cache_lookup').on(
+      table.normalizedText,
       table.partOfSpeech,
       table.targetLanguage,
     ),
     // GIN indexes for JSONB
-    index('idx_words_common_data_gin').using('gin', table.commonData),
-    index('idx_words_part_specific_data_gin').using(
+    index('idx_vocabulary_items_common_data_gin').using(
       'gin',
-      table.partSpecificData,
+      table.commonData,
+    ),
+    index('idx_vocabulary_items_specific_data_gin').using(
+      'gin',
+      table.specificData,
     ),
     // Full-text search
-    index('idx_words_search').using(
+    index('idx_vocabulary_items_search').using(
       'gin',
-      sql`to_tsvector('simple'::regconfig, normalized_word)`,
+      sql`to_tsvector('simple'::regconfig, normalized_text)`,
     ),
     // Simple indexes
-    index('idx_words_normalized_word').on(table.normalizedWord),
-    index('idx_words_sortable_word').on(table.sortableWord),
-    index('idx_words_part_of_speech').on(table.partOfSpeech),
-    index('idx_words_target_language').on(table.targetLanguage),
-    index('idx_words_user_id').on(table.userId),
-    // Composite index for user word lookup
-    index('idx_words_user_word_lookup').on(table.userId, table.normalizedWord),
-    // Index for hidden flag
-    index('idx_words_is_hidden').on(table.isHidden),
-    // Composite index for user + hidden filtering
-    index('idx_words_user_hidden').on(table.userId, table.isHidden),
-    // Unique constraint
-    uniqueIndex('idx_words_user_normalized_target_unique').on(
+    index('idx_vocabulary_items_normalized_text').on(table.normalizedText),
+    index('idx_vocabulary_items_sortable_text').on(table.sortableText),
+    index('idx_vocabulary_items_part_of_speech').on(table.partOfSpeech),
+    index('idx_vocabulary_items_target_language').on(table.targetLanguage),
+    index('idx_vocabulary_items_user_id').on(table.userId),
+    // Composite index for user text lookup
+    index('idx_vocabulary_items_user_text_lookup').on(
       table.userId,
-      table.normalizedWord,
+      table.normalizedText,
+    ),
+    // Composite index for user + type filtering
+    index('idx_vocabulary_items_user_type').on(table.userId, table.type),
+    // Index for hidden flag
+    index('idx_vocabulary_items_is_hidden').on(table.isHidden),
+    // Composite index for user + hidden filtering
+    index('idx_vocabulary_items_user_hidden').on(table.userId, table.isHidden),
+    // Unique constraint
+    uniqueIndex('idx_vocabulary_items_user_normalized_target_unique').on(
+      table.userId,
+      table.normalizedText,
       table.targetLanguage,
     ),
-    check('words_normalized_word_check', sql`length(normalized_word) > 0`),
+    check(
+      'vocabulary_items_normalized_text_check',
+      sql`length(normalized_text) > 0`,
+    ),
   ],
 );
 
-export const wordCacheView = pgView('word_cache', {
+export const vocabularyCacheView = pgView('vocabulary_cache', {
   id: uuid(),
-  normalizedWord: text('normalized_word'),
+  normalizedText: text('normalized_text'),
   partOfSpeech: partOfSpeechEnum('part_of_speech'),
   targetLanguage: languageCodeEnum('target_language'),
   commonData: jsonb('common_data'),
-  partSpecificData: jsonb('part_specific_data'),
+  specificData: jsonb('specific_data'),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }),
+  type: vocabularyItemTypeEnum('type'),
 }).as(
-  sql`SELECT DISTINCT ON (words.normalized_word, words.part_of_speech, words.target_language) words.id, words.normalized_word, words.part_of_speech, words.target_language, words.common_data, words.part_specific_data, words.created_at FROM words ORDER BY words.normalized_word, words.part_of_speech, words.target_language, words.created_at`,
+  sql`SELECT DISTINCT ON (vocabulary_items.normalized_text, vocabulary_items.part_of_speech, vocabulary_items.target_language) vocabulary_items.id, vocabulary_items.normalized_text, vocabulary_items.part_of_speech, vocabulary_items.target_language, vocabulary_items.common_data, vocabulary_items.specific_data, vocabulary_items.created_at, vocabulary_items.type FROM vocabulary_items ORDER BY vocabulary_items.normalized_text, vocabulary_items.part_of_speech, vocabulary_items.target_language, vocabulary_items.created_at`,
 );

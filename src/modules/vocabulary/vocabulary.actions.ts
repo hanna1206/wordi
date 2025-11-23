@@ -9,7 +9,11 @@ import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 import { withUserSettings } from '@/modules/user-settings/utils/with-user-settings';
 import type { ActionResult } from '@/shared-types';
 
-import { LinguisticWordItem } from '../linguistics/linguistics.types';
+import {
+  LinguisticCollocationItem,
+  LinguisticWordItem,
+} from '../linguistics/linguistics.types';
+import { transformLinguisticCollocationItemToVocabularyItem } from './utils/transform-linguistic-collocation-item-to-vocabulary-item';
 import { transformLinguisticWordItemToVocabularyItem } from './utils/transform-linguistic-word-item-to-vocabulary-item';
 import * as vocabularyRepository from './vocabulary.repository';
 import type {
@@ -18,6 +22,7 @@ import type {
   VocabularyItem,
   VocabularyItemAnonymized,
   VocabularySortOption,
+  VocabularyTypeFilter,
 } from './vocabulary.types';
 import { ALL_PARTS_OF_SPEECH } from './vocabulary.types';
 
@@ -63,8 +68,53 @@ export const saveWordForLearning = withUserSettings<
   }
 });
 
-// Note: Word duplicate checking is handled by database constraints
-// No need for separate checkWordSaved action
+export const saveCollocationForLearning = withUserSettings<
+  LinguisticCollocationItem,
+  VocabularyItem
+>(async (context, linguisticItem): Promise<ActionResult<VocabularyItem>> => {
+  if (!linguisticItem || !linguisticItem.normalizedCollocation) {
+    return {
+      success: false,
+      error: 'Valid collocation is required',
+    };
+  }
+
+  if (!linguisticItem.mainTranslation) {
+    return {
+      success: false,
+      error: 'Valid collocation is required',
+    };
+  }
+
+  try {
+    const vocabularyItem = transformLinguisticCollocationItemToVocabularyItem(
+      linguisticItem,
+      context.user.id,
+      context.userSettings.nativeLanguage as LanguageCode,
+    );
+
+    const saved = await vocabularyRepository.create(vocabularyItem);
+
+    await flashcardsRepository.createInitialProgress(context.user.id, saved.id);
+
+    return { success: true, data: saved };
+  } catch (error) {
+    Sentry.captureException(error);
+
+    if (error instanceof Error && error.message.includes('duplicate')) {
+      return {
+        success: false,
+        error: 'Collocation already saved for learning',
+      };
+    }
+
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : 'Failed to save collocation',
+    };
+  }
+});
 
 export const getWordFromCache = withUserSettings<
   string,
@@ -94,6 +144,7 @@ type FetchMinimalVocabularyParams = {
   searchQuery?: string;
   visibilityFilter?: VisibilityFilter;
   partsOfSpeech?: PartOfSpeech[];
+  typeFilter?: VocabularyTypeFilter;
 };
 
 export const fetchUserMinimalVocabulary = withAuth<
@@ -109,6 +160,7 @@ export const fetchUserMinimalVocabulary = withAuth<
       searchQuery,
       visibilityFilter = 'visible-only',
       partsOfSpeech = ALL_PARTS_OF_SPEECH,
+      typeFilter = 'all',
     },
   ): Promise<
     ActionResult<{ items: MinimalVocabularyWord[]; total: number }>
@@ -122,6 +174,7 @@ export const fetchUserMinimalVocabulary = withAuth<
         searchQuery,
         visibilityFilter,
         partsOfSpeech,
+        typeFilter,
       );
       return { success: true, data };
     } catch (error) {

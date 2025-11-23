@@ -66,10 +66,10 @@ export const GenerateLinguisticItemForm = () => {
       if (cacheResult.success && cacheResult.data) {
         // Cache hit - convert cached data to TranslationResult format
         const cachedTranslation: LinguisticWordItem = {
-          normalizedWord: cacheResult.data.normalizedWord,
+          normalizedWord: cacheResult.data.normalizedText,
           partOfSpeech: [cacheResult.data.partOfSpeech as PartOfSpeech],
           ...cacheResult.data.commonData,
-          ...cacheResult.data.partSpecificData,
+          ...cacheResult.data.specificData,
         };
         setLinguisticItem(cachedTranslation);
         // Clear form only on successful cache hit

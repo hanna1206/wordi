@@ -27,10 +27,10 @@ const convertVocabularyItemToTranslationResult = (
   savedWord: VocabularyItem,
 ): LinguisticWordItem => {
   const baseTranslation: LinguisticWordItem = {
-    normalizedWord: savedWord.normalizedWord,
+    normalizedWord: savedWord.normalizedText,
     partOfSpeech: [savedWord.partOfSpeech as PartOfSpeech],
     ...savedWord.commonData,
-    ...savedWord.partSpecificData,
+    ...savedWord.specificData,
   };
 
   return baseTranslation;

@@ -1,17 +1,20 @@
 import { relations } from 'drizzle-orm/relations';
 
-import { userWordProgressTable, wordsTable } from './schema';
+import { userWordProgressTable, vocabularyItemsTable } from './schema';
 
 export const userWordProgressRelations = relations(
   userWordProgressTable,
   ({ one }) => ({
-    word: one(wordsTable, {
+    word: one(vocabularyItemsTable, {
       fields: [userWordProgressTable.wordId],
-      references: [wordsTable.id],
+      references: [vocabularyItemsTable.id],
     }),
   }),
 );
 
-export const wordsRelations = relations(wordsTable, ({ many }) => ({
-  userWordProgresses: many(userWordProgressTable),
-}));
+export const vocabularyItemsRelations = relations(
+  vocabularyItemsTable,
+  ({ many }) => ({
+    userWordProgresses: many(userWordProgressTable),
+  }),
+);

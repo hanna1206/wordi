@@ -14,7 +14,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 
-import { wordsTable } from '@/modules/vocabulary/vocabulary.schema';
+import { vocabularyItemsTable } from '@/modules/vocabulary/vocabulary.schema';
 
 export const userWordProgressTable = pgTable(
   'user_word_progress',
@@ -60,7 +60,7 @@ export const userWordProgressTable = pgTable(
     index('idx_user_word_progress_user_id').on(table.userId),
     foreignKey({
       columns: [table.wordId],
-      foreignColumns: [wordsTable.id],
+      foreignColumns: [vocabularyItemsTable.id],
       name: 'user_word_progress_word_id_fkey',
     }),
     unique('user_word_progress_user_id_word_id_key').on(

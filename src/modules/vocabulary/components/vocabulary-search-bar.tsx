@@ -9,6 +9,7 @@ import type { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
   VisibilityFilter,
   VocabularySortOption,
+  VocabularyTypeFilter,
 } from '@/modules/vocabulary/vocabulary.types';
 
 import { VocabularyFilterDialog } from './vocabulary-filter-dialog';
@@ -20,9 +21,11 @@ interface VocabularySearchBarProps {
   onSearchChange: (query: string) => void;
   visibilityFilter: VisibilityFilter;
   selectedPartsOfSpeech: PartOfSpeech[];
+  typeFilter: VocabularyTypeFilter;
   onFilterChange: (
     visibility: VisibilityFilter,
     partsOfSpeech: PartOfSpeech[],
+    typeFilter: VocabularyTypeFilter,
   ) => void;
   hasActiveFilters: boolean;
 }
@@ -34,6 +37,7 @@ export const VocabularySearchBar = ({
   onSearchChange,
   visibilityFilter,
   selectedPartsOfSpeech,
+  typeFilter,
   onFilterChange,
   hasActiveFilters,
 }: VocabularySearchBarProps) => {
@@ -42,8 +46,9 @@ export const VocabularySearchBar = ({
   const handleFilterApply = (
     visibility: VisibilityFilter,
     partsOfSpeech: PartOfSpeech[],
+    type: VocabularyTypeFilter,
   ) => {
-    onFilterChange(visibility, partsOfSpeech);
+    onFilterChange(visibility, partsOfSpeech, type);
   };
 
   return (
@@ -115,6 +120,7 @@ export const VocabularySearchBar = ({
         onClose={() => setIsFilterDialogOpen(false)}
         visibilityFilter={visibilityFilter}
         selectedPartsOfSpeech={selectedPartsOfSpeech}
+        typeFilter={typeFilter}
         onApply={handleFilterApply}
       />
     </>

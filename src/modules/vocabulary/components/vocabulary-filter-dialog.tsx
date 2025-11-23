@@ -22,7 +22,10 @@ import {
 } from '@chakra-ui/react';
 
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
-import type { VisibilityFilter } from '@/modules/vocabulary/vocabulary.types';
+import type {
+  VisibilityFilter,
+  VocabularyTypeFilter,
+} from '@/modules/vocabulary/vocabulary.types';
 import { ALL_PARTS_OF_SPEECH } from '@/modules/vocabulary/vocabulary.types';
 
 interface VocabularyFilterDialogProps {
@@ -30,9 +33,11 @@ interface VocabularyFilterDialogProps {
   onClose: () => void;
   visibilityFilter: VisibilityFilter;
   selectedPartsOfSpeech: PartOfSpeech[];
+  typeFilter: VocabularyTypeFilter;
   onApply: (
     visibility: VisibilityFilter,
     partsOfSpeech: PartOfSpeech[],
+    typeFilter: VocabularyTypeFilter,
   ) => void;
 }
 
@@ -41,37 +46,37 @@ export const VocabularyFilterDialog = ({
   onClose,
   visibilityFilter,
   selectedPartsOfSpeech,
+  typeFilter,
   onApply,
 }: VocabularyFilterDialogProps) => {
-  // Local state for filter selections
   const [localVisibilityFilter, setLocalVisibilityFilter] =
     useState<VisibilityFilter>(visibilityFilter);
   const [localSelectedPartsOfSpeech, setLocalSelectedPartsOfSpeech] = useState<
     PartOfSpeech[]
   >(selectedPartsOfSpeech);
+  const [localTypeFilter, setLocalTypeFilter] =
+    useState<VocabularyTypeFilter>(typeFilter);
 
   // Reset local state when dialog opens
   const handleOpenChange = (details: { open: boolean }) => {
     if (details.open) {
       setLocalVisibilityFilter(visibilityFilter);
       setLocalSelectedPartsOfSpeech(selectedPartsOfSpeech);
+      setLocalTypeFilter(typeFilter);
     } else {
       onClose();
     }
   };
 
-  // Handle Apply button click
   const handleApply = () => {
-    onApply(localVisibilityFilter, localSelectedPartsOfSpeech);
+    onApply(localVisibilityFilter, localSelectedPartsOfSpeech, localTypeFilter);
     onClose();
   };
 
-  // Handle Cancel button click
   const handleCancel = () => {
     onClose();
   };
 
-  // Handle part of speech checkbox toggle
   const handlePartOfSpeechToggle = (partOfSpeech: PartOfSpeech) => {
     setLocalSelectedPartsOfSpeech((prev) => {
       if (prev.includes(partOfSpeech)) {
@@ -110,6 +115,36 @@ export const VocabularyFilterDialog = ({
 
             <DialogBody py={{ base: 4, md: 3 }}>
               <Flex direction="column" gap={{ base: 4, md: 3 }}>
+                {/* Type Filter Section */}
+                <Flex direction="column" gap={1.5} alignItems="flex-start">
+                  <Text fontWeight="medium" fontSize="sm">
+                    Type
+                  </Text>
+                  <SegmentGroup.Root
+                    value={localTypeFilter}
+                    onValueChange={(e) =>
+                      setLocalTypeFilter(e.value as VocabularyTypeFilter)
+                    }
+                    size="sm"
+                  >
+                    <SegmentGroup.Indicator bg="white" />
+                    <SegmentGroup.Item value="all">
+                      <SegmentGroup.ItemText>All</SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                    <SegmentGroup.Item value="words-only">
+                      <SegmentGroup.ItemText>Words Only</SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                    <SegmentGroup.Item value="collocations-only">
+                      <SegmentGroup.ItemText>
+                        Collocations Only
+                      </SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                  </SegmentGroup.Root>
+                </Flex>
+
                 {/* Visibility Filter Section */}
                 <Flex direction="column" gap={1.5} alignItems="flex-start">
                   <Text fontWeight="medium" fontSize="sm">

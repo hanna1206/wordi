@@ -24,12 +24,11 @@ import { useVocabularyWordDetails } from '@/modules/vocabulary/hooks/use-vocabul
 import type {
   VisibilityFilter,
   VocabularySortOption,
+  VocabularyTypeFilter,
 } from '@/modules/vocabulary/vocabulary.types';
-import {
-  ALL_PARTS_OF_SPEECH,
-  areFiltersAtDefault,
-} from '@/modules/vocabulary/vocabulary.types';
+import { ALL_PARTS_OF_SPEECH } from '@/modules/vocabulary/vocabulary.types';
 
+import { areFiltersAtDefault } from '../utils/are-filters-at-default';
 import { toggleWordHidden } from '../vocabulary.actions';
 
 export const VocabularyPage = () => {
@@ -39,6 +38,7 @@ export const VocabularyPage = () => {
     useState<VisibilityFilter>('visible-only');
   const [selectedPartsOfSpeech, setSelectedPartsOfSpeech] =
     useState<PartOfSpeech[]>(ALL_PARTS_OF_SPEECH);
+  const [typeFilter, setTypeFilter] = useState<VocabularyTypeFilter>('all');
 
   const hasActiveFilters = !areFiltersAtDefault(
     visibilityFilter,
@@ -51,6 +51,7 @@ export const VocabularyPage = () => {
       searchQuery,
       visibilityFilter,
       selectedPartsOfSpeech,
+      typeFilter,
     );
 
   const {
@@ -80,9 +81,14 @@ export const VocabularyPage = () => {
   }, []);
 
   const handleFilterChange = useCallback(
-    (visibility: VisibilityFilter, partsOfSpeech: PartOfSpeech[]) => {
+    (
+      visibility: VisibilityFilter,
+      partsOfSpeech: PartOfSpeech[],
+      type: VocabularyTypeFilter,
+    ) => {
       setVisibilityFilter(visibility);
       setSelectedPartsOfSpeech(partsOfSpeech);
+      setTypeFilter(type);
     },
     [],
   );
@@ -112,14 +118,12 @@ export const VocabularyPage = () => {
         onSearchChange={handleSearchChange}
         visibilityFilter={visibilityFilter}
         selectedPartsOfSpeech={selectedPartsOfSpeech}
+        typeFilter={typeFilter}
         onFilterChange={handleFilterChange}
         hasActiveFilters={hasActiveFilters}
       />
 
-      <PageHeader
-        title="Vocabulary"
-        description="Track and review all the words you've learned"
-      />
+      <PageHeader title="Vocabulary" description="" />
 
       {isInitialLoading ? (
         <VocabularyInitialLoader />

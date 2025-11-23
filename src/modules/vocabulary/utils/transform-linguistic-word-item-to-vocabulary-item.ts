@@ -2,17 +2,17 @@ import { LinguisticWordItem } from '@/modules/linguistics/linguistics.types';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 
 import type {
-  CommonWordData,
+  CommonVocabularyData,
   VocabularyItemDatabaseInput,
 } from '../vocabulary.types';
-import { extractSortableWord } from './extract-sortable-word';
+import { extractSortableText } from './extract-sortable-text';
 
 export const transformLinguisticWordItemToVocabularyItem = (
   linguisticItem: LinguisticWordItem,
   userId: string,
   targetLanguage: LanguageCode,
 ) => {
-  const commonData: CommonWordData = {
+  const commonData: CommonVocabularyData = {
     mainTranslation: linguisticItem.mainTranslation,
     additionalTranslations: linguisticItem.additionalTranslations,
     exampleSentences: linguisticItem.exampleSentences,
@@ -40,11 +40,12 @@ export const transformLinguisticWordItemToVocabularyItem = (
   // Create camelCase object first, then convert to snake_case for database
   const vocabularyItem: VocabularyItemDatabaseInput = {
     userId,
-    normalizedWord: linguisticItem.normalizedWord,
-    sortableWord: extractSortableWord(linguisticItem.normalizedWord),
+    type: 'word',
+    normalizedText: linguisticItem.normalizedWord,
+    sortableText: extractSortableText(linguisticItem.normalizedWord),
     partOfSpeech: linguisticItem.partOfSpeech[0] || 'other',
     commonData,
-    partSpecificData: specificData,
+    specificData: specificData,
     targetLanguage,
   };
 

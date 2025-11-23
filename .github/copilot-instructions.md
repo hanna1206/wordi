@@ -138,14 +138,18 @@ export const myAction = withAuth<InputType, OutputType>(
 
 SM-2 spaced repetition in `flashcards/utils/spaced-repetition.utils.ts`. Quality scores (0-5) adjust easiness factor and interval. Note: DB fields use snake_case directly in utils to avoid conversion overhead.
 
-### Vocabulary Word Storage
+### Vocabulary Item Storage
 
-Words stored in `wordsTable` with:
+Vocabulary items (words and collocations) stored in `vocabularyItemsTable` with:
 
-- `normalizedWord`: Canonical form (e.g., infinitive verb)
-- `commonData`: JSONB for shared metadata (translations, examples, collocations)
-- `partSpecificData`: JSONB for grammar (noun gender, verb conjugations, etc.)
-- `wordCacheView`: Deduplicated across users for performance
+- `type`: Discriminator field ('word' or 'collocation')
+- `normalizedText`: Canonical form (e.g., infinitive verb or normalized collocation)
+- `sortableText`: Text prepared for alphabetical sorting (articles removed, lowercase)
+- `commonData`: JSONB for shared metadata (translations, examples, collocations) for words, or all the data for collocatons
+- `specificData`: JSONB for type-specific data (noun gender, verb conjugations, component words, etc.)
+- `vocabularyCacheView`: Deduplicated across users for performance
+
+Note: `wordsTable`, `normalizedWord`, `sortableWord`, `partSpecificData`, `wordCacheView`, and `CommonWordData` are deprecated aliases maintained for backward compatibility.
 
 ### LLM Prompts
 
