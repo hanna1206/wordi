@@ -30,6 +30,7 @@ export const useFlashCardsGame = () => {
   const mode = searchParams.get('mode') as GameMode;
   const limit = Number(searchParams.get('limit'));
   const cardSide = (searchParams.get('cardSide') as CardSide) || CardSide.Word;
+  const collectionId = searchParams.get('collectionId') || undefined;
 
   const focusCard = useCallback(() => {
     cardButtonRef.current?.focus();
@@ -50,7 +51,7 @@ export const useFlashCardsGame = () => {
       try {
         setIsLoading(true);
         hasFetchedRef.current = true;
-        const result = await getWordsForGame({ mode, limit });
+        const result = await getWordsForGame({ mode, limit, collectionId });
 
         if (result.success && result.data) {
           setWords(result.data);
@@ -69,7 +70,7 @@ export const useFlashCardsGame = () => {
     };
 
     fetchWords();
-  }, [mode, limit]);
+  }, [mode, limit, collectionId]);
 
   // Focus the card when the index changes or words are loaded
   useEffect(() => {

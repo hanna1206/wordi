@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
 import { toaster } from '@/components/toaster';
+import { CollectionSelectionDialog } from '@/modules/collection/components/collection-selection-dialog';
 import { useDueWordsCount } from '@/modules/flashcards/context/due-words-count-context';
 import { GenerateLinguisticItemError } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-error';
 import { GenerateLinguisticItemLoaded } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-loaded';
@@ -42,6 +43,10 @@ export const GenerateLinguisticItemModal: React.FC<
   onRegenerate,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
+  const [savedVocabularyItemId, setSavedVocabularyItemId] = useState<
+    string | null
+  >(null);
+  const [isCollectionDialogOpen, setIsCollectionDialogOpen] = useState(false);
   const { refetchDueCount } = useDueWordsCount();
 
   const isCollocation =
@@ -77,7 +82,7 @@ export const GenerateLinguisticItemModal: React.FC<
         );
       }
 
-      if (result.success) {
+      if (result.success && result.data) {
         toaster.create({
           title: isCollocation ? 'Collocation saved!' : 'Word saved!',
           description: isCollocation
@@ -86,8 +91,11 @@ export const GenerateLinguisticItemModal: React.FC<
           type: 'success',
           duration: 3000,
         });
-        onClose();
         refetchDueCount();
+
+        setSavedVocabularyItemId(result.data.id);
+        setIsCollectionDialogOpen(true);
+        onClose();
       } else {
         toaster.create({
           title: 'Save failed',
@@ -108,117 +116,130 @@ export const GenerateLinguisticItemModal: React.FC<
     }
   };
 
+  const handleCollectionDialogClose = () => {
+    setIsCollectionDialogOpen(false);
+    setSavedVocabularyItemId(null);
+  };
+
   return (
-    <Dialog.Root open={isOpen} onOpenChange={onClose}>
-      <Portal>
-        <Dialog.Backdrop bg="blackAlpha.600" />
-        <Dialog.Positioner
-          position="fixed"
-          inset={0}
-          display="flex"
-          alignItems={{ base: 'flex-end', md: 'center' }}
-          justifyContent="center"
-          p={{ base: 0, md: 4 }}
-        >
-          <Dialog.Content
-            borderTopWidth="8px"
-            borderTopColor={genderColor}
-            maxW={{ base: '100vw', md: 'lg', lg: 'xl' }}
-            w="full"
-            h={{ base: '100svh', md: 'auto' }}
-            maxH={{ base: '100svh', md: '80vh' }}
-            m={0}
-            shadow={{ base: '0 -4px 20px rgba(0,0,0,0.15)', md: 'lg' }}
-            overflow="hidden"
-            position="relative"
-            css={{
-              '@supports not (height: 100svh)': {
-                height: { base: '100svh', md: 'auto' },
-                maxHeight: { base: '100svh', md: '80vh' },
-              },
-            }}
+    <>
+      <Dialog.Root open={isOpen} onOpenChange={onClose}>
+        <Portal>
+          <Dialog.Backdrop bg="blackAlpha.600" />
+          <Dialog.Positioner
+            position="fixed"
+            inset={0}
+            display="flex"
+            alignItems={{ base: 'flex-end', md: 'center' }}
+            justifyContent="center"
+            p={{ base: 0, md: 4 }}
           >
-            <Dialog.Body
-              p={{ base: 4, md: 6 }}
-              pt={{ base: 2, md: 6 }}
-              pb={{ base: 4, md: 4 }}
-              overflowY="auto"
-              flex="1"
-              display={isLoading ? 'flex' : 'block'}
-              alignItems={isLoading ? 'center' : 'initial'}
-              justifyContent={isLoading ? 'center' : 'initial'}
+            <Dialog.Content
+              borderTopWidth="8px"
+              borderTopColor={genderColor}
+              maxW={{ base: '100vw', md: 'lg', lg: 'xl' }}
+              w="full"
+              h={{ base: '100svh', md: 'auto' }}
+              maxH={{ base: '100svh', md: '80vh' }}
+              m={0}
+              shadow={{ base: '0 -4px 20px rgba(0,0,0,0.15)', md: 'lg' }}
+              overflow="hidden"
+              position="relative"
               css={{
-                '&::-webkit-scrollbar': {
-                  width: '4px',
-                },
-                '&::-webkit-scrollbar-track': {
-                  background: 'transparent',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  background: '#CBD5E0',
-                  borderRadius: '4px',
+                '@supports not (height: 100svh)': {
+                  height: { base: '100svh', md: 'auto' },
+                  maxHeight: { base: '100svh', md: '80vh' },
                 },
               }}
             >
-              {isLoading ? (
-                <GenerateLinguisticItemLoading word={word} />
-              ) : error ? (
-                <GenerateLinguisticItemError
-                  error={error}
-                  onRetry={() => onRegenerate(word)}
-                />
-              ) : linguisticItem ? (
-                <GenerateLinguisticItemLoaded
-                  linguisticItem={linguisticItem}
-                  onRegenerate={() => onRegenerate(word)}
-                />
-              ) : null}
-            </Dialog.Body>
+              <Dialog.Body
+                p={{ base: 4, md: 6 }}
+                pt={{ base: 2, md: 6 }}
+                pb={{ base: 4, md: 4 }}
+                overflowY="auto"
+                flex="1"
+                display={isLoading ? 'flex' : 'block'}
+                alignItems={isLoading ? 'center' : 'initial'}
+                justifyContent={isLoading ? 'center' : 'initial'}
+                css={{
+                  '&::-webkit-scrollbar': {
+                    width: '4px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: 'transparent',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: '#CBD5E0',
+                    borderRadius: '4px',
+                  },
+                }}
+              >
+                {isLoading ? (
+                  <GenerateLinguisticItemLoading word={word} />
+                ) : error ? (
+                  <GenerateLinguisticItemError
+                    error={error}
+                    onRetry={() => onRegenerate(word)}
+                  />
+                ) : linguisticItem ? (
+                  <GenerateLinguisticItemLoaded
+                    linguisticItem={linguisticItem}
+                    onRegenerate={() => onRegenerate(word)}
+                  />
+                ) : null}
+              </Dialog.Body>
 
-            <Dialog.Footer
-              px={{ base: 4, md: 6 }}
-              py={{ base: 4, md: 4 }}
-              borderTopWidth="1px"
-              borderColor="gray.100"
-              bg="gray.100"
-              mt="auto"
-              display="flex"
-              gap={3}
-              flexDirection={{ base: 'column', md: 'row' }}
-              alignItems="stretch"
-            >
-              {linguisticItem && (
-                <Button
-                  size={{ base: 'lg', md: 'lg' }}
-                  h={{ base: '48px', md: '44px' }}
-                  borderRadius={{ base: 'xl', md: 'md' }}
-                  w={{ base: 'full', md: 'auto' }}
-                  onClick={handleVocabularyItem}
-                  loading={isSaving}
-                  disabled={isSaving}
-                  flex={{ base: 'none', md: '1' }}
-                >
-                  {isSaving ? 'Saving...' : 'Save for learning'}
-                </Button>
-              )}
-              <Dialog.ActionTrigger asChild>
-                <Button
-                  variant="subtle"
-                  onClick={onClose}
-                  w={{ base: 'full', md: 'auto' }}
-                  size={{ base: 'lg', md: 'lg' }}
-                  h={{ base: '48px', md: '44px' }}
-                  px={{ base: 6, md: 8 }}
-                  fontWeight="medium"
-                  flex={{ base: 'none', md: '1' }}
-                >
-                  Close
-                </Button>
-              </Dialog.ActionTrigger>
-            </Dialog.Footer>
-          </Dialog.Content>
-        </Dialog.Positioner>
-      </Portal>
-    </Dialog.Root>
+              <Dialog.Footer
+                px={{ base: 4, md: 6 }}
+                py={{ base: 4, md: 4 }}
+                borderTopWidth="1px"
+                borderColor="gray.100"
+                bg="gray.100"
+                mt="auto"
+                display="flex"
+                gap={3}
+                flexDirection={{ base: 'column', md: 'row' }}
+                alignItems="stretch"
+              >
+                {linguisticItem && (
+                  <Button
+                    size={{ base: 'lg', md: 'lg' }}
+                    h={{ base: '48px', md: '44px' }}
+                    borderRadius={{ base: 'xl', md: 'md' }}
+                    w={{ base: 'full', md: 'auto' }}
+                    onClick={handleVocabularyItem}
+                    loading={isSaving}
+                    disabled={isSaving}
+                    flex={{ base: 'none', md: '1' }}
+                  >
+                    {isSaving ? 'Saving...' : 'Save for learning'}
+                  </Button>
+                )}
+                <Dialog.ActionTrigger asChild>
+                  <Button
+                    variant="subtle"
+                    onClick={onClose}
+                    w={{ base: 'full', md: 'auto' }}
+                    size={{ base: 'lg', md: 'lg' }}
+                    h={{ base: '48px', md: '44px' }}
+                    px={{ base: 6, md: 8 }}
+                    fontWeight="medium"
+                    flex={{ base: 'none', md: '1' }}
+                  >
+                    Close
+                  </Button>
+                </Dialog.ActionTrigger>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
+
+      <CollectionSelectionDialog
+        isOpen={isCollectionDialogOpen}
+        vocabularyItemId={savedVocabularyItemId}
+        onClose={handleCollectionDialogClose}
+      />
+    </>
   );
 };

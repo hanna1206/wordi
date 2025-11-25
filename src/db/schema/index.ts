@@ -1,3 +1,7 @@
+import {
+  collectionsTable,
+  collectionVocabularyItemsTable,
+} from '@/modules/collection/collections.schema';
 import { userWordProgressTable } from '@/modules/flashcards/flashcards.schema';
 import { userSettingsTable } from '@/modules/user-settings/user-settings.schema';
 import {
@@ -8,6 +12,8 @@ import {
 import { languageCodeEnum, partOfSpeechEnum } from '../shared';
 
 export {
+  collectionsTable,
+  collectionVocabularyItemsTable,
   languageCodeEnum,
   partOfSpeechEnum,
   userSettingsTable,

@@ -1,6 +1,7 @@
 import { and, asc, count, desc, eq, ilike, inArray } from 'drizzle-orm';
 
 import { db } from '@/db/client';
+import { collectionVocabularyItemsTable } from '@/modules/collection/collections.schema';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 
@@ -31,6 +32,7 @@ const getUserMinimalVocabulary = async (
   visibilityFilter: VisibilityFilter = 'visible-only',
   partsOfSpeech: PartOfSpeech[] = ALL_PARTS_OF_SPEECH,
   typeFilter: VocabularyTypeFilter = 'all',
+  collectionId?: string,
 ): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {
   const orderBy =
     sort === 'Alphabetical'
@@ -66,26 +68,64 @@ const getUserMinimalVocabulary = async (
     );
   }
 
+  // Add collection filter if collectionId is provided
+  if (collectionId) {
+    whereConditions.push(
+      eq(collectionVocabularyItemsTable.collectionId, collectionId),
+    );
+  }
+
+  // Build the base query with optional join
+  const baseQuery = collectionId
+    ? db
+        .select({
+          id: vocabularyItemsTable.id,
+          type: vocabularyItemsTable.type,
+          normalizedText: vocabularyItemsTable.normalizedText,
+          partOfSpeech: vocabularyItemsTable.partOfSpeech,
+          commonData: vocabularyItemsTable.commonData,
+          isHidden: vocabularyItemsTable.isHidden,
+        })
+        .from(vocabularyItemsTable)
+        .innerJoin(
+          collectionVocabularyItemsTable,
+          eq(
+            vocabularyItemsTable.id,
+            collectionVocabularyItemsTable.vocabularyItemId,
+          ),
+        )
+    : db
+        .select({
+          id: vocabularyItemsTable.id,
+          type: vocabularyItemsTable.type,
+          normalizedText: vocabularyItemsTable.normalizedText,
+          partOfSpeech: vocabularyItemsTable.partOfSpeech,
+          commonData: vocabularyItemsTable.commonData,
+          isHidden: vocabularyItemsTable.isHidden,
+        })
+        .from(vocabularyItemsTable);
+
+  const countQuery = collectionId
+    ? db
+        .select({ total: count() })
+        .from(vocabularyItemsTable)
+        .innerJoin(
+          collectionVocabularyItemsTable,
+          eq(
+            vocabularyItemsTable.id,
+            collectionVocabularyItemsTable.vocabularyItemId,
+          ),
+        )
+    : db.select({ total: count() }).from(vocabularyItemsTable);
+
   const [items, [{ total }]] = await Promise.all([
-    db
-      .select({
-        id: vocabularyItemsTable.id,
-        type: vocabularyItemsTable.type,
-        normalizedText: vocabularyItemsTable.normalizedText,
-        partOfSpeech: vocabularyItemsTable.partOfSpeech,
-        commonData: vocabularyItemsTable.commonData,
-        isHidden: vocabularyItemsTable.isHidden,
-      })
-      .from(vocabularyItemsTable)
+    baseQuery
       .where(and(...whereConditions))
       .orderBy(orderBy)
       .limit(limit)
       .offset(offset),
 
-    db
-      .select({ total: count() })
-      .from(vocabularyItemsTable)
-      .where(and(...whereConditions)),
+    countQuery.where(and(...whereConditions)),
   ]);
 
   return {
@@ -130,6 +170,7 @@ const getCachedWord = async (
   return word ? (word as VocabularyItemAnonymized) : null;
 };
 
+// Deletes a vocabulary item and all associated collection memberships (via cascade)
 const deleteItem = async (wordId: string, userId: string): Promise<void> => {
   await db
     .delete(vocabularyItemsTable)

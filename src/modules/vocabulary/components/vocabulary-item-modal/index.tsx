@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { Dialog, Portal } from '@chakra-ui/react';
+import { Dialog, Portal, Separator } from '@chakra-ui/react';
 
+import { VocabularyItemCollections } from '@/modules/collection/components/vocabulary-item-collections';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
   LinguisticWordItem,
@@ -121,7 +122,11 @@ export const VocabularyItemModal: React.FC<VocabularyItemModalProps> = ({
               {showDeleteConfirm ? (
                 <DeleteConfirmation savedWord={savedWord} />
               ) : (
-                <VocabularyItemContent linguisticWordItem={translation} />
+                <>
+                  <VocabularyItemContent linguisticWordItem={translation} />
+                  <Separator my={4} />
+                  <VocabularyItemCollections vocabularyItemId={savedWord.id} />
+                </>
               )}
             </Dialog.Body>
 

@@ -6,6 +6,7 @@ import { Box } from '@chakra-ui/react';
 
 import { PageHeader } from '@/components/page-header';
 import { toaster } from '@/components/toaster';
+import { CollectionManagerDialog } from '@/modules/collection/components/collection-manager-dialog';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
 import {
@@ -39,6 +40,8 @@ export const VocabularyPage = () => {
   const [selectedPartsOfSpeech, setSelectedPartsOfSpeech] =
     useState<PartOfSpeech[]>(ALL_PARTS_OF_SPEECH);
   const [typeFilter, setTypeFilter] = useState<VocabularyTypeFilter>('all');
+  const [collectionId, setCollectionId] = useState<string | null>(null);
+  const [isCollectionManagerOpen, setIsCollectionManagerOpen] = useState(false);
 
   const hasActiveFilters = !areFiltersAtDefault(
     visibilityFilter,
@@ -52,6 +55,7 @@ export const VocabularyPage = () => {
       visibilityFilter,
       selectedPartsOfSpeech,
       typeFilter,
+      collectionId,
     );
 
   const {
@@ -93,6 +97,26 @@ export const VocabularyPage = () => {
     [],
   );
 
+  const handleCollectionChange = useCallback(
+    (newCollectionId: string | null) => {
+      setCollectionId(newCollectionId);
+    },
+    [],
+  );
+
+  const handleOpenCollectionManager = useCallback(() => {
+    setIsCollectionManagerOpen(true);
+  }, []);
+
+  const handleCloseCollectionManager = useCallback(() => {
+    setIsCollectionManagerOpen(false);
+  }, []);
+
+  const handleCollectionsChanged = useCallback(() => {
+    // Refresh vocabulary list when collections are modified
+    void loadWords({ reset: true });
+  }, [loadWords]);
+
   const handleToggleHidden = useCallback(
     async (wordId: string, isHidden: boolean) => {
       const result = await toggleWordHidden({ wordId, isHidden });
@@ -121,6 +145,9 @@ export const VocabularyPage = () => {
         typeFilter={typeFilter}
         onFilterChange={handleFilterChange}
         hasActiveFilters={hasActiveFilters}
+        selectedCollectionId={collectionId}
+        onCollectionChange={handleCollectionChange}
+        onManageCollections={handleOpenCollectionManager}
       />
 
       <PageHeader title="Vocabulary" description="" />
@@ -154,6 +181,12 @@ export const VocabularyPage = () => {
         savedWord={selectedWord}
         onClose={handleModalClose}
         onWordDeleted={handleWordDeleted}
+      />
+
+      <CollectionManagerDialog
+        isOpen={isCollectionManagerOpen}
+        onClose={handleCloseCollectionManager}
+        onCollectionsChange={handleCollectionsChanged}
       />
     </Box>
   );

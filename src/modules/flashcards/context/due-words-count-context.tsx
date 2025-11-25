@@ -50,7 +50,7 @@ export const DueWordsCountProvider = ({
 
   const refetchDueCount = useCallback(async () => {
     try {
-      const result = await getDueWordsCount();
+      const result = await getDueWordsCount({});
 
       if (result.success && result.data) {
         setState({

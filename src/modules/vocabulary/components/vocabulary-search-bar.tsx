@@ -1,10 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { LuArrowDownNarrowWide, LuSlidersHorizontal } from 'react-icons/lu';
+import {
+  LuArrowDownNarrowWide,
+  LuFolderCog,
+  LuSlidersHorizontal,
+} from 'react-icons/lu';
 
 import { Badge, Button, Flex, Icon, Input, Menu, Text } from '@chakra-ui/react';
 
+import { CollectionFilter } from '@/modules/collection/components/collection-filter';
 import type { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
   VisibilityFilter,
@@ -28,6 +33,9 @@ interface VocabularySearchBarProps {
     typeFilter: VocabularyTypeFilter,
   ) => void;
   hasActiveFilters: boolean;
+  selectedCollectionId?: string | null;
+  onCollectionChange?: (collectionId: string | null) => void;
+  onManageCollections?: () => void;
 }
 
 export const VocabularySearchBar = ({
@@ -40,6 +48,9 @@ export const VocabularySearchBar = ({
   typeFilter,
   onFilterChange,
   hasActiveFilters,
+  selectedCollectionId = null,
+  onCollectionChange,
+  onManageCollections,
 }: VocabularySearchBarProps) => {
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
 
@@ -62,6 +73,13 @@ export const VocabularySearchBar = ({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
         />
+
+        {onCollectionChange && (
+          <CollectionFilter
+            selectedCollectionId={selectedCollectionId}
+            onCollectionChange={onCollectionChange}
+          />
+        )}
 
         <Menu.Root>
           <Menu.Trigger asChild>
@@ -113,6 +131,18 @@ export const VocabularySearchBar = ({
             />
           )}
         </Button>
+
+        {onManageCollections && (
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={onManageCollections}
+            aria-label="Manage Collections"
+          >
+            <Icon as={LuFolderCog} fontSize="md" />
+            <Text display={{ base: 'none', md: 'block' }}>Manage</Text>
+          </Button>
+        )}
       </Flex>
 
       <VocabularyFilterDialog

@@ -1,12 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { IconType } from 'react-icons';
 import { FaBrain, FaRandom, FaRegClock } from 'react-icons/fa';
 
 import {
   Badge,
   Button,
+  createListCollection,
   DialogBackdrop,
   DialogBody,
   DialogCloseTrigger,
@@ -21,13 +22,21 @@ import {
   Portal,
   RadioCard,
   SegmentGroup,
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
   Spinner,
   Text,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 
+import { getUserCollections } from '@/modules/collection/collections.actions';
+import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import { useDueWordsCount } from '@/modules/flashcards/context/due-words-count-context';
 
+import { getDueWordsCount } from '../flashcards.actions';
 import { CardSide, GameMode } from '../flashcards.const';
 
 interface GameModeOption {
@@ -59,11 +68,62 @@ export const FlashCardsSettingsDialog = ({
   const [cardSide, setCardSide] = useState<string | null>(CardSide.Word);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [isStarting, setIsStarting] = useState(false);
+  const [collections, setCollections] = useState<CollectionWithCount[]>([]);
+  const [isLoadingCollections, setIsLoadingCollections] = useState(false);
+  const [selectedCollectionId, setSelectedCollectionId] = useState<
+    string | null
+  >(null);
+  const [collectionDueCount, setCollectionDueCount] = useState<number | null>(
+    null,
+  );
+  const [isLoadingCollectionCount, setIsLoadingCollectionCount] =
+    useState(false);
+
+  // Load collections when dialog opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsLoadingCollections(true);
+      getUserCollections()
+        .then((result) => {
+          if (result.success && result.data) {
+            setCollections(result.data);
+          }
+        })
+        .finally(() => {
+          setIsLoadingCollections(false);
+        });
+    }
+  }, [isOpen]);
+
+  // Update due count when collection changes
+  useEffect(() => {
+    if (selectedCollectionId) {
+      setIsLoadingCollectionCount(true);
+      getDueWordsCount({ collectionId: selectedCollectionId })
+        .then((result) => {
+          if (result.success && result.data) {
+            setCollectionDueCount(result.data.dueCount);
+          }
+        })
+        .finally(() => {
+          setIsLoadingCollectionCount(false);
+        });
+    } else {
+      setCollectionDueCount(null);
+    }
+  }, [selectedCollectionId]);
+
+  const effectiveDueCount =
+    selectedCollectionId !== null ? (collectionDueCount ?? 0) : dueCount;
+  const effectiveIsDueCountLoading =
+    selectedCollectionId !== null
+      ? isLoadingCollectionCount
+      : isDueCountLoading;
 
   const gameModeOptions = useMemo<GameModeOption[]>(() => {
     const dailyReviewDescription =
-      dueCount > 0
-        ? `Review ${dueCount} words using spaced repetition algorithm.`
+      effectiveDueCount > 0
+        ? `Review ${effectiveDueCount} words using spaced repetition algorithm.`
         : totalWords > 0
           ? "Great! No words due for review today. You're all caught up!"
           : 'Start learning words to see them here for review.';
@@ -72,16 +132,16 @@ export const FlashCardsSettingsDialog = ({
       {
         id: 'daily-review',
         mode: GameMode.DueReview,
-        limit: dueCount > 0 ? dueCount : 10,
+        limit: effectiveDueCount > 0 ? effectiveDueCount : 10,
         icon: FaBrain,
         title: 'Daily Review',
         description: dailyReviewDescription,
-        disabled: dueCount === 0,
-        badge: isDueCountLoading
+        disabled: effectiveDueCount === 0,
+        badge: effectiveIsDueCountLoading
           ? undefined
           : {
-              text: `${dueCount} due`,
-              colorScheme: dueCount > 0 ? 'orange' : 'green',
+              text: `${effectiveDueCount} due`,
+              colorScheme: effectiveDueCount > 0 ? 'orange' : 'green',
             },
       },
       {
@@ -117,7 +177,7 @@ export const FlashCardsSettingsDialog = ({
         description: 'A bigger random set for a more robust practice.',
       },
     ];
-  }, [dueCount, totalWords, isDueCountLoading]);
+  }, [effectiveDueCount, totalWords, effectiveIsDueCountLoading]);
 
   const isSelectedModeDisabled = useMemo(() => {
     if (!selectedMode) return false;
@@ -132,6 +192,8 @@ export const FlashCardsSettingsDialog = ({
       onClose();
       setSelectedMode(null);
       setIsStarting(false);
+      setSelectedCollectionId(null);
+      setCollectionDueCount(null);
     }
   };
 
@@ -147,11 +209,31 @@ export const FlashCardsSettingsDialog = ({
     // Show loading state
     setIsStarting(true);
 
+    // Build URL with optional collectionId
+    const params = new URLSearchParams({
+      mode: selectedOption.mode,
+      limit: selectedOption.limit.toString(),
+      cardSide: cardSide || CardSide.Word,
+    });
+
+    if (selectedCollectionId) {
+      params.set('collectionId', selectedCollectionId);
+    }
+
     // Navigate to game
-    router.push(
-      `/flashcards?mode=${selectedOption.mode}&limit=${selectedOption.limit}&cardSide=${cardSide}`,
-    );
+    router.push(`/flashcards?${params.toString()}`);
   };
+
+  const collectionOptions = useMemo(() => {
+    const items = [
+      { label: 'All Collections', value: '' },
+      ...collections.map((c) => ({
+        label: `${c.name} (${c.itemCount})`,
+        value: c.id,
+      })),
+    ];
+    return createListCollection({ items });
+  }, [collections]);
 
   return (
     <DialogRoot
@@ -170,6 +252,34 @@ export const FlashCardsSettingsDialog = ({
 
             <DialogBody py={{ base: 4, md: 3 }}>
               <Flex direction="column" gap={{ base: 4, md: 3 }}>
+                {/* Collection Filter */}
+                <Flex direction="column" gap={1.5} alignItems="flex-start">
+                  <Text fontWeight="medium" fontSize="sm">
+                    Collection
+                  </Text>
+                  <SelectRoot
+                    collection={collectionOptions}
+                    value={selectedCollectionId ? [selectedCollectionId] : ['']}
+                    onValueChange={(e) =>
+                      setSelectedCollectionId(e.value[0] || null)
+                    }
+                    size="sm"
+                    disabled={isLoadingCollections}
+                    width="full"
+                  >
+                    <SelectTrigger>
+                      <SelectValueText placeholder="All Collections" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {collectionOptions.items.map((item) => (
+                        <SelectItem key={item.value} item={item}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectRoot>
+                </Flex>
+
                 {/* Card Side Selector */}
                 <Flex direction="column" gap={1.5} alignItems="flex-start">
                   <Text fontWeight="medium" fontSize="sm">
@@ -310,7 +420,7 @@ export const FlashCardsSettingsDialog = ({
                 onClick={handleStartGame}
                 disabled={
                   !selectedMode ||
-                  isDueCountLoading ||
+                  effectiveIsDueCountLoading ||
                   isSelectedModeDisabled ||
                   isStarting
                 }

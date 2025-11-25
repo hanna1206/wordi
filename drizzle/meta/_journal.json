@@ -29,6 +29,13 @@
       "when": 1732406400000,
       "tag": "0003_vocabulary_items_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1763911629596,
+      "tag": "0004_many_killer_shrike",
+      "breakpoints": true
     }
   ]
 }

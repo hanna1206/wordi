@@ -14,6 +14,7 @@ import { calculateProgressUpdate } from './utils/spaced-repetition.utils';
 type GetWordsForGameParams = {
   mode: GameMode;
   limit: number;
+  collectionId?: string;
 };
 
 type SaveQualityFeedbackParams = {
@@ -24,6 +25,10 @@ type SaveQualityFeedbackParams = {
 type DueWordsCount = {
   dueCount: number;
   totalWords: number;
+};
+
+type GetDueWordsCountParams = {
+  collectionId?: string;
 };
 
 export const createInitialWordProgress = withAuth<{ wordId: string }, void>(
@@ -41,38 +46,44 @@ export const createInitialWordProgress = withAuth<{ wordId: string }, void>(
 export const getWordsForGame = withAuth<
   GetWordsForGameParams,
   VocabularyItem[]
->(async (context, { mode, limit }): Promise<ActionResult<VocabularyItem[]>> => {
-  try {
-    let words: VocabularyItem[] = [];
+>(
+  async (
+    context,
+    { mode, limit, collectionId },
+  ): Promise<ActionResult<VocabularyItem[]>> => {
+    try {
+      let words: VocabularyItem[] = [];
 
-    if (mode === GameMode.Latest) {
-      const result = await vocabularyRepository.getLatestWords(
-        context.user.id,
-        limit,
-      );
-      words = result as VocabularyItem[];
-    } else if (mode === GameMode.Random) {
-      const result = await flashcardsRepository.getRandomWords(
-        context.user.id,
-        limit,
-      );
-      words = result as VocabularyItem[];
-    } else if (mode === GameMode.DueReview) {
-      const dueWords = await flashcardsRepository.getDueWords(
-        context.user.id,
-        limit,
-      );
-      words = dueWords.map((item) => item.word as VocabularyItem);
-    } else {
-      throw new Error('Invalid mode specified');
+      if (mode === GameMode.Latest) {
+        const result = await vocabularyRepository.getLatestWords(
+          context.user.id,
+          limit,
+        );
+        words = result as VocabularyItem[];
+      } else if (mode === GameMode.Random) {
+        const result = await flashcardsRepository.getRandomWords(
+          context.user.id,
+          limit,
+        );
+        words = result as VocabularyItem[];
+      } else if (mode === GameMode.DueReview) {
+        const dueWords = await flashcardsRepository.getDueWords(
+          context.user.id,
+          limit,
+          collectionId,
+        );
+        words = dueWords.map((item) => item.word as VocabularyItem);
+      } else {
+        throw new Error('Invalid mode specified');
+      }
+
+      return { success: true, data: words };
+    } catch (error) {
+      Sentry.captureException(error);
+      return { success: false, error: 'Failed to fetch words for game' };
     }
-
-    return { success: true, data: words };
-  } catch (error) {
-    Sentry.captureException(error);
-    return { success: false, error: 'Failed to fetch words for game' };
-  }
-});
+  },
+);
 
 export const saveQualityFeedback = withAuth<SaveQualityFeedbackParams, void>(
   async (context, { wordId, qualityScore }): Promise<ActionResult<void>> => {
@@ -108,11 +119,14 @@ export const saveQualityFeedback = withAuth<SaveQualityFeedbackParams, void>(
   },
 );
 
-export const getDueWordsCount = withAuth<void, DueWordsCount>(
-  async (context): Promise<ActionResult<DueWordsCount>> => {
+export const getDueWordsCount = withAuth<GetDueWordsCountParams, DueWordsCount>(
+  async (
+    context,
+    { collectionId } = {},
+  ): Promise<ActionResult<DueWordsCount>> => {
     try {
       const [dueCount, totalWords] = await Promise.all([
-        flashcardsRepository.getDueWordsCount(context.user.id),
+        flashcardsRepository.getDueWordsCount(context.user.id, collectionId),
         flashcardsRepository.getTotalWordsCount(context.user.id),
       ]);
 

@@ -145,6 +145,7 @@ type FetchMinimalVocabularyParams = {
   visibilityFilter?: VisibilityFilter;
   partsOfSpeech?: PartOfSpeech[];
   typeFilter?: VocabularyTypeFilter;
+  collectionId?: string;
 };
 
 export const fetchUserMinimalVocabulary = withAuth<
@@ -161,6 +162,7 @@ export const fetchUserMinimalVocabulary = withAuth<
       visibilityFilter = 'visible-only',
       partsOfSpeech = ALL_PARTS_OF_SPEECH,
       typeFilter = 'all',
+      collectionId,
     },
   ): Promise<
     ActionResult<{ items: MinimalVocabularyWord[]; total: number }>
@@ -175,6 +177,7 @@ export const fetchUserMinimalVocabulary = withAuth<
         visibilityFilter,
         partsOfSpeech,
         typeFilter,
+        collectionId,
       );
       return { success: true, data };
     } catch (error) {
@@ -217,6 +220,7 @@ export const fetchUserWordByNormalizedWordAndPos = withAuth<
 );
 
 // Delete user word
+// Note: Collection associations are automatically removed via database cascade deletion
 export const deleteWord = withAuth<{ wordId: string }, void>(
   async (context, { wordId }): Promise<ActionResult<void>> => {
     try {

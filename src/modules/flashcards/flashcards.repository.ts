@@ -1,6 +1,7 @@
 import { and, asc, count, desc, eq, inArray, lte, sql } from 'drizzle-orm';
 
 import { db } from '@/db/client';
+import { collectionVocabularyItemsTable } from '@/modules/collection/collections.schema';
 import { vocabularyItemsTable } from '@/modules/vocabulary/vocabulary.schema';
 
 import { userWordProgressTable } from './flashcards.schema';
@@ -99,10 +100,15 @@ const getRandomWords = async (userId: string, limit: number) => {
     .limit(limit);
 };
 
-const getDueWords = async (userId: string, limit: number) => {
+const getDueWords = async (
+  userId: string,
+  limit: number,
+  collectionId?: string,
+) => {
   const now = new Date().toISOString();
 
-  return db
+  // Build base query
+  let query = db
     .select({
       word: vocabularyItemsTable,
       progress: userWordProgressTable,
@@ -111,7 +117,24 @@ const getDueWords = async (userId: string, limit: number) => {
     .innerJoin(
       vocabularyItemsTable,
       eq(userWordProgressTable.wordId, vocabularyItemsTable.id),
-    )
+    );
+
+  // Add collection join if collectionId is provided
+  if (collectionId) {
+    query = query.innerJoin(
+      collectionVocabularyItemsTable,
+      and(
+        eq(
+          collectionVocabularyItemsTable.vocabularyItemId,
+          vocabularyItemsTable.id,
+        ),
+        eq(collectionVocabularyItemsTable.collectionId, collectionId),
+      ),
+    ) as typeof query;
+  }
+
+  // Apply filters
+  return query
     .where(
       and(
         eq(userWordProgressTable.userId, userId),
@@ -183,24 +206,44 @@ const getProgressForWords = async (userId: string, wordIds: string[]) => {
     );
 };
 
-const getDueWordsCount = async (userId: string): Promise<number> => {
+const getDueWordsCount = async (
+  userId: string,
+  collectionId?: string,
+): Promise<number> => {
   const now = new Date().toISOString();
 
-  const [result] = await db
+  // Build base query
+  let query = db
     .select({ count: count() })
     .from(userWordProgressTable)
     .innerJoin(
       vocabularyItemsTable,
       eq(userWordProgressTable.wordId, vocabularyItemsTable.id),
-    )
-    .where(
-      and(
-        eq(userWordProgressTable.userId, userId),
-        lte(userWordProgressTable.nextReviewDate, now),
-        eq(userWordProgressTable.isArchived, false),
-        eq(vocabularyItemsTable.isHidden, false),
-      ),
     );
+
+  // Add collection join if collectionId is provided
+  if (collectionId) {
+    query = query.innerJoin(
+      collectionVocabularyItemsTable,
+      and(
+        eq(
+          collectionVocabularyItemsTable.vocabularyItemId,
+          vocabularyItemsTable.id,
+        ),
+        eq(collectionVocabularyItemsTable.collectionId, collectionId),
+      ),
+    ) as typeof query;
+  }
+
+  // Apply filters
+  const [result] = await query.where(
+    and(
+      eq(userWordProgressTable.userId, userId),
+      lte(userWordProgressTable.nextReviewDate, now),
+      eq(userWordProgressTable.isArchived, false),
+      eq(vocabularyItemsTable.isHidden, false),
+    ),
+  );
 
   return result?.count ?? 0;
 };
