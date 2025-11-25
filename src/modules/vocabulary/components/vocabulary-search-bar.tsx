@@ -9,7 +9,7 @@ import {
 
 import { Badge, Button, Flex, Icon, Input, Menu, Text } from '@chakra-ui/react';
 
-import { CollectionFilter } from '@/modules/collection/components/collection-filter';
+import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import type { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
   VisibilityFilter,
@@ -34,8 +34,12 @@ interface VocabularySearchBarProps {
   ) => void;
   hasActiveFilters: boolean;
   selectedCollectionId?: string | null;
+  selectedCollectionIds: string[];
   onCollectionChange?: (collectionId: string | null) => void;
+  onCollectionIdsChange?: (collectionIds: string[]) => void;
   onManageCollections?: () => void;
+  collections: CollectionWithCount[];
+  isLoadingCollections: boolean;
 }
 
 export const VocabularySearchBar = ({
@@ -48,19 +52,13 @@ export const VocabularySearchBar = ({
   typeFilter,
   onFilterChange,
   hasActiveFilters,
-  selectedCollectionId = null,
-  onCollectionChange,
+  selectedCollectionIds,
+  onCollectionIdsChange,
   onManageCollections,
+  collections,
+  isLoadingCollections,
 }: VocabularySearchBarProps) => {
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
-
-  const handleFilterApply = (
-    visibility: VisibilityFilter,
-    partsOfSpeech: PartOfSpeech[],
-    type: VocabularyTypeFilter,
-  ) => {
-    onFilterChange(visibility, partsOfSpeech, type);
-  };
 
   return (
     <>
@@ -73,13 +71,6 @@ export const VocabularySearchBar = ({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
         />
-
-        {onCollectionChange && (
-          <CollectionFilter
-            selectedCollectionId={selectedCollectionId}
-            onCollectionChange={onCollectionChange}
-          />
-        )}
 
         <Menu.Root>
           <Menu.Trigger asChild>
@@ -140,7 +131,7 @@ export const VocabularySearchBar = ({
             aria-label="Manage Collections"
           >
             <Icon as={LuFolderCog} fontSize="md" />
-            <Text display={{ base: 'none', md: 'block' }}>Manage</Text>
+            <Text display={{ base: 'none', md: 'block' }}>Collections</Text>
           </Button>
         )}
       </Flex>
@@ -151,7 +142,15 @@ export const VocabularySearchBar = ({
         visibilityFilter={visibilityFilter}
         selectedPartsOfSpeech={selectedPartsOfSpeech}
         typeFilter={typeFilter}
-        onApply={handleFilterApply}
+        selectedCollectionIds={selectedCollectionIds}
+        collections={collections}
+        isLoadingCollections={isLoadingCollections}
+        onApply={(visibility, partsOfSpeech, type, collectionIds) => {
+          onFilterChange(visibility, partsOfSpeech, type);
+          if (onCollectionIdsChange) {
+            onCollectionIdsChange(collectionIds);
+          }
+        }}
       />
     </>
   );

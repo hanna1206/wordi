@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import {
+  Badge,
   Button,
   CheckboxCard,
   DialogBackdrop,
@@ -18,9 +19,11 @@ import {
   Grid,
   Portal,
   SegmentGroup,
+  Spinner,
   Text,
 } from '@chakra-ui/react';
 
+import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
   VisibilityFilter,
@@ -34,10 +37,14 @@ interface VocabularyFilterDialogProps {
   visibilityFilter: VisibilityFilter;
   selectedPartsOfSpeech: PartOfSpeech[];
   typeFilter: VocabularyTypeFilter;
+  selectedCollectionIds: string[];
+  collections: CollectionWithCount[];
+  isLoadingCollections: boolean;
   onApply: (
     visibility: VisibilityFilter,
     partsOfSpeech: PartOfSpeech[],
     typeFilter: VocabularyTypeFilter,
+    collectionIds: string[],
   ) => void;
 }
 
@@ -47,6 +54,9 @@ export const VocabularyFilterDialog = ({
   visibilityFilter,
   selectedPartsOfSpeech,
   typeFilter,
+  selectedCollectionIds,
+  collections,
+  isLoadingCollections,
   onApply,
 }: VocabularyFilterDialogProps) => {
   const [localVisibilityFilter, setLocalVisibilityFilter] =
@@ -56,6 +66,11 @@ export const VocabularyFilterDialog = ({
   >(selectedPartsOfSpeech);
   const [localTypeFilter, setLocalTypeFilter] =
     useState<VocabularyTypeFilter>(typeFilter);
+  const [localSelectedCollectionIds, setLocalSelectedCollectionIds] = useState<
+    string[]
+  >(selectedCollectionIds);
+
+  // No auto-initialization - start with empty selection (show all items)
 
   // Reset local state when dialog opens
   const handleOpenChange = (details: { open: boolean }) => {
@@ -63,14 +78,30 @@ export const VocabularyFilterDialog = ({
       setLocalVisibilityFilter(visibilityFilter);
       setLocalSelectedPartsOfSpeech(selectedPartsOfSpeech);
       setLocalTypeFilter(typeFilter);
+      setLocalSelectedCollectionIds(selectedCollectionIds);
     } else {
       onClose();
     }
   };
 
   const handleApply = () => {
-    onApply(localVisibilityFilter, localSelectedPartsOfSpeech, localTypeFilter);
+    onApply(
+      localVisibilityFilter,
+      localSelectedPartsOfSpeech,
+      localTypeFilter,
+      localSelectedCollectionIds,
+    );
     onClose();
+  };
+
+  const handleCollectionToggle = (collectionId: string) => {
+    setLocalSelectedCollectionIds((prev) => {
+      if (prev.includes(collectionId)) {
+        return prev.filter((id) => id !== collectionId);
+      } else {
+        return [...prev, collectionId];
+      }
+    });
   };
 
   const handleCancel = () => {
@@ -115,6 +146,57 @@ export const VocabularyFilterDialog = ({
 
             <DialogBody py={{ base: 4, md: 3 }}>
               <Flex direction="column" gap={{ base: 4, md: 3 }}>
+                {/* Collection Filter Section */}
+                <Flex direction="column" gap={2}>
+                  <Text fontWeight="medium" fontSize="sm">
+                    Collection
+                  </Text>
+                  {isLoadingCollections ? (
+                    <Flex justify="center" py={2}>
+                      <Spinner size="sm" />
+                    </Flex>
+                  ) : (
+                    <Grid
+                      templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)' }}
+                      gap={2}
+                    >
+                      {collections.map((collection) => (
+                        <CheckboxCard.Root
+                          key={collection.id}
+                          checked={localSelectedCollectionIds.includes(
+                            collection.id,
+                          )}
+                          onCheckedChange={() =>
+                            handleCollectionToggle(collection.id)
+                          }
+                        >
+                          <CheckboxCard.HiddenInput />
+                          <CheckboxCard.Control>
+                            <Flex
+                              direction="row"
+                              alignItems="center"
+                              gap={2}
+                              w="full"
+                            >
+                              <Text fontSize="sm" fontWeight="medium">
+                                {collection.name}
+                              </Text>
+                              <Badge
+                                colorScheme="gray"
+                                variant="subtle"
+                                fontSize="xs"
+                              >
+                                {collection.itemCount}
+                              </Badge>
+                            </Flex>
+                            <CheckboxCard.Indicator />
+                          </CheckboxCard.Control>
+                        </CheckboxCard.Root>
+                      ))}
+                    </Grid>
+                  )}
+                </Flex>
+
                 {/* Type Filter Section */}
                 <Flex direction="column" gap={1.5} alignItems="flex-start">
                   <Text fontWeight="medium" fontSize="sm">

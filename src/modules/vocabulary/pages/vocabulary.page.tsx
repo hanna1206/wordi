@@ -1,11 +1,13 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Box } from '@chakra-ui/react';
 
 import { PageHeader } from '@/components/page-header';
 import { toaster } from '@/components/toaster';
+import { getUserCollections } from '@/modules/collection/collections.actions';
+import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import { CollectionManagerDialog } from '@/modules/collection/components/collection-manager-dialog';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
@@ -41,7 +43,12 @@ export const VocabularyPage = () => {
     useState<PartOfSpeech[]>(ALL_PARTS_OF_SPEECH);
   const [typeFilter, setTypeFilter] = useState<VocabularyTypeFilter>('all');
   const [collectionId, setCollectionId] = useState<string | null>(null);
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(
+    [],
+  );
   const [isCollectionManagerOpen, setIsCollectionManagerOpen] = useState(false);
+  const [collections, setCollections] = useState<CollectionWithCount[]>([]);
+  const [isLoadingCollections, setIsLoadingCollections] = useState(true);
 
   const hasActiveFilters = !areFiltersAtDefault(
     visibilityFilter,
@@ -104,6 +111,22 @@ export const VocabularyPage = () => {
     [],
   );
 
+  const handleCollectionIdsChange = useCallback(
+    (newCollectionIds: string[]) => {
+      setSelectedCollectionIds(newCollectionIds);
+
+      // Determine which single collection ID to use for the backend query
+      if (newCollectionIds.length === 0) {
+        // No collections selected - show all vocabulary items
+        setCollectionId(null);
+      } else {
+        // Use the first selected collection ID for filtering
+        setCollectionId(newCollectionIds[0]);
+      }
+    },
+    [],
+  );
+
   const handleOpenCollectionManager = useCallback(() => {
     setIsCollectionManagerOpen(true);
   }, []);
@@ -112,10 +135,32 @@ export const VocabularyPage = () => {
     setIsCollectionManagerOpen(false);
   }, []);
 
+  const fetchCollections = useCallback(async () => {
+    setIsLoadingCollections(true);
+    const result = await getUserCollections();
+
+    if (result.success && result.data) {
+      setCollections(result.data);
+    } else {
+      toaster.create({
+        type: 'error',
+        title: 'Failed to load collections',
+        description: result.error,
+      });
+    }
+    setIsLoadingCollections(false);
+  }, []);
+
   const handleCollectionsChanged = useCallback(() => {
-    // Refresh vocabulary list when collections are modified
+    // Refresh vocabulary list and collections when collections are modified
     void loadWords({ reset: true });
-  }, [loadWords]);
+    void fetchCollections();
+  }, [loadWords, fetchCollections]);
+
+  // Load collections on mount
+  useEffect(() => {
+    void fetchCollections();
+  }, [fetchCollections]);
 
   const handleToggleHidden = useCallback(
     async (wordId: string, isHidden: boolean) => {
@@ -146,8 +191,12 @@ export const VocabularyPage = () => {
         onFilterChange={handleFilterChange}
         hasActiveFilters={hasActiveFilters}
         selectedCollectionId={collectionId}
+        selectedCollectionIds={selectedCollectionIds}
         onCollectionChange={handleCollectionChange}
+        onCollectionIdsChange={handleCollectionIdsChange}
         onManageCollections={handleOpenCollectionManager}
+        collections={collections}
+        isLoadingCollections={isLoadingCollections}
       />
 
       <PageHeader title="Vocabulary" description="" />
