@@ -4,9 +4,10 @@ import { forwardRef, useCallback, useState } from 'react';
 
 import { Box, Text } from '@chakra-ui/react';
 
-import { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
+import type { VocabularyItem } from '@/modules/vocabulary/vocabulary.types';
 
 import { CardSide } from '../flashcards.const';
+import { AdditionalTranslationsList } from './additional-translations-list';
 
 type FlashCardProps = {
   word: VocabularyItem;
@@ -44,6 +45,10 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
 
     const additionalTranslations = word.commonData.additionalTranslations || [];
     const hasAdditionalTranslations = additionalTranslations.length > 0;
+    const shouldShowAdditionalOnFront =
+      cardSide === CardSide.Translation && hasAdditionalTranslations;
+    const shouldShowAdditionalOnBack =
+      cardSide === CardSide.Word && hasAdditionalTranslations;
 
     const ariaLabel = `Flashcard. ${isFlipped ? 'Back' : 'Front'} side showing. Press to flip`;
 
@@ -113,8 +118,12 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
             h="full"
             backfaceVisibility="hidden"
             display={isFlipped ? 'none' : 'flex'}
+            flexDirection="column"
             alignItems="center"
-            justifyContent="center"
+            justifyContent={
+              shouldShowAdditionalOnFront ? 'space-around' : 'center'
+            }
+            gap={shouldShowAdditionalOnFront ? 4 : 0}
             px={6}
             py={6}
             borderRadius="2xl"
@@ -128,9 +137,13 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
             }}
           >
             {/* Front of the card */}
-            <Box maxH="100%" overflowY="auto" zIndex={1}>
+            <Box
+              maxH={shouldShowAdditionalOnFront ? '75%' : '100%'}
+              overflowY="auto"
+              zIndex={1}
+            >
               <Text
-                fontSize="clamp(28px, 8vw, 44px)"
+                fontSize="clamp(20px, 5vw, 32px)"
                 lineHeight="1.2"
                 fontWeight="bold"
                 color="gray.800"
@@ -141,6 +154,13 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
                 {frontContent}
               </Text>
             </Box>
+
+            {shouldShowAdditionalOnFront && (
+              <AdditionalTranslationsList
+                translations={additionalTranslations}
+                maxHeight="25%"
+              />
+            )}
 
             {!hasFlippedAny && !isFlipped && (
               <Box
@@ -179,8 +199,10 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
             display={isFlipped ? 'flex' : 'none'}
             flexDirection="column"
             alignItems="center"
-            justifyContent="center"
-            gap={hasAdditionalTranslations ? 4 : 0}
+            justifyContent={
+              shouldShowAdditionalOnBack ? 'space-around' : 'center'
+            }
+            gap={shouldShowAdditionalOnBack ? 4 : 0}
             px={6}
             py={6}
             borderRadius="2xl"
@@ -194,9 +216,14 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
             }}
           >
             {/* Back of the card */}
-            <Box textAlign="center" maxH="50%" overflowY="auto" zIndex={1}>
+            <Box
+              textAlign="center"
+              maxH={shouldShowAdditionalOnBack ? '75%' : '100%'}
+              overflowY="auto"
+              zIndex={1}
+            >
               <Text
-                fontSize="clamp(28px, 8vw, 44px)"
+                fontSize="clamp(20px, 5vw, 32px)"
                 lineHeight="1.2"
                 fontWeight="bold"
                 color="gray.800"
@@ -209,60 +236,11 @@ export const FlashCard = forwardRef<HTMLDivElement, FlashCardProps>(
               </Text>
             </Box>
 
-            {hasAdditionalTranslations && (
-              <Box
-                position="relative"
-                w="90%"
-                maxH="40%"
-                overflowY="auto"
-                pt={2}
-                zIndex={1}
-              >
-                <Text
-                  fontSize="xs"
-                  fontWeight="medium"
-                  color="gray.500"
-                  textTransform="uppercase"
-                  letterSpacing="wider"
-                  mb={3}
-                  textAlign="center"
-                >
-                  Also means
-                </Text>
-                <Box
-                  display="flex"
-                  flexWrap="wrap"
-                  gap={2}
-                  justifyContent="center"
-                >
-                  {additionalTranslations.map((t) => (
-                    <Box
-                      key={t}
-                      px={3}
-                      py={1.5}
-                      borderRadius="lg"
-                      bg="gray.100"
-                      border="1px solid"
-                      borderColor="gray.200"
-                      color="gray.700"
-                      fontSize="sm"
-                      fontWeight="medium"
-                      lineHeight={1}
-                    >
-                      {t}
-                    </Box>
-                  ))}
-                </Box>
-                <Box
-                  position="absolute"
-                  pointerEvents="none"
-                  bottom={0}
-                  left={0}
-                  right={0}
-                  height="20px"
-                  bgGradient="linear(to-t, white, transparent)"
-                />
-              </Box>
+            {shouldShowAdditionalOnBack && (
+              <AdditionalTranslationsList
+                translations={additionalTranslations}
+                maxHeight="25%"
+              />
             )}
           </Box>
         </Box>
