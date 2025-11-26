@@ -7,6 +7,8 @@ import { LuArrowRight } from 'react-icons/lu';
 import { Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 
+import { toaster } from '@/components/toaster';
+import { CollectionSelectionDialog } from '@/modules/collection/components/collection-selection-dialog';
 import { ExampleWords } from '@/modules/linguistics/components/example-words';
 import type { GenerateLinguisticItemModalProps } from '@/modules/linguistics/components/generate-linguistic-item-modal';
 import { generateLinguisticItem } from '@/modules/linguistics/linguistics.actions';
@@ -32,6 +34,11 @@ interface FormData {
   word: string;
 }
 
+type PendingSaveToast = {
+  title: string;
+  description: string;
+};
+
 export const GenerateLinguisticItemForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [word, setWord] = useState('');
@@ -40,6 +47,12 @@ export const GenerateLinguisticItemForm = () => {
     LinguisticWordItem | LinguisticCollocationItem | null
   >(null);
   const [error, setError] = useState<string | null>(null);
+  const [savedVocabularyItemId, setSavedVocabularyItemId] = useState<
+    string | null
+  >(null);
+  const [isCollectionDialogOpen, setIsCollectionDialogOpen] = useState(false);
+  const [pendingSaveToast, setPendingSaveToast] =
+    useState<PendingSaveToast | null>(null);
 
   const {
     register,
@@ -111,6 +124,32 @@ export const GenerateLinguisticItemForm = () => {
     setWord('');
     setLinguisticItem(null);
     setError(null);
+  };
+
+  const handleSavedForLearning: GenerateLinguisticItemModalProps['onSavedForLearning'] =
+    ({ vocabularyItemId, type }) => {
+      setSavedVocabularyItemId(vocabularyItemId);
+      setPendingSaveToast({
+        title: type === 'collocation' ? 'Collocation saved!' : 'Word saved!',
+        description:
+          type === 'collocation'
+            ? 'Collocation has been saved for learning'
+            : 'Word has been saved for learning',
+      });
+      setIsCollectionDialogOpen(true);
+    };
+
+  const handleCollectionDialogClose = () => {
+    if (pendingSaveToast) {
+      toaster.create({
+        ...pendingSaveToast,
+        type: 'success',
+        duration: 3000,
+      });
+      setPendingSaveToast(null);
+    }
+    setIsCollectionDialogOpen(false);
+    setSavedVocabularyItemId(null);
   };
 
   return (
@@ -204,8 +243,15 @@ export const GenerateLinguisticItemForm = () => {
           linguisticItem={linguisticItem}
           onClose={onClose}
           onRegenerate={handleSubmit}
+          onSavedForLearning={handleSavedForLearning}
         />
       )}
+
+      <CollectionSelectionDialog
+        isOpen={isCollectionDialogOpen}
+        vocabularyItemId={savedVocabularyItemId}
+        onClose={handleCollectionDialogClose}
+      />
     </>
   );
 };

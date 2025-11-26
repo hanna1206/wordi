@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { LuCheck, LuPlus } from 'react-icons/lu';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { LuCheck } from 'react-icons/lu';
 
 import { Button, Dialog, Flex, Portal, Spinner, Text } from '@chakra-ui/react';
 
@@ -11,45 +11,49 @@ import {
   addItemToCollection,
   getCollectionsForItem,
   getUserCollections,
+  removeItemFromCollection,
 } from '../collections.actions';
 import type { Collection, CollectionWithCount } from '../collections.types';
-import { CollectionManagerDialog } from './collection-manager-dialog';
 
 interface CollectionSelectionDialogProps {
   isOpen: boolean;
   vocabularyItemId: string | null;
   onClose: () => void;
+  collections?: CollectionWithCount[];
 }
 
 export const CollectionSelectionDialog = ({
   isOpen,
   vocabularyItemId,
   onClose,
+  collections,
 }: CollectionSelectionDialogProps) => {
-  const [allCollections, setAllCollections] = useState<CollectionWithCount[]>(
-    [],
-  );
+  const [fallbackCollections, setFallbackCollections] = useState<
+    CollectionWithCount[]
+  >([]);
   const [itemCollections, setItemCollections] = useState<Collection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [actionInProgress, setActionInProgress] = useState(false);
-  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
+  const [isSavingSelections, setIsSavingSelections] = useState(false);
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(
+    [],
+  );
 
-  const fetchData = useCallback(async () => {
-    if (!vocabularyItemId) return;
+  const resolvedCollections = useMemo(
+    () => collections ?? fallbackCollections,
+    [collections, fallbackCollections],
+  );
+
+  const fetchCollections = useCallback(async () => {
+    if (collections) {
+      setIsLoading(false);
+      return;
+    }
 
     setIsLoading(true);
     try {
-      const [allResult, itemResult] = await Promise.all([
-        getUserCollections(),
-        getCollectionsForItem({ vocabularyItemId }),
-      ]);
-
-      if (allResult.success && allResult.data) {
-        setAllCollections(allResult.data);
-      }
-
-      if (itemResult.success && itemResult.data) {
-        setItemCollections(itemResult.data);
+      const result = await getUserCollections();
+      if (result.success && result.data) {
+        setFallbackCollections(result.data);
       }
     } catch {
       toaster.create({
@@ -60,60 +64,105 @@ export const CollectionSelectionDialog = ({
     } finally {
       setIsLoading(false);
     }
-  }, [vocabularyItemId]);
+  }, [collections]);
 
-  useEffect(() => {
-    if (isOpen && vocabularyItemId) {
-      fetchData();
-    }
-  }, [isOpen, vocabularyItemId, fetchData]);
-
-  const handleAddToCollection = async (collectionId: string) => {
+  const fetchItemCollections = useCallback(async () => {
     if (!vocabularyItemId) return;
 
-    setActionInProgress(true);
     try {
-      const result = await addItemToCollection({
-        collectionId,
-        vocabularyItemId,
-      });
-
-      if (result.success) {
-        toaster.create({
-          title: 'Success',
-          description: 'Added to collection',
-          type: 'success',
-        });
-        await fetchData();
+      const result = await getCollectionsForItem({ vocabularyItemId });
+      if (result.success && result.data) {
+        setItemCollections(result.data);
+        setSelectedCollectionIds(
+          result.data.map((collection) => collection.id),
+        );
       } else {
-        toaster.create({
-          title: 'Error',
-          description: result.error || 'Failed to add to collection',
-          type: 'error',
-        });
+        setItemCollections([]);
+        setSelectedCollectionIds([]);
       }
     } catch {
       toaster.create({
         title: 'Error',
-        description: 'Failed to add to collection',
+        description: 'Failed to load collections for item',
+        type: 'error',
+      });
+    }
+  }, [vocabularyItemId]);
+
+  useEffect(() => {
+    if (isOpen && vocabularyItemId) {
+      void fetchCollections();
+      void fetchItemCollections();
+    }
+  }, [fetchCollections, fetchItemCollections, isOpen, vocabularyItemId]);
+
+  const toggleCollectionSelection = (collectionId: string) => {
+    setSelectedCollectionIds((prev) =>
+      prev.includes(collectionId)
+        ? prev.filter((id) => id !== collectionId)
+        : [...prev, collectionId],
+    );
+  };
+
+  const handleSaveSelections = async () => {
+    if (!vocabularyItemId) return;
+
+    const currentIds = itemCollections.map((collection) => collection.id);
+    const toAdd = selectedCollectionIds.filter(
+      (collectionId) => !currentIds.includes(collectionId),
+    );
+    const toRemove = currentIds.filter(
+      (collectionId) => !selectedCollectionIds.includes(collectionId),
+    );
+
+    if (toAdd.length === 0 && toRemove.length === 0) {
+      onClose();
+      return;
+    }
+
+    setIsSavingSelections(true);
+    try {
+      for (const collectionId of toAdd) {
+        const result = await addItemToCollection({
+          collectionId,
+          vocabularyItemId,
+        });
+
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to add to collection');
+        }
+      }
+
+      for (const collectionId of toRemove) {
+        const result = await removeItemFromCollection({
+          collectionId,
+          vocabularyItemId,
+        });
+
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to remove from collection');
+        }
+      }
+
+      setItemCollections(
+        resolvedCollections.filter((collection) =>
+          selectedCollectionIds.includes(collection.id),
+        ),
+      );
+
+      onClose();
+    } catch (error) {
+      toaster.create({
+        title: 'Error',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Failed to update collections',
         type: 'error',
       });
     } finally {
-      setActionInProgress(false);
+      setIsSavingSelections(false);
     }
-  };
-
-  const isInCollection = (collectionId: string) => {
-    return itemCollections.some((c) => c.id === collectionId);
-  };
-
-  const handleManageCollections = () => {
-    setIsManageDialogOpen(true);
-  };
-
-  const handleManageDialogClose = () => {
-    setIsManageDialogOpen(false);
-    fetchData();
   };
 
   return (
@@ -144,30 +193,28 @@ export const CollectionSelectionDialog = ({
                   <Flex justify="center" py={8}>
                     <Spinner size="lg" />
                   </Flex>
-                ) : allCollections.length === 0 ? (
+                ) : resolvedCollections.length === 0 ? (
                   <Flex direction="column" align="center" gap={4} py={6}>
                     <Text color="gray.500" textAlign="center">
-                      You don&apos;t have any collections yet
+                      You don&apos;t have any collections yet. Create one via
+                      Vocabulary page
                     </Text>
-                    <Button
-                      onClick={handleManageCollections}
-                      colorScheme="blue"
-                      size="sm"
-                    >
-                      <LuPlus />
-                      Create Collection
-                    </Button>
                   </Flex>
                 ) : (
                   <Flex direction="column" gap={2}>
-                    {allCollections.map((collection) => {
-                      const inCollection = isInCollection(collection.id);
+                    {resolvedCollections.map((collection) => {
+                      const isSelected = selectedCollectionIds.includes(
+                        collection.id,
+                      );
                       return (
                         <Button
                           key={collection.id}
-                          onClick={() => handleAddToCollection(collection.id)}
-                          disabled={actionInProgress || inCollection}
-                          variant={inCollection ? 'subtle' : 'outline'}
+                          onClick={() =>
+                            toggleCollectionSelection(collection.id)
+                          }
+                          disabled={isSavingSelections || isLoading}
+                          variant={isSelected ? 'solid' : 'outline'}
+                          colorScheme={isSelected ? 'blue' : 'gray'}
                           justifyContent="space-between"
                           w="full"
                           h="auto"
@@ -183,7 +230,7 @@ export const CollectionSelectionDialog = ({
                               {collection.itemCount === 1 ? 'item' : 'items'}
                             </Text>
                           </Flex>
-                          {inCollection && <LuCheck size={20} />}
+                          {isSelected && <LuCheck size={20} />}
                         </Button>
                       );
                     })}
@@ -197,31 +244,22 @@ export const CollectionSelectionDialog = ({
                 display="flex"
                 gap={3}
               >
-                {allCollections.length > 0 && (
-                  <Button
-                    onClick={handleManageCollections}
-                    variant="outline"
-                    size="md"
-                  >
-                    Manage Collections
-                  </Button>
-                )}
-                <Dialog.ActionTrigger asChild>
-                  <Button onClick={onClose} size="md" flex="1">
-                    Done
-                  </Button>
-                </Dialog.ActionTrigger>
+                <Button
+                  size="md"
+                  flex="1"
+                  onClick={handleSaveSelections}
+                  loading={isSavingSelections}
+                  disabled={
+                    isSavingSelections || isLoading || !vocabularyItemId
+                  }
+                >
+                  Done
+                </Button>
               </Dialog.Footer>
             </Dialog.Content>
           </Dialog.Positioner>
         </Portal>
       </Dialog.Root>
-
-      <CollectionManagerDialog
-        isOpen={isManageDialogOpen}
-        onClose={handleManageDialogClose}
-        onCollectionsChange={fetchData}
-      />
     </>
   );
 };

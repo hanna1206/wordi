@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
 import { toaster } from '@/components/toaster';
-import { CollectionSelectionDialog } from '@/modules/collection/components/collection-selection-dialog';
 import { useDueWordsCount } from '@/modules/flashcards/context/due-words-count-context';
 import { GenerateLinguisticItemError } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-error';
 import { GenerateLinguisticItemLoaded } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-loaded';
@@ -21,6 +20,11 @@ import {
   saveWordForLearning,
 } from '@/modules/vocabulary/vocabulary.actions';
 
+type SavedForLearningPayload = {
+  vocabularyItemId: string;
+  type: 'word' | 'collocation';
+};
+
 export interface GenerateLinguisticItemModalProps {
   isOpen: boolean;
   word: string;
@@ -29,6 +33,7 @@ export interface GenerateLinguisticItemModalProps {
   linguisticItem: LinguisticWordItem | LinguisticCollocationItem | null;
   onClose: () => void;
   onRegenerate: (word: string) => void;
+  onSavedForLearning: (payload: SavedForLearningPayload) => void;
 }
 
 export const GenerateLinguisticItemModal: React.FC<
@@ -41,12 +46,9 @@ export const GenerateLinguisticItemModal: React.FC<
   linguisticItem,
   onClose,
   onRegenerate,
+  onSavedForLearning,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
-  const [savedVocabularyItemId, setSavedVocabularyItemId] = useState<
-    string | null
-  >(null);
-  const [isCollectionDialogOpen, setIsCollectionDialogOpen] = useState(false);
   const { refetchDueCount } = useDueWordsCount();
 
   const isCollocation =
@@ -83,18 +85,11 @@ export const GenerateLinguisticItemModal: React.FC<
       }
 
       if (result.success && result.data) {
-        toaster.create({
-          title: isCollocation ? 'Collocation saved!' : 'Word saved!',
-          description: isCollocation
-            ? 'Collocation has been saved for learning'
-            : 'Word has been saved for learning',
-          type: 'success',
-          duration: 3000,
-        });
         refetchDueCount();
-
-        setSavedVocabularyItemId(result.data.id);
-        setIsCollectionDialogOpen(true);
+        onSavedForLearning({
+          vocabularyItemId: result.data.id,
+          type: isCollocation ? 'collocation' : 'word',
+        });
         onClose();
       } else {
         toaster.create({
@@ -114,11 +109,6 @@ export const GenerateLinguisticItemModal: React.FC<
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const handleCollectionDialogClose = () => {
-    setIsCollectionDialogOpen(false);
-    setSavedVocabularyItemId(null);
   };
 
   return (
@@ -234,12 +224,6 @@ export const GenerateLinguisticItemModal: React.FC<
           </Dialog.Positioner>
         </Portal>
       </Dialog.Root>
-
-      <CollectionSelectionDialog
-        isOpen={isCollectionDialogOpen}
-        vocabularyItemId={savedVocabularyItemId}
-        onClose={handleCollectionDialogClose}
-      />
     </>
   );
 };
