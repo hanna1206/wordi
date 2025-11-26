@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button, Dialog, Portal } from '@chakra-ui/react';
 
 import { toaster } from '@/components/toaster';
+import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import { useDueWordsCount } from '@/modules/flashcards/context/due-words-count-context';
 import { GenerateLinguisticItemError } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-error';
 import { GenerateLinguisticItemLoaded } from '@/modules/linguistics/components/generate-linguistic-item-modal/generate-linguistic-item-loaded';
@@ -34,6 +35,7 @@ export interface GenerateLinguisticItemModalProps {
   onClose: () => void;
   onRegenerate: (word: string) => void;
   onSavedForLearning: (payload: SavedForLearningPayload) => void;
+  collections?: CollectionWithCount[];
 }
 
 export const GenerateLinguisticItemModal: React.FC<
@@ -202,7 +204,7 @@ export const GenerateLinguisticItemModal: React.FC<
                     disabled={isSaving}
                     flex={{ base: 'none', md: '1' }}
                   >
-                    {isSaving ? 'Saving...' : 'Save for learning'}
+                    Save
                   </Button>
                 )}
                 <Dialog.ActionTrigger asChild>

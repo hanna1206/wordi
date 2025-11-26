@@ -8,8 +8,8 @@ import { Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 
 import { toaster } from '@/components/toaster';
+import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import { CollectionSelectionDialog } from '@/modules/collection/components/collection-selection-dialog';
-import { ExampleWords } from '@/modules/linguistics/components/example-words';
 import type { GenerateLinguisticItemModalProps } from '@/modules/linguistics/components/generate-linguistic-item-modal';
 import { generateLinguisticItem } from '@/modules/linguistics/linguistics.actions';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
@@ -39,7 +39,13 @@ type PendingSaveToast = {
   description: string;
 };
 
-export const GenerateLinguisticItemForm = () => {
+interface GenerateLinguisticItemFormProps {
+  collections: CollectionWithCount[];
+}
+
+export const GenerateLinguisticItemForm = ({
+  collections,
+}: GenerateLinguisticItemFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [word, setWord] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +64,6 @@ export const GenerateLinguisticItemForm = () => {
     register,
     handleSubmit: handleFormSubmit,
     reset,
-    setValue,
   } = useForm<FormData>();
 
   const handleSubmit = async (wordToTranslate: string) => {
@@ -112,11 +117,6 @@ export const GenerateLinguisticItemForm = () => {
 
   const onFormSubmit = (data: FormData) => {
     handleSubmit(data.word);
-  };
-
-  const handleExampleWordSelect = (wordToSelect: string) => {
-    setValue('word', wordToSelect);
-    handleSubmit(wordToSelect);
   };
 
   const onClose = () => {
@@ -227,9 +227,6 @@ export const GenerateLinguisticItemForm = () => {
                 <LuArrowRight />
               </IconButton>
             </HStack>
-
-            {/* Example Words Component */}
-            <ExampleWords onWordSelect={handleExampleWordSelect} />
           </VStack>
         </form>
       </VStack>
@@ -244,6 +241,7 @@ export const GenerateLinguisticItemForm = () => {
           onClose={onClose}
           onRegenerate={handleSubmit}
           onSavedForLearning={handleSavedForLearning}
+          collections={collections}
         />
       )}
 
@@ -251,6 +249,7 @@ export const GenerateLinguisticItemForm = () => {
         isOpen={isCollectionDialogOpen}
         vocabularyItemId={savedVocabularyItemId}
         onClose={handleCollectionDialogClose}
+        collections={collections}
       />
     </>
   );
