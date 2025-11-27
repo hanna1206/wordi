@@ -56,7 +56,6 @@ export const AdditionalTranslationsList = ({
       left={0}
       right={0}
       height="20px"
-      bgGradient="linear(to-t, white, transparent)"
     />
   </Box>
 );

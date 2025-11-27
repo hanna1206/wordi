@@ -156,7 +156,6 @@ export const PlayPageGameCompleteState = ({
       align="center"
       justify="center"
       p={{ base: 3, sm: 4 }}
-      background="linear-gradient(135deg, #f0f9ff, #faf5ff)"
     >
       <VStack gap={{ base: 4, sm: 6, md: 8 }} maxW="600px" w="full">
         {/* Success Icon */}

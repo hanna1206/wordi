@@ -14,7 +14,6 @@ import { PlayPageGameCompleteState } from '../components/play-page-game-complete
 import { PlayPageLoadingState } from '../components/play-page-loading-state';
 import { PlayPageNavigation } from '../components/play-page-navigation';
 import { useDueWordsCount } from '../context/due-words-count-context';
-import { CardSide } from '../flashcards.const';
 import { useFlashCardsGame } from '../hooks/use-flash-cards-game';
 import { useKeyboardShortcuts } from '../hooks/use-keyboard-shortcuts';
 
@@ -82,11 +81,7 @@ export const FlashcardsPage = () => {
       h="100svh"
       p={4}
       pt={2}
-      background={
-        cardSide === CardSide.Word
-          ? 'linear-gradient(135deg, #f0f9ff, #faf5ff)'
-          : 'linear-gradient(135deg, #f0fdfa, #f7fee7)'
-      }
+      bgColor="gray.100"
       transition="background 0.5s ease-in-out"
     >
       <PlayPageNavigation
