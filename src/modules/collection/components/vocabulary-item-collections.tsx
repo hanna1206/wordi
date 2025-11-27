@@ -164,7 +164,6 @@ export const VocabularyItemCollections = ({
         {itemCollections.map((collection) => (
           <Badge
             key={collection.id}
-            colorScheme="blue"
             variant="subtle"
             display="flex"
             alignItems="center"
@@ -196,7 +195,6 @@ export const VocabularyItemCollections = ({
                 size="xs"
                 variant="outline"
                 disabled={actionInProgress}
-                colorScheme="blue"
                 p={1}
                 minW="auto"
                 h="auto"

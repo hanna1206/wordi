@@ -103,10 +103,8 @@ const TermsOfServicePage = () => {
             <Section title="Privacy">
               <Text>
                 Your privacy is important to us. Please review our{' '}
-                <Link href="/privacy-policy" color="blue.500">
-                  Privacy Policy
-                </Link>
-                , which also governs your use of our service.
+                <Link href="/privacy-policy">Privacy Policy</Link>, which also
+                governs your use of our service.
               </Text>
             </Section>
 
@@ -153,9 +151,7 @@ const TermsOfServicePage = () => {
               </Text>
               <Box mt={4} p={4} bg="gray.100" borderRadius="md">
                 <Text fontWeight="semibold">Email:</Text>
-                <Link href="mailto:support@wordi.app" color="blue.500">
-                  support@wordi.app
-                </Link>
+                <Link href="mailto:support@wordi.app">support@wordi.app</Link>
               </Box>
             </Section>
           </VStack>

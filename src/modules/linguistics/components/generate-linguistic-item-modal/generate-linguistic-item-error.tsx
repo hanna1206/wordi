@@ -46,7 +46,7 @@ export const GenerateLinguisticItemError: React.FC<
       </Text>
 
       {onRetry && (
-        <Button onClick={onRetry} size="md" colorScheme="blue" mt={2}>
+        <Button onClick={onRetry} size="md" mt={2}>
           Try Again
         </Button>
       )}

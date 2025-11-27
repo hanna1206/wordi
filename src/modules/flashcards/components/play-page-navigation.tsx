@@ -78,7 +78,7 @@ export const PlayPageNavigation = ({
         borderRadius="full"
         overflow="hidden"
       >
-        <Box h="full" w={`${progress}%`} bg="blue.500" />
+        <Box h="full" w={`${progress}%`} />
       </Box>
     </Box>
   );

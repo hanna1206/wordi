@@ -332,32 +332,14 @@ export const FlashCardsSettingsDialog = ({
                               justify="center"
                               boxSize={8}
                               borderRadius="full"
-                              bg={
-                                option.disabled || isDueCountLoading
-                                  ? 'gray.100'
-                                  : 'blue.50'
-                              }
                               border="1px solid"
-                              borderColor={
-                                option.disabled || isDueCountLoading
-                                  ? 'gray.200'
-                                  : 'blue.200'
-                              }
                               flexShrink={0}
                             >
                               {isDueCountLoading &&
                               option.id === 'daily-review' ? (
-                                <Spinner size="xs" color="blue.500" />
+                                <Spinner size="xs" />
                               ) : (
-                                <Icon
-                                  as={option.icon}
-                                  boxSize={4}
-                                  color={
-                                    option.disabled || isDueCountLoading
-                                      ? 'gray.400'
-                                      : 'blue.600'
-                                  }
-                                />
+                                <Icon as={option.icon} boxSize={4} />
                               )}
                             </Flex>
 
@@ -415,7 +397,6 @@ export const FlashCardsSettingsDialog = ({
             <DialogFooter pt={3}>
               <Button
                 size="md"
-                colorScheme="blue"
                 w="full"
                 onClick={handleStartGame}
                 disabled={

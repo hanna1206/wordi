@@ -301,7 +301,7 @@ export const VocabularyFilterDialog = ({
               <Button variant="outline" onClick={handleCancel} size="md">
                 Cancel
               </Button>
-              <Button colorScheme="blue" onClick={handleApply} size="md">
+              <Button onClick={handleApply} size="md">
                 Apply
               </Button>
             </DialogFooter>

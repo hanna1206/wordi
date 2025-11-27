@@ -72,11 +72,7 @@ export const LinguisticItemHeader: React.FC<LinguisticItemHeaderProps> = ({
             </Text>
           )}
         </HStack>
-        <Text
-          fontSize={{ base: 'xl', md: '2xl' }}
-          fontWeight="bold"
-          color="blue.600"
-        >
+        <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
           {mainTranslation}
         </Text>
       </VStack>

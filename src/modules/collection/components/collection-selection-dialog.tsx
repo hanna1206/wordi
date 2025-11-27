@@ -221,7 +221,6 @@ export const CollectionSelectionDialog = ({
                           }
                           disabled={isSavingSelections || isLoading}
                           variant={isSelected ? 'solid' : 'outline'}
-                          colorScheme={isSelected ? 'blue' : 'gray'}
                           justifyContent="space-between"
                           w="full"
                           h="auto"

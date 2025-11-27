@@ -272,7 +272,6 @@ export const CollectionManagerDialog = ({
                         onClick={handleCreate}
                         disabled={actionInProgress}
                         size="sm"
-                        colorScheme="blue"
                       >
                         Save
                       </Button>
@@ -349,7 +348,6 @@ export const CollectionManagerDialog = ({
                                 onClick={() => handleSaveEdit(collection.id)}
                                 disabled={actionInProgress}
                                 size="sm"
-                                colorScheme="blue"
                               >
                                 Save
                               </Button>

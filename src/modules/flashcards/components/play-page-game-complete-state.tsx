@@ -41,19 +41,7 @@ interface StatRowProps {
   colorScheme: string;
 }
 
-const StatRow = ({
-  label,
-  emoji,
-  count,
-  percentage,
-  colorScheme,
-}: StatRowProps) => {
-  const colorMap: Record<string, string> = {
-    green: 'green.500',
-    yellow: 'yellow.500',
-    red: 'red.500',
-  };
-
+const StatRow = ({ label, emoji, count, percentage }: StatRowProps) => {
   return (
     <HStack
       w="full"
@@ -83,12 +71,7 @@ const StatRow = ({
           borderRadius="full"
           overflow="hidden"
         >
-          <Box
-            h="full"
-            w={`${percentage}%`}
-            bg={colorMap[colorScheme] || 'blue.500'}
-            transition="width 0.3s ease"
-          />
+          <Box h="full" w={`${percentage}%`} transition="width 0.3s ease" />
         </Box>
       </HStack>
     </HStack>

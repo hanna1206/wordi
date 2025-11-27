@@ -60,7 +60,7 @@ export const AIInfoModal: React.FC<AIInfoModalProps> = ({
               borderColor="gray.100"
             >
               <HStack gap={3}>
-                <Icon color="blue.500" boxSize={6}>
+                <Icon boxSize={6}>
                   <LuBrain />
                 </Icon>
                 <Dialog.Title fontSize="lg" fontWeight="semibold">
@@ -89,7 +89,7 @@ export const AIInfoModal: React.FC<AIInfoModalProps> = ({
 
                 <VStack gap={3} align="start">
                   <HStack gap={2}>
-                    <Icon color="blue.500" boxSize={5}>
+                    <Icon boxSize={5}>
                       <LuRefreshCw />
                     </Icon>
                     <Text fontWeight="medium" color="gray.800">

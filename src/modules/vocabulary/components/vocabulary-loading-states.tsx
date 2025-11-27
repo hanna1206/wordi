@@ -2,7 +2,7 @@ import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 
 export const VocabularyInitialLoader = () => (
   <Flex align="center" justify="center" minH="60vh">
-    <Spinner size="lg" colorPalette="blue" />
+    <Spinner size="lg" />
   </Flex>
 );
 
@@ -14,7 +14,7 @@ export const VocabularyError = ({ error }: { error: string }) => (
 
 export const VocabularyLoadMoreSpinner = () => (
   <Flex justify="center" py={4}>
-    <Spinner size="md" colorPalette="blue" />
+    <Spinner size="md" />
   </Flex>
 );
 
@@ -38,7 +38,7 @@ export const VocabularyWordLoadingOverlay = () => (
     justify="center"
     zIndex={9999}
   >
-    <Spinner size="xl" colorPalette="blue" />
+    <Spinner size="xl" />
   </Flex>
 );
 

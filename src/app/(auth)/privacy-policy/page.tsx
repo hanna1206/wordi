@@ -166,9 +166,7 @@ const PrivacyPolicyPage = () => {
               </Text>
               <Box mt={4} p={4} bg="gray.100" borderRadius="md">
                 <Text fontWeight="semibold">Email:</Text>
-                <Link href="mailto:privacy@wordi.app" color="blue.500">
-                  privacy@wordi.app
-                </Link>
+                <Link href="mailto:privacy@wordi.app">privacy@wordi.app</Link>
               </Box>
             </Section>
           </VStack>

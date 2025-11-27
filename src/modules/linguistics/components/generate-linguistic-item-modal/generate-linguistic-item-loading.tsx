@@ -18,7 +18,7 @@ export const GenerateLinguisticItemLoading: React.FC<
       maxW="400px"
       mx="auto"
     >
-      <Spinner size="xl" color="blue.500" borderWidth="4px" />
+      <Spinner size="xl" borderWidth="4px" />
       <VStack gap={2} align="center">
         <Text
           fontSize="lg"

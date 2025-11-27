@@ -14,7 +14,7 @@ export const PlayPageErrorState = ({ error }: PlayPageErrorStateProps) => {
         Error
       </Heading>
       <Text mt={2}>{error}</Text>
-      <Button asChild mt={4} colorScheme="blue">
+      <Button asChild mt={4}>
         <Link href="/flash-cards-game">Go Back</Link>
       </Button>
     </Flex>

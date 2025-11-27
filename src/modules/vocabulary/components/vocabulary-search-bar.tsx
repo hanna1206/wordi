@@ -100,7 +100,6 @@ export const VocabularySearchBar = ({
           onClick={() => setIsFilterDialogOpen(true)}
           aria-label="Filter"
           position="relative"
-          colorScheme={hasActiveFilters ? 'blue' : undefined}
         >
           <Icon as={LuSlidersHorizontal} fontSize="md" />
           <Text display={{ base: 'none', md: 'block' }}>Filter</Text>
@@ -118,7 +117,6 @@ export const VocabularySearchBar = ({
               display="flex"
               alignItems="center"
               justifyContent="center"
-              backgroundColor="blue.500"
             />
           )}
         </Button>

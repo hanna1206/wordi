@@ -123,10 +123,8 @@ export const CookieConsent: React.FC = () => {
 
               <Text fontSize="xs" color="gray.500" textAlign="left">
                 You can review our{' '}
-                <Link href="/privacy-policy" color="blue.500">
-                  Privacy Policy
-                </Link>{' '}
-                for more details about our data practices.
+                <Link href="/privacy-policy">Privacy Policy</Link> for more
+                details about our data practices.
               </Text>
             </VStack>
 
@@ -136,9 +134,7 @@ export const CookieConsent: React.FC = () => {
                 size="md"
                 onClick={handleReconsider}
                 w="full"
-                bg="blue.500"
                 color="white"
-                _hover={{ bg: 'blue.600' }}
               >
                 Reconsider & Accept Cookies
               </Button>
@@ -182,7 +178,7 @@ export const CookieConsent: React.FC = () => {
         <VStack gap={6} textAlign="center">
           {/* Cookie Icon and Title */}
           <VStack gap={3}>
-            <Box p={3} bg="blue.50" borderRadius="full" color="blue.500">
+            <Box p={3} borderRadius="full">
               <Icon size="lg">
                 <LuCookie />
               </Icon>
@@ -212,7 +208,7 @@ export const CookieConsent: React.FC = () => {
             </Text>
 
             <Text fontSize="xs" color="gray.500" textAlign="left">
-              <Link href="/privacy-policy" color="blue.500">
+              <Link href="/privacy-policy">
                 Learn more about our privacy practices
               </Link>{' '}
               and how we handle your data.
@@ -228,18 +224,10 @@ export const CookieConsent: React.FC = () => {
               flex={1}
               borderColor="red.200"
               color="red.600"
-              _hover={{ bg: 'red.50', borderColor: 'red.300' }}
             >
               Decline
             </Button>
-            <Button
-              size="md"
-              onClick={handleAccept}
-              flex={1}
-              bg="blue.500"
-              color="white"
-              _hover={{ bg: 'blue.600' }}
-            >
+            <Button size="md" onClick={handleAccept} flex={1} color="white">
               Accept Cookies
             </Button>
           </HStack>

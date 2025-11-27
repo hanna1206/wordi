@@ -12,15 +12,10 @@ const config = defineConfig({
         sm: { value: '0.375rem' },
       },
     },
-    semanticTokens: {
-      colors: {
-        primary: { value: '{colors.blue.700}' },
-      },
-    },
   },
   globalCss: {
     html: {
-      colorPalette: 'blue',
+      colorPalette: 'gray',
     },
     body: {
       fontFamily: 'var(--font-open-sans), sans-serif',

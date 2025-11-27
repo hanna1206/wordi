@@ -186,7 +186,6 @@ export const GenerateLinguisticItemForm = ({
               }}
               _focusWithin={{
                 shadow: 'lg',
-                borderColor: 'blue.400',
               }}
               alignItems="center"
               flexDirection="row"
