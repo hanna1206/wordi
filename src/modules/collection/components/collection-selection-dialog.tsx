@@ -116,6 +116,7 @@ export const CollectionSelectionDialog = ({
     );
 
     if (toAdd.length === 0 && toRemove.length === 0) {
+      setSelectedCollectionIds([]);
       onClose();
       return;
     }
@@ -150,6 +151,7 @@ export const CollectionSelectionDialog = ({
         ),
       );
 
+      setSelectedCollectionIds([]);
       onClose();
     } catch (error) {
       toaster.create({
@@ -165,9 +167,14 @@ export const CollectionSelectionDialog = ({
     }
   };
 
+  const handleClose = () => {
+    setSelectedCollectionIds([]);
+    onClose();
+  };
+
   return (
     <>
-      <Dialog.Root open={isOpen} onOpenChange={onClose}>
+      <Dialog.Root open={isOpen} onOpenChange={handleClose}>
         <Portal>
           <Dialog.Backdrop bg="blackAlpha.600" />
           <Dialog.Positioner
