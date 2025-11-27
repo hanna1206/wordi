@@ -58,11 +58,11 @@ const getUserMinimalVocabulary = async (
     whereConditions.push(eq(vocabularyItemsTable.type, 'collocation'));
   }
 
-  if (partsOfSpeech.length === 0) {
-    whereConditions.push(
-      eq(vocabularyItemsTable.id, 'impossible-id-that-never-exists'),
-    );
-  } else if (partsOfSpeech.length < ALL_PARTS_OF_SPEECH.length) {
+  // Only apply part of speech filter if at least one is selected
+  if (
+    partsOfSpeech.length > 0 &&
+    partsOfSpeech.length < ALL_PARTS_OF_SPEECH.length
+  ) {
     whereConditions.push(
       inArray(vocabularyItemsTable.partOfSpeech, partsOfSpeech),
     );
