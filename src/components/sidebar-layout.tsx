@@ -7,7 +7,6 @@ import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 
 import { AppHeader } from '@/components/app-header';
-import { GradientBackground } from '@/components/gradient-background';
 import { FlashCardsSettingsDialog } from '@/modules/flashcards/components/flash-cards-settings-dialog';
 
 interface SidebarProps {
@@ -75,7 +74,7 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   }, []);
 
   return (
-    <GradientBackground variant="primary" data-debug="gradient-background">
+    <>
       <Box h="100svh" overflow="hidden">
         <AppHeader onSidebarToggle={toggleSidebar} />
 
@@ -115,6 +114,6 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
           onClose={handleCloseDialog}
         />
       </Box>
-    </GradientBackground>
+    </>
   );
 };

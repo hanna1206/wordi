@@ -25,15 +25,10 @@ export const DesktopSidebar = ({
       top={0}
       h="100svh"
       w={isOpen ? '260px' : '57px'}
-      bg={isOpen ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.9)'}
+      bgColor="gray.50"
       backdropFilter="blur(10px)"
       borderRight="1px solid"
-      borderColor="rgba(255, 255, 255, 0.2)"
-      boxShadow={
-        isOpen
-          ? '0 8px 32px rgba(0, 0, 0, 0.1)'
-          : '0 4px 12px rgba(0, 0, 0, 0.05)'
-      }
+      borderColor="gray.200"
       transition="all 0.3s ease"
       zIndex={isOpen ? 1001 : 100}
       display={{ base: 'none', md: 'flex' }}

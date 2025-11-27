@@ -3,13 +3,12 @@
 import { Card, Center, Text, VStack } from '@chakra-ui/react';
 
 import { CookieConsent } from '@/components/cookie-consent';
-import { GradientBackground } from '@/components/gradient-background';
 
 import { ResetPasswordForm } from '../components/reset-password-form';
 
 export const ResetPasswordPage = () => {
   return (
-    <GradientBackground variant="primary">
+    <>
       <Center h="100svh">
         <VStack gap={6} maxW="md" mx="auto" mt={10}>
           <VStack gap={1} textAlign="center">
@@ -27,6 +26,6 @@ export const ResetPasswordPage = () => {
         </VStack>
       </Center>
       <CookieConsent />
-    </GradientBackground>
+    </>
   );
 };
