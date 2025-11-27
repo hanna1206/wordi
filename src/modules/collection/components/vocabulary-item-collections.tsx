@@ -9,6 +9,7 @@ import {
   Flex,
   MenuContent,
   MenuItem,
+  MenuPositioner,
   MenuRoot,
   MenuTrigger,
   Spinner,
@@ -154,10 +155,40 @@ export const VocabularyItemCollections = ({
 
   return (
     <Flex direction="column" gap={2}>
-      <Flex align="center" justify="space-between">
-        <Text fontSize="sm" fontWeight="medium" color="gray.700">
-          Collections
-        </Text>
+      <Text fontSize="sm" fontWeight="medium" color="gray.700">
+        Collections
+      </Text>
+
+      {/* Display collection badges with add button */}
+      <Flex gap={2} flexWrap="wrap" align="center">
+        {itemCollections.map((collection) => (
+          <Badge
+            key={collection.id}
+            colorScheme="blue"
+            variant="subtle"
+            display="flex"
+            alignItems="center"
+            gap={1}
+            px={2}
+            py={1}
+            borderRadius="md"
+          >
+            <Text fontSize="xs">{collection.name}</Text>
+            <Button
+              size="xs"
+              variant="ghost"
+              onClick={() => handleRemoveFromCollection(collection.id)}
+              disabled={actionInProgress}
+              p={0}
+              minW="auto"
+              h="auto"
+              _hover={{ bg: 'transparent' }}
+            >
+              <LuX size={12} />
+            </Button>
+          </Badge>
+        ))}
+
         {allCollections.length > 0 && (
           <MenuRoot>
             <MenuTrigger asChild>
@@ -166,81 +197,54 @@ export const VocabularyItemCollections = ({
                 variant="outline"
                 disabled={actionInProgress}
                 colorScheme="blue"
-              >
-                <LuPlus />
-                Add to Collection
-              </Button>
-            </MenuTrigger>
-            <MenuContent>
-              {allCollections.map((collection) => {
-                const inCollection = isInCollection(collection.id);
-                return (
-                  <MenuItem
-                    key={collection.id}
-                    value={collection.id}
-                    onClick={() => {
-                      if (inCollection) {
-                        handleRemoveFromCollection(collection.id);
-                      } else {
-                        handleAddToCollection(collection.id);
-                      }
-                    }}
-                    disabled={actionInProgress}
-                  >
-                    <Flex align="center" justify="space-between" w="full">
-                      <Text fontSize="sm">{collection.name}</Text>
-                      {inCollection && <LuCheck color="green" size={16} />}
-                    </Flex>
-                  </MenuItem>
-                );
-              })}
-            </MenuContent>
-          </MenuRoot>
-        )}
-      </Flex>
-
-      {/* Display collection badges */}
-      {itemCollections.length > 0 ? (
-        <Flex gap={2} flexWrap="wrap">
-          {itemCollections.map((collection) => (
-            <Badge
-              key={collection.id}
-              colorScheme="blue"
-              variant="subtle"
-              display="flex"
-              alignItems="center"
-              gap={1}
-              px={2}
-              py={1}
-              borderRadius="md"
-            >
-              <Text fontSize="xs">{collection.name}</Text>
-              <Button
-                size="xs"
-                variant="ghost"
-                onClick={() => handleRemoveFromCollection(collection.id)}
-                disabled={actionInProgress}
-                p={0}
+                p={1}
                 minW="auto"
                 h="auto"
-                _hover={{ bg: 'transparent' }}
               >
-                <LuX size={12} />
+                <LuPlus size={14} />
               </Button>
-            </Badge>
-          ))}
-        </Flex>
-      ) : (
-        <Text fontSize="xs" color="gray.500">
-          Not in any collection
-        </Text>
-      )}
+            </MenuTrigger>
+            <MenuPositioner>
+              <MenuContent>
+                {allCollections.map((collection) => {
+                  const inCollection = isInCollection(collection.id);
+                  return (
+                    <MenuItem
+                      key={collection.id}
+                      value={collection.id}
+                      onClick={() => {
+                        if (inCollection) {
+                          handleRemoveFromCollection(collection.id);
+                        } else {
+                          handleAddToCollection(collection.id);
+                        }
+                      }}
+                      disabled={actionInProgress}
+                    >
+                      <Flex align="center" justify="space-between" w="full">
+                        <Text fontSize="sm">{collection.name}</Text>
+                        {inCollection && <LuCheck color="green" size={16} />}
+                      </Flex>
+                    </MenuItem>
+                  );
+                })}
+              </MenuContent>
+            </MenuPositioner>
+          </MenuRoot>
+        )}
 
-      {allCollections.length === 0 && (
-        <Text fontSize="xs" color="gray.400" fontStyle="italic">
-          Create collections to organize your vocabulary
-        </Text>
-      )}
+        {itemCollections.length === 0 && allCollections.length === 0 && (
+          <Text fontSize="xs" color="gray.400" fontStyle="italic">
+            Create collections to organize your vocabulary
+          </Text>
+        )}
+
+        {itemCollections.length === 0 && allCollections.length > 0 && (
+          <Text fontSize="xs" color="gray.500">
+            Not in any collection
+          </Text>
+        )}
+      </Flex>
     </Flex>
   );
 };

@@ -228,15 +228,9 @@ export const CollectionSelectionDialog = ({
                           py={3}
                           px={4}
                         >
-                          <Flex direction="column" align="flex-start" gap={1}>
-                            <Text fontWeight="medium" fontSize="sm">
-                              {collection.name}
-                            </Text>
-                            <Text fontSize="xs" color="gray.600">
-                              {collection.itemCount}{' '}
-                              {collection.itemCount === 1 ? 'item' : 'items'}
-                            </Text>
-                          </Flex>
+                          <Text fontWeight="medium" fontSize="sm">
+                            {collection.name}
+                          </Text>
                           {isSelected && <LuCheck size={20} />}
                         </Button>
                       );

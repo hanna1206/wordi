@@ -5,6 +5,7 @@ import { Dialog, Portal, Separator } from '@chakra-ui/react';
 import { VocabularyItemCollections } from '@/modules/collection/components/vocabulary-item-collections';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
+  LinguisticCollocationItem,
   LinguisticWordItem,
   NounLinguisticItem,
 } from '@/modules/linguistics/linguistics.types';
@@ -26,7 +27,24 @@ interface VocabularyItemModalProps {
 
 const convertVocabularyItemToTranslationResult = (
   savedWord: VocabularyItem,
-): LinguisticWordItem => {
+): LinguisticWordItem | LinguisticCollocationItem => {
+  // Handle collocations
+  if (savedWord.type === 'collocation') {
+    const collocationItem: LinguisticCollocationItem = {
+      normalizedCollocation: savedWord.normalizedText,
+      mainTranslation: savedWord.commonData.mainTranslation,
+      exampleSentences: savedWord.commonData.exampleSentences.map((ex) => {
+        const [german, translation] = ex.split(' - ');
+        return { german: german || ex, translation: translation || '' };
+      }),
+      ...(savedWord.specificData as {
+        componentWords: LinguisticCollocationItem['componentWords'];
+      }),
+    };
+    return collocationItem;
+  }
+
+  // Handle words
   const baseTranslation: LinguisticWordItem = {
     normalizedWord: savedWord.normalizedText,
     partOfSpeech: [savedWord.partOfSpeech as PartOfSpeech],
@@ -61,7 +79,9 @@ export const VocabularyItemModal: React.FC<VocabularyItemModalProps> = ({
   if (!savedWord) return null;
 
   const translation = convertVocabularyItemToTranslationResult(savedWord);
-  const isNoun = translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
+  const isNoun =
+    'partOfSpeech' in translation &&
+    translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
   const gender = isNoun
     ? (translation as NounLinguisticItem).gender
     : undefined;
