@@ -62,7 +62,7 @@ export const userWordProgressTable = pgTable(
       columns: [table.wordId],
       foreignColumns: [vocabularyItemsTable.id],
       name: 'user_word_progress_word_id_fkey',
-    }),
+    }).onDelete('cascade'),
     unique('user_word_progress_user_id_word_id_key').on(
       table.userId,
       table.wordId,
