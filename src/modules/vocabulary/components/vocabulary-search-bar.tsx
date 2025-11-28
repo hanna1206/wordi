@@ -33,9 +33,7 @@ interface VocabularySearchBarProps {
     typeFilter: VocabularyTypeFilter,
   ) => void;
   hasActiveFilters: boolean;
-  selectedCollectionId?: string | null;
   selectedCollectionIds: string[];
-  onCollectionChange?: (collectionId: string | null) => void;
   onCollectionIdsChange?: (collectionIds: string[]) => void;
   onManageCollections?: () => void;
   collections: CollectionWithCount[];

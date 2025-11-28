@@ -10,6 +10,7 @@ import { getUserCollections } from '@/modules/collection/collections.actions';
 import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import { CollectionManagerDialog } from '@/modules/collection/components/collection-manager-dialog';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
+import { VocabularyActiveFilters } from '@/modules/vocabulary/components/vocabulary-active-filters';
 import { VocabularyItemModal } from '@/modules/vocabulary/components/vocabulary-item-modal';
 import {
   VocabularyEndMessage,
@@ -50,10 +51,10 @@ export const VocabularyPage = () => {
   const [collections, setCollections] = useState<CollectionWithCount[]>([]);
   const [isLoadingCollections, setIsLoadingCollections] = useState(true);
 
-  const hasActiveFilters = !areFiltersAtDefault(
-    visibilityFilter,
-    selectedPartsOfSpeech,
-  );
+  const hasActiveFilters =
+    !areFiltersAtDefault(visibilityFilter, selectedPartsOfSpeech) ||
+    selectedCollectionIds.length > 0 ||
+    typeFilter !== 'all';
 
   const { isInitialLoading, isFetchingMore, error, items, hasMore, loadWords } =
     useVocabularyList(
@@ -104,13 +105,6 @@ export const VocabularyPage = () => {
     [],
   );
 
-  const handleCollectionChange = useCallback(
-    (newCollectionId: string | null) => {
-      setCollectionId(newCollectionId);
-    },
-    [],
-  );
-
   const handleCollectionIdsChange = useCallback(
     (newCollectionIds: string[]) => {
       setSelectedCollectionIds(newCollectionIds);
@@ -125,6 +119,21 @@ export const VocabularyPage = () => {
       }
     },
     [],
+  );
+
+  const handleRemovePartOfSpeech = useCallback((partOfSpeech: PartOfSpeech) => {
+    setSelectedPartsOfSpeech((prev) =>
+      prev.filter((selection) => selection !== partOfSpeech),
+    );
+  }, []);
+
+  const handleRemoveCollection = useCallback(
+    (collectionIdToRemove: string) => {
+      handleCollectionIdsChange(
+        selectedCollectionIds.filter((id) => id !== collectionIdToRemove),
+      );
+    },
+    [handleCollectionIdsChange, selectedCollectionIds],
   );
 
   const handleOpenCollectionManager = useCallback(() => {
@@ -190,13 +199,23 @@ export const VocabularyPage = () => {
         typeFilter={typeFilter}
         onFilterChange={handleFilterChange}
         hasActiveFilters={hasActiveFilters}
-        selectedCollectionId={collectionId}
         selectedCollectionIds={selectedCollectionIds}
-        onCollectionChange={handleCollectionChange}
         onCollectionIdsChange={handleCollectionIdsChange}
         onManageCollections={handleOpenCollectionManager}
         collections={collections}
         isLoadingCollections={isLoadingCollections}
+      />
+
+      <VocabularyActiveFilters
+        selectedPartsOfSpeech={selectedPartsOfSpeech}
+        selectedCollectionIds={selectedCollectionIds}
+        collections={collections}
+        visibilityFilter={visibilityFilter}
+        typeFilter={typeFilter}
+        onRemovePartOfSpeech={handleRemovePartOfSpeech}
+        onRemoveCollection={handleRemoveCollection}
+        onResetVisibilityFilter={() => setVisibilityFilter('visible-only')}
+        onResetTypeFilter={() => setTypeFilter('all')}
       />
 
       <PageHeader title="Vocabulary" description="" />

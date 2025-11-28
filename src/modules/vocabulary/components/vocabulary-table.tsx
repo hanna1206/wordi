@@ -43,7 +43,6 @@ export const VocabularyTable = ({
               <Card.Root
                 key={`${item.normalizedText}-${item.partOfSpeech}`}
                 borderWidth="1px"
-                shadow="sm"
                 cursor="pointer"
                 transition="background 0.2s"
                 onClick={() =>
@@ -100,7 +99,7 @@ export const VocabularyTable = ({
 
       {/* Desktop Table Layout */}
       <Box display={{ base: 'none', md: 'block' }}>
-        <Card.Root borderWidth="1px" shadow="sm" overflow="hidden">
+        <Card.Root borderWidth="1px" overflow="hidden">
           <Table.Root size="sm" variant="outline">
             <Table.Header bg="bg.muted">
               <Table.Row>
