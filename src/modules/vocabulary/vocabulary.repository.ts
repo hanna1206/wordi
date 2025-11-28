@@ -30,7 +30,7 @@ const getUserMinimalVocabulary = async (
   sort: VocabularySortOption = 'Latest',
   searchQuery?: string,
   visibilityFilter: VisibilityFilter = 'visible-only',
-  partsOfSpeech: PartOfSpeech[] = ALL_PARTS_OF_SPEECH,
+  partsOfSpeech: PartOfSpeech[] = [],
   typeFilter: VocabularyTypeFilter = 'all',
   collectionId?: string,
 ): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {

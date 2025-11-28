@@ -24,7 +24,6 @@ import type {
   VocabularySortOption,
   VocabularyTypeFilter,
 } from './vocabulary.types';
-import { ALL_PARTS_OF_SPEECH } from './vocabulary.types';
 
 export const saveWordForLearning = withUserSettings<
   LinguisticWordItem,
@@ -160,7 +159,7 @@ export const fetchUserMinimalVocabulary = withAuth<
       sort = 'Latest',
       searchQuery,
       visibilityFilter = 'visible-only',
-      partsOfSpeech = ALL_PARTS_OF_SPEECH,
+      partsOfSpeech = [],
       typeFilter = 'all',
       collectionId,
     },

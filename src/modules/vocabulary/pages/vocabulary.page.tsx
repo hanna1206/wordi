@@ -29,7 +29,6 @@ import type {
   VocabularySortOption,
   VocabularyTypeFilter,
 } from '@/modules/vocabulary/vocabulary.types';
-import { ALL_PARTS_OF_SPEECH } from '@/modules/vocabulary/vocabulary.types';
 
 import { areFiltersAtDefault } from '../utils/are-filters-at-default';
 import { toggleWordHidden } from '../vocabulary.actions';
@@ -39,8 +38,9 @@ export const VocabularyPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [visibilityFilter, setVisibilityFilter] =
     useState<VisibilityFilter>('visible-only');
-  const [selectedPartsOfSpeech, setSelectedPartsOfSpeech] =
-    useState<PartOfSpeech[]>(ALL_PARTS_OF_SPEECH);
+  const [selectedPartsOfSpeech, setSelectedPartsOfSpeech] = useState<
+    PartOfSpeech[]
+  >([]);
   const [typeFilter, setTypeFilter] = useState<VocabularyTypeFilter>('all');
   const [collectionId, setCollectionId] = useState<string | null>(null);
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(

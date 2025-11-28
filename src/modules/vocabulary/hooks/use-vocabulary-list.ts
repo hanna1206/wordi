@@ -9,7 +9,6 @@ import type {
   VocabularySortOption,
   VocabularyTypeFilter,
 } from '@/modules/vocabulary/vocabulary.types';
-import { ALL_PARTS_OF_SPEECH } from '@/modules/vocabulary/vocabulary.types';
 
 const DEFAULT_PAGE_SIZE = 20;
 const DEBOUNCE_DELAY = 500;
@@ -18,7 +17,7 @@ export const useVocabularyList = (
   sortOption: VocabularySortOption,
   searchQuery?: string,
   visibilityFilter: VisibilityFilter = 'visible-only',
-  selectedPartsOfSpeech: PartOfSpeech[] = ALL_PARTS_OF_SPEECH,
+  selectedPartsOfSpeech: PartOfSpeech[] = [],
   typeFilter: VocabularyTypeFilter = 'all',
   collectionId: string | null = null,
 ) => {
