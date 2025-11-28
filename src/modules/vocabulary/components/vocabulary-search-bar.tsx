@@ -5,6 +5,7 @@ import {
   LuArrowDownNarrowWide,
   LuFolderCog,
   LuSlidersHorizontal,
+  LuX,
 } from 'react-icons/lu';
 
 import { Badge, Button, Flex, Icon, Input, Menu, Text } from '@chakra-ui/react';
@@ -61,14 +62,34 @@ export const VocabularySearchBar = ({
   return (
     <>
       <Flex direction="row" gap={2} align="center" mb={6}>
-        <Input
-          placeholder="Search vocabulary"
-          flex="1"
-          size="lg"
-          backgroundColor="white"
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-        />
+        <Flex position="relative" flex="1">
+          <Input
+            placeholder="Search vocabulary"
+            flex="1"
+            size="lg"
+            backgroundColor="white"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            pr={searchQuery ? 10 : undefined}
+          />
+          {searchQuery && (
+            <Button
+              position="absolute"
+              right="2"
+              top="50%"
+              transform="translateY(-50%)"
+              variant="ghost"
+              size="sm"
+              onClick={() => onSearchChange('')}
+              aria-label="Clear search"
+              minW="auto"
+              h="auto"
+              p={1}
+            >
+              <Icon as={LuX} fontSize="lg" />
+            </Button>
+          )}
+        </Flex>
 
         <Menu.Root>
           <Menu.Trigger asChild>
