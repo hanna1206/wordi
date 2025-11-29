@@ -31,11 +31,6 @@ export interface CommonVocabularyData {
   }>;
 }
 
-export interface VocabularyItemAnonymized extends VocabularyItemDatabaseInput {
-  id: string;
-  createdAt: string;
-}
-
 export type VocabularySortOption = 'Latest' | 'Alphabetical';
 
 export interface UserWordCheck {

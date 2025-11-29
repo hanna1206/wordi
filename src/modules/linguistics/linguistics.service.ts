@@ -1,4 +1,5 @@
 import { gpt41Model } from '@/services/llm/gpt-4.1';
+import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
 
 import { PartOfSpeech } from './linguistics.const';
 import {
@@ -219,7 +220,7 @@ const demonstrativePronounDeclensionsChain =
     demonstrativePronounDeclensionsLlm,
   );
 
-const classifyInputLlm = gpt41Model.withStructuredOutput(
+const classifyInputLlm = gpt41MiniModel.withStructuredOutput(
   classifyInputOutputStructure,
 );
 const classifyInputChain = classifyInputPrompt.pipe(classifyInputLlm);

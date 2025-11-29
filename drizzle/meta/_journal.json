@@ -43,6 +43,13 @@
       "when": 1764327581512,
       "tag": "0005_perpetual_roxanne_simpson",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1764427624889,
+      "tag": "0006_talented_luminals",
+      "breakpoints": true
     }
   ]
 }

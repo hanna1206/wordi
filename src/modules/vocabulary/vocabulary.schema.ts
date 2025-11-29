@@ -6,7 +6,6 @@ import {
   jsonb,
   pgEnum,
   pgTable,
-  pgView,
   text,
   timestamp,
   uniqueIndex,
@@ -48,12 +47,7 @@ export const vocabularyItemsTable = pgTable(
   (table) => [
     // Index for type field
     index('idx_vocabulary_items_type').on(table.type),
-    // Composite index for cache lookup
-    index('idx_vocabulary_items_cache_lookup').on(
-      table.normalizedText,
-      table.partOfSpeech,
-      table.targetLanguage,
-    ),
+
     // GIN indexes for JSONB
     index('idx_vocabulary_items_common_data_gin').using(
       'gin',
@@ -96,17 +90,4 @@ export const vocabularyItemsTable = pgTable(
       sql`length(normalized_text) > 0`,
     ),
   ],
-);
-
-export const vocabularyCacheView = pgView('vocabulary_cache', {
-  id: uuid(),
-  normalizedText: text('normalized_text'),
-  partOfSpeech: partOfSpeechEnum('part_of_speech'),
-  targetLanguage: languageCodeEnum('target_language'),
-  commonData: jsonb('common_data'),
-  specificData: jsonb('specific_data'),
-  createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }),
-  type: vocabularyItemTypeEnum('type'),
-}).as(
-  sql`SELECT DISTINCT ON (vocabulary_items.normalized_text, vocabulary_items.part_of_speech, vocabulary_items.target_language) vocabulary_items.id, vocabulary_items.normalized_text, vocabulary_items.part_of_speech, vocabulary_items.target_language, vocabulary_items.common_data, vocabulary_items.specific_data, vocabulary_items.created_at, vocabulary_items.type FROM vocabulary_items ORDER BY vocabulary_items.normalized_text, vocabulary_items.part_of_speech, vocabulary_items.target_language, vocabulary_items.created_at`,
 );

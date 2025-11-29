@@ -3,14 +3,12 @@ import { and, asc, count, desc, eq, ilike, inArray } from 'drizzle-orm';
 import { db } from '@/db/client';
 import { collectionVocabularyItemsTable } from '@/modules/collection/collections.schema';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
-import { LanguageCode } from '@/modules/user-settings/user-settings.const';
 
-import { vocabularyCacheView, vocabularyItemsTable } from './vocabulary.schema';
+import { vocabularyItemsTable } from './vocabulary.schema';
 import type {
   MinimalVocabularyWord,
   VisibilityFilter,
   VocabularyItem,
-  VocabularyItemAnonymized,
   VocabularySortOption,
   VocabularyTypeFilter,
 } from './vocabulary.types';
@@ -153,23 +151,6 @@ const getByNormalizedWordAndPos = async (
   return word ? (word as VocabularyItem) : null;
 };
 
-const getCachedWord = async (
-  normalizedWord: string,
-  targetLanguage: LanguageCode,
-): Promise<VocabularyItemAnonymized | null> => {
-  const [word] = await db
-    .select()
-    .from(vocabularyCacheView)
-    .where(
-      and(
-        eq(vocabularyCacheView.normalizedText, normalizedWord),
-        eq(vocabularyCacheView.targetLanguage, targetLanguage),
-      ),
-    );
-
-  return word ? (word as VocabularyItemAnonymized) : null;
-};
-
 // Deletes a vocabulary item and all associated collection memberships (via cascade)
 const deleteItem = async (wordId: string, userId: string): Promise<void> => {
   await db
@@ -211,7 +192,6 @@ export {
   create,
   deleteItem,
   getByNormalizedWordAndPos,
-  getCachedWord,
   getLatestWords,
   getUserMinimalVocabulary,
   toggleWordHidden,

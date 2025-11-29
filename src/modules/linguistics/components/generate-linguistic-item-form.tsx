@@ -12,12 +12,10 @@ import type { CollectionWithCount } from '@/modules/collection/collections.types
 import { CollectionSelectionDialog } from '@/modules/collection/components/collection-selection-dialog';
 import type { GenerateLinguisticItemModalProps } from '@/modules/linguistics/components/generate-linguistic-item-modal';
 import { generateLinguisticItem } from '@/modules/linguistics/linguistics.actions';
-import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
   LinguisticCollocationItem,
   LinguisticWordItem,
 } from '@/modules/linguistics/linguistics.types';
-import { getWordFromCache } from '@/modules/vocabulary/vocabulary.actions';
 
 const GenerateLinguisticItemModal = dynamic<GenerateLinguisticItemModalProps>(
   () =>
@@ -77,33 +75,12 @@ export const GenerateLinguisticItemForm = ({
     setError(null);
 
     try {
-      // First check cache
-      const wordToSearchInCache = wordToTranslate.trim().toLowerCase();
-      const cacheResult = await getWordFromCache(wordToSearchInCache);
-
-      if (cacheResult.success && cacheResult.data) {
-        // Cache hit - convert cached data to TranslationResult format
-        const cachedTranslation: LinguisticWordItem = {
-          normalizedWord: cacheResult.data.normalizedText,
-          partOfSpeech: [cacheResult.data.partOfSpeech as PartOfSpeech],
-          ...cacheResult.data.commonData,
-          ...cacheResult.data.specificData,
-        };
-        setLinguisticItem(cachedTranslation);
-        // Clear form only on successful cache hit
-        reset();
-        return;
-      }
-
-      // Cache miss - proceed with LLM request
       const result = await generateLinguisticItem(wordToTranslate.trim());
       if (result.success && result.data) {
         setLinguisticItem(result.data);
-        // Clear form only on successful translation
         reset();
       } else {
         setError(result.error || 'Failed to translate word');
-        // Don't clear form on error so user can retry
       }
     } catch (err) {
       setError('An unexpected error occurred');

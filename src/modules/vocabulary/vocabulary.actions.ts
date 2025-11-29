@@ -20,7 +20,6 @@ import type {
   MinimalVocabularyWord,
   VisibilityFilter,
   VocabularyItem,
-  VocabularyItemAnonymized,
   VocabularySortOption,
   VocabularyTypeFilter,
 } from './vocabulary.types';
@@ -114,27 +113,6 @@ export const saveCollocationForLearning = withUserSettings<
     };
   }
 });
-
-export const getWordFromCache = withUserSettings<
-  string,
-  VocabularyItemAnonymized | null
->(
-  async (
-    context,
-    normalizedWord: string,
-  ): Promise<ActionResult<VocabularyItemAnonymized | null>> => {
-    try {
-      const data = await vocabularyRepository.getCachedWord(
-        normalizedWord,
-        context.userSettings.nativeLanguage as LanguageCode,
-      );
-      return { success: true, data };
-    } catch (error) {
-      Sentry.captureException(error);
-      return { success: false, error: 'Failed to get cached word' };
-    }
-  },
-);
 
 type FetchMinimalVocabularyParams = {
   limit?: number;
