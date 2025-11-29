@@ -10,6 +10,11 @@ CLASSIFICATION RULES:
 - A COMPOUND WORD is a single word that may be written with spaces but should be written as one word in German
   Examples: "staat angehörigkeit" → compound word (should be "Staatsangehörigkeit")
             "haus tür" → compound word (should be "Haustür")
+
+- A REFLEXIVE VERB with "sich" is treated as a single word (the verb itself)
+  Examples: "sich beschweren" → compound word (normalized: "beschweren")
+            "sich freuen" → compound word (normalized: "freuen")
+            "sich erinnern" → compound word (normalized: "erinnern")
             
 - A COLLOCATION is a genuine multi-word phrase or expression
   Examples: "ins Kino gehen" → collocation (go to the cinema)
@@ -17,10 +22,12 @@ CLASSIFICATION RULES:
             "auf jeden Fall" → collocation (in any case)
 
 IMPORTANT:
+- If the input is a reflexive verb with "sich", classify it as "compound-word" and normalize to just the verb
 - If the input could be written as a single German compound word, classify it as "compound-word"
 - If the input is a genuine multi-word phrase that cannot be written as one word, classify it as "collocation"
 - If you're uncertain, default to "collocation"
 - For compound words, provide the correct normalized form (written as one word)
+- For reflexive verbs, provide just the verb without "sich"
 - For collocations, provide the normalized form with proper spacing and capitalization
 `,
 );

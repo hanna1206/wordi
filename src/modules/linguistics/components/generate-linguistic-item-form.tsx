@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LuArrowRight } from 'react-icons/lu';
 
@@ -11,8 +11,13 @@ import { toaster } from '@/components/toaster';
 import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import { CollectionSelectionDialog } from '@/modules/collection/components/collection-selection-dialog';
 import type { GenerateLinguisticItemModalProps } from '@/modules/linguistics/components/generate-linguistic-item-modal';
-import { generateLinguisticItem } from '@/modules/linguistics/linguistics.actions';
+import { TranslationSelectionDialog } from '@/modules/linguistics/components/translation-selection-dialog';
+import {
+  detectLanguageAndTranslate,
+  generateLinguisticItem,
+} from '@/modules/linguistics/linguistics.actions';
 import type {
+  LanguageDetectionResult,
   LinguisticCollocationItem,
   LinguisticWordItem,
 } from '@/modules/linguistics/linguistics.types';
@@ -58,6 +63,17 @@ export const GenerateLinguisticItemForm = ({
   const [pendingSaveToast, setPendingSaveToast] =
     useState<PendingSaveToast | null>(null);
 
+  // Translation dialog state
+  const [translationDialogOpen, setTranslationDialogOpen] = useState(false);
+  const [detectionResult, setDetectionResult] =
+    useState<LanguageDetectionResult | null>(null);
+  const [detectionLoading, setDetectionLoading] = useState(false);
+  const [detectionError, setDetectionError] = useState<string | null>(null);
+  const [originalInput, setOriginalInput] = useState('');
+
+  // Request cancellation
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   const {
     register,
     handleSubmit: handleFormSubmit,
@@ -66,16 +82,66 @@ export const GenerateLinguisticItemForm = ({
 
   const handleSubmit = async (wordToTranslate: string) => {
     if (!wordToTranslate.trim()) return;
-    if (isLoading) return;
+    if (isLoading || detectionLoading) return;
 
-    setWord(wordToTranslate);
+    // Cancel any pending requests
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+
+    const trimmedInput = wordToTranslate.trim();
+    setOriginalInput(trimmedInput);
+    setDetectionLoading(true);
+    setDetectionError(null);
+
+    try {
+      // First, detect language and get translations
+      const detectionResult = await detectLanguageAndTranslate(trimmedInput);
+
+      // Check if request was cancelled
+      if (abortControllerRef.current?.signal.aborted) {
+        return;
+      }
+
+      if (detectionResult.success && detectionResult.data) {
+        setDetectionResult(detectionResult.data);
+
+        // If German detected, proceed directly to linguistic generation
+        if (detectionResult.data.isTargetLanguage) {
+          setDetectionLoading(false);
+          await proceedWithLinguisticGeneration(trimmedInput);
+        } else {
+          // Non-German detected, show translation dialog
+          setDetectionLoading(false);
+          setTranslationDialogOpen(true);
+        }
+      } else {
+        setDetectionError(detectionResult.error || 'Failed to detect language');
+        setDetectionLoading(false);
+        setTranslationDialogOpen(true);
+      }
+    } catch (err) {
+      if (abortControllerRef.current?.signal.aborted) {
+        return;
+      }
+      setDetectionError('An unexpected error occurred');
+      // eslint-disable-next-line no-console
+      console.error('Language detection error:', err);
+      setDetectionLoading(false);
+      setTranslationDialogOpen(true);
+    }
+  };
+
+  const proceedWithLinguisticGeneration = async (germanWord: string) => {
+    setWord(germanWord);
     setIsOpen(true);
     setIsLoading(true);
     setLinguisticItem(null);
     setError(null);
 
     try {
-      const result = await generateLinguisticItem(wordToTranslate.trim());
+      const result = await generateLinguisticItem(germanWord);
       if (result.success && result.data) {
         setLinguisticItem(result.data);
         reset();
@@ -89,6 +155,26 @@ export const GenerateLinguisticItemForm = ({
       // Don't clear form on error so user can retry
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleTranslationSelection = async (selectedTranslation: string) => {
+    setTranslationDialogOpen(false);
+    await proceedWithLinguisticGeneration(selectedTranslation);
+  };
+
+  const handleTranslationDialogClose = () => {
+    setTranslationDialogOpen(false);
+    setDetectionResult(null);
+    setDetectionError(null);
+    setDetectionLoading(false);
+    setOriginalInput('');
+  };
+
+  const handleTranslationRetry = async () => {
+    if (originalInput) {
+      setTranslationDialogOpen(false);
+      await handleSubmit(originalInput);
     }
   };
 
@@ -140,7 +226,7 @@ export const GenerateLinguisticItemForm = ({
             color="gray.800"
             letterSpacing="-0.02em"
           >
-            What German word would you like to learn today?
+            What word would you like to learn today?
           </Heading>
         </VStack>
 
@@ -171,7 +257,7 @@ export const GenerateLinguisticItemForm = ({
             >
               <Input
                 {...register('word', { required: true })}
-                placeholder="Enter any German word..."
+                placeholder="Enter any word..."
                 size={{ base: 'md', md: 'lg' }}
                 fontSize={{ base: 'md', md: 'lg' }}
                 border="none"
@@ -197,8 +283,8 @@ export const GenerateLinguisticItemForm = ({
                 _active={{ transform: 'scale(0.95)' }}
                 w={12}
                 h={12}
-                disabled={isLoading}
-                loading={isLoading}
+                disabled={isLoading || detectionLoading}
+                loading={isLoading || detectionLoading}
               >
                 <LuArrowRight />
               </IconButton>
@@ -226,6 +312,18 @@ export const GenerateLinguisticItemForm = ({
         vocabularyItemId={savedVocabularyItemId}
         onClose={handleCollectionDialogClose}
         collections={collections}
+      />
+
+      <TranslationSelectionDialog
+        isOpen={translationDialogOpen}
+        originalInput={originalInput}
+        detectedLanguage={detectionResult?.detectedLanguage || 'Unknown'}
+        translations={detectionResult?.translations || []}
+        isLoading={detectionLoading}
+        error={detectionError}
+        onSelectTranslation={handleTranslationSelection}
+        onClose={handleTranslationDialogClose}
+        onRetry={handleTranslationRetry}
       />
     </>
   );

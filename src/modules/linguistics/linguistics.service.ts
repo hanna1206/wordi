@@ -4,6 +4,7 @@ import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
 import { PartOfSpeech } from './linguistics.const';
 import {
   InputClassification,
+  LanguageDetectionResult,
   LinguisticCollocationItem,
 } from './linguistics.types';
 import {
@@ -22,6 +23,10 @@ import {
   componentWordsPrompt,
   outputStructure as componentWordsOutputStructure,
 } from './prompts/collocations/component-words.prompt';
+import {
+  detectLanguageAndTranslatePrompt,
+  outputStructure as detectLanguageAndTranslateOutputStructure,
+} from './prompts/detect-language-and-translate.prompt';
 import {
   adjectiveComparisonFormsPrompt,
   outputStructure as adjectiveComparisonFormsOutputStructure,
@@ -243,6 +248,42 @@ const componentWordsLlm = gpt41Model.withStructuredOutput(
   componentWordsOutputStructure,
 );
 const componentWordsChain = componentWordsPrompt.pipe(componentWordsLlm);
+
+const detectLanguageAndTranslateLlm = gpt41MiniModel.withStructuredOutput(
+  detectLanguageAndTranslateOutputStructure,
+);
+const detectLanguageAndTranslateChain = detectLanguageAndTranslatePrompt.pipe(
+  detectLanguageAndTranslateLlm,
+);
+
+export const detectLanguageAndTranslate = async (
+  input: string,
+  targetLanguage: string,
+): Promise<LanguageDetectionResult> => {
+  const result = await detectLanguageAndTranslateChain.invoke({
+    input,
+    targetLanguage,
+  });
+
+  // Deduplicate translations by text (case-insensitive)
+  const uniqueTranslations = result.translations.reduce(
+    (acc, translation) => {
+      const normalizedText = translation.text.toLowerCase();
+      if (!acc.some((t) => t.text.toLowerCase() === normalizedText)) {
+        acc.push(translation);
+      }
+      return acc;
+    },
+    [] as typeof result.translations,
+  );
+
+  return {
+    detectedLanguage: result.detectedLanguage,
+    isTargetLanguage: result.isGerman,
+    translations: uniqueTranslations,
+    confidence: result.confidence,
+  };
+};
 
 export const generateLinguisticCollocationItem = async (
   collocation: string,

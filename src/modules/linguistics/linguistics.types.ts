@@ -122,3 +122,15 @@ export interface LinguisticCollocationItem {
 export type InputClassification =
   | { type: 'single-word'; normalizedInput: string }
   | { type: 'collocation'; normalizedInput: string };
+
+export type TranslationOption = {
+  text: string;
+  context?: string | null;
+};
+
+export type LanguageDetectionResult = {
+  detectedLanguage: string;
+  isTargetLanguage: boolean;
+  translations: TranslationOption[];
+  confidence: 'high' | 'medium' | 'low';
+};
