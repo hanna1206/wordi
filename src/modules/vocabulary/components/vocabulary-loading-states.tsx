@@ -46,4 +46,4 @@ export const VocabularyScrollSentinel = ({
   sentinelRef,
 }: {
   sentinelRef: React.RefObject<HTMLDivElement | null>;
-}) => <Box ref={sentinelRef} w="full" h="1px" />;
+}) => <Box ref={sentinelRef} w="full" h="20px" aria-hidden="true" />;

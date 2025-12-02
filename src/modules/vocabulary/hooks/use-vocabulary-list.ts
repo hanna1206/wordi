@@ -10,8 +10,8 @@ import type {
   VocabularyTypeFilter,
 } from '@/modules/vocabulary/vocabulary.types';
 
-const DEFAULT_PAGE_SIZE = 20;
-const DEBOUNCE_DELAY = 500;
+const DEFAULT_PAGE_SIZE = 30;
+const DEBOUNCE_DELAY = 300;
 
 export const useVocabularyList = (
   sortOption: VocabularySortOption,
@@ -91,13 +91,6 @@ export const useVocabularyList = (
           const canLoadMore = itemsCountRef.current < result.data.total;
           setHasMore(canLoadMore);
           hasMoreRef.current = canLoadMore;
-          if (!reset && fetchedItems.length === 0) {
-            toaster.create({
-              type: 'info',
-              title: 'Info',
-              description: 'Новых слов не найдено',
-            });
-          }
         } else {
           throw new Error(result.error || 'Failed to load words');
         }

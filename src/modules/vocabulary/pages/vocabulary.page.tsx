@@ -75,6 +75,8 @@ export const VocabularyPage = () => {
 
   const { sentinelRef } = useInfiniteScroll({
     isInitialLoading,
+    isFetchingMore,
+    hasMore,
     onLoadMore: () => void loadWords(),
   });
 

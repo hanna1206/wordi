@@ -2,37 +2,50 @@ import { useEffect, useRef } from 'react';
 
 interface UseInfiniteScrollProps {
   isInitialLoading: boolean;
+  isFetchingMore: boolean;
+  hasMore: boolean;
   onLoadMore: () => void;
 }
 
 export const useInfiniteScroll = ({
   isInitialLoading,
+  isFetchingMore,
+  hasMore,
   onLoadMore,
 }: UseInfiniteScrollProps) => {
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef(false);
 
   useEffect(() => {
-    if (isInitialLoading) {
+    if (isInitialLoading || !hasMore) {
       return;
     }
 
     const sentinel = sentinelRef.current;
-    const scrollContainer = sentinel?.closest<HTMLElement>(
-      '[data-scroll-container="true"]',
-    );
-
-    if (!sentinel || !scrollContainer) {
+    if (!sentinel) {
       return;
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (entry.isIntersecting) {
+
+        // Trigger load when sentinel is visible and not already loading
+        if (entry.isIntersecting && !isFetchingMore && !loadingRef.current) {
+          loadingRef.current = true;
           onLoadMore();
+
+          // Reset after a delay to allow the next batch
+          setTimeout(() => {
+            loadingRef.current = false;
+          }, 500);
         }
       },
-      { root: scrollContainer, rootMargin: '200px' },
+      {
+        root: null, // Use viewport as root
+        rootMargin: '400px', // Trigger earlier (400px before reaching sentinel)
+        threshold: 0,
+      },
     );
 
     observer.observe(sentinel);
@@ -40,7 +53,7 @@ export const useInfiniteScroll = ({
     return () => {
       observer.disconnect();
     };
-  }, [isInitialLoading, onLoadMore]);
+  }, [isInitialLoading, isFetchingMore, hasMore, onLoadMore]);
 
   return { sentinelRef };
 };
