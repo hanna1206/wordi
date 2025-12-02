@@ -122,7 +122,7 @@ type FetchMinimalVocabularyParams = {
   visibilityFilter?: VisibilityFilter;
   partsOfSpeech?: PartOfSpeech[];
   typeFilter?: VocabularyTypeFilter;
-  collectionId?: string;
+  collectionIds?: string[];
 };
 
 export const fetchUserMinimalVocabulary = withAuth<
@@ -139,7 +139,7 @@ export const fetchUserMinimalVocabulary = withAuth<
       visibilityFilter = 'visible-only',
       partsOfSpeech = [],
       typeFilter = 'all',
-      collectionId,
+      collectionIds,
     },
   ): Promise<
     ActionResult<{ items: MinimalVocabularyWord[]; total: number }>
@@ -154,7 +154,7 @@ export const fetchUserMinimalVocabulary = withAuth<
         visibilityFilter,
         partsOfSpeech,
         typeFilter,
-        collectionId,
+        collectionIds,
       );
       return { success: true, data };
     } catch (error) {

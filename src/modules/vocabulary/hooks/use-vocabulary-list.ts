@@ -19,7 +19,7 @@ export const useVocabularyList = (
   visibilityFilter: VisibilityFilter = 'visible-only',
   selectedPartsOfSpeech: PartOfSpeech[] = [],
   typeFilter: VocabularyTypeFilter = 'all',
-  collectionId: string | null = null,
+  collectionIds: string[] = [],
 ) => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -77,7 +77,7 @@ export const useVocabularyList = (
           visibilityFilter,
           partsOfSpeech: selectedPartsOfSpeech,
           typeFilter,
-          collectionId: collectionId ?? undefined,
+          collectionIds: collectionIds.length > 0 ? collectionIds : undefined,
         });
 
         if (result.success && result.data) {
@@ -127,7 +127,7 @@ export const useVocabularyList = (
       visibilityFilter,
       selectedPartsOfSpeech,
       typeFilter,
-      collectionId,
+      collectionIds,
     ],
   );
 

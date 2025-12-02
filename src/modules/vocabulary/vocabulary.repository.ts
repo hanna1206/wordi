@@ -30,7 +30,7 @@ const getUserMinimalVocabulary = async (
   visibilityFilter: VisibilityFilter = 'visible-only',
   partsOfSpeech: PartOfSpeech[] = [],
   typeFilter: VocabularyTypeFilter = 'all',
-  collectionId?: string,
+  collectionIds?: string[],
 ): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {
   const orderBy =
     sort === 'Alphabetical'
@@ -66,55 +66,62 @@ const getUserMinimalVocabulary = async (
     );
   }
 
-  // Add collection filter if collectionId is provided
-  if (collectionId) {
-    whereConditions.push(
-      eq(collectionVocabularyItemsTable.collectionId, collectionId),
-    );
+  // Build the base query with optional collection filtering
+  // When multiple collections are selected, we use union (OR) logic:
+  // items that belong to ANY of the selected collections (without duplicates)
+  let baseQuery;
+  let countQuery;
+
+  if (collectionIds && collectionIds.length > 0) {
+    // Use DISTINCT with a subquery to get unique vocabulary items from any selected collection
+    // This implements union logic (item in ANY collection, no duplicates)
+    const collectionFilterSubquery = db
+      .selectDistinct({
+        vocabularyItemId: collectionVocabularyItemsTable.vocabularyItemId,
+      })
+      .from(collectionVocabularyItemsTable)
+      .where(
+        inArray(collectionVocabularyItemsTable.collectionId, collectionIds),
+      )
+      .as('filtered_items');
+
+    baseQuery = db
+      .select({
+        id: vocabularyItemsTable.id,
+        type: vocabularyItemsTable.type,
+        normalizedText: vocabularyItemsTable.normalizedText,
+        partOfSpeech: vocabularyItemsTable.partOfSpeech,
+        commonData: vocabularyItemsTable.commonData,
+        isHidden: vocabularyItemsTable.isHidden,
+      })
+      .from(vocabularyItemsTable)
+      .innerJoin(
+        collectionFilterSubquery,
+        eq(vocabularyItemsTable.id, collectionFilterSubquery.vocabularyItemId),
+      );
+
+    countQuery = db
+      .select({ total: count() })
+      .from(vocabularyItemsTable)
+      .innerJoin(
+        collectionFilterSubquery,
+        eq(vocabularyItemsTable.id, collectionFilterSubquery.vocabularyItemId),
+      );
+  } else {
+    // No collection filter - query all vocabulary items
+    baseQuery = db
+      .select({
+        id: vocabularyItemsTable.id,
+        type: vocabularyItemsTable.type,
+        normalizedText: vocabularyItemsTable.normalizedText,
+        partOfSpeech: vocabularyItemsTable.partOfSpeech,
+        commonData: vocabularyItemsTable.commonData,
+        isHidden: vocabularyItemsTable.isHidden,
+      })
+      .from(vocabularyItemsTable);
+
+    countQuery = db.select({ total: count() }).from(vocabularyItemsTable);
   }
-
-  // Build the base query with optional join
-  const baseQuery = collectionId
-    ? db
-        .select({
-          id: vocabularyItemsTable.id,
-          type: vocabularyItemsTable.type,
-          normalizedText: vocabularyItemsTable.normalizedText,
-          partOfSpeech: vocabularyItemsTable.partOfSpeech,
-          commonData: vocabularyItemsTable.commonData,
-          isHidden: vocabularyItemsTable.isHidden,
-        })
-        .from(vocabularyItemsTable)
-        .innerJoin(
-          collectionVocabularyItemsTable,
-          eq(
-            vocabularyItemsTable.id,
-            collectionVocabularyItemsTable.vocabularyItemId,
-          ),
-        )
-    : db
-        .select({
-          id: vocabularyItemsTable.id,
-          type: vocabularyItemsTable.type,
-          normalizedText: vocabularyItemsTable.normalizedText,
-          partOfSpeech: vocabularyItemsTable.partOfSpeech,
-          commonData: vocabularyItemsTable.commonData,
-          isHidden: vocabularyItemsTable.isHidden,
-        })
-        .from(vocabularyItemsTable);
-
-  const countQuery = collectionId
-    ? db
-        .select({ total: count() })
-        .from(vocabularyItemsTable)
-        .innerJoin(
-          collectionVocabularyItemsTable,
-          eq(
-            vocabularyItemsTable.id,
-            collectionVocabularyItemsTable.vocabularyItemId,
-          ),
-        )
-    : db.select({ total: count() }).from(vocabularyItemsTable);
 
   const [items, [{ total }]] = await Promise.all([
     baseQuery

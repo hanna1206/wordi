@@ -43,7 +43,6 @@ export const VocabularyPage = () => {
     PartOfSpeech[]
   >([]);
   const [typeFilter, setTypeFilter] = useState<VocabularyTypeFilter>('all');
-  const [collectionId, setCollectionId] = useState<string | null>(null);
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(
     [],
   );
@@ -63,7 +62,7 @@ export const VocabularyPage = () => {
       visibilityFilter,
       selectedPartsOfSpeech,
       typeFilter,
-      collectionId,
+      selectedCollectionIds,
     );
 
   const {
@@ -108,15 +107,6 @@ export const VocabularyPage = () => {
   const handleCollectionIdsChange = useCallback(
     (newCollectionIds: string[]) => {
       setSelectedCollectionIds(newCollectionIds);
-
-      // Determine which single collection ID to use for the backend query
-      if (newCollectionIds.length === 0) {
-        // No collections selected - show all vocabulary items
-        setCollectionId(null);
-      } else {
-        // Use the first selected collection ID for filtering
-        setCollectionId(newCollectionIds[0]);
-      }
     },
     [],
   );
