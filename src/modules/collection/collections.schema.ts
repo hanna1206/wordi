@@ -59,6 +59,11 @@ export const collectionVocabularyItemsTable = pgTable(
     index('idx_collection_vocab_collection_id').on(table.collectionId),
     // Index for vocabularyItemId for efficient item-based queries
     index('idx_collection_vocab_vocabulary_id').on(table.vocabularyItemId),
+    // Composite index for collection + vocabulary item lookup (optimizes DISTINCT queries)
+    index('idx_collection_vocab_collection_item').on(
+      table.collectionId,
+      table.vocabularyItemId,
+    ),
     // Unique constraint on (collectionId, vocabularyItemId) to prevent duplicates
     uniqueIndex('idx_collection_vocab_unique').on(
       table.collectionId,

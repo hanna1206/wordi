@@ -68,6 +68,9 @@ export const vocabularyItemsTable = pgTable(
     index('idx_vocabulary_items_part_of_speech').on(table.partOfSpeech),
     index('idx_vocabulary_items_target_language').on(table.targetLanguage),
     index('idx_vocabulary_items_user_id').on(table.userId),
+
+    // === COMPOSITE INDEXES FOR COMMON QUERY PATTERNS ===
+
     // Composite index for user text lookup
     index('idx_vocabulary_items_user_text_lookup').on(
       table.userId,
@@ -79,6 +82,65 @@ export const vocabularyItemsTable = pgTable(
     index('idx_vocabulary_items_is_hidden').on(table.isHidden),
     // Composite index for user + hidden filtering
     index('idx_vocabulary_items_user_hidden').on(table.userId, table.isHidden),
+
+    // NEW: Optimized composite indexes for common filtering + sorting patterns
+
+    // Latest sort (default): user_id + created_at DESC
+    index('idx_vocabulary_items_user_created_desc').on(
+      table.userId,
+      table.createdAt.desc(),
+    ),
+
+    // Alphabetical sort: user_id + sortable_text ASC
+    index('idx_vocabulary_items_user_sortable_asc').on(
+      table.userId,
+      table.sortableText.asc(),
+    ),
+
+    // Visible items with latest sort (most common query)
+    index('idx_vocabulary_items_user_visible_created').on(
+      table.userId,
+      table.isHidden,
+      table.createdAt.desc(),
+    ),
+
+    // Visible items with alphabetical sort
+    index('idx_vocabulary_items_user_visible_sortable').on(
+      table.userId,
+      table.isHidden,
+      table.sortableText.asc(),
+    ),
+
+    // User + type + hidden (filtered views with type)
+    index('idx_vocabulary_items_user_type_hidden').on(
+      table.userId,
+      table.type,
+      table.isHidden,
+    ),
+
+    // User + type + hidden + created (filtered + sorted by latest)
+    index('idx_vocabulary_items_user_type_hidden_created').on(
+      table.userId,
+      table.type,
+      table.isHidden,
+      table.createdAt.desc(),
+    ),
+
+    // User + part of speech + hidden (part of speech filter)
+    index('idx_vocabulary_items_user_pos_hidden').on(
+      table.userId,
+      table.partOfSpeech,
+      table.isHidden,
+    ),
+
+    // User + hidden + type + created (covers multiple filter combinations)
+    index('idx_vocabulary_items_user_hidden_type_created').on(
+      table.userId,
+      table.isHidden,
+      table.type,
+      table.createdAt.desc(),
+    ),
+
     // Unique constraint
     uniqueIndex('idx_vocabulary_items_user_normalized_target_unique').on(
       table.userId,
