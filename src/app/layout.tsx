@@ -7,15 +7,17 @@ import { Toaster } from '@/components/toaster';
 
 const openSans = Open_Sans({
   subsets: ['latin', 'cyrillic'],
-  display: 'swap',
+  display: 'optional',
   variable: '--font-open-sans',
+  preload: true,
 });
 
 const sofiaSansCondensed = Sofia_Sans_Condensed({
   subsets: ['latin', 'cyrillic'],
   weight: ['400', '700'],
-  display: 'swap',
+  display: 'optional',
   variable: '--font-sofia-sans-condensed',
+  preload: true,
 });
 
 export const metadata: Metadata = {
