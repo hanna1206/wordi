@@ -49,6 +49,17 @@ export const completeProfile = withAuth<
       nativeLanguage,
     });
 
+    // Set cookie to indicate onboarding is complete
+    // This will be read by middleware to avoid DB queries
+    const { cookies } = await import('next/headers');
+    (await cookies()).set('onboarding_complete', 'true', {
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
+
     // Revalidate cache so next request gets fresh data
     revalidateTag(USER_SETTINGS_CACHE_KEY);
 

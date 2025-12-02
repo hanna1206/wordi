@@ -9,11 +9,14 @@ export const OnboardingRedirect = async ({
 }: {
   children: React.ReactNode;
 }) => {
+  // Single auth check - cached within this request via React.cache()
   const authResult = await getAuthenticatedUser();
 
   // If user is authenticated, check profile completion
   if (authResult.success && authResult.user) {
     try {
+      // This is already cached via unstable_cache, and getAuthenticatedUser is cached via React.cache
+      // So no redundant calls happen here
       const userSettings = await getCachedUserSettings(authResult.user.id);
 
       if (!userSettings || !isProfileComplete(userSettings)) {

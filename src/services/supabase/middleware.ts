@@ -5,6 +5,7 @@ import { createServerClient } from '@supabase/ssr';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { environment } from '@/config/environment.config';
+import { checkOnboardingComplete } from '@/modules/user-settings/user-settings.middleware';
 
 export const updateSession = async (request: NextRequest) => {
   const { supabaseApiUrl, supabaseAnonKey } = environment;
@@ -52,6 +53,34 @@ export const updateSession = async (request: NextRequest) => {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
+  }
+
+  // Check if authenticated user needs onboarding
+  if (user && !request.nextUrl.pathname.startsWith('/onboarding')) {
+    // Check cookie flag first - avoids DB query if user already onboarded
+    const onboardingComplete =
+      request.cookies.get('onboarding_complete')?.value === 'true';
+
+    if (!onboardingComplete) {
+      // Only query DB if cookie not set (first time or after logout)
+      const isComplete = await checkOnboardingComplete(supabase, user.id);
+
+      if (isComplete) {
+        // Set cookie to avoid future DB queries
+        supabaseResponse.cookies.set('onboarding_complete', 'true', {
+          maxAge: 60 * 60 * 24 * 365, // 1 year
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          path: '/',
+        });
+      } else {
+        // Redirect to onboarding
+        const url = request.nextUrl.clone();
+        url.pathname = '/onboarding';
+        return NextResponse.redirect(url);
+      }
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.

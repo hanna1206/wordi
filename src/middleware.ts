@@ -15,7 +15,8 @@ export const config = {
      * - favicon.ico (favicon file)
      * - api/ (API routes)
      * - Static assets (images, fonts, etc.)
+     * - manifest, icons, etc.
      */
-    '/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff|woff2|ttf|eot)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/|manifest|icon|apple-icon|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff|woff2|ttf|eot|ico|json|xml)$).*)',
   ],
 };

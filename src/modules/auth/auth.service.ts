@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 import type { User } from '@supabase/supabase-js';
 
 import { environment } from '@/config/environment.config';
@@ -9,7 +11,9 @@ interface AuthResult {
   error?: string;
 }
 
-export const getAuthenticatedUser = async (): Promise<AuthResult> => {
+// Cached for the duration of a single request to avoid duplicate getUser calls
+// This prevents duplicate supabase.auth.getUser() calls in the same request
+export const getAuthenticatedUser = cache(async (): Promise<AuthResult> => {
   try {
     const supabase = await createClient();
 
@@ -37,7 +41,7 @@ export const getAuthenticatedUser = async (): Promise<AuthResult> => {
       error: 'Authentication failed',
     };
   }
-};
+});
 
 export const logoutService = async (): Promise<void> => {
   const supabase = await createClient();
@@ -47,6 +51,10 @@ export const logoutService = async (): Promise<void> => {
   if (error) {
     throw new Error(error.message || 'Failed to logout');
   }
+
+  // Clear onboarding cookie on logout
+  const { cookies } = await import('next/headers');
+  (await cookies()).delete('onboarding_complete');
 };
 
 export const requestPasswordResetService = async (
