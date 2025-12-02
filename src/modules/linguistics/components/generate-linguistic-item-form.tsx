@@ -4,7 +4,14 @@ import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LuArrowRight } from 'react-icons/lu';
 
-import { Heading, HStack, IconButton, Input, VStack } from '@chakra-ui/react';
+import {
+  Heading,
+  HStack,
+  IconButton,
+  Input,
+  Switch,
+  VStack,
+} from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 
 import { toaster } from '@/components/toaster';
@@ -70,6 +77,7 @@ export const GenerateLinguisticItemForm = ({
   const [detectionLoading, setDetectionLoading] = useState(false);
   const [detectionError, setDetectionError] = useState<string | null>(null);
   const [originalInput, setOriginalInput] = useState('');
+  const [detectLanguage, setDetectLanguage] = useState(false);
 
   // Request cancellation
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -84,13 +92,20 @@ export const GenerateLinguisticItemForm = ({
     if (!wordToTranslate.trim()) return;
     if (isLoading || detectionLoading) return;
 
+    const trimmedInput = wordToTranslate.trim();
+
+    // If language detection is disabled, proceed directly to linguistic generation
+    if (!detectLanguage) {
+      await proceedWithLinguisticGeneration(trimmedInput);
+      return;
+    }
+
     // Cancel any pending requests
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
     abortControllerRef.current = new AbortController();
 
-    const trimmedInput = wordToTranslate.trim();
     setOriginalInput(trimmedInput);
     setDetectionLoading(true);
     setDetectionError(null);
@@ -288,6 +303,26 @@ export const GenerateLinguisticItemForm = ({
               >
                 <LuArrowRight />
               </IconButton>
+            </HStack>
+            {/* Language detection toggle */}
+            <HStack
+              w="full"
+              maxW={{ base: '100%', md: '2xl' }}
+              mx="auto"
+              justify="flex-start"
+              px={{ base: 1, md: 0 }}
+            >
+              <Switch.Root
+                size="sm"
+                checked={detectLanguage}
+                onCheckedChange={(e) => setDetectLanguage(e.checked)}
+              >
+                <Switch.HiddenInput />
+                <Switch.Control>
+                  <Switch.Thumb />
+                </Switch.Control>
+                <Switch.Label fontSize="xs">Enable translation</Switch.Label>
+              </Switch.Root>
             </HStack>
           </VStack>
         </form>
