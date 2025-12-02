@@ -298,10 +298,19 @@ export const VocabularyFilterDialog = ({
             </DialogBody>
 
             <DialogFooter pt={3} gap={2}>
-              <Button variant="outline" onClick={handleCancel} size="md">
+              <Button
+                variant="outline"
+                onClick={handleCancel}
+                size={{ base: 'lg', md: 'md' }}
+                width={{ base: 'full', md: 'auto' }}
+              >
                 Cancel
               </Button>
-              <Button onClick={handleApply} size="md">
+              <Button
+                onClick={handleApply}
+                size={{ base: 'lg', md: 'md' }}
+                width={{ base: 'full', md: 'auto' }}
+              >
                 Apply
               </Button>
             </DialogFooter>

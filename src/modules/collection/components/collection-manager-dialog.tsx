@@ -266,12 +266,12 @@ export const CollectionManagerDialog = ({
                         }}
                         autoFocus
                         disabled={actionInProgress}
-                        size="sm"
+                        size={{ base: 'md', md: 'sm' }}
                       />
                       <Button
                         onClick={handleCreate}
                         disabled={actionInProgress}
-                        size="sm"
+                        size={{ base: 'md', md: 'sm' }}
                       >
                         Save
                       </Button>
@@ -282,7 +282,7 @@ export const CollectionManagerDialog = ({
                         }}
                         disabled={actionInProgress}
                         variant="outline"
-                        size="sm"
+                        size={{ base: 'md', md: 'sm' }}
                       >
                         Cancel
                       </Button>
@@ -291,7 +291,7 @@ export const CollectionManagerDialog = ({
                     <Button
                       onClick={() => setIsCreating(true)}
                       variant="outline"
-                      size="sm"
+                      size={{ base: 'md', md: 'sm' }}
                       disabled={actionInProgress}
                     >
                       <LuPlus />
@@ -341,13 +341,13 @@ export const CollectionManagerDialog = ({
                                 }}
                                 autoFocus
                                 disabled={actionInProgress}
-                                size="sm"
+                                size={{ base: 'md', md: 'sm' }}
                                 flex={1}
                               />
                               <Button
                                 onClick={() => handleSaveEdit(collection.id)}
                                 disabled={actionInProgress}
-                                size="sm"
+                                size={{ base: 'md', md: 'sm' }}
                               >
                                 Save
                               </Button>
@@ -355,7 +355,7 @@ export const CollectionManagerDialog = ({
                                 onClick={handleCancelEdit}
                                 disabled={actionInProgress}
                                 variant="outline"
-                                size="sm"
+                                size={{ base: 'md', md: 'sm' }}
                               >
                                 Cancel
                               </Button>
@@ -374,7 +374,7 @@ export const CollectionManagerDialog = ({
                               <Button
                                 onClick={() => handleDelete(collection.id)}
                                 disabled={actionInProgress}
-                                size="sm"
+                                size={{ base: 'md', md: 'sm' }}
                                 colorScheme="red"
                               >
                                 Delete
@@ -383,7 +383,7 @@ export const CollectionManagerDialog = ({
                                 onClick={() => setDeletingId(null)}
                                 disabled={actionInProgress}
                                 variant="outline"
-                                size="sm"
+                                size={{ base: 'md', md: 'sm' }}
                               >
                                 Cancel
                               </Button>
@@ -405,7 +405,7 @@ export const CollectionManagerDialog = ({
                                 onClick={() => handleStartEdit(collection)}
                                 disabled={actionInProgress}
                                 variant="ghost"
-                                size="sm"
+                                size={{ base: 'md', md: 'sm' }}
                               >
                                 <LuPencil />
                               </Button>
@@ -413,7 +413,7 @@ export const CollectionManagerDialog = ({
                                 onClick={() => setDeletingId(collection.id)}
                                 disabled={actionInProgress}
                                 variant="ghost"
-                                size="sm"
+                                size={{ base: 'md', md: 'sm' }}
                                 colorScheme="red"
                               >
                                 <LuTrash2 />
@@ -429,7 +429,11 @@ export const CollectionManagerDialog = ({
             </DialogBody>
 
             <DialogFooter pt={3}>
-              <Button onClick={handleClose} size="md">
+              <Button
+                onClick={handleClose}
+                size={{ base: 'lg', md: 'md' }}
+                width={{ base: 'full', md: 'auto' }}
+              >
                 Close
               </Button>
             </DialogFooter>
