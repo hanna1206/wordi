@@ -1,10 +1,12 @@
 'use server';
 
 import * as Sentry from '@sentry/nextjs';
+import { revalidateTag, unstable_cache } from 'next/cache';
 
 import { withAuth } from '@/modules/auth/utils/with-auth';
 import type { ActionResult } from '@/shared-types';
 
+import { COLLECTIONS_CACHE_KEY } from './collections.const';
 import * as collectionsRepository from './collections.repository';
 import type { Collection, CollectionWithCount } from './collections.types';
 import {
@@ -15,6 +17,17 @@ import {
   removeItemFromCollectionSchema,
   updateCollectionSchema,
 } from './collections.validation';
+
+const getCachedCollections = unstable_cache(
+  async (userId: string) => {
+    return await collectionsRepository.getUserCollections(userId);
+  },
+  [COLLECTIONS_CACHE_KEY],
+  {
+    revalidate: 300, // 5 minutes
+    tags: [COLLECTIONS_CACHE_KEY],
+  },
+);
 
 export const createCollection = withAuth<{ name: string }, Collection>(
   async (context, { name }): Promise<ActionResult<Collection>> => {
@@ -42,6 +55,8 @@ export const createCollection = withAuth<{ name: string }, Collection>(
         context.user.id,
         name,
       );
+
+      revalidateTag(COLLECTIONS_CACHE_KEY);
 
       return { success: true, data: collection };
     } catch (error) {
@@ -105,6 +120,8 @@ export const updateCollection = withAuth<
         name,
       );
 
+      revalidateTag(COLLECTIONS_CACHE_KEY);
+
       return { success: true, data: collection };
     } catch (error) {
       Sentry.captureException(error);
@@ -146,6 +163,8 @@ export const deleteCollection = withAuth<{ collectionId: string }, void>(
         context.user.id,
       );
 
+      revalidateTag(COLLECTIONS_CACHE_KEY);
+
       return { success: true };
     } catch (error) {
       Sentry.captureException(error);
@@ -163,9 +182,7 @@ export const deleteCollection = withAuth<{ collectionId: string }, void>(
 export const getUserCollections = withAuth<void, CollectionWithCount[]>(
   async (context): Promise<ActionResult<CollectionWithCount[]>> => {
     try {
-      const collections = await collectionsRepository.getUserCollections(
-        context.user.id,
-      );
+      const collections = await getCachedCollections(context.user.id);
 
       return { success: true, data: collections };
     } catch (error) {
