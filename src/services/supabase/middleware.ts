@@ -65,21 +65,22 @@ export const updateSession = async (request: NextRequest) => {
       // Only query DB if cookie not set (first time or after logout)
       const isComplete = await checkOnboardingComplete(supabase, user.id);
 
-      if (isComplete) {
-        // Set cookie to avoid future DB queries
-        supabaseResponse.cookies.set('onboarding_complete', 'true', {
-          maxAge: 60 * 60 * 24 * 365, // 1 year
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-          path: '/',
-        });
-      } else {
+      if (!isComplete) {
         // Redirect to onboarding
         const url = request.nextUrl.clone();
         url.pathname = '/onboarding';
         return NextResponse.redirect(url);
       }
+
+      // User is complete but cookie not set - set cookie on supabaseResponse
+      // Only happens once per user (when they first complete onboarding)
+      supabaseResponse.cookies.set('onboarding_complete', 'true', {
+        maxAge: 60 * 60 * 24 * 365, // 1 year
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+      });
     }
   }
 
