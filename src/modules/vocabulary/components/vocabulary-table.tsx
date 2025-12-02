@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { LuEyeOff } from 'react-icons/lu';
 
 import {
@@ -22,11 +23,8 @@ interface VocabularyTableProps {
   onToggleHidden: (wordId: string, isHidden: boolean) => void;
 }
 
-export const VocabularyTable = ({
-  items,
-  onWordClick,
-  onToggleHidden,
-}: VocabularyTableProps) => {
+export const VocabularyTable = memo<VocabularyTableProps>((props) => {
+  const { items, onWordClick, onToggleHidden } = props;
   return (
     <>
       {/* Mobile Card Layout */}
@@ -210,4 +208,6 @@ export const VocabularyTable = ({
       </Box>
     </>
   );
-};
+});
+
+VocabularyTable.displayName = 'VocabularyTable';

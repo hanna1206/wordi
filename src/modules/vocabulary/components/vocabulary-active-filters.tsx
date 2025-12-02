@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { LuX } from 'react-icons/lu';
 
 import { Flex, IconButton, Text } from '@chakra-ui/react';
@@ -17,7 +18,8 @@ type ActiveFilterChipProps = {
   onClear: () => void;
 };
 
-const ActiveFilterChip = ({ label, value, onClear }: ActiveFilterChipProps) => {
+const ActiveFilterChip = memo<ActiveFilterChipProps>((props) => {
+  const { label, value, onClear } = props;
   return (
     <Flex
       align="center"
@@ -55,7 +57,9 @@ const ActiveFilterChip = ({ label, value, onClear }: ActiveFilterChipProps) => {
       </IconButton>
     </Flex>
   );
-};
+});
+
+ActiveFilterChip.displayName = 'ActiveFilterChip';
 
 const formatPartOfSpeechLabel = (partOfSpeech: PartOfSpeech): string =>
   partOfSpeech
@@ -104,66 +108,71 @@ type VocabularyActiveFiltersProps = {
   onResetTypeFilter: () => void;
 };
 
-export const VocabularyActiveFilters = ({
-  selectedPartsOfSpeech,
-  selectedCollectionIds,
-  collections,
-  visibilityFilter,
-  typeFilter,
-  onRemovePartOfSpeech,
-  onRemoveCollection,
-  onResetVisibilityFilter,
-  onResetTypeFilter,
-}: VocabularyActiveFiltersProps) => {
-  const showVisibilityChip = visibilityFilter !== 'visible-only';
-  const showTypeChip = typeFilter !== 'all';
+export const VocabularyActiveFilters = memo<VocabularyActiveFiltersProps>(
+  (props) => {
+    const {
+      selectedPartsOfSpeech,
+      selectedCollectionIds,
+      collections,
+      visibilityFilter,
+      typeFilter,
+      onRemovePartOfSpeech,
+      onRemoveCollection,
+      onResetVisibilityFilter,
+      onResetTypeFilter,
+    } = props;
+    const showVisibilityChip = visibilityFilter !== 'visible-only';
+    const showTypeChip = typeFilter !== 'all';
 
-  if (
-    selectedPartsOfSpeech.length === 0 &&
-    selectedCollectionIds.length === 0 &&
-    !showVisibilityChip &&
-    !showTypeChip
-  ) {
-    return null;
-  }
+    if (
+      selectedPartsOfSpeech.length === 0 &&
+      selectedCollectionIds.length === 0 &&
+      !showVisibilityChip &&
+      !showTypeChip
+    ) {
+      return null;
+    }
 
-  return (
-    <Flex mt={2} mb={4} gap={2} flexWrap="wrap">
-      {showVisibilityChip && (
-        <ActiveFilterChip
-          key="visibility"
-          label="Visibility"
-          value={formatVisibilityFilter(visibilityFilter)}
-          onClear={onResetVisibilityFilter}
-        />
-      )}
+    return (
+      <Flex mt={2} mb={4} gap={2} flexWrap="wrap">
+        {showVisibilityChip && (
+          <ActiveFilterChip
+            key="visibility"
+            label="Visibility"
+            value={formatVisibilityFilter(visibilityFilter)}
+            onClear={onResetVisibilityFilter}
+          />
+        )}
 
-      {showTypeChip && (
-        <ActiveFilterChip
-          key="type"
-          label="Type"
-          value={formatTypeFilter(typeFilter)}
-          onClear={onResetTypeFilter}
-        />
-      )}
+        {showTypeChip && (
+          <ActiveFilterChip
+            key="type"
+            label="Type"
+            value={formatTypeFilter(typeFilter)}
+            onClear={onResetTypeFilter}
+          />
+        )}
 
-      {selectedPartsOfSpeech.map((partOfSpeech) => (
-        <ActiveFilterChip
-          key={`part-of-speech-${partOfSpeech}`}
-          label="Part of speech"
-          value={formatPartOfSpeechLabel(partOfSpeech)}
-          onClear={() => onRemovePartOfSpeech(partOfSpeech)}
-        />
-      ))}
+        {selectedPartsOfSpeech.map((partOfSpeech) => (
+          <ActiveFilterChip
+            key={`part-of-speech-${partOfSpeech}`}
+            label="Part of speech"
+            value={formatPartOfSpeechLabel(partOfSpeech)}
+            onClear={() => onRemovePartOfSpeech(partOfSpeech)}
+          />
+        ))}
 
-      {selectedCollectionIds.map((collectionId) => (
-        <ActiveFilterChip
-          key={`collection-${collectionId}`}
-          label="Collection"
-          value={getCollectionName(collections, collectionId)}
-          onClear={() => onRemoveCollection(collectionId)}
-        />
-      ))}
-    </Flex>
-  );
-};
+        {selectedCollectionIds.map((collectionId) => (
+          <ActiveFilterChip
+            key={`collection-${collectionId}`}
+            label="Collection"
+            value={getCollectionName(collections, collectionId)}
+            onClear={() => onRemoveCollection(collectionId)}
+          />
+        ))}
+      </Flex>
+    );
+  },
+);
+
+VocabularyActiveFilters.displayName = 'VocabularyActiveFilters';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { Dialog, Portal, Separator } from '@chakra-ui/react';
 
@@ -76,19 +76,28 @@ export const VocabularyItemModal: React.FC<VocabularyItemModalProps> = ({
     allowDelete,
   });
 
-  if (!savedWord) return null;
+  const translation = useMemo(
+    () =>
+      savedWord ? convertVocabularyItemToTranslationResult(savedWord) : null,
+    [savedWord],
+  );
 
-  const translation = convertVocabularyItemToTranslationResult(savedWord);
-  const isNoun =
-    'partOfSpeech' in translation &&
-    translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
-  const gender = isNoun
-    ? (translation as NounLinguisticItem).gender
-    : undefined;
-  const genderProps = getGenderProperties(gender);
-  const genderColor = genderProps
-    ? `${genderProps.colorScheme}.400`
-    : undefined;
+  const { genderColor } = useMemo(() => {
+    if (!translation) return { genderColor: undefined };
+
+    const isNoun =
+      'partOfSpeech' in translation &&
+      translation.partOfSpeech?.includes(PartOfSpeech.NOUN);
+    const gender = isNoun
+      ? (translation as NounLinguisticItem).gender
+      : undefined;
+    const genderProps = getGenderProperties(gender);
+    const color = genderProps ? `${genderProps.colorScheme}.400` : undefined;
+
+    return { genderColor: color };
+  }, [translation]);
+
+  if (!savedWord || !translation) return null;
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={handleClose}>

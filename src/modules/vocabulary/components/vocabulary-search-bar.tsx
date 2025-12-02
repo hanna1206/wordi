@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import {
   LuArrowDownNarrowWide,
   LuFolderCog,
@@ -41,22 +41,23 @@ interface VocabularySearchBarProps {
   isLoadingCollections: boolean;
 }
 
-export const VocabularySearchBar = ({
-  sortOption,
-  onSortSelect,
-  searchQuery,
-  onSearchChange,
-  visibilityFilter,
-  selectedPartsOfSpeech,
-  typeFilter,
-  onFilterChange,
-  hasActiveFilters,
-  selectedCollectionIds,
-  onCollectionIdsChange,
-  onManageCollections,
-  collections,
-  isLoadingCollections,
-}: VocabularySearchBarProps) => {
+export const VocabularySearchBar = memo<VocabularySearchBarProps>((props) => {
+  const {
+    sortOption,
+    onSortSelect,
+    searchQuery,
+    onSearchChange,
+    visibilityFilter,
+    selectedPartsOfSpeech,
+    typeFilter,
+    onFilterChange,
+    hasActiveFilters,
+    selectedCollectionIds,
+    onCollectionIdsChange,
+    onManageCollections,
+    collections,
+    isLoadingCollections,
+  } = props;
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
 
   return (
@@ -171,4 +172,6 @@ export const VocabularySearchBar = ({
       />
     </>
   );
-};
+});
+
+VocabularySearchBar.displayName = 'VocabularySearchBar';
