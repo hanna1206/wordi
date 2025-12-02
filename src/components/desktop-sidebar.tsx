@@ -11,12 +11,14 @@ interface DesktopSidebarProps {
   onToggle: () => void;
   children?: React.ReactNode;
   onFlashCardsClick?: (e: React.MouseEvent) => void;
+  onPracticeClick?: (e: React.MouseEvent) => void;
 }
 
 export const DesktopSidebar = ({
   isOpen,
   onToggle,
   onFlashCardsClick,
+  onPracticeClick,
 }: DesktopSidebarProps) => {
   return (
     <Box
@@ -83,6 +85,7 @@ export const DesktopSidebar = ({
           <SidebarContent
             isSidebarOpen={isOpen}
             onFlashCardsClick={onFlashCardsClick}
+            onPracticeClick={onPracticeClick}
           />
         </Box>
       </Box>

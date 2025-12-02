@@ -11,12 +11,14 @@ interface MobileSidebarProps {
   onToggle: () => void;
   children?: React.ReactNode;
   onFlashCardsClick?: (e: React.MouseEvent) => void;
+  onPracticeClick?: (e: React.MouseEvent) => void;
 }
 
 export const MobileSidebar = ({
   isOpen,
   onToggle,
   onFlashCardsClick,
+  onPracticeClick,
 }: MobileSidebarProps) => {
   return (
     <>
@@ -67,6 +69,7 @@ export const MobileSidebar = ({
           <SidebarContent
             isSidebarOpen={isOpen}
             onFlashCardsClick={onFlashCardsClick}
+            onPracticeClick={onPracticeClick}
           />
         </Box>
       </Box>

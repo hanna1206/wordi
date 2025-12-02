@@ -1,7 +1,7 @@
 'use client';
 
 import { type ReactNode } from 'react';
-import { LuBrain, LuHouse, LuLibrary } from 'react-icons/lu';
+import { LuBrain, LuGamepad2, LuHouse, LuLibrary } from 'react-icons/lu';
 
 import { Badge, Box, Button, Flex, Text } from '@chakra-ui/react';
 import Link from 'next/link';
@@ -45,6 +45,12 @@ const NAVIGATION_ITEMS: SidebarItemConfig[] = [
     id: 'flashcards',
     icon: <LuBrain />,
     label: 'Flashcards',
+  },
+  {
+    type: 'action',
+    id: 'practice',
+    icon: <LuGamepad2 />,
+    label: 'Practice',
   },
 ];
 
@@ -144,9 +150,11 @@ const SidebarAction = ({
 export const SidebarContent = ({
   isSidebarOpen,
   onFlashCardsClick,
+  onPracticeClick,
 }: {
   isSidebarOpen: boolean;
   onFlashCardsClick?: (e: React.MouseEvent) => void;
+  onPracticeClick?: (e: React.MouseEvent) => void;
 }) => {
   const pathname = usePathname();
   const { dueCount, isDueCountLoading } = useDueWordsCount();
@@ -213,6 +221,8 @@ export const SidebarContent = ({
               onClick={(e) => {
                 if (item.id === 'flashcards' && onFlashCardsClick) {
                   onFlashCardsClick(e);
+                } else if (item.id === 'practice' && onPracticeClick) {
+                  onPracticeClick(e);
                 }
               }}
             />

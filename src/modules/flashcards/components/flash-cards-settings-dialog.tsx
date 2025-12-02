@@ -394,10 +394,13 @@ export const FlashCardsSettingsDialog = ({
               </Flex>
             </DialogBody>
 
-            <DialogFooter pt={3}>
+            <DialogFooter pt={3} gap={2}>
+              <Button size="md" flex={1} variant="outline" onClick={onClose}>
+                Close
+              </Button>
               <Button
                 size="md"
-                w="full"
+                flex={1}
                 onClick={handleStartGame}
                 disabled={
                   !selectedMode ||

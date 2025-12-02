@@ -8,11 +8,13 @@ import { usePathname } from 'next/navigation';
 
 import { AppHeader } from '@/components/app-header';
 import { FlashCardsSettingsDialog } from '@/modules/flashcards/components/flash-cards-settings-dialog';
+import { PracticeDialog } from '@/modules/practice/components/practice-dialog';
 
 interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   onFlashCardsClick?: (e: React.MouseEvent) => void;
+  onPracticeClick?: (e: React.MouseEvent) => void;
 }
 
 const DesktopSidebar = dynamic<SidebarProps>(
@@ -41,6 +43,7 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   const pathname = usePathname();
 
   const [isFlashCardsDialogOpen, setIsFlashCardsDialogOpen] = useState(false);
+  const [isPracticeDialogOpen, setIsPracticeDialogOpen] = useState(false);
 
   // Single toggle handler - the button visibility is controlled by CSS breakpoints
   const toggleSidebar = useCallback(() => {
@@ -55,8 +58,17 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
     setIsFlashCardsDialogOpen(true);
   };
 
-  const handleCloseDialog = () => {
+  const handlePracticeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsPracticeDialogOpen(true);
+  };
+
+  const handleCloseFlashCardsDialog = () => {
     setIsFlashCardsDialogOpen(false);
+  };
+
+  const handleClosePracticeDialog = () => {
+    setIsPracticeDialogOpen(false);
   };
 
   // Close mobile sidebar on route change
@@ -82,11 +94,13 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
           isOpen={isMobileSidebarOpen}
           onToggle={toggleSidebar}
           onFlashCardsClick={handleFlashCardsClick}
+          onPracticeClick={handlePracticeClick}
         />
         <DesktopSidebar
           isOpen={isDesktopSidebarOpen}
           onToggle={toggleSidebar}
           onFlashCardsClick={handleFlashCardsClick}
+          onPracticeClick={handlePracticeClick}
         />
 
         <Box
@@ -111,7 +125,11 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
 
         <FlashCardsSettingsDialog
           isOpen={isFlashCardsDialogOpen}
-          onClose={handleCloseDialog}
+          onClose={handleCloseFlashCardsDialog}
+        />
+        <PracticeDialog
+          isOpen={isPracticeDialogOpen}
+          onClose={handleClosePracticeDialog}
         />
       </Box>
     </>
