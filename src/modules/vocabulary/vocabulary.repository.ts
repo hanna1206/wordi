@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, ilike, inArray } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, sql } from 'drizzle-orm';
 
 import { db } from '@/db/client';
 import { collectionVocabularyItemsTable } from '@/modules/collection/collections.schema';
@@ -33,10 +33,48 @@ const getUserMinimalVocabulary = async (
   typeFilter: VocabularyTypeFilter = 'all',
   collectionIds?: string[],
 ): Promise<{ items: MinimalVocabularyWordWithProgress[]; total: number }> => {
-  const orderBy =
-    sort === 'Alphabetical'
-      ? asc(vocabularyItemsTable.sortableText)
-      : desc(vocabularyItemsTable.createdAt);
+  // Determine sort order
+  let orderBy;
+  switch (sort) {
+    case 'Alphabetical':
+      orderBy = asc(vocabularyItemsTable.sortableText);
+      break;
+    case 'Progress: Status':
+      // Order: new -> learning -> review -> lapsed -> graduated, nulls last
+      orderBy = sql`
+        CASE 
+          WHEN ${userWordProgressTable.status} IS NULL THEN 6
+          WHEN ${userWordProgressTable.status} = 'new' THEN 1
+          WHEN ${userWordProgressTable.status} = 'learning' THEN 2
+          WHEN ${userWordProgressTable.status} = 'review' THEN 3
+          WHEN ${userWordProgressTable.status} = 'lapsed' THEN 4
+          WHEN ${userWordProgressTable.status} = 'graduated' THEN 5
+          ELSE 7
+        END ASC
+      `;
+      break;
+    case 'Progress: Next Review':
+      // Earlier dates first, nulls last
+      orderBy = sql`${userWordProgressTable.nextReviewDate} ASC NULLS LAST`;
+      break;
+    case 'Progress: Accuracy':
+      // Lower accuracy first (needs more practice), nulls last
+      orderBy = sql`
+        CASE 
+          WHEN ${userWordProgressTable.totalReviews} = 0 THEN NULL
+          ELSE CAST(${userWordProgressTable.correctReviews} AS FLOAT) / ${userWordProgressTable.totalReviews}
+        END ASC NULLS LAST
+      `;
+      break;
+    case 'Progress: Reviews':
+      // More reviews first, nulls last
+      orderBy = sql`${userWordProgressTable.totalReviews} DESC NULLS LAST`;
+      break;
+    case 'Latest':
+    default:
+      orderBy = desc(vocabularyItemsTable.createdAt);
+      break;
+  }
 
   const whereConditions = [eq(vocabularyItemsTable.userId, userId)];
 

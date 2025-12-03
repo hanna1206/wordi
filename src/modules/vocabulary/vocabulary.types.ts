@@ -31,7 +31,13 @@ export interface CommonVocabularyData {
   }>;
 }
 
-export type VocabularySortOption = 'Latest' | 'Alphabetical';
+export type VocabularySortOption =
+  | 'Latest'
+  | 'Alphabetical'
+  | 'Progress: Status'
+  | 'Progress: Next Review'
+  | 'Progress: Accuracy'
+  | 'Progress: Reviews';
 
 export interface UserWordCheck {
   exists: boolean;

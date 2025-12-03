@@ -96,7 +96,11 @@ export const VocabularySearchBar = memo<VocabularySearchBarProps>((props) => {
           <Menu.Trigger asChild>
             <Button variant="outline" size="lg" aria-label="Sort">
               <Icon as={LuArrowDownNarrowWide} fontSize="md" />
-              <Text display={{ base: 'none', md: 'block' }}>{sortOption}</Text>
+              <Text display={{ base: 'none', md: 'block' }}>
+                {sortOption.startsWith('Progress:')
+                  ? sortOption.replace('Progress: ', '')
+                  : sortOption}
+              </Text>
             </Button>
           </Menu.Trigger>
           <Menu.Positioner>
@@ -109,6 +113,33 @@ export const VocabularySearchBar = memo<VocabularySearchBarProps>((props) => {
               </Menu.Item>
               <Menu.Item value="Latest" onClick={() => onSortSelect('Latest')}>
                 Latest
+              </Menu.Item>
+
+              <Menu.Separator />
+
+              <Menu.Item
+                value="Progress: Status"
+                onClick={() => onSortSelect('Progress: Status')}
+              >
+                Progress: Status
+              </Menu.Item>
+              <Menu.Item
+                value="Progress: Next Review"
+                onClick={() => onSortSelect('Progress: Next Review')}
+              >
+                Progress: Next Review
+              </Menu.Item>
+              <Menu.Item
+                value="Progress: Accuracy"
+                onClick={() => onSortSelect('Progress: Accuracy')}
+              >
+                Progress: Accuracy
+              </Menu.Item>
+              <Menu.Item
+                value="Progress: Reviews"
+                onClick={() => onSortSelect('Progress: Reviews')}
+              >
+                Progress: Reviews
               </Menu.Item>
             </Menu.Content>
           </Menu.Positioner>
