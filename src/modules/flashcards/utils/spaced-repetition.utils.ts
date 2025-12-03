@@ -64,13 +64,32 @@ export const calculateProgressUpdate = (
   } else if (qualityScore === QualityScore.Good) {
     // Maintain or slightly increase interval for good responses
     newIntervalDays = Math.ceil(newIntervalDays * newEasinessFactor);
-    newStatus = 'review';
+    // Keep in learning status for first few reviews, then move to review
+    if (
+      existingProgress.status === 'new' ||
+      existingProgress.status === 'learning'
+    ) {
+      newStatus =
+        existingProgress.repetitionCount + 1 >= 2 ? 'review' : 'learning';
+    } else {
+      newStatus = 'review';
+    }
   } else if (qualityScore === QualityScore.Easy) {
     // Increase easiness and interval more for easy responses
     newEasinessFactor = Math.min(2.5, newEasinessFactor + 0.1);
     newIntervalDays = Math.ceil(newIntervalDays * newEasinessFactor * 1.2);
-    // Graduate after 2 consecutive correct answers
-    newStatus = newConsecutiveCorrect >= 2 ? 'graduated' : 'review';
+    // Graduate only after completing learning phase (at least 3 reviews) and having 3+ consecutive correct
+    if (
+      existingProgress.status === 'new' ||
+      existingProgress.status === 'learning'
+    ) {
+      newStatus =
+        existingProgress.repetitionCount + 1 >= 3 && newConsecutiveCorrect >= 3
+          ? 'review'
+          : 'learning';
+    } else {
+      newStatus = newConsecutiveCorrect >= 3 ? 'graduated' : 'review';
+    }
   }
 
   const nextReviewDate = calculateNextReviewDate(newIntervalDays);
