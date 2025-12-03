@@ -8,6 +8,9 @@ import { Flex, IconButton, Text } from '@chakra-ui/react';
 import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import type { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
+  ProgressAccuracyFilter,
+  ProgressReviewFilter,
+  ProgressStatusFilter,
   VisibilityFilter,
   VocabularyTypeFilter,
 } from '@/modules/vocabulary/vocabulary.types';
@@ -96,16 +99,67 @@ const formatTypeFilter = (filter: VocabularyTypeFilter): string => {
   }
 };
 
+const formatProgressStatusFilter = (status: ProgressStatusFilter): string => {
+  switch (status) {
+    case 'new':
+      return 'New';
+    case 'learning':
+      return 'Learning';
+    case 'review':
+      return 'Review';
+    case 'graduated':
+      return 'Graduated';
+    case 'lapsed':
+      return 'Lapsed';
+    case 'not-started':
+      return 'Not Started';
+  }
+};
+
+const formatProgressAccuracyFilter = (
+  filter: ProgressAccuracyFilter,
+): string => {
+  switch (filter) {
+    case 'all':
+      return 'All';
+    case 'high':
+      return 'High (≥80%)';
+    case 'medium':
+      return 'Medium (50-79%)';
+    case 'low':
+      return 'Low (<50%)';
+  }
+};
+
+const formatProgressReviewFilter = (filter: ProgressReviewFilter): string => {
+  switch (filter) {
+    case 'all':
+      return 'All';
+    case 'due':
+      return 'Due';
+    case 'upcoming':
+      return 'Upcoming';
+    case 'overdue':
+      return 'Overdue';
+  }
+};
+
 type VocabularyActiveFiltersProps = {
   selectedPartsOfSpeech: PartOfSpeech[];
   selectedCollectionIds: string[];
   collections: CollectionWithCount[];
   visibilityFilter: VisibilityFilter;
   typeFilter: VocabularyTypeFilter;
+  progressStatusFilter: ProgressStatusFilter[];
+  progressAccuracyFilter: ProgressAccuracyFilter;
+  progressReviewFilter: ProgressReviewFilter;
   onRemovePartOfSpeech: (partOfSpeech: PartOfSpeech) => void;
   onRemoveCollection: (collectionId: string) => void;
   onResetVisibilityFilter: () => void;
   onResetTypeFilter: () => void;
+  onRemoveProgressStatus: (status: ProgressStatusFilter) => void;
+  onResetProgressAccuracyFilter: () => void;
+  onResetProgressReviewFilter: () => void;
 };
 
 export const VocabularyActiveFilters = memo<VocabularyActiveFiltersProps>(
@@ -116,19 +170,30 @@ export const VocabularyActiveFilters = memo<VocabularyActiveFiltersProps>(
       collections,
       visibilityFilter,
       typeFilter,
+      progressStatusFilter,
+      progressAccuracyFilter,
+      progressReviewFilter,
       onRemovePartOfSpeech,
       onRemoveCollection,
       onResetVisibilityFilter,
       onResetTypeFilter,
+      onRemoveProgressStatus,
+      onResetProgressAccuracyFilter,
+      onResetProgressReviewFilter,
     } = props;
     const showVisibilityChip = visibilityFilter !== 'visible-only';
     const showTypeChip = typeFilter !== 'all';
+    const showProgressAccuracyChip = progressAccuracyFilter !== 'all';
+    const showProgressReviewChip = progressReviewFilter !== 'all';
 
     if (
       selectedPartsOfSpeech.length === 0 &&
       selectedCollectionIds.length === 0 &&
       !showVisibilityChip &&
-      !showTypeChip
+      !showTypeChip &&
+      progressStatusFilter.length === 0 &&
+      !showProgressAccuracyChip &&
+      !showProgressReviewChip
     ) {
       return null;
     }
@@ -170,6 +235,33 @@ export const VocabularyActiveFilters = memo<VocabularyActiveFiltersProps>(
             onClear={() => onRemoveCollection(collectionId)}
           />
         ))}
+
+        {progressStatusFilter.map((status) => (
+          <ActiveFilterChip
+            key={`progress-status-${status}`}
+            label="Progress"
+            value={formatProgressStatusFilter(status)}
+            onClear={() => onRemoveProgressStatus(status)}
+          />
+        ))}
+
+        {showProgressAccuracyChip && (
+          <ActiveFilterChip
+            key="progress-accuracy"
+            label="Accuracy"
+            value={formatProgressAccuracyFilter(progressAccuracyFilter)}
+            onClear={onResetProgressAccuracyFilter}
+          />
+        )}
+
+        {showProgressReviewChip && (
+          <ActiveFilterChip
+            key="progress-review"
+            label="Review"
+            value={formatProgressReviewFilter(progressReviewFilter)}
+            onClear={onResetProgressReviewFilter}
+          />
+        )}
       </Flex>
     );
   },

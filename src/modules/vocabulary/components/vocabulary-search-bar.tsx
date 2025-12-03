@@ -74,7 +74,12 @@ export const VocabularySearchBar = memo<VocabularySearchBarProps>((props) => {
 
   return (
     <>
-      <Flex direction="row" gap={2} align="center" mb={6}>
+      <Flex
+        direction={{ base: 'column', md: 'row' }}
+        gap={2}
+        align={{ base: 'stretch', md: 'center' }}
+        mb={6}
+      >
         <Flex position="relative" flex="1">
           <Input
             placeholder="Search vocabulary"
@@ -104,97 +109,109 @@ export const VocabularySearchBar = memo<VocabularySearchBarProps>((props) => {
           )}
         </Flex>
 
-        <Menu.Root>
-          <Menu.Trigger asChild>
-            <Button variant="outline" size="lg" aria-label="Sort">
-              <Icon as={LuArrowDownNarrowWide} fontSize="md" />
-              <Text display={{ base: 'none', md: 'block' }}>
-                {sortOption.startsWith('Progress:')
-                  ? sortOption.replace('Progress: ', '')
-                  : sortOption}
-              </Text>
-            </Button>
-          </Menu.Trigger>
-          <Menu.Positioner>
-            <Menu.Content>
-              <Menu.Item
-                value="Alphabetical"
-                onClick={() => onSortSelect('Alphabetical')}
+        <Flex gap={2} direction="row" flex={{ base: '1', md: 'initial' }}>
+          <Menu.Root>
+            <Menu.Trigger asChild>
+              <Button
+                variant="outline"
+                size="lg"
+                aria-label="Sort"
+                flex={{ base: '1', md: 'initial' }}
               >
-                Alphabetical
-              </Menu.Item>
-              <Menu.Item value="Latest" onClick={() => onSortSelect('Latest')}>
-                Latest
-              </Menu.Item>
+                <Icon as={LuArrowDownNarrowWide} fontSize="md" />
+                <Text display={{ base: 'none', md: 'block' }}>
+                  {sortOption.startsWith('Progress:')
+                    ? sortOption.replace('Progress: ', '')
+                    : sortOption}
+                </Text>
+              </Button>
+            </Menu.Trigger>
+            <Menu.Positioner>
+              <Menu.Content>
+                <Menu.Item
+                  value="Alphabetical"
+                  onClick={() => onSortSelect('Alphabetical')}
+                >
+                  Alphabetical
+                </Menu.Item>
+                <Menu.Item
+                  value="Latest"
+                  onClick={() => onSortSelect('Latest')}
+                >
+                  Latest
+                </Menu.Item>
 
-              <Menu.Separator />
+                <Menu.Separator />
 
-              <Menu.Item
-                value="Progress: Status"
-                onClick={() => onSortSelect('Progress: Status')}
-              >
-                Progress: Status
-              </Menu.Item>
-              <Menu.Item
-                value="Progress: Next Review"
-                onClick={() => onSortSelect('Progress: Next Review')}
-              >
-                Progress: Next Review
-              </Menu.Item>
-              <Menu.Item
-                value="Progress: Accuracy"
-                onClick={() => onSortSelect('Progress: Accuracy')}
-              >
-                Progress: Accuracy
-              </Menu.Item>
-              <Menu.Item
-                value="Progress: Reviews"
-                onClick={() => onSortSelect('Progress: Reviews')}
-              >
-                Progress: Reviews
-              </Menu.Item>
-            </Menu.Content>
-          </Menu.Positioner>
-        </Menu.Root>
+                <Menu.Item
+                  value="Progress: Status"
+                  onClick={() => onSortSelect('Progress: Status')}
+                >
+                  Progress: Status
+                </Menu.Item>
+                <Menu.Item
+                  value="Progress: Next Review"
+                  onClick={() => onSortSelect('Progress: Next Review')}
+                >
+                  Progress: Next Review
+                </Menu.Item>
+                <Menu.Item
+                  value="Progress: Accuracy"
+                  onClick={() => onSortSelect('Progress: Accuracy')}
+                >
+                  Progress: Accuracy
+                </Menu.Item>
+                <Menu.Item
+                  value="Progress: Reviews"
+                  onClick={() => onSortSelect('Progress: Reviews')}
+                >
+                  Progress: Reviews
+                </Menu.Item>
+              </Menu.Content>
+            </Menu.Positioner>
+          </Menu.Root>
 
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={() => setIsFilterDialogOpen(true)}
-          aria-label="Filter"
-          position="relative"
-        >
-          <Icon as={LuSlidersHorizontal} fontSize="md" />
-          <Text display={{ base: 'none', md: 'block' }}>Filter</Text>
-          {hasActiveFilters && (
-            <Badge
-              position="absolute"
-              top="-2"
-              right="-2"
-              borderRadius="full"
-              minW="4"
-              minH="4"
-              w="4"
-              h="4"
-              p="0"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            />
-          )}
-        </Button>
-
-        {onManageCollections && (
           <Button
             variant="outline"
             size="lg"
-            onClick={onManageCollections}
-            aria-label="Manage Collections"
+            onClick={() => setIsFilterDialogOpen(true)}
+            aria-label="Filter"
+            position="relative"
+            flex={{ base: '1', md: 'initial' }}
           >
-            <Icon as={LuFolderCog} fontSize="md" />
-            <Text display={{ base: 'none', md: 'block' }}>Collections</Text>
+            <Icon as={LuSlidersHorizontal} fontSize="md" />
+            <Text display={{ base: 'none', md: 'block' }}>Filter</Text>
+            {hasActiveFilters && (
+              <Badge
+                position="absolute"
+                top="-2"
+                right="-2"
+                borderRadius="full"
+                minW="4"
+                minH="4"
+                w="4"
+                h="4"
+                p="0"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              />
+            )}
           </Button>
-        )}
+
+          {onManageCollections && (
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={onManageCollections}
+              aria-label="Manage Collections"
+              flex={{ base: '1', md: 'initial' }}
+            >
+              <Icon as={LuFolderCog} fontSize="md" />
+              <Text display={{ base: 'none', md: 'block' }}>Collections</Text>
+            </Button>
+          )}
+        </Flex>
       </Flex>
 
       <VocabularyFilterDialog

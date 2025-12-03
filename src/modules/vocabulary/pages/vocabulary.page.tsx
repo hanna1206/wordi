@@ -152,6 +152,15 @@ export const VocabularyPage = () => {
     [handleCollectionIdsChange, selectedCollectionIds],
   );
 
+  const handleRemoveProgressStatus = useCallback(
+    (statusToRemove: ProgressStatusFilter) => {
+      setProgressStatusFilter((prev) =>
+        prev.filter((status) => status !== statusToRemove),
+      );
+    },
+    [],
+  );
+
   const handleOpenCollectionManager = useCallback(() => {
     setIsCollectionManagerOpen(true);
   }, []);
@@ -231,10 +240,16 @@ export const VocabularyPage = () => {
         collections={collections}
         visibilityFilter={visibilityFilter}
         typeFilter={typeFilter}
+        progressStatusFilter={progressStatusFilter}
+        progressAccuracyFilter={progressAccuracyFilter}
+        progressReviewFilter={progressReviewFilter}
         onRemovePartOfSpeech={handleRemovePartOfSpeech}
         onRemoveCollection={handleRemoveCollection}
         onResetVisibilityFilter={() => setVisibilityFilter('visible-only')}
         onResetTypeFilter={() => setTypeFilter('all')}
+        onRemoveProgressStatus={handleRemoveProgressStatus}
+        onResetProgressAccuracyFilter={() => setProgressAccuracyFilter('all')}
+        onResetProgressReviewFilter={() => setProgressReviewFilter('all')}
       />
 
       <PageHeader title="Vocabulary" description="" />
