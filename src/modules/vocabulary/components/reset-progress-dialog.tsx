@@ -66,7 +66,11 @@ export const ResetProgressDialog = ({
               </VStack>
             </DialogBody>
 
-            <DialogFooter pt={3} gap={2}>
+            <DialogFooter
+              pt={3}
+              gap={2}
+              flexDirection={{ base: 'column-reverse', md: 'row' }}
+            >
               <Button
                 variant="outline"
                 onClick={onClose}
