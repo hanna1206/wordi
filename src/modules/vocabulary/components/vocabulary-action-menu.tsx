@@ -1,15 +1,19 @@
-import { LuEllipsis, LuEye, LuEyeOff } from 'react-icons/lu';
+import { LuEllipsis, LuEye, LuEyeOff, LuRotateCcw } from 'react-icons/lu';
 
 import { Icon, IconButton, Menu } from '@chakra-ui/react';
 
 interface VocabularyActionMenuProps {
   isHidden: boolean;
+  hasProgress: boolean;
   onToggleHidden: () => void;
+  onResetProgress: () => void;
 }
 
 export const VocabularyActionMenu = ({
   isHidden,
+  hasProgress,
   onToggleHidden,
+  onResetProgress,
 }: VocabularyActionMenuProps) => {
   return (
     <Menu.Root>
@@ -35,6 +39,18 @@ export const VocabularyActionMenu = ({
             <Icon as={isHidden ? LuEye : LuEyeOff} fontSize="md" />
             {isHidden ? 'Unhide' : 'Hide'}
           </Menu.Item>
+          {hasProgress && (
+            <Menu.Item
+              value="reset-progress"
+              onClick={(e) => {
+                e.stopPropagation();
+                onResetProgress();
+              }}
+            >
+              <Icon as={LuRotateCcw} fontSize="md" />
+              Reset Progress
+            </Menu.Item>
+          )}
         </Menu.Content>
       </Menu.Positioner>
     </Menu.Root>

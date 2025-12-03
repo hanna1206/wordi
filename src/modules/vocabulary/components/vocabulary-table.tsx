@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { LuEyeOff } from 'react-icons/lu';
 
 import {
@@ -12,7 +12,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+import { toaster } from '@/components/toaster';
 import { Tooltip } from '@/components/tooltip';
+import { resetWordProgress } from '@/modules/flashcards/flashcards.actions';
 
 import {
   formatAccuracy,
@@ -20,16 +22,76 @@ import {
   getStatusBadgeColor,
 } from '../utils/format-progress';
 import type { MinimalVocabularyWordWithProgress } from '../vocabulary.types';
+import { ResetProgressDialog } from './reset-progress-dialog';
 import { VocabularyActionMenu } from './vocabulary-action-menu';
 
 interface VocabularyTableProps {
   items: MinimalVocabularyWordWithProgress[];
   onWordClick: (normalizedWord: string, partOfSpeech: string) => void;
   onToggleHidden: (wordId: string, isHidden: boolean) => void;
+  onDataRefresh: () => void;
 }
 
 export const VocabularyTable = memo<VocabularyTableProps>((props) => {
-  const { items, onWordClick, onToggleHidden } = props;
+  const { items, onWordClick, onToggleHidden, onDataRefresh } = props;
+  const [resetDialogState, setResetDialogState] = useState<{
+    isOpen: boolean;
+    wordId: string | null;
+    vocabularyText: string;
+  }>({
+    isOpen: false,
+    wordId: null,
+    vocabularyText: '',
+  });
+  const [isResetting, setIsResetting] = useState(false);
+
+  const handleResetProgress = (
+    wordId: string,
+    vocabularyText: string,
+  ): void => {
+    setResetDialogState({
+      isOpen: true,
+      wordId,
+      vocabularyText,
+    });
+  };
+
+  const handleCloseDialog = (): void => {
+    if (!isResetting) {
+      setResetDialogState({
+        isOpen: false,
+        wordId: null,
+        vocabularyText: '',
+      });
+    }
+  };
+
+  const handleConfirmReset = async (): Promise<void> => {
+    if (!resetDialogState.wordId) return;
+
+    setIsResetting(true);
+
+    const result = await resetWordProgress({ wordId: resetDialogState.wordId });
+
+    setIsResetting(false);
+
+    if (result.success) {
+      toaster.create({
+        type: 'success',
+        title: 'Progress reset successfully',
+        description: `Learning progress for "${resetDialogState.vocabularyText}" has been reset.`,
+      });
+      handleCloseDialog();
+      onDataRefresh();
+    } else {
+      toaster.create({
+        type: 'error',
+        title: 'Failed to reset progress',
+        description: result.error || 'An error occurred. Please try again.',
+      });
+    }
+  };
+
   return (
     <>
       {/* Mobile Card Layout */}
@@ -85,8 +147,12 @@ export const VocabularyTable = memo<VocabularyTableProps>((props) => {
                     </Flex>
                     <VocabularyActionMenu
                       isHidden={item.isHidden}
+                      hasProgress={!!item.progress}
                       onToggleHidden={() =>
                         onToggleHidden(item.id, !item.isHidden)
+                      }
+                      onResetProgress={() =>
+                        handleResetProgress(item.id, item.normalizedText)
                       }
                     />
                   </Flex>
@@ -282,8 +348,12 @@ export const VocabularyTable = memo<VocabularyTableProps>((props) => {
                     <Table.Cell>
                       <VocabularyActionMenu
                         isHidden={item.isHidden}
+                        hasProgress={!!item.progress}
                         onToggleHidden={() =>
                           onToggleHidden(item.id, !item.isHidden)
+                        }
+                        onResetProgress={() =>
+                          handleResetProgress(item.id, item.normalizedText)
                         }
                       />
                     </Table.Cell>
@@ -294,6 +364,14 @@ export const VocabularyTable = memo<VocabularyTableProps>((props) => {
           </Table.Root>
         </Card.Root>
       </Box>
+
+      <ResetProgressDialog
+        isOpen={resetDialogState.isOpen}
+        vocabularyText={resetDialogState.vocabularyText}
+        isLoading={isResetting}
+        onClose={handleCloseDialog}
+        onConfirm={handleConfirmReset}
+      />
     </>
   );
 });

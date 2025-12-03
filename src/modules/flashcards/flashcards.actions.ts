@@ -140,3 +140,21 @@ export const getDueWordsCount = withAuth<GetDueWordsCountParams, DueWordsCount>(
     }
   },
 );
+
+export const resetWordProgress = withAuth<{ wordId: string }, void>(
+  async (context, { wordId }): Promise<ActionResult<void>> => {
+    try {
+      await flashcardsRepository.resetProgress(context.user.id, wordId);
+      return { success: true };
+    } catch (error) {
+      Sentry.captureException(error);
+      return {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to reset word progress',
+      };
+    }
+  },
+);

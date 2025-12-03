@@ -262,6 +262,36 @@ const getTotalWordsCount = async (userId: string): Promise<number> => {
   return result?.count ?? 0;
 };
 
+const resetProgress = async (userId: string, wordId: string): Promise<void> => {
+  const progress = await getProgressByUserAndWord(userId, wordId);
+
+  if (!progress) {
+    throw new Error('No progress record found for this word');
+  }
+
+  await db
+    .update(userWordProgressTable)
+    .set({
+      status: 'new',
+      easinessFactor: '2.50',
+      intervalDays: 1,
+      repetitionCount: 0,
+      nextReviewDate: new Date().toISOString(),
+      lastReviewedAt: null,
+      totalReviews: 0,
+      correctReviews: 0,
+      consecutiveCorrect: 0,
+      qualityScores: [],
+      updatedAt: new Date().toISOString(),
+    })
+    .where(
+      and(
+        eq(userWordProgressTable.userId, userId),
+        eq(userWordProgressTable.wordId, wordId),
+      ),
+    );
+};
+
 export {
   createInitialProgress,
   getAllUserWords,
@@ -273,5 +303,6 @@ export {
   getRandomWords,
   getTotalWordsCount,
   getWordsWithProgress,
+  resetProgress,
   updateProgress,
 };

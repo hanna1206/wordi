@@ -249,6 +249,7 @@ export const VocabularyPage = () => {
             items={items}
             onWordClick={handleWordClick}
             onToggleHidden={handleToggleHidden}
+            onDataRefresh={() => void loadWords({ reset: true })}
           />
 
           <VocabularyScrollSentinel sentinelRef={sentinelRef} />
