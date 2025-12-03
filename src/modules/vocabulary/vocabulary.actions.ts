@@ -17,7 +17,7 @@ import { transformLinguisticCollocationItemToVocabularyItem } from './utils/tran
 import { transformLinguisticWordItemToVocabularyItem } from './utils/transform-linguistic-word-item-to-vocabulary-item';
 import * as vocabularyRepository from './vocabulary.repository';
 import type {
-  MinimalVocabularyWord,
+  MinimalVocabularyWordWithProgress,
   VisibilityFilter,
   VocabularyItem,
   VocabularySortOption,
@@ -127,7 +127,7 @@ type FetchMinimalVocabularyParams = {
 
 export const fetchUserMinimalVocabulary = withAuth<
   FetchMinimalVocabularyParams,
-  { items: MinimalVocabularyWord[]; total: number }
+  { items: MinimalVocabularyWordWithProgress[]; total: number }
 >(
   async (
     context,
@@ -142,7 +142,7 @@ export const fetchUserMinimalVocabulary = withAuth<
       collectionIds,
     },
   ): Promise<
-    ActionResult<{ items: MinimalVocabularyWord[]; total: number }>
+    ActionResult<{ items: MinimalVocabularyWordWithProgress[]; total: number }>
   > => {
     try {
       const data = await vocabularyRepository.getUserMinimalVocabulary(

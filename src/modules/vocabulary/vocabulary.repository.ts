@@ -2,11 +2,12 @@ import { and, asc, count, desc, eq, ilike, inArray } from 'drizzle-orm';
 
 import { db } from '@/db/client';
 import { collectionVocabularyItemsTable } from '@/modules/collection/collections.schema';
+import { userWordProgressTable } from '@/modules/flashcards/flashcards.schema';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 
 import { vocabularyItemsTable } from './vocabulary.schema';
 import type {
-  MinimalVocabularyWord,
+  MinimalVocabularyWordWithProgress,
   VisibilityFilter,
   VocabularyItem,
   VocabularySortOption,
@@ -31,7 +32,7 @@ const getUserMinimalVocabulary = async (
   partsOfSpeech: PartOfSpeech[] = [],
   typeFilter: VocabularyTypeFilter = 'all',
   collectionIds?: string[],
-): Promise<{ items: MinimalVocabularyWord[]; total: number }> => {
+): Promise<{ items: MinimalVocabularyWordWithProgress[]; total: number }> => {
   const orderBy =
     sort === 'Alphabetical'
       ? asc(vocabularyItemsTable.sortableText)
@@ -93,11 +94,26 @@ const getUserMinimalVocabulary = async (
         partOfSpeech: vocabularyItemsTable.partOfSpeech,
         commonData: vocabularyItemsTable.commonData,
         isHidden: vocabularyItemsTable.isHidden,
+        progress: {
+          status: userWordProgressTable.status,
+          nextReviewDate: userWordProgressTable.nextReviewDate,
+          totalReviews: userWordProgressTable.totalReviews,
+          correctReviews: userWordProgressTable.correctReviews,
+          consecutiveCorrect: userWordProgressTable.consecutiveCorrect,
+          intervalDays: userWordProgressTable.intervalDays,
+        },
       })
       .from(vocabularyItemsTable)
       .innerJoin(
         collectionFilterSubquery,
         eq(vocabularyItemsTable.id, collectionFilterSubquery.vocabularyItemId),
+      )
+      .leftJoin(
+        userWordProgressTable,
+        and(
+          eq(vocabularyItemsTable.id, userWordProgressTable.wordId),
+          eq(userWordProgressTable.userId, userId),
+        ),
       );
 
     countQuery = db
@@ -117,8 +133,23 @@ const getUserMinimalVocabulary = async (
         partOfSpeech: vocabularyItemsTable.partOfSpeech,
         commonData: vocabularyItemsTable.commonData,
         isHidden: vocabularyItemsTable.isHidden,
+        progress: {
+          status: userWordProgressTable.status,
+          nextReviewDate: userWordProgressTable.nextReviewDate,
+          totalReviews: userWordProgressTable.totalReviews,
+          correctReviews: userWordProgressTable.correctReviews,
+          consecutiveCorrect: userWordProgressTable.consecutiveCorrect,
+          intervalDays: userWordProgressTable.intervalDays,
+        },
       })
-      .from(vocabularyItemsTable);
+      .from(vocabularyItemsTable)
+      .leftJoin(
+        userWordProgressTable,
+        and(
+          eq(vocabularyItemsTable.id, userWordProgressTable.wordId),
+          eq(userWordProgressTable.userId, userId),
+        ),
+      );
 
     countQuery = db.select({ total: count() }).from(vocabularyItemsTable);
   }
@@ -134,7 +165,7 @@ const getUserMinimalVocabulary = async (
   ]);
 
   return {
-    items: items as MinimalVocabularyWord[],
+    items: items as MinimalVocabularyWordWithProgress[],
     total: total ?? 0,
   };
 };

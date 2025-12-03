@@ -14,11 +14,16 @@ import {
 
 import { Tooltip } from '@/components/tooltip';
 
-import type { MinimalVocabularyWord } from '../vocabulary.types';
+import {
+  formatAccuracy,
+  getAccuracyColor,
+  getStatusBadgeColor,
+} from '../utils/format-progress';
+import type { MinimalVocabularyWordWithProgress } from '../vocabulary.types';
 import { VocabularyActionMenu } from './vocabulary-action-menu';
 
 interface VocabularyTableProps {
-  items: MinimalVocabularyWord[];
+  items: MinimalVocabularyWordWithProgress[];
   onWordClick: (normalizedWord: string, partOfSpeech: string) => void;
   onToggleHidden: (wordId: string, isHidden: boolean) => void;
 }
@@ -85,9 +90,27 @@ export const VocabularyTable = memo<VocabularyTableProps>((props) => {
                       }
                     />
                   </Flex>
-                  <Text color="fg.muted" fontSize="sm">
+                  <Text color="fg.muted" fontSize="sm" mb={1}>
                     {item.commonData?.mainTranslation || '-'}
                   </Text>
+                  {item.progress && (
+                    <Flex gap={2} flexWrap="wrap">
+                      <Badge
+                        colorPalette={getStatusBadgeColor(item.progress.status)}
+                        variant="subtle"
+                        size="xs"
+                      >
+                        {item.progress.status}
+                      </Badge>
+                      <Text fontSize="xs" color="fg.muted">
+                        Accuracy:{' '}
+                        {formatAccuracy(
+                          item.progress.correctReviews,
+                          item.progress.totalReviews,
+                        )}
+                      </Text>
+                    </Flex>
+                  )}
                 </Card.Body>
               </Card.Root>
             ))}
@@ -126,6 +149,27 @@ export const VocabularyTable = memo<VocabularyTableProps>((props) => {
                   fontWeight="semibold"
                   fontSize="xs"
                   color="fg.muted"
+                >
+                  Status
+                </Table.ColumnHeader>
+                <Table.ColumnHeader
+                  fontWeight="semibold"
+                  fontSize="xs"
+                  color="fg.muted"
+                >
+                  Accuracy
+                </Table.ColumnHeader>
+                <Table.ColumnHeader
+                  fontWeight="semibold"
+                  fontSize="xs"
+                  color="fg.muted"
+                >
+                  Reviews
+                </Table.ColumnHeader>
+                <Table.ColumnHeader
+                  fontWeight="semibold"
+                  fontSize="xs"
+                  color="fg.muted"
                   width="60px"
                 >
                   Actions
@@ -135,7 +179,7 @@ export const VocabularyTable = memo<VocabularyTableProps>((props) => {
             <Table.Body>
               {items.length === 0 ? (
                 <Table.Row>
-                  <Table.Cell colSpan={4}>
+                  <Table.Cell colSpan={7}>
                     <Flex justify="center" py={6}>
                       <Text color="fg.muted" fontSize="sm">
                         No words found. Start learning to build your vocabulary!
@@ -190,6 +234,50 @@ export const VocabularyTable = memo<VocabularyTableProps>((props) => {
                     </Table.Cell>
                     <Table.Cell color="fg.muted" fontSize="sm">
                       {item.commonData?.mainTranslation || '-'}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {item.progress ? (
+                        <Badge
+                          colorPalette={getStatusBadgeColor(
+                            item.progress.status,
+                          )}
+                          variant="subtle"
+                          size="xs"
+                          textTransform="capitalize"
+                        >
+                          {item.progress.status}
+                        </Badge>
+                      ) : (
+                        <Text fontSize="xs" color="fg.muted">
+                          —
+                        </Text>
+                      )}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {item.progress ? (
+                        <Text
+                          fontSize="sm"
+                          color={
+                            item.progress.totalReviews > 0
+                              ? `${getAccuracyColor((item.progress.correctReviews / item.progress.totalReviews) * 100)}.fg`
+                              : 'fg.muted'
+                          }
+                        >
+                          {formatAccuracy(
+                            item.progress.correctReviews,
+                            item.progress.totalReviews,
+                          )}
+                        </Text>
+                      ) : (
+                        <Text fontSize="xs" color="fg.muted">
+                          —
+                        </Text>
+                      )}
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Text fontSize="sm" color="fg.muted">
+                        {item.progress?.totalReviews ?? '—'}
+                      </Text>
                     </Table.Cell>
                     <Table.Cell>
                       <VocabularyActionMenu

@@ -4,7 +4,7 @@ import { toaster } from '@/components/toaster';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { fetchUserMinimalVocabulary } from '@/modules/vocabulary/vocabulary.actions';
 import type {
-  MinimalVocabularyWord,
+  MinimalVocabularyWordWithProgress,
   VisibilityFilter,
   VocabularySortOption,
   VocabularyTypeFilter,
@@ -24,7 +24,7 @@ export const useVocabularyList = (
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [items, setItems] = useState<MinimalVocabularyWord[]>([]);
+  const [items, setItems] = useState<MinimalVocabularyWordWithProgress[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
 

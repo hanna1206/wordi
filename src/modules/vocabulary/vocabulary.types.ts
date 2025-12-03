@@ -47,6 +47,20 @@ export interface MinimalVocabularyWord {
   isHidden: boolean;
 }
 
+export interface VocabularyWordProgress {
+  status: string;
+  nextReviewDate: string | null;
+  totalReviews: number;
+  correctReviews: number;
+  consecutiveCorrect: number;
+  intervalDays: number;
+}
+
+export interface MinimalVocabularyWordWithProgress
+  extends MinimalVocabularyWord {
+  progress: VocabularyWordProgress | null;
+}
+
 export type Word = typeof vocabularyItemsTable.$inferSelect;
 export type InsertWord = typeof vocabularyItemsTable.$inferInsert;
 
