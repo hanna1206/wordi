@@ -25,7 +25,11 @@ import {
 
 import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
+import { getStatusBadgeColor } from '@/modules/vocabulary/utils/format-progress';
 import type {
+  ProgressAccuracyFilter,
+  ProgressReviewFilter,
+  ProgressStatusFilter,
   VisibilityFilter,
   VocabularyTypeFilter,
 } from '@/modules/vocabulary/vocabulary.types';
@@ -40,11 +44,17 @@ interface VocabularyFilterDialogProps {
   selectedCollectionIds: string[];
   collections: CollectionWithCount[];
   isLoadingCollections: boolean;
+  progressStatusFilter: ProgressStatusFilter[];
+  progressAccuracyFilter: ProgressAccuracyFilter;
+  progressReviewFilter: ProgressReviewFilter;
   onApply: (
     visibility: VisibilityFilter,
     partsOfSpeech: PartOfSpeech[],
     typeFilter: VocabularyTypeFilter,
     collectionIds: string[],
+    progressStatusFilter: ProgressStatusFilter[],
+    progressAccuracyFilter: ProgressAccuracyFilter,
+    progressReviewFilter: ProgressReviewFilter,
   ) => void;
 }
 
@@ -57,6 +67,9 @@ export const VocabularyFilterDialog = ({
   selectedCollectionIds,
   collections,
   isLoadingCollections,
+  progressStatusFilter,
+  progressAccuracyFilter,
+  progressReviewFilter,
   onApply,
 }: VocabularyFilterDialogProps) => {
   const [localVisibilityFilter, setLocalVisibilityFilter] =
@@ -69,6 +82,12 @@ export const VocabularyFilterDialog = ({
   const [localSelectedCollectionIds, setLocalSelectedCollectionIds] = useState<
     string[]
   >(selectedCollectionIds);
+  const [localProgressStatusFilter, setLocalProgressStatusFilter] =
+    useState<ProgressStatusFilter[]>(progressStatusFilter);
+  const [localProgressAccuracyFilter, setLocalProgressAccuracyFilter] =
+    useState<ProgressAccuracyFilter>(progressAccuracyFilter);
+  const [localProgressReviewFilter, setLocalProgressReviewFilter] =
+    useState<ProgressReviewFilter>(progressReviewFilter);
 
   // No auto-initialization - start with empty selection (show all items)
 
@@ -79,6 +98,9 @@ export const VocabularyFilterDialog = ({
       setLocalSelectedPartsOfSpeech(selectedPartsOfSpeech);
       setLocalTypeFilter(typeFilter);
       setLocalSelectedCollectionIds(selectedCollectionIds);
+      setLocalProgressStatusFilter(progressStatusFilter);
+      setLocalProgressAccuracyFilter(progressAccuracyFilter);
+      setLocalProgressReviewFilter(progressReviewFilter);
     } else {
       onClose();
     }
@@ -90,6 +112,9 @@ export const VocabularyFilterDialog = ({
       localSelectedPartsOfSpeech,
       localTypeFilter,
       localSelectedCollectionIds,
+      localProgressStatusFilter,
+      localProgressAccuracyFilter,
+      localProgressReviewFilter,
     );
     onClose();
   };
@@ -293,6 +318,138 @@ export const VocabularyFilterDialog = ({
                       </CheckboxCard.Root>
                     ))}
                   </Grid>
+                </Flex>
+
+                {/* Progress Status Filter Section */}
+                <Flex direction="column" gap={1.5} mt={4}>
+                  <Text fontWeight="medium" fontSize="sm" color="purple.fg">
+                    Progress Filters
+                  </Text>
+                  <Text fontWeight="medium" fontSize="sm" mt={1}>
+                    Status
+                  </Text>
+                  <Grid
+                    templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)' }}
+                    gap={2}
+                  >
+                    {(
+                      [
+                        'not-started',
+                        'new',
+                        'learning',
+                        'review',
+                        'graduated',
+                        'lapsed',
+                      ] as ProgressStatusFilter[]
+                    ).map((status) => (
+                      <CheckboxCard.Root
+                        key={status}
+                        checked={localProgressStatusFilter.includes(status)}
+                        onCheckedChange={() => {
+                          setLocalProgressStatusFilter((prev) =>
+                            prev.includes(status)
+                              ? prev.filter((s) => s !== status)
+                              : [...prev, status],
+                          );
+                        }}
+                      >
+                        <CheckboxCard.HiddenInput />
+                        <CheckboxCard.Control>
+                          <Flex align="center" gap={2} w="full">
+                            <Badge
+                              colorPalette={
+                                status === 'not-started'
+                                  ? 'gray'
+                                  : getStatusBadgeColor(status)
+                              }
+                              variant="subtle"
+                              size="xs"
+                              textTransform="capitalize"
+                            >
+                              {status === 'not-started'
+                                ? 'Not Started'
+                                : status}
+                            </Badge>
+                          </Flex>
+                          <CheckboxCard.Indicator />
+                        </CheckboxCard.Control>
+                      </CheckboxCard.Root>
+                    ))}
+                  </Grid>
+                </Flex>
+
+                {/* Progress Accuracy Filter Section */}
+                <Flex direction="column" gap={1.5} mt={2}>
+                  <Text fontWeight="medium" fontSize="sm">
+                    Accuracy
+                  </Text>
+                  <SegmentGroup.Root
+                    value={localProgressAccuracyFilter}
+                    onValueChange={(e) =>
+                      setLocalProgressAccuracyFilter(
+                        e.value as ProgressAccuracyFilter,
+                      )
+                    }
+                    size="sm"
+                  >
+                    <SegmentGroup.Indicator bg="white" />
+                    <SegmentGroup.Item value="all">
+                      <SegmentGroup.ItemText>All</SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                    <SegmentGroup.Item value="low">
+                      <SegmentGroup.ItemText>
+                        Low (&lt;50%)
+                      </SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                    <SegmentGroup.Item value="medium">
+                      <SegmentGroup.ItemText>
+                        Medium (50-80%)
+                      </SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                    <SegmentGroup.Item value="high">
+                      <SegmentGroup.ItemText>
+                        High (&gt;80%)
+                      </SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                  </SegmentGroup.Root>
+                </Flex>
+
+                {/* Progress Review Filter Section */}
+                <Flex direction="column" gap={1.5} mt={2}>
+                  <Text fontWeight="medium" fontSize="sm">
+                    Review Status
+                  </Text>
+                  <SegmentGroup.Root
+                    value={localProgressReviewFilter}
+                    onValueChange={(e) =>
+                      setLocalProgressReviewFilter(
+                        e.value as ProgressReviewFilter,
+                      )
+                    }
+                    size="sm"
+                  >
+                    <SegmentGroup.Indicator bg="white" />
+                    <SegmentGroup.Item value="all">
+                      <SegmentGroup.ItemText>All</SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                    <SegmentGroup.Item value="due">
+                      <SegmentGroup.ItemText>Due Today</SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                    <SegmentGroup.Item value="overdue">
+                      <SegmentGroup.ItemText>Overdue</SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                    <SegmentGroup.Item value="upcoming">
+                      <SegmentGroup.ItemText>Upcoming</SegmentGroup.ItemText>
+                      <SegmentGroup.ItemHiddenInput />
+                    </SegmentGroup.Item>
+                  </SegmentGroup.Root>
                 </Flex>
               </Flex>
             </DialogBody>

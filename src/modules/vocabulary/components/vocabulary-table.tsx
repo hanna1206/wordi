@@ -44,7 +44,7 @@ export const VocabularyTable = memo<VocabularyTableProps>((props) => {
           <Stack gap={2}>
             {items.map((item) => (
               <Card.Root
-                key={`${item.normalizedText}-${item.partOfSpeech}`}
+                key={item.id}
                 borderWidth="1px"
                 cursor="pointer"
                 transition="background 0.2s"
@@ -190,7 +190,7 @@ export const VocabularyTable = memo<VocabularyTableProps>((props) => {
               ) : (
                 items.map((item) => (
                   <Table.Row
-                    key={`${item.normalizedText}-${item.partOfSpeech}`}
+                    key={item.id}
                     onClick={() =>
                       onWordClick(item.normalizedText, item.partOfSpeech)
                     }

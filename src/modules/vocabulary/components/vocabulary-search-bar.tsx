@@ -13,6 +13,9 @@ import { Badge, Button, Flex, Icon, Input, Menu, Text } from '@chakra-ui/react';
 import type { CollectionWithCount } from '@/modules/collection/collections.types';
 import type { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import type {
+  ProgressAccuracyFilter,
+  ProgressReviewFilter,
+  ProgressStatusFilter,
   VisibilityFilter,
   VocabularySortOption,
   VocabularyTypeFilter,
@@ -32,6 +35,10 @@ interface VocabularySearchBarProps {
     visibility: VisibilityFilter,
     partsOfSpeech: PartOfSpeech[],
     typeFilter: VocabularyTypeFilter,
+    collectionIds: string[],
+    progressStatusFilter: ProgressStatusFilter[],
+    progressAccuracyFilter: ProgressAccuracyFilter,
+    progressReviewFilter: ProgressReviewFilter,
   ) => void;
   hasActiveFilters: boolean;
   selectedCollectionIds: string[];
@@ -39,6 +46,9 @@ interface VocabularySearchBarProps {
   onManageCollections?: () => void;
   collections: CollectionWithCount[];
   isLoadingCollections: boolean;
+  progressStatusFilter: ProgressStatusFilter[];
+  progressAccuracyFilter: ProgressAccuracyFilter;
+  progressReviewFilter: ProgressReviewFilter;
 }
 
 export const VocabularySearchBar = memo<VocabularySearchBarProps>((props) => {
@@ -53,10 +63,12 @@ export const VocabularySearchBar = memo<VocabularySearchBarProps>((props) => {
     onFilterChange,
     hasActiveFilters,
     selectedCollectionIds,
-    onCollectionIdsChange,
     onManageCollections,
     collections,
     isLoadingCollections,
+    progressStatusFilter,
+    progressAccuracyFilter,
+    progressReviewFilter,
   } = props;
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
 
@@ -194,11 +206,27 @@ export const VocabularySearchBar = memo<VocabularySearchBarProps>((props) => {
         selectedCollectionIds={selectedCollectionIds}
         collections={collections}
         isLoadingCollections={isLoadingCollections}
-        onApply={(visibility, partsOfSpeech, type, collectionIds) => {
-          onFilterChange(visibility, partsOfSpeech, type);
-          if (onCollectionIdsChange) {
-            onCollectionIdsChange(collectionIds);
-          }
+        progressStatusFilter={progressStatusFilter}
+        progressAccuracyFilter={progressAccuracyFilter}
+        progressReviewFilter={progressReviewFilter}
+        onApply={(
+          visibility,
+          partsOfSpeech,
+          type,
+          collectionIds,
+          progStatusFilter,
+          progAccuracyFilter,
+          progReviewFilter,
+        ) => {
+          onFilterChange(
+            visibility,
+            partsOfSpeech,
+            type,
+            collectionIds,
+            progStatusFilter,
+            progAccuracyFilter,
+            progReviewFilter,
+          );
         }}
       />
     </>

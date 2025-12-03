@@ -26,6 +26,9 @@ import { useInfiniteScroll } from '@/modules/vocabulary/hooks/use-infinite-scrol
 import { useVocabularyList } from '@/modules/vocabulary/hooks/use-vocabulary-list';
 import { useVocabularyWordDetails } from '@/modules/vocabulary/hooks/use-vocabulary-word-details';
 import type {
+  ProgressAccuracyFilter,
+  ProgressReviewFilter,
+  ProgressStatusFilter,
   VisibilityFilter,
   VocabularySortOption,
   VocabularyTypeFilter,
@@ -46,6 +49,13 @@ export const VocabularyPage = () => {
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(
     [],
   );
+  const [progressStatusFilter, setProgressStatusFilter] = useState<
+    ProgressStatusFilter[]
+  >([]);
+  const [progressAccuracyFilter, setProgressAccuracyFilter] =
+    useState<ProgressAccuracyFilter>('all');
+  const [progressReviewFilter, setProgressReviewFilter] =
+    useState<ProgressReviewFilter>('all');
   const [isCollectionManagerOpen, setIsCollectionManagerOpen] = useState(false);
   const [collections, setCollections] = useState<CollectionWithCount[]>([]);
   const [isLoadingCollections, setIsLoadingCollections] = useState(true);
@@ -53,7 +63,10 @@ export const VocabularyPage = () => {
   const hasActiveFilters =
     !areFiltersAtDefault(visibilityFilter, selectedPartsOfSpeech) ||
     selectedCollectionIds.length > 0 ||
-    typeFilter !== 'all';
+    typeFilter !== 'all' ||
+    progressStatusFilter.length > 0 ||
+    progressAccuracyFilter !== 'all' ||
+    progressReviewFilter !== 'all';
 
   const { isInitialLoading, isFetchingMore, error, items, hasMore, loadWords } =
     useVocabularyList(
@@ -63,6 +76,9 @@ export const VocabularyPage = () => {
       selectedPartsOfSpeech,
       typeFilter,
       selectedCollectionIds,
+      progressStatusFilter,
+      progressAccuracyFilter,
+      progressReviewFilter,
     );
 
   const {
@@ -98,10 +114,18 @@ export const VocabularyPage = () => {
       visibility: VisibilityFilter,
       partsOfSpeech: PartOfSpeech[],
       type: VocabularyTypeFilter,
+      collectionIds: string[],
+      progStatusFilter: ProgressStatusFilter[],
+      progAccuracyFilter: ProgressAccuracyFilter,
+      progReviewFilter: ProgressReviewFilter,
     ) => {
       setVisibilityFilter(visibility);
       setSelectedPartsOfSpeech(partsOfSpeech);
       setTypeFilter(type);
+      setSelectedCollectionIds(collectionIds);
+      setProgressStatusFilter(progStatusFilter);
+      setProgressAccuracyFilter(progAccuracyFilter);
+      setProgressReviewFilter(progReviewFilter);
     },
     [],
   );
@@ -196,6 +220,9 @@ export const VocabularyPage = () => {
         onManageCollections={handleOpenCollectionManager}
         collections={collections}
         isLoadingCollections={isLoadingCollections}
+        progressStatusFilter={progressStatusFilter}
+        progressAccuracyFilter={progressAccuracyFilter}
+        progressReviewFilter={progressReviewFilter}
       />
 
       <VocabularyActiveFilters

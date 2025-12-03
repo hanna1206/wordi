@@ -8,6 +8,9 @@ import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { vocabularyItemsTable } from './vocabulary.schema';
 import type {
   MinimalVocabularyWordWithProgress,
+  ProgressAccuracyFilter,
+  ProgressReviewFilter,
+  ProgressStatusFilter,
   VisibilityFilter,
   VocabularyItem,
   VocabularySortOption,
@@ -32,6 +35,9 @@ const getUserMinimalVocabulary = async (
   partsOfSpeech: PartOfSpeech[] = [],
   typeFilter: VocabularyTypeFilter = 'all',
   collectionIds?: string[],
+  progressStatusFilter: ProgressStatusFilter[] = [],
+  progressAccuracyFilter: ProgressAccuracyFilter = 'all',
+  progressReviewFilter: ProgressReviewFilter = 'all',
 ): Promise<{ items: MinimalVocabularyWordWithProgress[]; total: number }> => {
   // Determine sort order
   let orderBy;
@@ -105,6 +111,65 @@ const getUserMinimalVocabulary = async (
     );
   }
 
+  // Progress Status Filter
+  if (progressStatusFilter.length > 0) {
+    const statusConditions = [];
+
+    for (const status of progressStatusFilter) {
+      if (status === 'not-started') {
+        // Words without progress
+        statusConditions.push(sql`${userWordProgressTable.id} IS NULL`);
+      } else {
+        // Words with specific status
+        statusConditions.push(eq(userWordProgressTable.status, status));
+      }
+    }
+
+    // Combine with OR
+    if (statusConditions.length > 0) {
+      whereConditions.push(sql`(${sql.join(statusConditions, sql` OR `)})`);
+    }
+  }
+
+  // Progress Accuracy Filter
+  if (progressAccuracyFilter !== 'all') {
+    const accuracyCondition = sql`
+      CASE 
+        WHEN ${userWordProgressTable.totalReviews} = 0 OR ${userWordProgressTable.totalReviews} IS NULL THEN NULL
+        ELSE CAST(${userWordProgressTable.correctReviews} AS FLOAT) / ${userWordProgressTable.totalReviews}
+      END
+    `;
+
+    if (progressAccuracyFilter === 'low') {
+      whereConditions.push(sql`${accuracyCondition} < 0.5`);
+    } else if (progressAccuracyFilter === 'medium') {
+      whereConditions.push(
+        sql`${accuracyCondition} >= 0.5 AND ${accuracyCondition} <= 0.8`,
+      );
+    } else if (progressAccuracyFilter === 'high') {
+      whereConditions.push(sql`${accuracyCondition} > 0.8`);
+    }
+  }
+
+  // Progress Review Filter
+  if (progressReviewFilter !== 'all') {
+    const now = sql`NOW()`;
+
+    if (progressReviewFilter === 'due') {
+      whereConditions.push(
+        sql`${userWordProgressTable.nextReviewDate} <= ${now}`,
+      );
+    } else if (progressReviewFilter === 'overdue') {
+      whereConditions.push(
+        sql`${userWordProgressTable.nextReviewDate} < ${now}`,
+      );
+    } else if (progressReviewFilter === 'upcoming') {
+      whereConditions.push(
+        sql`${userWordProgressTable.nextReviewDate} > ${now}`,
+      );
+    }
+  }
+
   // Build the base query with optional collection filtering
   // When multiple collections are selected, we use union (OR) logic:
   // items that belong to ANY of the selected collections (without duplicates)
@@ -160,6 +225,13 @@ const getUserMinimalVocabulary = async (
       .innerJoin(
         collectionFilterSubquery,
         eq(vocabularyItemsTable.id, collectionFilterSubquery.vocabularyItemId),
+      )
+      .leftJoin(
+        userWordProgressTable,
+        and(
+          eq(vocabularyItemsTable.id, userWordProgressTable.wordId),
+          eq(userWordProgressTable.userId, userId),
+        ),
       );
   } else {
     // No collection filter - query all vocabulary items
@@ -189,7 +261,16 @@ const getUserMinimalVocabulary = async (
         ),
       );
 
-    countQuery = db.select({ total: count() }).from(vocabularyItemsTable);
+    countQuery = db
+      .select({ total: count() })
+      .from(vocabularyItemsTable)
+      .leftJoin(
+        userWordProgressTable,
+        and(
+          eq(vocabularyItemsTable.id, userWordProgressTable.wordId),
+          eq(userWordProgressTable.userId, userId),
+        ),
+      );
   }
 
   const [items, [{ total }]] = await Promise.all([

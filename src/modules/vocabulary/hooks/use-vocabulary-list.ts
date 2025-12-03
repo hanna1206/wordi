@@ -5,6 +5,9 @@ import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 import { fetchUserMinimalVocabulary } from '@/modules/vocabulary/vocabulary.actions';
 import type {
   MinimalVocabularyWordWithProgress,
+  ProgressAccuracyFilter,
+  ProgressReviewFilter,
+  ProgressStatusFilter,
   VisibilityFilter,
   VocabularySortOption,
   VocabularyTypeFilter,
@@ -20,6 +23,9 @@ export const useVocabularyList = (
   selectedPartsOfSpeech: PartOfSpeech[] = [],
   typeFilter: VocabularyTypeFilter = 'all',
   collectionIds: string[] = [],
+  progressStatusFilter: ProgressStatusFilter[] = [],
+  progressAccuracyFilter: ProgressAccuracyFilter = 'all',
+  progressReviewFilter: ProgressReviewFilter = 'all',
 ) => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -78,6 +84,9 @@ export const useVocabularyList = (
           partsOfSpeech: selectedPartsOfSpeech,
           typeFilter,
           collectionIds: collectionIds.length > 0 ? collectionIds : undefined,
+          progressStatusFilter,
+          progressAccuracyFilter,
+          progressReviewFilter,
         });
 
         if (result.success && result.data) {
@@ -121,6 +130,9 @@ export const useVocabularyList = (
       selectedPartsOfSpeech,
       typeFilter,
       collectionIds,
+      progressStatusFilter,
+      progressAccuracyFilter,
+      progressReviewFilter,
     ],
   );
 

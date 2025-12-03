@@ -73,6 +73,17 @@ export type InsertWord = typeof vocabularyItemsTable.$inferInsert;
 export type VisibilityFilter = 'any' | 'hidden-only' | 'visible-only';
 export type VocabularyTypeFilter = 'all' | 'words-only' | 'collocations-only';
 
+// Progress filters
+export type ProgressStatusFilter =
+  | 'new'
+  | 'learning'
+  | 'review'
+  | 'graduated'
+  | 'lapsed'
+  | 'not-started';
+export type ProgressAccuracyFilter = 'all' | 'low' | 'medium' | 'high';
+export type ProgressReviewFilter = 'all' | 'due' | 'upcoming' | 'overdue';
+
 // All available parts of speech for filtering
 export const ALL_PARTS_OF_SPEECH: PartOfSpeech[] = [
   PartOfSpeech.NOUN,

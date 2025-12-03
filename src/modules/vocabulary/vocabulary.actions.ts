@@ -18,6 +18,9 @@ import { transformLinguisticWordItemToVocabularyItem } from './utils/transform-l
 import * as vocabularyRepository from './vocabulary.repository';
 import type {
   MinimalVocabularyWordWithProgress,
+  ProgressAccuracyFilter,
+  ProgressReviewFilter,
+  ProgressStatusFilter,
   VisibilityFilter,
   VocabularyItem,
   VocabularySortOption,
@@ -123,6 +126,9 @@ type FetchMinimalVocabularyParams = {
   partsOfSpeech?: PartOfSpeech[];
   typeFilter?: VocabularyTypeFilter;
   collectionIds?: string[];
+  progressStatusFilter?: ProgressStatusFilter[];
+  progressAccuracyFilter?: ProgressAccuracyFilter;
+  progressReviewFilter?: ProgressReviewFilter;
 };
 
 export const fetchUserMinimalVocabulary = withAuth<
@@ -140,6 +146,9 @@ export const fetchUserMinimalVocabulary = withAuth<
       partsOfSpeech = [],
       typeFilter = 'all',
       collectionIds,
+      progressStatusFilter = [],
+      progressAccuracyFilter = 'all',
+      progressReviewFilter = 'all',
     },
   ): Promise<
     ActionResult<{ items: MinimalVocabularyWordWithProgress[]; total: number }>
@@ -155,6 +164,9 @@ export const fetchUserMinimalVocabulary = withAuth<
         partsOfSpeech,
         typeFilter,
         collectionIds,
+        progressStatusFilter,
+        progressAccuracyFilter,
+        progressReviewFilter,
       );
       return { success: true, data };
     } catch (error) {
