@@ -14,8 +14,12 @@ import {
   outputStructure,
 } from './prompts/generate-distractors.prompt';
 
-const generateDistractorsLlm =
-  gpt41MiniModel.withStructuredOutput(outputStructure);
+const generateDistractorsLlm = gpt41MiniModel.withStructuredOutput(
+  outputStructure,
+  {
+    method: 'jsonMode',
+  },
+);
 const generateDistractorsChain = generateDistractorsPrompt.pipe(
   generateDistractorsLlm,
 );

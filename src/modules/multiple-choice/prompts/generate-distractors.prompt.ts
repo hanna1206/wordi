@@ -24,21 +24,27 @@ IMPORTANT:
 - Match part of speech and grammatical properties
 - Make distractors challenging but fair
 - For collocations, provide complete phrases as distractors
+
+Respond with a JSON object in this format:
+{{
+  "distractors": {{
+    "item-id-1": ["distractor1", "distractor2", "distractor3"],
+    "item-id-2": ["distractor1", "distractor2", "distractor3"]
+  }}
+}}
 `,
 );
 
-export const outputStructure = z
-  .object({
-    distractors: z
-      .record(
-        z.string(),
-        z
-          .array(z.string())
-          .length(3)
-          .describe('Exactly 3 distractors in the target language'),
-      )
-      .describe(
-        'Map of vocabulary item IDs to their 3 distractors. Each distractor must match the part of speech and grammatical properties of the correct answer.',
-      ),
-  })
-  .strict();
+export const outputStructure = z.object({
+  distractors: z
+    .record(
+      z.string(),
+      z
+        .array(z.string())
+        .length(3)
+        .describe('Exactly 3 distractors in the target language'),
+    )
+    .describe(
+      'Map of vocabulary item IDs to their 3 distractors. Each distractor must match the part of speech and grammatical properties of the correct answer.',
+    ),
+});

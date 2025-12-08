@@ -32,13 +32,13 @@ const defaultSourceOptions: DefaultSourceOption[] = [
   {
     type: 'worst-known',
     icon: LuTrendingDown,
-    label: '20 Worst Known Words',
+    label: 'Worst Known Words',
     description: 'Practice words you struggle with most',
   },
   {
     type: 'new-words',
     icon: LuSparkles,
-    label: '20 New Words',
+    label: 'New Words',
     description: 'Recently added vocabulary items',
   },
   {
