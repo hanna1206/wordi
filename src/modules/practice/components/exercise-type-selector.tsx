@@ -1,7 +1,8 @@
 'use client';
 
 import type { IconType } from 'react-icons';
-import { LuLanguages, LuListChecks, LuPenLine } from 'react-icons/lu';
+// import { LuLanguages, LuListChecks, LuPenLine } from 'react-icons/lu';
+import { LuListChecks } from 'react-icons/lu';
 
 import { Flex, Icon, RadioCard, Text } from '@chakra-ui/react';
 
@@ -21,23 +22,23 @@ interface ExerciseTypeOption {
 
 const exerciseTypeOptions: ExerciseTypeOption[] = [
   {
-    type: ExerciseType.Translation,
-    icon: LuLanguages,
-    label: 'Translation',
-    description: 'Translate words and phrases to your target language',
-  },
-  {
-    type: ExerciseType.FillInTheBlank,
-    icon: LuPenLine,
-    label: 'Fill in the Blank',
-    description: 'Complete sentences with the correct vocabulary',
-  },
-  {
     type: ExerciseType.MultipleChoice,
     icon: LuListChecks,
     label: 'Multiple Choice',
     description: 'Select the correct translation from options',
   },
+  // {
+  //   type: ExerciseType.Translation,
+  //   icon: LuLanguages,
+  //   label: 'Translation',
+  //   description: 'Translate words and phrases to your target language',
+  // },
+  // {
+  //   type: ExerciseType.FillInTheBlank,
+  //   icon: LuPenLine,
+  //   label: 'Fill in the Blank',
+  //   description: 'Complete sentences with the correct vocabulary',
+  // },
 ];
 
 export function ExerciseTypeSelector({

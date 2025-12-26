@@ -33,7 +33,7 @@ export const AnswerOptions = ({
       return selectedAnswer === option ? 'purple' : 'gray';
     }
 
-    // Show feedback
+    // Show feedback - use bright colors
     if (option === correctAnswer) {
       return 'green';
     }
@@ -43,6 +43,35 @@ export const AnswerOptions = ({
     }
 
     return 'gray';
+  };
+
+  const getButtonStyles = (option: string) => {
+    if (!showFeedback) {
+      return {};
+    }
+
+    // Add explicit background colors for feedback
+    if (option === correctAnswer) {
+      return {
+        bg: 'green.500',
+        color: 'white',
+        borderColor: 'green.600',
+        _hover: { bg: 'green.500' },
+      };
+    }
+
+    if (option === selectedAnswer && option !== correctAnswer) {
+      return {
+        bg: 'red.500',
+        color: 'white',
+        borderColor: 'red.600',
+        _hover: { bg: 'red.500' },
+      };
+    }
+
+    return {
+      opacity: 0.5,
+    };
   };
 
   const isDisabled = () => {
@@ -78,6 +107,7 @@ export const AnswerOptions = ({
           _active={{
             transform: selectedAnswer === null ? 'scale(0.98)' : 'none',
           }}
+          {...getButtonStyles(option)}
         >
           <Box as="span" display="flex" alignItems="center" gap={2}>
             <Box

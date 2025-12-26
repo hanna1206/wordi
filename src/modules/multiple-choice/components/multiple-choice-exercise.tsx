@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-import { Box, Button, Flex, Spinner, Text, VStack } from '@chakra-ui/react';
+import { Button, Flex, Spinner, Text, VStack } from '@chakra-ui/react';
 
 import { useMultipleChoiceGame } from '../hooks/use-multiple-choice-game';
 import type { MultipleChoiceExerciseProps } from '../multiple-choice.types';
@@ -177,7 +177,6 @@ export const MultipleChoiceExercise = ({
           {/* Question Card */}
           <QuestionCard
             question={currentQuestion.nativeLanguageTranslation}
-            targetLanguageWord={currentQuestion.targetLanguageWord}
             currentQuestion={currentQuestionIndex + 1}
             totalQuestions={totalQuestions}
           />
@@ -190,26 +189,6 @@ export const MultipleChoiceExercise = ({
             onSelect={selectAnswer}
             showFeedback={showFeedback}
           />
-
-          {/* Manual Next Button (shown during feedback) */}
-          {showFeedback && (
-            <Box w="full" maxW="400px">
-              <Button
-                onClick={() => {
-                  // Clear automatic timer
-                  if (feedbackTimerRef.current) {
-                    clearTimeout(feedbackTimerRef.current);
-                  }
-                  nextQuestion();
-                }}
-                size="lg"
-                colorScheme="purple"
-                w="full"
-              >
-                Next Question
-              </Button>
-            </Box>
-          )}
         </VStack>
       </Flex>
     );

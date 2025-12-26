@@ -1,8 +1,7 @@
 'use client';
 
 import { type ReactNode } from 'react';
-// import { LuBrain, LuGamepad2, LuHouse, LuLibrary } from 'react-icons/lu';
-import { LuBrain, LuHouse, LuLibrary } from 'react-icons/lu';
+import { LuBrain, LuGamepad2, LuHouse, LuLibrary } from 'react-icons/lu';
 
 import { Badge, Box, Button, Flex, Text } from '@chakra-ui/react';
 import Link from 'next/link';
@@ -47,12 +46,12 @@ const NAVIGATION_ITEMS: SidebarItemConfig[] = [
     icon: <LuBrain />,
     label: 'Flashcards',
   },
-  // {
-  //   type: 'action',
-  //   id: 'practice',
-  //   icon: <LuGamepad2 />,
-  //   label: 'Practice',
-  // },
+  {
+    type: 'action',
+    id: 'practice',
+    icon: <LuGamepad2 />,
+    label: 'Practice',
+  },
 ];
 
 const isLinkActive = (pathname: string | null, href: string) => {

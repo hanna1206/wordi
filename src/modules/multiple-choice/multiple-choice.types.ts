@@ -79,7 +79,6 @@ export interface MultipleChoiceExerciseProps {
 
 export interface QuestionCardProps {
   question: string; // Native language translation
-  targetLanguageWord: string; // For verification (not displayed)
   currentQuestion: number;
   totalQuestions: number;
 }
