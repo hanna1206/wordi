@@ -2,7 +2,11 @@
 
 import { Box, Card, Heading, Text } from '@chakra-ui/react';
 
-import type { QuestionCardProps } from '../multiple-choice.types';
+interface QuestionCardProps {
+  question: string;
+  currentQuestion: number;
+  totalQuestions: number;
+}
 
 export const QuestionCard = ({
   question,

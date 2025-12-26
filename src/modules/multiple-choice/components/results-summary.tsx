@@ -14,7 +14,13 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import type { ResultsSummaryProps } from '../multiple-choice.types';
+import type { ExerciseResults } from '../multiple-choice.types';
+
+interface ResultsSummaryProps {
+  results: ExerciseResults;
+  onRestart: () => void;
+  onExit: () => void;
+}
 
 interface StatRowProps {
   label: string;
@@ -239,7 +245,7 @@ export const ResultsSummary = ({
             colorScheme="gray"
             w="full"
           >
-            Back to Menu
+            Back to Main page
           </Button>
         </VStack>
       </VStack>

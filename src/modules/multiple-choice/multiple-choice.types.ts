@@ -1,5 +1,4 @@
 import { Gender, PartOfSpeech } from '../linguistics/linguistics.const';
-import { MinimalVocabularyWord } from '../vocabulary/vocabulary.types';
 
 // Vocabulary item for the exercise
 export interface VocabularyExerciseItem {
@@ -66,39 +65,4 @@ export interface MultipleChoiceGameState {
   distractors: Record<string, string[]>;
   startTime: number;
   error?: string;
-}
-
-// Component props
-export interface MultipleChoiceExerciseProps {
-  vocabularyItems: MinimalVocabularyWord[];
-  nativeLanguage: string; // User's native language (e.g., "Russian", "English")
-  targetLanguage: string; // Target language being learned (e.g., "German")
-  onComplete: (results: ExerciseResults) => void;
-  onExit: () => void;
-}
-
-export interface QuestionCardProps {
-  question: string; // Native language translation
-  currentQuestion: number;
-  totalQuestions: number;
-}
-
-export interface AnswerOptionsProps {
-  options: string[]; // 4 target language options (shuffled)
-  correctAnswer: string;
-  selectedAnswer: string | null;
-  onSelect: (answer: string) => void;
-  showFeedback: boolean;
-}
-
-export interface ProgressIndicatorProps {
-  current: number;
-  total: number;
-  correctCount: number;
-}
-
-export interface ResultsSummaryProps {
-  results: ExerciseResults;
-  onRestart: () => void;
-  onExit: () => void;
 }

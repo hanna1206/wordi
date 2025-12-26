@@ -3,30 +3,29 @@
 import { useEffect, useRef } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-import {
-  Button,
-  Flex,
-  IconButton,
-  Spinner,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Flex, IconButton, Text, VStack } from '@chakra-ui/react';
 
 import { useMultipleChoiceGame } from '../hooks/use-multiple-choice-game';
-import type { MultipleChoiceExerciseProps } from '../multiple-choice.types';
+import type { ExerciseResults, Question } from '../multiple-choice.types';
 import { AnswerOptions } from './answer-options';
 import { ProgressIndicator } from './progress-indicator';
 import { QuestionCard } from './question-card';
 import { ResultsSummary } from './results-summary';
 
+interface MultipleChoiceExerciseProps {
+  questions: Question[];
+  onComplete: (results: ExerciseResults) => void;
+  onExit: () => void;
+  onRetry: () => void;
+}
+
 const FEEDBACK_DELAY_MS = 1500; // 1.5 seconds feedback period
 
 export const MultipleChoiceExercise = ({
-  vocabularyItems,
-  nativeLanguage,
-  targetLanguage,
+  questions,
   onComplete,
   onExit,
+  onRetry,
 }: MultipleChoiceExerciseProps) => {
   const {
     status,
@@ -39,11 +38,8 @@ export const MultipleChoiceExercise = ({
     results,
     selectAnswer,
     nextQuestion,
-    retry,
   } = useMultipleChoiceGame({
-    vocabularyItems,
-    nativeLanguage,
-    targetLanguage,
+    questions,
   });
 
   const feedbackTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -86,26 +82,6 @@ export const MultipleChoiceExercise = ({
     };
   }, []);
 
-  // Loading state
-  if (status === 'loading') {
-    return (
-      <Flex
-        direction="column"
-        minH="100svh"
-        align="center"
-        justify="center"
-        p={4}
-      >
-        <VStack gap={4}>
-          <Spinner size="xl" color="purple.500" />
-          <Text fontSize="lg" color="gray.600">
-            Preparing your exercise...
-          </Text>
-        </VStack>
-      </Flex>
-    );
-  }
-
   // Error state
   if (status === 'error') {
     return (
@@ -124,7 +100,7 @@ export const MultipleChoiceExercise = ({
             {error || 'An unexpected error occurred'}
           </Text>
           <VStack gap={2} w="full" maxW="300px">
-            <Button onClick={retry} colorScheme="purple" size="lg" w="full">
+            <Button onClick={onRetry} colorScheme="purple" size="lg" w="full">
               Try Again
             </Button>
             <Button
@@ -152,7 +128,7 @@ export const MultipleChoiceExercise = ({
           if (feedbackTimerRef.current) {
             clearTimeout(feedbackTimerRef.current);
           }
-          retry();
+          onRetry();
         }}
         onExit={onExit}
       />

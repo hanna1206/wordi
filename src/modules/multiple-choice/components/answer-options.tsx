@@ -2,7 +2,13 @@
 
 import { Box, Button, VStack } from '@chakra-ui/react';
 
-import type { AnswerOptionsProps } from '../multiple-choice.types';
+interface AnswerOptionsProps {
+  options: string[];
+  correctAnswer: string;
+  selectedAnswer: string | null;
+  onSelect: (answer: string) => void;
+  showFeedback: boolean;
+}
 
 export const AnswerOptions = ({
   options,

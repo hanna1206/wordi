@@ -2,7 +2,11 @@
 
 import { Box, HStack, Progress, Text, VStack } from '@chakra-ui/react';
 
-import type { ProgressIndicatorProps } from '../multiple-choice.types';
+interface ProgressIndicatorProps {
+  current: number;
+  total: number;
+  correctCount: number;
+}
 
 export const ProgressIndicator = ({
   current,
