@@ -1,8 +1,16 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { FaTimes } from 'react-icons/fa';
 
-import { Button, Flex, Spinner, Text, VStack } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  IconButton,
+  Spinner,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 
 import { useMultipleChoiceGame } from '../hooks/use-multiple-choice-game';
 import type { MultipleChoiceExerciseProps } from '../multiple-choice.types';
@@ -167,6 +175,18 @@ export const MultipleChoiceExercise = ({
         py={{ base: 6, sm: 8 }}
       >
         <VStack gap={{ base: 6, md: 8 }} maxW="800px" w="full" mx="auto">
+          {/* Exit Button */}
+          <Flex w="full" justify="flex-end">
+            <IconButton
+              onClick={onExit}
+              aria-label="Exit exercise"
+              variant="ghost"
+              size="lg"
+            >
+              <FaTimes />
+            </IconButton>
+          </Flex>
+
           {/* Progress Indicator */}
           <ProgressIndicator
             current={currentQuestionIndex + 1}
