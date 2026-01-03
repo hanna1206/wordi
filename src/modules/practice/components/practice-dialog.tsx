@@ -69,13 +69,6 @@ export function PracticeDialog({ isOpen, onClose }: PracticeDialogProps) {
   const handlePractice = () => {
     if (!selectedExerciseType || !selectedSource) return;
 
-    // Only handle Multiple Choice for now
-    if (selectedExerciseType !== ExerciseType.MultipleChoice) {
-      // TODO: Handle other exercise types
-      onClose();
-      return;
-    }
-
     // Build URL with practice configuration
     const params = new URLSearchParams({
       exerciseType: selectedExerciseType,

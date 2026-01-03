@@ -2,7 +2,7 @@
 
 import type { IconType } from 'react-icons';
 // import { LuLanguages, LuListChecks, LuPenLine } from 'react-icons/lu';
-import { LuListChecks } from 'react-icons/lu';
+import { LuLanguages, LuListChecks } from 'react-icons/lu';
 
 import { Flex, Icon, RadioCard, Text } from '@chakra-ui/react';
 
@@ -20,19 +20,19 @@ interface ExerciseTypeOption {
   description: string;
 }
 
-const exerciseTypeOptions: ExerciseTypeOption[] = [
+const EXERCISE_TYPE_OPTIONS: ExerciseTypeOption[] = [
   {
     type: ExerciseType.MultipleChoice,
     icon: LuListChecks,
     label: 'Multiple Choice',
     description: 'Select the correct translation from options',
   },
-  // {
-  //   type: ExerciseType.Translation,
-  //   icon: LuLanguages,
-  //   label: 'Translation',
-  //   description: 'Translate words and phrases to your target language',
-  // },
+  {
+    type: ExerciseType.Translation,
+    icon: LuLanguages,
+    label: 'Translation',
+    description: 'Translate words and phrases to your target language',
+  },
   // {
   //   type: ExerciseType.FillInTheBlank,
   //   icon: LuPenLine,
@@ -41,10 +41,10 @@ const exerciseTypeOptions: ExerciseTypeOption[] = [
   // },
 ];
 
-export function ExerciseTypeSelector({
+export const ExerciseTypeSelector: React.FC<ExerciseTypeSelectorProps> = ({
   selectedType,
   onSelect,
-}: ExerciseTypeSelectorProps) {
+}) => {
   return (
     <Flex direction="column" gap={1.5}>
       <Text fontWeight="medium" fontSize="sm">
@@ -55,7 +55,7 @@ export function ExerciseTypeSelector({
         onValueChange={(e) => onSelect(e.value as ExerciseType)}
       >
         <Flex direction="column" gap={2}>
-          {exerciseTypeOptions.map((option) => (
+          {EXERCISE_TYPE_OPTIONS.map((option) => (
             <RadioCard.Item key={option.type} value={option.type} p={3}>
               <RadioCard.ItemHiddenInput />
               <Flex
@@ -94,4 +94,4 @@ export function ExerciseTypeSelector({
       </RadioCard.Root>
     </Flex>
   );
-}
+};
