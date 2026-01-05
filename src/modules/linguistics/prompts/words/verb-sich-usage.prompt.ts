@@ -1,13 +1,15 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const verbSichUsagePrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to provide usage examples for a German verb that can be used both with and without the reflexive pronoun "sich".
+export const buildVerbSichUsagePrompt = (
+  word: string,
+  targetLanguage: string,
+): string => {
+  return `You are a linguistic assistant. Your task is to provide usage examples for a German verb that can be used both with and without the reflexive pronoun "sich".
 
-  The German word is "{word}"
+  The German word is "${word}"
   
   LANGUAGE REQUIREMENTS:
-  - All explanations and descriptions must be in {targetLanguage}
+  - All explanations and descriptions must be in ${targetLanguage}
   - Only the German example sentences should be in German
   - Never mix languages within explanations
   
@@ -16,8 +18,8 @@ export const verbSichUsagePrompt = PromptTemplate.fromTemplate(
   - Focus on standard, grammatically correct usage
   - Provide clear explanations of the different meanings
   - Include 2-3 example sentences for each usage
-  `,
-);
+  `;
+};
 
 export const outputStructure = z.object({
   sichUsage: z

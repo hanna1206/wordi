@@ -1,15 +1,17 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const verbPrepositionsPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to provide prepositions that are specifically and idiomatically bound to a given German verb.
+export const buildVerbPrepositionsPrompt = (
+  word: string,
+  targetLanguage: string,
+): string => {
+  return `You are a linguistic assistant. Your task is to provide prepositions that are specifically and idiomatically bound to a given German verb.
 
-  The German word is "{word}"
+  The German word is "${word}"
   
   LANGUAGE REQUIREMENTS:
-  - The word "{word}" is in GERMAN
+  - The word "${word}" is in GERMAN
   - All example sentences must be in GERMAN
-  - All translations and explanations must be in "{targetLanguage}"
+  - All translations and explanations must be in "${targetLanguage}"
   - Never mix languages within a single field
   
   IMPORTANT: Focus on grammatically correct, standard written forms. Avoid colloquial or spoken language variations.
@@ -33,8 +35,8 @@ export const verbPrepositionsPrompt = PromptTemplate.fromTemplate(
   - Common directional or temporal prepositions unless they're idiomatically bound
   
   If this verb has no such specific prepositional requirements, return null.
-  `,
-);
+  `;
+};
 
 export const outputStructure = z.object({
   prepositions: z

@@ -1,19 +1,18 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
 import { AdjectiveType } from '../../linguistics.const';
 
-export const adjectiveTypePrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to classify the type of a German adjective.
+export const buildAdjectiveTypePrompt = (word: string): string => {
+  return `You are a linguistic assistant. Your task is to classify the type of a German adjective.
 
-  The German word is "{word}"
+  The German word is "${word}"
   
   IMPORTANT:
   - Qualitative adjectives describe qualities that can have degrees (can be more or less)
   - Relative adjectives describe relationships, origins, materials that don't have degrees
   - Return null if the word is not an adjective
-  `,
-);
+  `;
+};
 
 export const outputStructure = z.object({
   type: z

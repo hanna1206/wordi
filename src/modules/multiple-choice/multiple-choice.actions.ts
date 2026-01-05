@@ -2,27 +2,13 @@
 
 import * as Sentry from '@sentry/nextjs';
 
-import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
 import type { ActionResult } from '@/shared-types';
 
+import * as multipleChoiceService from './multiple-choice.service';
 import type {
   DistractorGenerationRequest,
   DistractorGenerationResponse,
 } from './multiple-choice.types';
-import {
-  generateDistractorsPrompt,
-  outputStructure,
-} from './prompts/generate-distractors.prompt';
-
-const generateDistractorsLlm = gpt41MiniModel.withStructuredOutput(
-  outputStructure,
-  {
-    method: 'jsonMode',
-  },
-);
-const generateDistractorsChain = generateDistractorsPrompt.pipe(
-  generateDistractorsLlm,
-);
 
 export async function generateDistractors(
   request: DistractorGenerationRequest,
@@ -54,12 +40,12 @@ Part of Speech: ${item.partOfSpeech}${item.gender ? `\nGender: ${item.gender}` :
       )
       .join('\n\n');
 
-    // Call LLM
-    const result = await generateDistractorsChain.invoke({
-      items: itemsFormatted,
-      targetLanguage: request.targetLanguage,
-      nativeLanguage: request.nativeLanguage,
-    });
+    // Call service
+    const result = await multipleChoiceService.generateDistractors(
+      itemsFormatted,
+      request.targetLanguage,
+      request.nativeLanguage,
+    );
 
     // Validate response structure
     const { distractors } = result;

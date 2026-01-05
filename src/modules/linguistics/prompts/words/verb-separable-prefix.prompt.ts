@@ -1,10 +1,9 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const verbSeparablePrefixPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to identify the separable prefix of a German verb if it has one.
+export const buildVerbSeparablePrefixPrompt = (word: string): string => {
+  return `You are a linguistic assistant. Your task is to identify the separable prefix of a German verb if it has one.
 
-  The German word is "{word}"
+  The German word is "${word}"
   
   Common separable prefixes in German include: ab-, an-, auf-, aus-, bei-, ein-, fest-, fort-, her-, hin-, los-, mit-, nach-, nieder-, statt-, um-, vor-, weg-, weiter-, zu-, zurück-, zusammen-.
   
@@ -15,8 +14,8 @@ export const verbSeparablePrefixPrompt = PromptTemplate.fromTemplate(
   - Return null if the verb has no separable prefix
   - Return null if the verb has an inseparable prefix
   - Return null if the word is not a verb
-  `,
-);
+  `;
+};
 
 export const outputStructure = z.object({
   separablePrefix: z

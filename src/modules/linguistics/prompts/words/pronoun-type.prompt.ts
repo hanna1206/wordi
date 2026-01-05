@@ -1,18 +1,20 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const pronounTypePrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to identify the type of a German personal pronoun.
+export const buildPronounTypePrompt = (
+  word: string,
+  targetLanguage: string,
+): string => {
+  return `You are a linguistic assistant. Your task is to identify the type of a German personal pronoun.
 
-  The word is "{word}"
-  All explanations should be given in "{targetLanguage}"
+  The word is "${word}"
+  All explanations should be given in "${targetLanguage}"
   
   IMPORTANT: 
   - Focus on grammatically correct, standard written forms
   - Provide the precise grammatical type of the pronoun
   - Return null if the word is not a personal pronoun
-  `,
-);
+  `;
+};
 
 export const outputStructure = z.object({
   pronounType: z

@@ -26,8 +26,7 @@ interface DueWordsCountActions {
 }
 
 interface DueWordsCountContextValue
-  extends DueWordsCountState,
-    DueWordsCountActions {}
+  extends DueWordsCountState, DueWordsCountActions {}
 
 const DueWordsCountContext = createContext<DueWordsCountContextValue | null>(
   null,

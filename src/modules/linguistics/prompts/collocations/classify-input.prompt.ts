@@ -1,10 +1,9 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const classifyInputPrompt = PromptTemplate.fromTemplate(
-  `You are a German language expert. Analyze the following German text and determine if it is a single compound word or a true multi-word collocation/phrase.
+export const buildClassifyInputPrompt = (input: string): string => {
+  return `You are a German language expert. Analyze the following German text and determine if it is a single compound word or a true multi-word collocation/phrase.
 
-Input: "{input}"
+Input: "${input}"
 
 CLASSIFICATION RULES:
 - A COMPOUND WORD is a single word that may be written with spaces but should be written as one word in German
@@ -29,8 +28,8 @@ IMPORTANT:
 - For compound words, provide the correct normalized form (written as one word)
 - For reflexive verbs, provide just the verb without "sich"
 - For collocations, provide the normalized form with proper spacing and capitalization
-`,
-);
+`;
+};
 
 export const outputStructure = z.object({
   classification: z

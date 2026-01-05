@@ -62,8 +62,7 @@ export interface VocabularyWordProgress {
   intervalDays: number;
 }
 
-export interface MinimalVocabularyWordWithProgress
-  extends MinimalVocabularyWord {
+export interface MinimalVocabularyWordWithProgress extends MinimalVocabularyWord {
   progress: VocabularyWordProgress | null;
 }
 

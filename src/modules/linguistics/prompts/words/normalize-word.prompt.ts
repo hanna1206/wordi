@@ -1,10 +1,9 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
 import { PartOfSpeech } from '@/modules/linguistics/linguistics.const';
 
-export const normalizeWordPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to provide the normalized form of a given word as it usually appears in dictionaries.
+export const buildNormalizeWordPrompt = (word: string): string => {
+  return `You are a linguistic assistant. Your task is to provide the normalized form of a given word as it usually appears in dictionaries.
   Normalized form of word should be in German language.
 
 IMPORTANT RULES:
@@ -33,9 +32,9 @@ Input: "schöne" → Output: "schön" (adjective, base form)
 Input: "mich" → Output: "ich" (personal pronoun, nominative form)
 Input: "diesen" → Output: "dieser" (demonstrative pronoun, base form)
 
-The word is "{word}"
-`,
-);
+The word is "${word}"
+`;
+};
 
 export const outputStructure = z.object({
   normalizedWord: z.string().describe('The normalized form of the word'),

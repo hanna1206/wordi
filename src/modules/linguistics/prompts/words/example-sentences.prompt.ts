@@ -1,8 +1,7 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const exampleSentencesPrompt = PromptTemplate.fromTemplate(
-  `Provide example sentences showing how the German word "{word}" is used in context.
+export const buildExampleSentencesPrompt = (word: string): string => {
+  return `Provide example sentences showing how the German word "${word}" is used in context.
 
 IMPORTANT INSTRUCTIONS:
 - All sentences must be in German
@@ -10,8 +9,8 @@ IMPORTANT INSTRUCTIONS:
 - Use natural, authentic German that native speakers would use
 - Vary the sentence structures and contexts
 - Show different meanings or uses if the word has multiple senses
-`,
-);
+`;
+};
 
 export const outputStructure = z.object({
   exampleSentences: z

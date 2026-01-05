@@ -1,20 +1,22 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const pronounDeclensionsPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to provide the declensions of a German personal pronoun.
+export const buildPronounDeclensionsPrompt = (
+  word: string,
+  targetLanguage: string,
+): string => {
+  return `You are a linguistic assistant. Your task is to provide the declensions of a German personal pronoun.
 
-  The word is "{word}"
-  All translations should be in "{targetLanguage}"
-  All explanations should be given in "{targetLanguage}"
+  The word is "${word}"
+  All translations should be in "${targetLanguage}"
+  All explanations should be given in "${targetLanguage}"
   
   IMPORTANT: 
   - Focus on grammatically correct, standard written forms
   - Provide formal, grammatically accurate explanations and examples
   - Include all relevant cases for the pronoun
   - All example sentences must be in German
-  `,
-);
+  `;
+};
 
 export const outputStructure = z.object({
   declensions: z

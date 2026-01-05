@@ -1,10 +1,12 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const collocationTranslationPrompt = PromptTemplate.fromTemplate(
-  `Translate the German collocation or phrase to {targetLanguage}.
+export const buildCollocationTranslationPrompt = (
+  collocation: string,
+  targetLanguage: string,
+): string => {
+  return `Translate the German collocation or phrase to ${targetLanguage}.
 
-Collocation: "{collocation}"
+Collocation: "${collocation}"
 
 IMPORTANT INSTRUCTIONS:
 - Provide the most natural and idiomatic translation of the entire phrase
@@ -14,8 +16,8 @@ IMPORTANT INSTRUCTIONS:
 - Be precise and authentic
 - If the input contains typos, grammatical errors, or mistakes, provide the corrected/normalized version
 - If the input is already correct, return it as-is for the normalized version
-`,
-);
+`;
+};
 
 export const outputStructure = z.object({
   mainTranslation: z

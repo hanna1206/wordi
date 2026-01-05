@@ -1,19 +1,18 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
 import { Regularity } from '../../linguistics.const';
 
-export const verbRegularityPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to determine whether a German verb is regular or irregular.
+export const buildVerbRegularityPrompt = (word: string): string => {
+  return `You are a linguistic assistant. Your task is to determine whether a German verb is regular or irregular.
 
-  The German word is "{word}"
+  The German word is "${word}"
   
   IMPORTANT: 
   - Focus on the basic verb stem, not on separable prefixes
   - Consider the verb's conjugation in Präteritum and past participle forms
   - Return null if the word is not a verb
-  `,
-);
+  `;
+};
 
 export const outputStructure = z.object({
   regular: z

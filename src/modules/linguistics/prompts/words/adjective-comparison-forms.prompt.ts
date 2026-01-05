@@ -1,18 +1,17 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const adjectiveComparisonFormsPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to provide the comparison forms of a German adjective.
+export const buildAdjectiveComparisonFormsPrompt = (word: string): string => {
+  return `You are a linguistic assistant. Your task is to provide the comparison forms of a German adjective.
 
-  The German word is "{word}"
+  The German word is "${word}"
   
   IMPORTANT:
   - Provide all three forms: positive (base), comparative, and superlative
   - For irregular adjectives, provide the actual irregular forms
   - If the adjective is relative and doesn't have comparison forms, return null for the entire object
   - Return null if the word is not an adjective
-  `,
-);
+  `;
+};
 
 export const outputStructure = z.object({
   comparisonForms: z

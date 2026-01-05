@@ -1,10 +1,9 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const verbReflexivityPrompt = PromptTemplate.fromTemplate(
-  `You are a linguistic assistant. Your task is to classify whether a German verb is reflexive, non-reflexive, or both.
+export const buildVerbReflexivityPrompt = (word: string): string => {
+  return `You are a linguistic assistant. Your task is to classify whether a German verb is reflexive, non-reflexive, or both.
 
-  The German word is "{word}"
+  The German word is "${word}"
   
   CRITICAL: Be extremely conservative and strict. Most verbs should be classified as 'non-reflexive'.
   
@@ -24,8 +23,8 @@ export const verbReflexivityPrompt = PromptTemplate.fromTemplate(
   - You're not absolutely certain both forms are equally established
   
   When in doubt, always choose 'non-reflexive'. Accuracy is more important than completeness.
-  `,
-);
+  `;
+};
 
 export const outputStructure = z.object({
   isReflexive: z

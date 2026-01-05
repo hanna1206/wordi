@@ -86,8 +86,7 @@ export interface PronounLinguisticItem extends BasicLinguisticItem {
   pronounType: string;
 }
 
-export interface DemonstrativePronounLinguisticItem
-  extends BasicLinguisticItem {
+export interface DemonstrativePronounLinguisticItem extends BasicLinguisticItem {
   declensions: DemonstrativeDeclension[];
   pronounType: string;
   baseForm: string;

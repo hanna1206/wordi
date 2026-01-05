@@ -31,9 +31,9 @@ import type {
 
 const GenerateLinguisticItemModal = dynamic<GenerateLinguisticItemModalProps>(
   () =>
-    import(
-      '@/modules/linguistics/components/generate-linguistic-item-modal'
-    ).then((mod) => mod.GenerateLinguisticItemModal),
+    import('@/modules/linguistics/components/generate-linguistic-item-modal').then(
+      (mod) => mod.GenerateLinguisticItemModal,
+    ),
   {
     ssr: false,
     loading: () => null,

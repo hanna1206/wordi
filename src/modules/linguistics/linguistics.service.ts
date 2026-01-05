@@ -1,3 +1,5 @@
+import { generateObject } from 'ai';
+
 import { gpt41Model } from '@/services/llm/gpt-4.1';
 import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
 
@@ -8,104 +10,104 @@ import {
   LinguisticCollocationItem,
 } from './linguistics.types';
 import {
-  classifyInputPrompt,
+  buildClassifyInputPrompt,
   outputStructure as classifyInputOutputStructure,
 } from './prompts/collocations/classify-input.prompt';
 import {
-  collocationExamplesPrompt,
+  buildCollocationExamplesPrompt,
   outputStructure as collocationExamplesOutputStructure,
 } from './prompts/collocations/collocation-examples.prompt';
 import {
-  collocationTranslationPrompt,
+  buildCollocationTranslationPrompt,
   outputStructure as collocationTranslationOutputStructure,
 } from './prompts/collocations/collocation-translation.prompt';
 import {
-  componentWordsPrompt,
+  buildComponentWordsPrompt,
   outputStructure as componentWordsOutputStructure,
 } from './prompts/collocations/component-words.prompt';
 import {
-  detectLanguageAndTranslatePrompt,
+  buildDetectLanguageAndTranslatePrompt,
   outputStructure as detectLanguageAndTranslateOutputStructure,
 } from './prompts/detect-language-and-translate.prompt';
 import {
-  adjectiveComparisonFormsPrompt,
+  buildAdjectiveComparisonFormsPrompt,
   outputStructure as adjectiveComparisonFormsOutputStructure,
 } from './prompts/words/adjective-comparison-forms.prompt';
 import {
-  adjectivePrepositionsPrompt,
+  buildAdjectivePrepositionsPrompt,
   outputStructure as adjectivePrepositionsOutputStructure,
 } from './prompts/words/adjective-prepositions.prompt';
 import {
-  adjectiveTypePrompt,
+  buildAdjectiveTypePrompt,
   outputStructure as adjectiveTypeOutputStructure,
 } from './prompts/words/adjective-type.prompt';
 import {
-  basicTranslationPrompt,
+  buildBasicTranslationPrompt,
   outputStructure as basicTranslationOutputStructure,
 } from './prompts/words/basic-translation.prompt';
 import {
-  collocationsPrompt,
+  buildCollocationsPrompt,
   outputStructure as collocationsOutputStructure,
 } from './prompts/words/collocations.prompt';
 import {
-  demonstrativePronounDeclensionsPrompt,
+  buildDemonstrativePronounDeclensionsPrompt,
   outputStructure as demonstrativePronounDeclensionsOutputStructure,
 } from './prompts/words/demonstrative-pronoun-declensions.prompt';
 import {
-  exampleSentencesPrompt,
+  buildExampleSentencesPrompt,
   outputStructure as exampleSentencesOutputStructure,
 } from './prompts/words/example-sentences.prompt';
 import {
-  normalizeWordPrompt,
+  buildNormalizeWordPrompt,
   outputStructure as normalizeWordOutputStructure,
 } from './prompts/words/normalize-word.prompt';
 import {
-  nounGenderPrompt,
+  buildNounGenderPrompt,
   outputStructure as nounGenderOutputStructure,
 } from './prompts/words/noun-gender.prompt';
 import {
-  nounPluralFormPrompt,
+  buildNounPluralFormPrompt,
   outputStructure as nounPluralFormOutputStructure,
 } from './prompts/words/noun-plural-form.prompt';
 import {
-  nounPrepositionsPrompt,
+  buildNounPrepositionsPrompt,
   outputStructure as nounPrepositionsOutputStructure,
 } from './prompts/words/noun-prepositions.prompt';
 import {
+  buildPronounDeclensionsPrompt,
   outputStructure as pronounDeclensionsOutputStructure,
-  pronounDeclensionsPrompt,
 } from './prompts/words/pronoun-declensions.prompt';
 import {
+  buildPronounTypePrompt,
   outputStructure as pronounTypeOutputStructure,
-  pronounTypePrompt,
 } from './prompts/words/pronoun-type.prompt';
 import {
+  buildSynonymsPrompt,
   outputStructure as synonymsOutputStructure,
-  synonymsPrompt,
 } from './prompts/words/synonyms.prompt';
 import {
+  buildVerbConjugationPrompt,
   outputStructure as verbConjugationOutputStructure,
-  verbConjugationPrompt,
 } from './prompts/words/verb-conjugation.prompt';
 import {
+  buildVerbPrepositionsPrompt,
   outputStructure as verbPrepositionsOutputStructure,
-  verbPrepositionsPrompt,
 } from './prompts/words/verb-prepositions.prompt';
 import {
+  buildVerbReflexivityPrompt,
   outputStructure as verbReflexivityOutputStructure,
-  verbReflexivityPrompt,
 } from './prompts/words/verb-reflexivity.prompt';
 import {
+  buildVerbRegularityPrompt,
   outputStructure as verbRegularityOutputStructure,
-  verbRegularityPrompt,
 } from './prompts/words/verb-regularity.prompt';
 import {
+  buildVerbSeparablePrefixPrompt,
   outputStructure as verbSeparablePrefixOutputStructure,
-  verbSeparablePrefixPrompt,
 } from './prompts/words/verb-separable-prefix.prompt';
 import {
+  buildVerbSichUsagePrompt,
   outputStructure as verbSichUsageOutputStructure,
-  verbSichUsagePrompt,
 } from './prompts/words/verb-sich-usage.prompt';
 
 const WRONG_VERB_SEPARABLE_PREFIX_VALUES = ['null', '/', '/null'];
@@ -116,157 +118,20 @@ const GERMAN_ARTICLES = {
   indefinite: ['ein', 'eine'],
 } as const;
 
-const basicTranslationLlm = gpt41Model.withStructuredOutput(
-  basicTranslationOutputStructure,
-);
-const basicTranslationChain = basicTranslationPrompt.pipe(basicTranslationLlm);
-
-const exampleSentencesLlm = gpt41Model.withStructuredOutput(
-  exampleSentencesOutputStructure,
-);
-const exampleSentencesChain = exampleSentencesPrompt.pipe(exampleSentencesLlm);
-
-const collocationsLlm = gpt41Model.withStructuredOutput(
-  collocationsOutputStructure,
-);
-const collocationsChain = collocationsPrompt.pipe(collocationsLlm);
-
-const synonymsLlm = gpt41Model.withStructuredOutput(synonymsOutputStructure);
-const synonymsChain = synonymsPrompt.pipe(synonymsLlm);
-
-const normalizeWordLlm = gpt41MiniModel.withStructuredOutput(
-  normalizeWordOutputStructure,
-);
-const normalizeWordChain = normalizeWordPrompt.pipe(normalizeWordLlm);
-
-const nounGenderLlm = gpt41MiniModel.withStructuredOutput(
-  nounGenderOutputStructure,
-);
-const nounGenderChain = nounGenderPrompt.pipe(nounGenderLlm);
-
-const nounPluralFormLlm = gpt41MiniModel.withStructuredOutput(
-  nounPluralFormOutputStructure,
-);
-const nounPluralFormChain = nounPluralFormPrompt.pipe(nounPluralFormLlm);
-
-const nounPrepositionsLlm = gpt41MiniModel.withStructuredOutput(
-  nounPrepositionsOutputStructure,
-);
-const nounPrepositionsChain = nounPrepositionsPrompt.pipe(nounPrepositionsLlm);
-
-const verbRegularityLlm = gpt41MiniModel.withStructuredOutput(
-  verbRegularityOutputStructure,
-);
-const verbRegularityChain = verbRegularityPrompt.pipe(verbRegularityLlm);
-
-const verbConjugationLlm = gpt41MiniModel.withStructuredOutput(
-  verbConjugationOutputStructure,
-);
-const verbConjugationChain = verbConjugationPrompt.pipe(verbConjugationLlm);
-
-const verbSeparablePrefixLlm = gpt41MiniModel.withStructuredOutput(
-  verbSeparablePrefixOutputStructure,
-);
-const verbSeparablePrefixChain = verbSeparablePrefixPrompt.pipe(
-  verbSeparablePrefixLlm,
-);
-
-const verbReflexivityLlm = gpt41Model.withStructuredOutput(
-  verbReflexivityOutputStructure,
-);
-const verbReflexivityChain = verbReflexivityPrompt.pipe(verbReflexivityLlm);
-
-const verbSichUsageLlm = gpt41Model.withStructuredOutput(
-  verbSichUsageOutputStructure,
-);
-const verbSichUsageChain = verbSichUsagePrompt.pipe(verbSichUsageLlm);
-
-const verbPrepositionsLlm = gpt41MiniModel.withStructuredOutput(
-  verbPrepositionsOutputStructure,
-);
-const verbPrepositionsChain = verbPrepositionsPrompt.pipe(verbPrepositionsLlm);
-
-const adjectiveTypeLlm = gpt41MiniModel.withStructuredOutput(
-  adjectiveTypeOutputStructure,
-);
-const adjectiveTypeChain = adjectiveTypePrompt.pipe(adjectiveTypeLlm);
-
-const adjectiveComparisonFormsLlm = gpt41MiniModel.withStructuredOutput(
-  adjectiveComparisonFormsOutputStructure,
-);
-const adjectiveComparisonFormsChain = adjectiveComparisonFormsPrompt.pipe(
-  adjectiveComparisonFormsLlm,
-);
-
-const adjectivePrepositionsLlm = gpt41MiniModel.withStructuredOutput(
-  adjectivePrepositionsOutputStructure,
-);
-const adjectivePrepositionsChain = adjectivePrepositionsPrompt.pipe(
-  adjectivePrepositionsLlm,
-);
-
-const pronounTypeLlm = gpt41MiniModel.withStructuredOutput(
-  pronounTypeOutputStructure,
-);
-const pronounTypeChain = pronounTypePrompt.pipe(pronounTypeLlm);
-
-const pronounDeclensionsLlm = gpt41MiniModel.withStructuredOutput(
-  pronounDeclensionsOutputStructure,
-);
-const pronounDeclensionsChain = pronounDeclensionsPrompt.pipe(
-  pronounDeclensionsLlm,
-);
-
-const demonstrativePronounDeclensionsLlm = gpt41MiniModel.withStructuredOutput(
-  demonstrativePronounDeclensionsOutputStructure,
-);
-const demonstrativePronounDeclensionsChain =
-  demonstrativePronounDeclensionsPrompt.pipe(
-    demonstrativePronounDeclensionsLlm,
-  );
-
-const classifyInputLlm = gpt41MiniModel.withStructuredOutput(
-  classifyInputOutputStructure,
-);
-const classifyInputChain = classifyInputPrompt.pipe(classifyInputLlm);
-
-const collocationTranslationLlm = gpt41Model.withStructuredOutput(
-  collocationTranslationOutputStructure,
-);
-const collocationTranslationChain = collocationTranslationPrompt.pipe(
-  collocationTranslationLlm,
-);
-
-const collocationExamplesLlm = gpt41Model.withStructuredOutput(
-  collocationExamplesOutputStructure,
-);
-const collocationExamplesChain = collocationExamplesPrompt.pipe(
-  collocationExamplesLlm,
-);
-
-const componentWordsLlm = gpt41Model.withStructuredOutput(
-  componentWordsOutputStructure,
-);
-const componentWordsChain = componentWordsPrompt.pipe(componentWordsLlm);
-
-const detectLanguageAndTranslateLlm = gpt41MiniModel.withStructuredOutput(
-  detectLanguageAndTranslateOutputStructure,
-);
-const detectLanguageAndTranslateChain = detectLanguageAndTranslatePrompt.pipe(
-  detectLanguageAndTranslateLlm,
-);
-
 export const detectLanguageAndTranslate = async (
   input: string,
   targetLanguage: string,
 ): Promise<LanguageDetectionResult> => {
-  const result = await detectLanguageAndTranslateChain.invoke({
-    input,
-    targetLanguage,
+  const messages = buildDetectLanguageAndTranslatePrompt(input, targetLanguage);
+
+  const { object } = await generateObject({
+    model: gpt41MiniModel,
+    schema: detectLanguageAndTranslateOutputStructure,
+    messages,
   });
 
   // Deduplicate translations by text (case-insensitive)
-  const uniqueTranslations = result.translations.reduce(
+  const uniqueTranslations = object.translations.reduce(
     (acc, translation) => {
       const normalizedText = translation.text.toLowerCase();
       if (!acc.some((t) => t.text.toLowerCase() === normalizedText)) {
@@ -274,14 +139,14 @@ export const detectLanguageAndTranslate = async (
       }
       return acc;
     },
-    [] as typeof result.translations,
+    [] as typeof object.translations,
   );
 
   return {
-    detectedLanguage: result.detectedLanguage,
-    isTargetLanguage: result.isGerman,
+    detectedLanguage: object.detectedLanguage,
+    isTargetLanguage: object.isGerman,
     translations: uniqueTranslations,
-    confidence: result.confidence,
+    confidence: object.confidence,
   };
 };
 
@@ -291,16 +156,28 @@ export const generateLinguisticCollocationItem = async (
 ): Promise<LinguisticCollocationItem> => {
   const [translationResult, examplesResult, componentWordsResult] =
     await Promise.all([
-      collocationTranslationChain.invoke({ collocation, targetLanguage }),
-      collocationExamplesChain.invoke({ collocation, targetLanguage }),
-      componentWordsChain.invoke({ collocation, targetLanguage }),
+      generateObject({
+        model: gpt41Model,
+        schema: collocationTranslationOutputStructure,
+        prompt: buildCollocationTranslationPrompt(collocation, targetLanguage),
+      }),
+      generateObject({
+        model: gpt41Model,
+        schema: collocationExamplesOutputStructure,
+        prompt: buildCollocationExamplesPrompt(collocation, targetLanguage),
+      }),
+      generateObject({
+        model: gpt41Model,
+        schema: componentWordsOutputStructure,
+        prompt: buildComponentWordsPrompt(collocation, targetLanguage),
+      }),
     ]);
 
   return {
-    normalizedCollocation: translationResult.normalizedCollocation,
-    mainTranslation: translationResult.mainTranslation,
-    exampleSentences: examplesResult.exampleSentences,
-    componentWords: componentWordsResult.componentWords,
+    normalizedCollocation: translationResult.object.normalizedCollocation,
+    mainTranslation: translationResult.object.mainTranslation,
+    exampleSentences: examplesResult.object.exampleSentences,
+    componentWords: componentWordsResult.object.componentWords,
   };
 };
 
@@ -334,19 +211,21 @@ export const classifyInput = async (
   }
 
   try {
-    const classificationResult = await classifyInputChain.invoke({
-      input: trimmedInput,
+    const { object } = await generateObject({
+      model: gpt41MiniModel,
+      schema: classifyInputOutputStructure,
+      prompt: buildClassifyInputPrompt(trimmedInput),
     });
 
-    if (classificationResult.classification === 'compound-word') {
+    if (object.classification === 'compound-word') {
       return {
         type: 'single-word',
-        normalizedInput: classificationResult.normalizedForm,
+        normalizedInput: object.normalizedForm,
       };
     } else {
       return {
         type: 'collocation',
-        normalizedInput: classificationResult.normalizedForm,
+        normalizedInput: object.normalizedForm,
       };
     }
   } catch {
@@ -366,80 +245,135 @@ export const generateLinguisticItem = async (
   word: string,
   targetLanguage: string,
 ) => {
-  const { normalizedWord, partOfSpeech } = await normalizeWordChain.invoke({
-    word,
+  // First, normalize the word to get its base form and part of speech
+  const { object: normalizeResult } = await generateObject({
+    model: gpt41Model,
+    schema: normalizeWordOutputStructure,
+    prompt: buildNormalizeWordPrompt(word),
   });
+
+  const { normalizedWord, partOfSpeech } = normalizeResult;
 
   // Run all translation-related queries in parallel
-  const basicTranslationPromise = basicTranslationChain.invoke({
-    word: normalizedWord,
-    targetLanguage,
+  const basicTranslationPromise = generateObject({
+    model: gpt41Model,
+    schema: basicTranslationOutputStructure,
+    prompt: buildBasicTranslationPrompt(normalizedWord, targetLanguage),
   });
 
-  const exampleSentencesPromise = exampleSentencesChain.invoke({
-    word: normalizedWord,
+  const exampleSentencesPromise = generateObject({
+    model: gpt41Model,
+    schema: exampleSentencesOutputStructure,
+    prompt: buildExampleSentencesPrompt(normalizedWord),
   });
 
-  const collocationsPromise = collocationsChain.invoke({
-    word: normalizedWord,
-    targetLanguage,
+  const collocationsPromise = generateObject({
+    model: gpt41Model,
+    schema: collocationsOutputStructure,
+    prompt: buildCollocationsPrompt(normalizedWord, targetLanguage),
   });
 
-  const synonymsPromise = synonymsChain.invoke({
-    word: normalizedWord,
+  const synonymsPromise = generateObject({
+    model: gpt41Model,
+    schema: synonymsOutputStructure,
+    prompt: buildSynonymsPrompt(normalizedWord),
   });
 
   // Run all noun-specific queries in parallel when it's a noun
   const nounGenderPromise = partOfSpeech.includes(PartOfSpeech.NOUN)
-    ? nounGenderChain.invoke({ word: normalizedWord })
+    ? generateObject({
+        model: gpt41Model,
+        schema: nounGenderOutputStructure,
+        prompt: buildNounGenderPrompt(normalizedWord),
+      })
     : Promise.resolve(undefined);
 
   const nounPluralFormPromise = partOfSpeech.includes(PartOfSpeech.NOUN)
-    ? nounPluralFormChain.invoke({ word: normalizedWord })
+    ? generateObject({
+        model: gpt41Model,
+        schema: nounPluralFormOutputStructure,
+        prompt: buildNounPluralFormPrompt(normalizedWord),
+      })
     : Promise.resolve(undefined);
 
   const nounPrepositionsPromise = partOfSpeech.includes(PartOfSpeech.NOUN)
-    ? nounPrepositionsChain.invoke({ word: normalizedWord, targetLanguage })
+    ? generateObject({
+        model: gpt41Model,
+        schema: nounPrepositionsOutputStructure,
+        prompt: buildNounPrepositionsPrompt(normalizedWord, targetLanguage),
+      })
     : Promise.resolve(undefined);
 
   // Run all verb-specific queries in parallel when it's a verb
   const verbRegularityPromise = partOfSpeech.includes(PartOfSpeech.VERB)
-    ? verbRegularityChain.invoke({ word: normalizedWord })
+    ? generateObject({
+        model: gpt41Model,
+        schema: verbRegularityOutputStructure,
+        prompt: buildVerbRegularityPrompt(normalizedWord),
+      })
     : Promise.resolve(undefined);
 
   const verbConjugationPromise = partOfSpeech.includes(PartOfSpeech.VERB)
-    ? verbConjugationChain.invoke({ word: normalizedWord })
+    ? generateObject({
+        model: gpt41Model,
+        schema: verbConjugationOutputStructure,
+        prompt: buildVerbConjugationPrompt(normalizedWord),
+      })
     : Promise.resolve(undefined);
 
   const verbSeparablePrefixPromise = partOfSpeech.includes(PartOfSpeech.VERB)
-    ? verbSeparablePrefixChain.invoke({ word: normalizedWord })
+    ? generateObject({
+        model: gpt41Model,
+        schema: verbSeparablePrefixOutputStructure,
+        prompt: buildVerbSeparablePrefixPrompt(normalizedWord),
+      })
     : Promise.resolve(undefined);
 
   const verbReflexivityPromise = partOfSpeech.includes(PartOfSpeech.VERB)
-    ? verbReflexivityChain.invoke({ word: normalizedWord })
+    ? generateObject({
+        model: gpt41Model,
+        schema: verbReflexivityOutputStructure,
+        prompt: buildVerbReflexivityPrompt(normalizedWord),
+      })
     : Promise.resolve(undefined);
 
   const verbPrepositionsPromise = partOfSpeech.includes(PartOfSpeech.VERB)
-    ? verbPrepositionsChain.invoke({ word: normalizedWord, targetLanguage })
+    ? generateObject({
+        model: gpt41Model,
+        schema: verbPrepositionsOutputStructure,
+        prompt: buildVerbPrepositionsPrompt(normalizedWord, targetLanguage),
+      })
     : Promise.resolve(undefined);
 
   // Run all adjective-specific queries in parallel when it's an adjective
   const adjectiveTypePromise = partOfSpeech.includes(PartOfSpeech.ADJECTIVE)
-    ? adjectiveTypeChain.invoke({ word: normalizedWord })
+    ? generateObject({
+        model: gpt41Model,
+        schema: adjectiveTypeOutputStructure,
+        prompt: buildAdjectiveTypePrompt(normalizedWord),
+      })
     : Promise.resolve(undefined);
 
   const adjectiveComparisonFormsPromise = partOfSpeech.includes(
     PartOfSpeech.ADJECTIVE,
   )
-    ? adjectiveComparisonFormsChain.invoke({ word: normalizedWord })
+    ? generateObject({
+        model: gpt41Model,
+        schema: adjectiveComparisonFormsOutputStructure,
+        prompt: buildAdjectiveComparisonFormsPrompt(normalizedWord),
+      })
     : Promise.resolve(undefined);
 
   const adjectivePrepositionsPromise = partOfSpeech.includes(
     PartOfSpeech.ADJECTIVE,
   )
-    ? adjectivePrepositionsChain.invoke({
-        word: normalizedWord,
-        targetLanguage,
+    ? generateObject({
+        model: gpt41Model,
+        schema: adjectivePrepositionsOutputStructure,
+        prompt: buildAdjectivePrepositionsPrompt(
+          normalizedWord,
+          targetLanguage,
+        ),
       })
     : Promise.resolve(undefined);
 
@@ -447,22 +381,34 @@ export const generateLinguisticItem = async (
   const pronounTypePromise = partOfSpeech.includes(
     PartOfSpeech.PERSONAL_PRONOUN,
   )
-    ? pronounTypeChain.invoke({ word: normalizedWord, targetLanguage })
+    ? generateObject({
+        model: gpt41Model,
+        schema: pronounTypeOutputStructure,
+        prompt: buildPronounTypePrompt(normalizedWord, targetLanguage),
+      })
     : Promise.resolve(undefined);
 
   const pronounDeclensionsPromise = partOfSpeech.includes(
     PartOfSpeech.PERSONAL_PRONOUN,
   )
-    ? pronounDeclensionsChain.invoke({ word: normalizedWord, targetLanguage })
+    ? generateObject({
+        model: gpt41Model,
+        schema: pronounDeclensionsOutputStructure,
+        prompt: buildPronounDeclensionsPrompt(normalizedWord, targetLanguage),
+      })
     : Promise.resolve(undefined);
 
   // Run demonstrative pronoun-specific queries when it's a demonstrative pronoun
   const demonstrativePronounDeclensionsPromise = partOfSpeech.includes(
     PartOfSpeech.DEMONSTRATIVE_PRONOUN,
   )
-    ? demonstrativePronounDeclensionsChain.invoke({
-        word: normalizedWord,
-        targetLanguage,
+    ? generateObject({
+        model: gpt41Model,
+        schema: demonstrativePronounDeclensionsOutputStructure,
+        prompt: buildDemonstrativePronounDeclensionsPrompt(
+          normalizedWord,
+          targetLanguage,
+        ),
       })
     : Promise.resolve(undefined);
 
@@ -510,42 +456,43 @@ export const generateLinguisticItem = async (
 
   // Merge noun-specific results
   if (nounGenderResult) {
-    posSpecifics = { ...posSpecifics, ...nounGenderResult };
+    posSpecifics = { ...posSpecifics, ...nounGenderResult.object };
   }
   if (nounPluralFormResult) {
-    posSpecifics = { ...posSpecifics, ...nounPluralFormResult };
+    posSpecifics = { ...posSpecifics, ...nounPluralFormResult.object };
   }
   if (nounPrepositionsResult) {
-    posSpecifics = { ...posSpecifics, ...nounPrepositionsResult };
+    posSpecifics = { ...posSpecifics, ...nounPrepositionsResult.object };
   }
 
   // Merge verb-specific results
   if (verbRegularityResult) {
-    posSpecifics = { ...posSpecifics, ...verbRegularityResult };
+    posSpecifics = { ...posSpecifics, ...verbRegularityResult.object };
   }
   if (verbConjugationResult) {
-    posSpecifics = { ...posSpecifics, ...verbConjugationResult };
+    posSpecifics = { ...posSpecifics, ...verbConjugationResult.object };
   }
   if (verbSeparablePrefixResult) {
     const normalizedPrefix = {
       separablePrefix:
-        verbSeparablePrefixResult.separablePrefix != null &&
+        verbSeparablePrefixResult.object.separablePrefix != null &&
         WRONG_VERB_SEPARABLE_PREFIX_VALUES.includes(
-          verbSeparablePrefixResult.separablePrefix,
+          verbSeparablePrefixResult.object.separablePrefix,
         )
           ? null
-          : verbSeparablePrefixResult.separablePrefix,
+          : verbSeparablePrefixResult.object.separablePrefix,
     };
     posSpecifics = { ...posSpecifics, ...normalizedPrefix };
   }
   if (verbReflexivityResult) {
-    posSpecifics = { ...posSpecifics, ...verbReflexivityResult };
+    posSpecifics = { ...posSpecifics, ...verbReflexivityResult.object };
 
     // Only fetch sich usage if the verb is classified as 'both'
-    if (verbReflexivityResult.isReflexive === 'both') {
-      const verbSichUsageResult = await verbSichUsageChain.invoke({
-        word: normalizedWord,
-        targetLanguage,
+    if (verbReflexivityResult.object.isReflexive === 'both') {
+      const { object: verbSichUsageResult } = await generateObject({
+        model: gpt41Model,
+        schema: verbSichUsageOutputStructure,
+        prompt: buildVerbSichUsagePrompt(normalizedWord, targetLanguage),
       });
       if (verbSichUsageResult) {
         posSpecifics = { ...posSpecifics, ...verbSichUsageResult };
@@ -553,44 +500,48 @@ export const generateLinguisticItem = async (
     }
   }
   if (verbPrepositionsResult) {
-    posSpecifics = { ...posSpecifics, ...verbPrepositionsResult };
+    posSpecifics = { ...posSpecifics, ...verbPrepositionsResult.object };
   }
 
   // Merge adjective-specific results
   if (adjectiveTypeResult) {
-    posSpecifics = { ...posSpecifics, ...adjectiveTypeResult };
+    posSpecifics = { ...posSpecifics, ...adjectiveTypeResult.object };
   }
   if (adjectiveComparisonFormsResult) {
-    posSpecifics = { ...posSpecifics, ...adjectiveComparisonFormsResult };
+    posSpecifics = {
+      ...posSpecifics,
+      ...adjectiveComparisonFormsResult.object,
+    };
   }
   if (adjectivePrepositionsResult) {
-    posSpecifics = { ...posSpecifics, ...adjectivePrepositionsResult };
+    posSpecifics = { ...posSpecifics, ...adjectivePrepositionsResult.object };
   }
 
   // Merge personal pronoun-specific results
   if (pronounTypeResult) {
-    posSpecifics = { ...posSpecifics, ...pronounTypeResult };
+    posSpecifics = { ...posSpecifics, ...pronounTypeResult.object };
   }
   if (pronounDeclensionsResult) {
-    posSpecifics = { ...posSpecifics, ...pronounDeclensionsResult };
+    posSpecifics = { ...posSpecifics, ...pronounDeclensionsResult.object };
   }
 
   // Merge demonstrative pronoun-specific results
   if (demonstrativePronounDeclensionsResult) {
     posSpecifics = {
       ...posSpecifics,
-      ...demonstrativePronounDeclensionsResult,
+      ...demonstrativePronounDeclensionsResult.object,
     };
   }
 
   return {
     normalizedWord,
     partOfSpeech,
-    mainTranslation: basicTranslationResult.mainTranslation,
-    additionalTranslations: basicTranslationResult.additionalTranslations,
-    exampleSentences: exampleSentencesResult.exampleSentences,
-    collocations: collocationsResult.collocations,
-    synonyms: synonymsResult.synonyms,
+    mainTranslation: basicTranslationResult.object.mainTranslation,
+    additionalTranslations:
+      basicTranslationResult.object.additionalTranslations,
+    exampleSentences: exampleSentencesResult.object.exampleSentences,
+    collocations: collocationsResult.object.collocations,
+    synonyms: synonymsResult.object.synonyms,
     ...posSpecifics,
   };
 };

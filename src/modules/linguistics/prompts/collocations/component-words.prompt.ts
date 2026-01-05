@@ -1,10 +1,12 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const componentWordsPrompt = PromptTemplate.fromTemplate(
-  `Extract the component words from the German collocation and provide their out-of-context translations in {targetLanguage}.
+export const buildComponentWordsPrompt = (
+  collocation: string,
+  targetLanguage: string,
+): string => {
+  return `Extract the component words from the German collocation and provide their out-of-context translations in ${targetLanguage}.
 
-Collocation: "{collocation}"
+Collocation: "${collocation}"
 
 IMPORTANT INSTRUCTIONS:
 - Identify the main content words in the collocation (nouns, verbs, adjectives, adverbs)
@@ -17,8 +19,8 @@ Examples:
 - "ins Kino gehen" → component words: ["das Kino", "gehen"]
 - "Kaffee trinken" → component words: ["der Kaffee", "trinken"]
 - "auf jeden Fall" → component words: ["der Fall"] (jeden is not a content word in this context)
-`,
-);
+`;
+};
 
 export const outputStructure = z.object({
   componentWords: z

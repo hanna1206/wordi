@@ -22,6 +22,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.2",
     "@chakra-ui/react": "^3.21.1",
     "@emotion/react": "^11.14.0",
     "@hookform/resolvers": "^5.1.1",
@@ -32,6 +33,7 @@
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.50.2",
     "ag-grid-react": "^34.1.1",
+    "ai": "^6.0.6",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
@@ -52,7 +54,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "drizzle-kit": "^0.18.1",
+    "drizzle-kit": "^0.31.8",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "eslint-config-prettier": "^10.1.5",

@@ -1,10 +1,11 @@
-import { ChatOpenAI } from '@langchain/openai';
+import { createOpenAI } from '@ai-sdk/openai';
 
 import { environment } from '@/config/environment.config';
 
 const { openAIApiKey } = environment;
 
-export const gpt5NanoModel = new ChatOpenAI({
+const openai = createOpenAI({
   apiKey: openAIApiKey,
-  model: 'gpt-5-nano',
 });
+
+export const gpt5NanoModel = openai('gpt-5-nano');

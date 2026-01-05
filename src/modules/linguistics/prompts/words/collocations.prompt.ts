@@ -1,12 +1,14 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const collocationsPrompt = PromptTemplate.fromTemplate(
-  `Provide the most useful collocations for the German word "{word}".
+export const buildCollocationsPrompt = (
+  word: string,
+  targetLanguage: string,
+): string => {
+  return `Provide the most useful collocations for the German word "${word}".
 
 LANGUAGE REQUIREMENTS:
 - All collocations must be in German
-- Translations must be in {targetLanguage}
+- Translations must be in ${targetLanguage}
 
 IMPORTANT INSTRUCTIONS:
 - Provide 5-8 most useful and typical collocations for a B2 language learner
@@ -23,8 +25,8 @@ Examples of good collocations:
 Examples of what NOT to include:
 - Compound words: for "Haus" don't include "Hausfrau", "Haustür"
 - Generic adjectives: for "Auto" don't include "großes Auto", "neues Auto"
-`,
-);
+`;
+};
 
 export const outputStructure = z.object({
   collocations: z

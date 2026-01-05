@@ -1,12 +1,13 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const demonstrativePronounDeclensionsPrompt =
-  PromptTemplate.fromTemplate(
-    `You are a linguistic assistant. Your task is to provide the complete declension table for a German demonstrative pronoun.
+export const buildDemonstrativePronounDeclensionsPrompt = (
+  word: string,
+  targetLanguage: string,
+): string => {
+  return `You are a linguistic assistant. Your task is to provide the complete declension table for a German demonstrative pronoun.
 
-  The word is "{word}"
-  All explanations should be given in "{targetLanguage}"
+  The word is "${word}"
+  All explanations should be given in "${targetLanguage}"
   
   IMPORTANT: 
   - Focus on grammatically correct, standard written forms
@@ -15,8 +16,8 @@ export const demonstrativePronounDeclensionsPrompt =
   - Provide the complete declension showing changes across all four cases and all genders
   - Include all four cases: Nominativ, Akkusativ, Dativ, Genitiv
   - Include all three genders: Masculine, Feminine, Neuter, plus Plural
-  `,
-  );
+  `;
+};
 
 export const outputStructure = z.object({
   declensions: z

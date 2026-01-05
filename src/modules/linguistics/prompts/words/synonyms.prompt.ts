@@ -1,8 +1,7 @@
-import { PromptTemplate } from '@langchain/core/prompts';
 import { z } from 'zod';
 
-export const synonymsPrompt = PromptTemplate.fromTemplate(
-  `Provide synonyms for the German word "{word}".
+export const buildSynonymsPrompt = (word: string): string => {
+  return `Provide synonyms for the German word "${word}".
 
 IMPORTANT INSTRUCTIONS:
 - All synonyms must be in German
@@ -13,8 +12,8 @@ IMPORTANT INSTRUCTIONS:
 - Return empty array [] if no clear, authentic synonyms exist
 - Only include words that native speakers would recognize as true synonyms
 - Consider the context and register (formal/informal) of the synonyms
-`,
-);
+`;
+};
 
 export const outputStructure = z.object({
   synonyms: z
