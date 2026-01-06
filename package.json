@@ -19,7 +19,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "test:llm:openai": "LLM_PROVIDER=openai tsx llm-tests/word-generation/test-word-generation.ts",
+    "test:llm:google": "LLM_PROVIDER=google tsx llm-tests/word-generation/test-word-generation.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.4",
