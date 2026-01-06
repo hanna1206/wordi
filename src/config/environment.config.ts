@@ -10,4 +10,8 @@ export const environment = {
   langSmithProject: process.env.LANGSMITH_PROJECT,
   // OpenAI configuration
   openAIApiKey: process.env.OPENAI_API_KEY,
+  // Google AI configuration
+  googleAiApiKey: process.env.GOOGLE_AI_API_KEY,
+  // LLM Provider configuration
+  llmProvider: process.env.LLM_PROVIDER || 'openai',
 };

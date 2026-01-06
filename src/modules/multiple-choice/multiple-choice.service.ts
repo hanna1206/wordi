@@ -1,6 +1,6 @@
 import { generateObject } from 'ai';
 
-import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
+import { getModels } from '@/services/llm/get-models';
 
 import type { DistractorGenerationResponse } from './multiple-choice.types';
 import {
@@ -13,8 +13,10 @@ export const generateDistractors = async (
   targetLanguage: string,
   nativeLanguage: string,
 ): Promise<DistractorGenerationResponse> => {
+  const models = getModels();
+
   const { object } = await generateObject({
-    model: gpt41MiniModel,
+    model: models.fast,
     schema: outputStructure,
     prompt: buildGenerateDistractorsPrompt(
       nativeLanguage,

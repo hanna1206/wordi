@@ -1,7 +1,6 @@
 import { generateObject } from 'ai';
 
-import { gpt41Model } from '@/services/llm/gpt-4.1';
-import { gpt41MiniModel } from '@/services/llm/gpt-4.1-mini';
+import { getModels } from '@/services/llm/get-models';
 
 import { PartOfSpeech } from './linguistics.const';
 import {
@@ -122,10 +121,11 @@ export const detectLanguageAndTranslate = async (
   input: string,
   targetLanguage: string,
 ): Promise<LanguageDetectionResult> => {
+  const models = getModels();
   const messages = buildDetectLanguageAndTranslatePrompt(input, targetLanguage);
 
   const { object } = await generateObject({
-    model: gpt41MiniModel,
+    model: models.fast,
     schema: detectLanguageAndTranslateOutputStructure,
     messages,
   });
@@ -154,20 +154,22 @@ export const generateLinguisticCollocationItem = async (
   collocation: string,
   targetLanguage: string,
 ): Promise<LinguisticCollocationItem> => {
+  const models = getModels();
+
   const [translationResult, examplesResult, componentWordsResult] =
     await Promise.all([
       generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: collocationTranslationOutputStructure,
         prompt: buildCollocationTranslationPrompt(collocation, targetLanguage),
       }),
       generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: collocationExamplesOutputStructure,
         prompt: buildCollocationExamplesPrompt(collocation, targetLanguage),
       }),
       generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: componentWordsOutputStructure,
         prompt: buildComponentWordsPrompt(collocation, targetLanguage),
       }),
@@ -184,6 +186,7 @@ export const generateLinguisticCollocationItem = async (
 export const classifyInput = async (
   input: string,
 ): Promise<InputClassification> => {
+  const models = getModels();
   const trimmedInput = input.trim();
 
   const words = trimmedInput.split(/\s+/);
@@ -212,7 +215,7 @@ export const classifyInput = async (
 
   try {
     const { object } = await generateObject({
-      model: gpt41MiniModel,
+      model: models.fast,
       schema: classifyInputOutputStructure,
       prompt: buildClassifyInputPrompt(trimmedInput),
     });
@@ -245,9 +248,11 @@ export const generateLinguisticItem = async (
   word: string,
   targetLanguage: string,
 ) => {
+  const models = getModels();
+
   // First, normalize the word to get its base form and part of speech
   const { object: normalizeResult } = await generateObject({
-    model: gpt41Model,
+    model: models.standard,
     schema: normalizeWordOutputStructure,
     prompt: buildNormalizeWordPrompt(word),
   });
@@ -256,25 +261,25 @@ export const generateLinguisticItem = async (
 
   // Run all translation-related queries in parallel
   const basicTranslationPromise = generateObject({
-    model: gpt41Model,
+    model: models.standard,
     schema: basicTranslationOutputStructure,
     prompt: buildBasicTranslationPrompt(normalizedWord, targetLanguage),
   });
 
   const exampleSentencesPromise = generateObject({
-    model: gpt41Model,
+    model: models.standard,
     schema: exampleSentencesOutputStructure,
     prompt: buildExampleSentencesPrompt(normalizedWord),
   });
 
   const collocationsPromise = generateObject({
-    model: gpt41Model,
+    model: models.standard,
     schema: collocationsOutputStructure,
     prompt: buildCollocationsPrompt(normalizedWord, targetLanguage),
   });
 
   const synonymsPromise = generateObject({
-    model: gpt41Model,
+    model: models.standard,
     schema: synonymsOutputStructure,
     prompt: buildSynonymsPrompt(normalizedWord),
   });
@@ -282,7 +287,7 @@ export const generateLinguisticItem = async (
   // Run all noun-specific queries in parallel when it's a noun
   const nounGenderPromise = partOfSpeech.includes(PartOfSpeech.NOUN)
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: nounGenderOutputStructure,
         prompt: buildNounGenderPrompt(normalizedWord),
       })
@@ -290,7 +295,7 @@ export const generateLinguisticItem = async (
 
   const nounPluralFormPromise = partOfSpeech.includes(PartOfSpeech.NOUN)
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: nounPluralFormOutputStructure,
         prompt: buildNounPluralFormPrompt(normalizedWord),
       })
@@ -298,7 +303,7 @@ export const generateLinguisticItem = async (
 
   const nounPrepositionsPromise = partOfSpeech.includes(PartOfSpeech.NOUN)
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: nounPrepositionsOutputStructure,
         prompt: buildNounPrepositionsPrompt(normalizedWord, targetLanguage),
       })
@@ -307,7 +312,7 @@ export const generateLinguisticItem = async (
   // Run all verb-specific queries in parallel when it's a verb
   const verbRegularityPromise = partOfSpeech.includes(PartOfSpeech.VERB)
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: verbRegularityOutputStructure,
         prompt: buildVerbRegularityPrompt(normalizedWord),
       })
@@ -315,7 +320,7 @@ export const generateLinguisticItem = async (
 
   const verbConjugationPromise = partOfSpeech.includes(PartOfSpeech.VERB)
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: verbConjugationOutputStructure,
         prompt: buildVerbConjugationPrompt(normalizedWord),
       })
@@ -323,7 +328,7 @@ export const generateLinguisticItem = async (
 
   const verbSeparablePrefixPromise = partOfSpeech.includes(PartOfSpeech.VERB)
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: verbSeparablePrefixOutputStructure,
         prompt: buildVerbSeparablePrefixPrompt(normalizedWord),
       })
@@ -331,7 +336,7 @@ export const generateLinguisticItem = async (
 
   const verbReflexivityPromise = partOfSpeech.includes(PartOfSpeech.VERB)
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: verbReflexivityOutputStructure,
         prompt: buildVerbReflexivityPrompt(normalizedWord),
       })
@@ -339,7 +344,7 @@ export const generateLinguisticItem = async (
 
   const verbPrepositionsPromise = partOfSpeech.includes(PartOfSpeech.VERB)
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: verbPrepositionsOutputStructure,
         prompt: buildVerbPrepositionsPrompt(normalizedWord, targetLanguage),
       })
@@ -348,7 +353,7 @@ export const generateLinguisticItem = async (
   // Run all adjective-specific queries in parallel when it's an adjective
   const adjectiveTypePromise = partOfSpeech.includes(PartOfSpeech.ADJECTIVE)
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: adjectiveTypeOutputStructure,
         prompt: buildAdjectiveTypePrompt(normalizedWord),
       })
@@ -358,7 +363,7 @@ export const generateLinguisticItem = async (
     PartOfSpeech.ADJECTIVE,
   )
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: adjectiveComparisonFormsOutputStructure,
         prompt: buildAdjectiveComparisonFormsPrompt(normalizedWord),
       })
@@ -368,7 +373,7 @@ export const generateLinguisticItem = async (
     PartOfSpeech.ADJECTIVE,
   )
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: adjectivePrepositionsOutputStructure,
         prompt: buildAdjectivePrepositionsPrompt(
           normalizedWord,
@@ -382,7 +387,7 @@ export const generateLinguisticItem = async (
     PartOfSpeech.PERSONAL_PRONOUN,
   )
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: pronounTypeOutputStructure,
         prompt: buildPronounTypePrompt(normalizedWord, targetLanguage),
       })
@@ -392,7 +397,7 @@ export const generateLinguisticItem = async (
     PartOfSpeech.PERSONAL_PRONOUN,
   )
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: pronounDeclensionsOutputStructure,
         prompt: buildPronounDeclensionsPrompt(normalizedWord, targetLanguage),
       })
@@ -403,7 +408,7 @@ export const generateLinguisticItem = async (
     PartOfSpeech.DEMONSTRATIVE_PRONOUN,
   )
     ? generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: demonstrativePronounDeclensionsOutputStructure,
         prompt: buildDemonstrativePronounDeclensionsPrompt(
           normalizedWord,
@@ -490,7 +495,7 @@ export const generateLinguisticItem = async (
     // Only fetch sich usage if the verb is classified as 'both'
     if (verbReflexivityResult.object.isReflexive === 'both') {
       const { object: verbSichUsageResult } = await generateObject({
-        model: gpt41Model,
+        model: models.standard,
         schema: verbSichUsageOutputStructure,
         prompt: buildVerbSichUsagePrompt(normalizedWord, targetLanguage),
       });
