@@ -103,7 +103,9 @@ const { llmProvider } = environment;
 const validateCredentials = (): void => {
   if (!llmProvider) {
     console.error('Error: LLM_PROVIDER environment variable is not set.');
-    console.error('Please set LLM_PROVIDER to one of: openai, google');
+    console.error(
+      'Please set LLM_PROVIDER to one of: openai, google, anthropic',
+    );
     process.exit(1);
   }
 
@@ -120,9 +122,15 @@ const validateCredentials = (): void => {
       console.error('Please set the GOOGLE_AI_API_KEY environment variable.');
       process.exit(1);
     }
+  } else if (llmProvider === 'anthropic') {
+    if (!environment.anthropicApiKey) {
+      console.error('Error: Missing API credentials for Anthropic.');
+      console.error('Please set the ANTHROPIC_API_KEY environment variable.');
+      process.exit(1);
+    }
   } else {
     console.error(`Error: Unknown provider "${llmProvider}".`);
-    console.error('Supported providers: openai, google');
+    console.error('Supported providers: openai, google, anthropic');
     process.exit(1);
   }
 };

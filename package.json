@@ -21,9 +21,11 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "test:llm:openai": "LLM_PROVIDER=openai tsx llm-tests/word-generation/test-word-generation.ts",
-    "test:llm:google": "LLM_PROVIDER=google tsx llm-tests/word-generation/test-word-generation.ts"
+    "test:llm:google": "LLM_PROVIDER=google tsx llm-tests/word-generation/test-word-generation.ts",
+    "test:llm:anthropic": "LLM_PROVIDER=anthropic tsx llm-tests/word-generation/test-word-generation.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.8",
     "@ai-sdk/google": "^3.0.4",
     "@ai-sdk/openai": "^3.0.2",
     "@chakra-ui/react": "^3.21.1",

@@ -1,0 +1,479 @@
+{
+  "metadata": {
+    "timestamp": "2026-01-07T13:59:09.601Z",
+    "provider": "openai",
+    "totalTests": 6,
+    "git": {
+      "branch": "develop",
+      "commitHash": "e7357e1",
+      "commitDate": "2026-01-07T12:38:28+01:00"
+    },
+    "environment": {
+      "nodeVersion": "v24.11.1",
+      "platform": "darwin"
+    }
+  },
+  "results": [
+    {
+      "testCase": {
+        "word": "Haus",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "noun"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "das Haus",
+        "partOfSpeech": [
+          "noun"
+        ],
+        "mainTranslation": "the house",
+        "additionalTranslations": [],
+        "exampleSentences": [
+          "Das Haus am Ende der Straße ist sehr alt.",
+          "Wir treffen uns heute Abend bei mir zu Hause.",
+          "Jedes Jahr streichen wir unser Haus neu.",
+          "Im Haus ist es schön warm, obwohl es draußen schneit.",
+          "Sie möchten ein Haus kaufen, weil sie mehr Platz für die Familie brauchen."
+        ],
+        "collocations": [
+          {
+            "collocation": "ins Haus kommen",
+            "translation": "to come into the house / to be delivered soon (figuratively: something is about to happen)"
+          },
+          {
+            "collocation": "aus dem Haus gehen",
+            "translation": "to leave the house"
+          },
+          {
+            "collocation": "jemanden aus dem Haus werfen",
+            "translation": "to throw someone out of the house / to evict someone"
+          },
+          {
+            "collocation": "im Haus sein",
+            "translation": "to be in the house"
+          },
+          {
+            "collocation": "das Haus verlassen",
+            "translation": "to leave the house"
+          },
+          {
+            "collocation": "etwas ins Haus stehen",
+            "translation": "something is impending / about to happen (literally: something is 'standing in the house')"
+          },
+          {
+            "collocation": "das Haus hüten",
+            "translation": "to stay at home and look after the house (to house-sit)"
+          }
+        ],
+        "synonyms": [
+          "das Gebäude",
+          "die Unterkunft",
+          "das Wohnhaus"
+        ],
+        "gender": "neuter",
+        "pluralForm": "die Häuser",
+        "prepositions": null
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:58:53.182Z",
+        "endTime": "2026-01-07T13:58:56.470Z",
+        "durationMs": 3288
+      }
+    },
+    {
+      "testCase": {
+        "word": "Frau",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "noun"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "die Frau",
+        "partOfSpeech": [
+          "noun"
+        ],
+        "mainTranslation": "woman",
+        "additionalTranslations": [
+          "wife",
+          "lady"
+        ],
+        "exampleSentences": [
+          "Die Frau liest jeden Morgen die Zeitung im Park.",
+          "Meine Nachbarin ist eine sehr freundliche Frau.",
+          "Er schenkt seiner Frau zum Geburtstag Blumen.",
+          "Die Frau an der Kasse war heute besonders schnell.",
+          "Als junge Frau reiste sie um die Welt."
+        ],
+        "collocations": [
+          {
+            "collocation": "eine Frau heiraten",
+            "translation": "to marry a woman"
+          },
+          {
+            "collocation": "sich in eine Frau verlieben",
+            "translation": "to fall in love with a woman"
+          },
+          {
+            "collocation": "eine Frau ansprechen",
+            "translation": "to approach/address a woman"
+          },
+          {
+            "collocation": "eine Frau bewundern",
+            "translation": "to admire a woman"
+          },
+          {
+            "collocation": "eine Frau respektieren",
+            "translation": "to respect a woman"
+          },
+          {
+            "collocation": "eine Frau betrügen",
+            "translation": "to cheat on a woman"
+          },
+          {
+            "collocation": "eine Frau kennenlernen",
+            "translation": "to get to know/meet a woman"
+          }
+        ],
+        "synonyms": [
+          "die Dame",
+          "die Ehefrau",
+          "die Gattin"
+        ],
+        "gender": "feminine",
+        "pluralForm": "die Frauen",
+        "prepositions": null
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:58:56.470Z",
+        "endTime": "2026-01-07T13:58:58.889Z",
+        "durationMs": 2419
+      }
+    },
+    {
+      "testCase": {
+        "word": "gehen",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "verb"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "gehen",
+        "partOfSpeech": [
+          "verb"
+        ],
+        "mainTranslation": "to go",
+        "additionalTranslations": [
+          "to walk"
+        ],
+        "exampleSentences": [
+          "Ich gehe jeden Morgen um sieben Uhr zur Arbeit.",
+          "Wie spät ist es? Wir müssen jetzt wirklich gehen.",
+          "Geht das Licht in deinem Zimmer noch?",
+          "Die Uhr geht fünf Minuten nach.",
+          "Es geht ihm heute nicht so gut."
+        ],
+        "collocations": [
+          {
+            "collocation": "spazieren gehen",
+            "translation": "to go for a walk"
+          },
+          {
+            "collocation": "ins Kino gehen",
+            "translation": "to go to the cinema"
+          },
+          {
+            "collocation": "zur Arbeit gehen",
+            "translation": "to go to work"
+          },
+          {
+            "collocation": "aus dem Haus gehen",
+            "translation": "to leave the house"
+          },
+          {
+            "collocation": "schief gehen",
+            "translation": "to go wrong"
+          },
+          {
+            "collocation": "auf Nummer sicher gehen",
+            "translation": "to play it safe"
+          },
+          {
+            "collocation": "an die frische Luft gehen",
+            "translation": "to go get some fresh air"
+          },
+          {
+            "collocation": "jemandem auf die Nerven gehen",
+            "translation": "to get on someone's nerves"
+          }
+        ],
+        "synonyms": [
+          "laufen",
+          "marschieren",
+          "spazieren",
+          "wandern"
+        ],
+        "regular": "irregular",
+        "conjugation": "gehen, geht, ging, ist gegangen",
+        "separablePrefix": null,
+        "isReflexive": "non-reflexive",
+        "prepositions": null
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:58:58.889Z",
+        "endTime": "2026-01-07T13:59:01.576Z",
+        "durationMs": 2687
+      }
+    },
+    {
+      "testCase": {
+        "word": "aufstehen",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "verb"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "aufstehen",
+        "partOfSpeech": [
+          "verb"
+        ],
+        "mainTranslation": "to get up",
+        "additionalTranslations": [
+          "to stand up",
+          "to rise"
+        ],
+        "exampleSentences": [
+          "Ich muss morgen früh um sechs Uhr aufstehen.",
+          "Wenn der Lehrer den Raum betritt, stehen die Schüler auf.",
+          "Nach dem Sturz konnte sie nur mit Mühe wieder aufstehen.",
+          "Am Wochenende stehe ich meistens später auf.",
+          "Bitte stehen Sie auf, wenn Sie angesprochen werden."
+        ],
+        "collocations": [
+          {
+            "collocation": "früh aufstehen",
+            "translation": "to get up early"
+          },
+          {
+            "collocation": "spät aufstehen",
+            "translation": "to get up late"
+          },
+          {
+            "collocation": "aus dem Bett aufstehen",
+            "translation": "to get out of bed"
+          },
+          {
+            "collocation": "schwer aufstehen können",
+            "translation": "to have difficulty getting up"
+          },
+          {
+            "collocation": "wieder aufstehen",
+            "translation": "to get up again / to rise again"
+          },
+          {
+            "collocation": "vom Tisch aufstehen",
+            "translation": "to stand up from the table"
+          },
+          {
+            "collocation": "gegen jemanden/etwas aufstehen",
+            "translation": "to rise up against someone/something"
+          }
+        ],
+        "synonyms": [
+          "sich erheben",
+          "aufwachen",
+          "hochkommen"
+        ],
+        "regular": "irregular",
+        "conjugation": "aufstehen, steht auf, stand auf, ist aufgestanden",
+        "separablePrefix": "auf",
+        "isReflexive": "non-reflexive",
+        "prepositions": null
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:59:01.576Z",
+        "endTime": "2026-01-07T13:59:04.779Z",
+        "durationMs": 3203
+      }
+    },
+    {
+      "testCase": {
+        "word": "gut",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "adjective"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "gut",
+        "partOfSpeech": [
+          "adjective"
+        ],
+        "mainTranslation": "good",
+        "additionalTranslations": [],
+        "exampleSentences": [
+          "Mir geht es heute sehr gut.",
+          "Das Essen schmeckt richtig gut.",
+          "Kannst du mir einen guten Tipp geben?",
+          "Er hat seine Arbeit sehr gut gemacht.",
+          "Gut, dann treffen wir uns um acht Uhr."
+        ],
+        "collocations": [
+          {
+            "collocation": "gut ankommen",
+            "translation": "to be well received, to go down well"
+          },
+          {
+            "collocation": "gut drauf sein",
+            "translation": "to be in a good mood"
+          },
+          {
+            "collocation": "gut ausgehen",
+            "translation": "to turn out well"
+          },
+          {
+            "collocation": "es gut meinen (mit)",
+            "translation": "to mean well (towards)"
+          },
+          {
+            "collocation": "sich gut verstehen (mit jemandem)",
+            "translation": "to get along well (with someone)"
+          },
+          {
+            "collocation": "gut funktionieren",
+            "translation": "to work/function well"
+          },
+          {
+            "collocation": "gut zu gebrauchen sein",
+            "translation": "to be very useful"
+          }
+        ],
+        "synonyms": [
+          "toll",
+          "prima",
+          "ausgezeichnet",
+          "super",
+          "hervorragend",
+          "exzellent",
+          "vorzüglich",
+          "wohl",
+          "angenehm"
+        ],
+        "type": "qualitative",
+        "comparisonForms": {
+          "positive": "gut",
+          "comparative": "besser",
+          "superlative": "beste"
+        },
+        "prepositions": null
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:59:04.779Z",
+        "endTime": "2026-01-07T13:59:07.478Z",
+        "durationMs": 2699
+      }
+    },
+    {
+      "testCase": {
+        "word": "ich",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "personal pronoun"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "ich",
+        "partOfSpeech": [
+          "personal pronoun"
+        ],
+        "mainTranslation": "I",
+        "additionalTranslations": [],
+        "exampleSentences": [
+          "Ich habe heute keine Zeit, ins Kino zu gehen.",
+          "Morgen muss ich früh aufstehen, weil ich zur Arbeit fahre.",
+          "Ich glaube, dass wir das schaffen können!",
+          "Wenn ich ehrlich bin, mag ich keinen Kaffee.",
+          "Gestern habe ich meine Freundin besucht und wir haben zusammen gekocht."
+        ],
+        "collocations": [
+          {
+            "collocation": "ich denke, dass",
+            "translation": "I think that"
+          },
+          {
+            "collocation": "ich glaube, dass",
+            "translation": "I believe that"
+          },
+          {
+            "collocation": "ich bin der Meinung, dass",
+            "translation": "I am of the opinion that"
+          },
+          {
+            "collocation": "ich habe das Gefühl, dass",
+            "translation": "I have the feeling that"
+          },
+          {
+            "collocation": "ich freue mich auf",
+            "translation": "I am looking forward to"
+          },
+          {
+            "collocation": "ich interessiere mich für",
+            "translation": "I am interested in"
+          },
+          {
+            "collocation": "ich erinnere mich an",
+            "translation": "I remember (something)"
+          }
+        ],
+        "synonyms": [],
+        "pronounType": "1st person singular",
+        "declensions": [
+          {
+            "case": "Nominativ",
+            "form": "ich",
+            "translation": "I",
+            "example": "Ich gehe heute ins Kino."
+          },
+          {
+            "case": "Akkusativ",
+            "form": "mich",
+            "translation": "me",
+            "example": "Sie sieht mich im Park."
+          },
+          {
+            "case": "Dativ",
+            "form": "mir",
+            "translation": "to me",
+            "example": "Er gibt mir das Buch."
+          },
+          {
+            "case": "Genitiv",
+            "form": "meiner",
+            "translation": "of me",
+            "example": "Sie gedenkt meiner."
+          }
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:59:07.479Z",
+        "endTime": "2026-01-07T13:59:09.600Z",
+        "durationMs": 2121
+      }
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "successful": 6,
+    "failed": 0,
+    "averageDurationMs": 2736.1666666666665
+  }
+}

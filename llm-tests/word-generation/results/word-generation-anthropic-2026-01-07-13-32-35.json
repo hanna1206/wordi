@@ -1,0 +1,579 @@
+{
+  "metadata": {
+    "timestamp": "2026-01-07T13:32:35.632Z",
+    "provider": "anthropic",
+    "totalTests": 6,
+    "git": {
+      "branch": "develop",
+      "commitHash": "e7357e1",
+      "commitDate": "2026-01-07T12:38:28+01:00"
+    },
+    "environment": {
+      "nodeVersion": "v24.11.1",
+      "platform": "darwin"
+    }
+  },
+  "results": [
+    {
+      "testCase": {
+        "word": "Haus",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "noun"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "das Haus",
+        "partOfSpeech": [
+          "noun"
+        ],
+        "mainTranslation": "house",
+        "additionalTranslations": [
+          "home",
+          "building"
+        ],
+        "exampleSentences": [
+          "Das Haus meiner Eltern steht am Stadtrand von München.",
+          "Wir haben letztes Jahr ein neues Haus gekauft und sind im Sommer eingezogen.",
+          "Das Haus wurde im 19. Jahrhundert erbaut und steht unter Denkmalschutz.",
+          "Ich muss noch das Haus putzen, bevor die Gäste kommen.",
+          "Das alte Haus am Ende der Straße sieht verlassen aus.",
+          "Sie hat das Haus von ihrer Großmutter geerbt.",
+          "Das Haus hat einen großen Garten mit vielen Obstbäumen."
+        ],
+        "collocations": [
+          {
+            "collocation": "ins Haus stehen",
+            "translation": "to be imminent, to be just around the corner"
+          },
+          {
+            "collocation": "außer Haus sein",
+            "translation": "to be out, to be away from home"
+          },
+          {
+            "collocation": "nach Hause gehen",
+            "translation": "to go home"
+          },
+          {
+            "collocation": "zu Hause sein",
+            "translation": "to be at home"
+          },
+          {
+            "collocation": "von Haus aus",
+            "translation": "originally, by nature, from the outset"
+          },
+          {
+            "collocation": "frei Haus liefern",
+            "translation": "to deliver free to your door"
+          },
+          {
+            "collocation": "Haus und Hof verlieren",
+            "translation": "to lose everything, to lose house and home"
+          },
+          {
+            "collocation": "im Hause bleiben",
+            "translation": "to stay in the family, to remain in-house"
+          }
+        ],
+        "synonyms": [
+          "das Gebäude",
+          "die Immobilie",
+          "das Heim",
+          "das Anwesen",
+          "die Behausung"
+        ],
+        "gender": "neuter",
+        "pluralForm": "die Häuser",
+        "prepositions": null
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:31:36.886Z",
+        "endTime": "2026-01-07T13:31:46.890Z",
+        "durationMs": 10004
+      }
+    },
+    {
+      "testCase": {
+        "word": "Frau",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "noun"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "die Frau",
+        "partOfSpeech": [
+          "noun"
+        ],
+        "mainTranslation": "woman",
+        "additionalTranslations": [
+          "wife",
+          "Mrs."
+        ],
+        "exampleSentences": [
+          "Die Frau arbeitet als Ärztin im Krankenhaus.",
+          "Meine Frau und ich fahren nächste Woche in den Urlaub.",
+          "Die junge Frau an der Kasse war sehr freundlich.",
+          "Frau Müller kommt heute Nachmittag zu Besuch.",
+          "Die Frau mit dem roten Mantel ist meine Nachbarin.",
+          "Jede Frau hat das Recht auf Gleichberechtigung.",
+          "Die Frau des Bürgermeisters engagiert sich sozial in der Stadt."
+        ],
+        "collocations": [
+          {
+            "collocation": "die Frau fürs Leben",
+            "translation": "the woman of one's life / one's soulmate"
+          },
+          {
+            "collocation": "eine verheiratete Frau",
+            "translation": "a married woman"
+          },
+          {
+            "collocation": "eine berufstätige Frau",
+            "translation": "a working woman"
+          },
+          {
+            "collocation": "eine selbstständige Frau",
+            "translation": "an independent woman"
+          },
+          {
+            "collocation": "Frau und Mann",
+            "translation": "woman and man / wife and husband"
+          },
+          {
+            "collocation": "an die Frau bringen",
+            "translation": "to sell something (informal)"
+          },
+          {
+            "collocation": "eine starke Frau",
+            "translation": "a strong woman"
+          }
+        ],
+        "synonyms": [
+          "die Dame",
+          "das Weib",
+          "die Ehefrau",
+          "die Gattin",
+          "die Gemahlin"
+        ],
+        "gender": "feminine",
+        "pluralForm": "die Frauen",
+        "prepositions": null
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:31:46.890Z",
+        "endTime": "2026-01-07T13:31:55.531Z",
+        "durationMs": 8641
+      }
+    },
+    {
+      "testCase": {
+        "word": "gehen",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "verb"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "gehen",
+        "partOfSpeech": [
+          "verb"
+        ],
+        "mainTranslation": "to go",
+        "additionalTranslations": [
+          "to walk",
+          "to leave",
+          "to work",
+          "to function"
+        ],
+        "exampleSentences": [
+          "Ich gehe jeden Morgen zur Arbeit zu Fuß.",
+          "Wie geht es dir heute?",
+          "Die Kinder gehen schon in die Schule.",
+          "Wir gehen am Wochenende ins Kino.",
+          "Der Bus geht um 8 Uhr vom Hauptbahnhof ab.",
+          "Das geht leider nicht, ich habe keine Zeit.",
+          "Geht das Fenster noch auf oder ist es kaputt?",
+          "Sie geht seit Jahren regelmäßig schwimmen.",
+          "Meine Uhr geht fünf Minuten vor.",
+          "Nach dem Studium möchte er ins Ausland gehen."
+        ],
+        "collocations": [
+          {
+            "collocation": "spazieren gehen",
+            "translation": "to go for a walk"
+          },
+          {
+            "collocation": "ins Bett gehen",
+            "translation": "to go to bed"
+          },
+          {
+            "collocation": "zur Schule gehen",
+            "translation": "to go to school"
+          },
+          {
+            "collocation": "auf Nummer sicher gehen",
+            "translation": "to play it safe"
+          },
+          {
+            "collocation": "auf die Nerven gehen",
+            "translation": "to get on someone's nerves"
+          },
+          {
+            "collocation": "in Rente gehen",
+            "translation": "to retire"
+          },
+          {
+            "collocation": "über die Straße gehen",
+            "translation": "to cross the street"
+          },
+          {
+            "collocation": "zu weit gehen",
+            "translation": "to go too far"
+          }
+        ],
+        "synonyms": [
+          "laufen",
+          "spazieren",
+          "schreiten",
+          "wandern",
+          "marschieren",
+          "stapfen",
+          "trotten",
+          "flanieren",
+          "bummeln",
+          "sich begeben",
+          "sich fortbewegen"
+        ],
+        "regular": "irregular",
+        "conjugation": "gehen, geht, ging, ist gegangen",
+        "separablePrefix": null,
+        "isReflexive": "non-reflexive",
+        "prepositions": [
+          {
+            "rule": "gehen um + Akkusativ",
+            "exampleSentence": "In dieser Diskussion geht es um die Zukunft unseres Landes.",
+            "translation": "This discussion is about the future of our country."
+          },
+          {
+            "rule": "gehen an + Akkusativ",
+            "exampleSentence": "Der Brief geht an den Direktor der Schule.",
+            "translation": "The letter goes to the director of the school."
+          },
+          {
+            "rule": "gehen auf + Akkusativ",
+            "exampleSentence": "Die Kosten gehen auf das Konto der Firma.",
+            "translation": "The costs are charged to the company's account."
+          },
+          {
+            "rule": "gehen nach + Dativ",
+            "exampleSentence": "Meine Uhr geht nach der Kirchturmuhr.",
+            "translation": "My watch is set according to the church tower clock."
+          },
+          {
+            "rule": "gehen über + Akkusativ",
+            "exampleSentence": "Nichts geht über ein gutes Buch.",
+            "translation": "Nothing beats a good book."
+          }
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:31:55.531Z",
+        "endTime": "2026-01-07T13:32:05.844Z",
+        "durationMs": 10313
+      }
+    },
+    {
+      "testCase": {
+        "word": "aufstehen",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "verb"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "aufstehen",
+        "partOfSpeech": [
+          "verb"
+        ],
+        "mainTranslation": "to get up",
+        "additionalTranslations": [
+          "to stand up",
+          "to rise"
+        ],
+        "exampleSentences": [
+          "Ich muss morgen früh um sechs Uhr aufstehen.",
+          "Die Zuschauer standen auf und applaudierten begeistert.",
+          "Nach seiner Krankheit konnte er endlich wieder aufstehen und ein paar Schritte gehen.",
+          "Wir sollten gegen Ungerechtigkeit aufstehen und unsere Meinung sagen.",
+          "Kannst du bitte aufstehen? Du sitzt auf meiner Jacke.",
+          "Die Kinder müssen jeden Schultag um sieben Uhr aufstehen.",
+          "Nach dem schweren Sturz stand er langsam wieder auf."
+        ],
+        "collocations": [
+          {
+            "collocation": "früh aufstehen",
+            "translation": "to get up early"
+          },
+          {
+            "collocation": "spät aufstehen",
+            "translation": "to get up late"
+          },
+          {
+            "collocation": "vom Stuhl aufstehen",
+            "translation": "to get up from the chair"
+          },
+          {
+            "collocation": "gegen jemanden aufstehen",
+            "translation": "to stand up against someone / to rebel against someone"
+          },
+          {
+            "collocation": "nicht aufstehen können",
+            "translation": "to be unable to get up"
+          },
+          {
+            "collocation": "mit dem linken Fuß aufstehen",
+            "translation": "to get up on the wrong side of the bed"
+          },
+          {
+            "collocation": "von den Toten aufstehen",
+            "translation": "to rise from the dead"
+          },
+          {
+            "collocation": "für jemanden aufstehen",
+            "translation": "to stand up for someone"
+          }
+        ],
+        "synonyms": [
+          "sich erheben",
+          "hochkommen",
+          "emporkommen",
+          "sich aufrichten"
+        ],
+        "regular": "irregular",
+        "conjugation": "aufstehen, steht auf, stand auf, ist aufgestanden",
+        "separablePrefix": "auf",
+        "isReflexive": "non-reflexive",
+        "prepositions": null
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:32:05.844Z",
+        "endTime": "2026-01-07T13:32:16.222Z",
+        "durationMs": 10378
+      }
+    },
+    {
+      "testCase": {
+        "word": "gut",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "adjective"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "gut",
+        "partOfSpeech": [
+          "adjective"
+        ],
+        "mainTranslation": "good",
+        "additionalTranslations": [
+          "well"
+        ],
+        "exampleSentences": [
+          "Das Essen schmeckt heute besonders gut.",
+          "Sie hat eine gute Note in der Prüfung bekommen.",
+          "Mir geht es nicht so gut, ich habe Kopfschmerzen.",
+          "Das ist eine gute Idee, lass uns das machen!",
+          "Er spricht gut Deutsch, obwohl er erst seit einem Jahr hier wohnt.",
+          "Alles Gute zum Geburtstag!",
+          "Es wäre gut, wenn du pünktlich kommen könntest.",
+          "Diese Schuhe sehen gut aus, aber sie sind nicht bequem.",
+          "Gut, dann treffen wir uns um acht Uhr."
+        ],
+        "collocations": [
+          {
+            "collocation": "gut gehen",
+            "translation": "to go well, to be doing well"
+          },
+          {
+            "collocation": "gut ankommen",
+            "translation": "to be well received, to go down well"
+          },
+          {
+            "collocation": "gut aussehen",
+            "translation": "to look good"
+          },
+          {
+            "collocation": "gut gelaunt sein",
+            "translation": "to be in a good mood"
+          },
+          {
+            "collocation": "alles Gute",
+            "translation": "all the best"
+          },
+          {
+            "collocation": "sich gut verstehen",
+            "translation": "to get along well"
+          },
+          {
+            "collocation": "gut zu wissen",
+            "translation": "good to know"
+          },
+          {
+            "collocation": "gut möglich",
+            "translation": "quite possible, very likely"
+          }
+        ],
+        "synonyms": [
+          "fein",
+          "toll",
+          "prima",
+          "schön",
+          "super",
+          "hervorragend",
+          "ausgezeichnet",
+          "vorzüglich",
+          "wunderbar",
+          "großartig",
+          "bestens",
+          "trefflich",
+          "vortrefflich",
+          "exzellent"
+        ],
+        "type": "qualitative",
+        "comparisonForms": {
+          "positive": "gut",
+          "comparative": "besser",
+          "superlative": "beste"
+        },
+        "prepositions": [
+          {
+            "rule": "gut zu + Dativ",
+            "exampleSentence": "Sie ist immer gut zu ihren Mitarbeitern.",
+            "translation": "She is always good to her employees."
+          },
+          {
+            "rule": "gut für + Akkusativ",
+            "exampleSentence": "Obst ist gut für die Gesundheit.",
+            "translation": "Fruit is good for health."
+          },
+          {
+            "rule": "gut in + Dativ",
+            "exampleSentence": "Er ist gut in Mathematik.",
+            "translation": "He is good at mathematics."
+          }
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:32:16.223Z",
+        "endTime": "2026-01-07T13:32:25.863Z",
+        "durationMs": 9640
+      }
+    },
+    {
+      "testCase": {
+        "word": "ich",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "personal pronoun"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "ich",
+        "partOfSpeech": [
+          "personal pronoun"
+        ],
+        "mainTranslation": "I",
+        "additionalTranslations": [],
+        "exampleSentences": [
+          "Ich gehe morgen ins Kino mit meinen Freunden.",
+          "Gestern habe ich den ganzen Tag im Garten gearbeitet.",
+          "Ich bin müde, weil ich letzte Nacht schlecht geschlafen habe.",
+          "Kannst du mir helfen? Ich verstehe diese Aufgabe nicht.",
+          "Ich liebe es, am Wochenende lange auszuschlafen.",
+          "Wenn ich Zeit hätte, würde ich gerne mehr reisen.",
+          "Ich habe vergessen, die Tür abzuschließen."
+        ],
+        "collocations": [
+          {
+            "collocation": "ich selbst",
+            "translation": "I myself"
+          },
+          {
+            "collocation": "ich auch",
+            "translation": "me too"
+          },
+          {
+            "collocation": "ich auch nicht",
+            "translation": "me neither"
+          },
+          {
+            "collocation": "und ich?",
+            "translation": "what about me?"
+          },
+          {
+            "collocation": "ich an deiner Stelle",
+            "translation": "if I were you"
+          },
+          {
+            "collocation": "ich für meinen Teil",
+            "translation": "for my part"
+          },
+          {
+            "collocation": "von mir aus",
+            "translation": "as far as I'm concerned"
+          },
+          {
+            "collocation": "meiner Meinung nach",
+            "translation": "in my opinion"
+          }
+        ],
+        "synonyms": [],
+        "pronounType": "1st person singular",
+        "declensions": [
+          {
+            "case": "Nominativ",
+            "form": "ich",
+            "translation": "I",
+            "example": "Ich lerne Deutsch."
+          },
+          {
+            "case": "Akkusativ",
+            "form": "mich",
+            "translation": "me",
+            "example": "Er sieht mich."
+          },
+          {
+            "case": "Dativ",
+            "form": "mir",
+            "translation": "me/to me",
+            "example": "Sie gibt mir das Buch."
+          },
+          {
+            "case": "Genitiv",
+            "form": "meiner",
+            "translation": "of me",
+            "example": "Er erinnert sich meiner."
+          }
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T13:32:25.864Z",
+        "endTime": "2026-01-07T13:32:35.631Z",
+        "durationMs": 9767
+      }
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "successful": 6,
+    "failed": 0,
+    "averageDurationMs": 9790.5
+  }
+}
