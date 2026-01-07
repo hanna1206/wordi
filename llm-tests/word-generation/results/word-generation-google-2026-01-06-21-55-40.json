@@ -1,0 +1,584 @@
+{
+  "metadata": {
+    "timestamp": "2026-01-06T21:55:40.790Z",
+    "provider": "google",
+    "totalTests": 6,
+    "git": {
+      "branch": "develop",
+      "commitHash": "4463997",
+      "commitDate": "2026-01-06T22:36:04+01:00"
+    },
+    "environment": {
+      "nodeVersion": "v24.11.1",
+      "platform": "darwin"
+    }
+  },
+  "results": [
+    {
+      "testCase": {
+        "word": "Haus",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "noun"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "der Haus",
+        "partOfSpeech": [
+          "noun"
+        ],
+        "mainTranslation": "the house",
+        "additionalTranslations": [],
+        "exampleSentences": [
+          "Das ist mein Haus.",
+          "Wir haben ein neues Haus gekauft.",
+          "Das Haus ist alt und muss renoviert werden.",
+          "Er wohnt in einem schönen Haus am See.",
+          "Das Haus hat einen großen Garten."
+        ],
+        "collocations": [
+          {
+            "collocation": "im Haus bleiben",
+            "translation": "to stay in the house"
+          },
+          {
+            "collocation": "das Haus verlassen",
+            "translation": "to leave the house"
+          },
+          {
+            "collocation": "ein Haus bauen",
+            "translation": "to build a house"
+          },
+          {
+            "collocation": "ein Haus mieten",
+            "translation": "to rent a house"
+          },
+          {
+            "collocation": "ein Haus kaufen",
+            "translation": "to buy a house"
+          },
+          {
+            "collocation": "ein Haus besitzen",
+            "translation": "to own a house"
+          },
+          {
+            "collocation": "ein Haus renovieren",
+            "translation": "to renovate a house"
+          }
+        ],
+        "synonyms": [
+          "das Gebäude",
+          "das Heim",
+          "die Behausung",
+          "die Bleibe",
+          "das Domizil"
+        ],
+        "gender": "masculine",
+        "pluralForm": "die Häuser",
+        "prepositions": null
+      },
+      "timing": {
+        "startTime": "2026-01-06T21:55:28.375Z",
+        "endTime": "2026-01-06T21:55:30.126Z",
+        "durationMs": 1751
+      }
+    },
+    {
+      "testCase": {
+        "word": "Frau",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "noun"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "die Frau",
+        "partOfSpeech": [
+          "noun"
+        ],
+        "mainTranslation": "the woman",
+        "additionalTranslations": [],
+        "exampleSentences": [
+          "Die Frau an der Kasse ist sehr freundlich.",
+          "Er hat eine Frau geheiratet, die er auf einer Reise kennengelernt hat.",
+          "Als Frau hat man es in dieser Branche nicht immer leicht.",
+          "Die Frau des Präsidenten hielt eine bewegende Rede."
+        ],
+        "collocations": [
+          {
+            "collocation": "eine Frau kennenlernen",
+            "translation": "to meet a woman"
+          },
+          {
+            "collocation": "eine Frau heiraten",
+            "translation": "to marry a woman"
+          },
+          {
+            "collocation": "die Frau des Hauses",
+            "translation": "the lady of the house"
+          },
+          {
+            "collocation": "eine junge Frau",
+            "translation": "a young woman"
+          },
+          {
+            "collocation": "die einzige Frau",
+            "translation": "the only woman"
+          },
+          {
+            "collocation": "als Frau",
+            "translation": "as a woman"
+          },
+          {
+            "collocation": "eine Frau sprechen",
+            "translation": "to speak to a woman"
+          }
+        ],
+        "synonyms": [
+          "die Dame",
+          "das Weib"
+        ],
+        "gender": "feminine",
+        "pluralForm": "die Frauen",
+        "prepositions": null
+      },
+      "timing": {
+        "startTime": "2026-01-06T21:55:30.126Z",
+        "endTime": "2026-01-06T21:55:31.834Z",
+        "durationMs": 1708
+      }
+    },
+    {
+      "testCase": {
+        "word": "gehen",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "verb"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "gehen",
+        "partOfSpeech": [
+          "verb"
+        ],
+        "mainTranslation": "to go",
+        "additionalTranslations": [
+          "to walk",
+          "to run",
+          "to move",
+          "to proceed",
+          "to function",
+          "to work"
+        ],
+        "exampleSentences": [
+          "Ich gehe jeden Morgen um 7 Uhr im Park spazieren.",
+          "Können Sie mir bitte sagen, wie ich zum Bahnhof gehe?",
+          "Diese Musik gefällt mir nicht, ich gehe jetzt.",
+          "Der alte Mann kann kaum noch alleine gehen.",
+          "Die Uhr geht falsch, sie ist zu langsam."
+        ],
+        "collocations": [
+          {
+            "collocation": "jemandem auf die Nerven gehen",
+            "translation": "to get on someone's nerves"
+          },
+          {
+            "collocation": "mit jemandem gehen",
+            "translation": "to be romantically involved with someone"
+          },
+          {
+            "collocation": "es geht um",
+            "translation": "it is about"
+          },
+          {
+            "collocation": "gut/schlecht gehen",
+            "translation": "to go well/badly (often used for health or general well-being)"
+          },
+          {
+            "collocation": "sich auf den Weg machen",
+            "translation": "to set off, to get going"
+          },
+          {
+            "collocation": "vor die Hunde gehen",
+            "translation": "to go to the dogs, to go to ruin"
+          },
+          {
+            "collocation": "alles geht gut",
+            "translation": "everything is going fine"
+          }
+        ],
+        "synonyms": [
+          "laufen",
+          "wandern",
+          "spazieren",
+          "flitzen",
+          "eilen",
+          "rennen",
+          "gehen",
+          "marschieren",
+          "davonlaufen"
+        ],
+        "regular": "irregular",
+        "conjugation": "gehen, geht, ging, ist gegangen",
+        "separablePrefix": null,
+        "isReflexive": "non-reflexive",
+        "prepositions": [
+          {
+            "rule": "gehen aus + Dativ",
+            "exampleSentence": "Er geht aus dem Haus.",
+            "translation": "He is going out of the house."
+          },
+          {
+            "rule": "gehen in + Akkusativ",
+            "exampleSentence": "Wir gehen in die Stadt.",
+            "translation": "We are going into the city."
+          },
+          {
+            "rule": "gehen nach + Dativ",
+            "exampleSentence": "Sie geht nach Hause.",
+            "translation": "She is going home."
+          },
+          {
+            "rule": "gehen zu + Dativ",
+            "exampleSentence": "Ich gehe zum Arzt.",
+            "translation": "I am going to the doctor."
+          },
+          {
+            "rule": "gehen über + Akkusativ",
+            "exampleSentence": "Der Ball geht über den Zaun.",
+            "translation": "The ball is going over the fence."
+          },
+          {
+            "rule": "gehen durch + Akkusativ",
+            "exampleSentence": "Wir gehen durch den Park.",
+            "translation": "We are going through the park."
+          },
+          {
+            "rule": "gehen um + Akkusativ",
+            "exampleSentence": "Es geht um die Wurst.",
+            "translation": "It's about the sausage."
+          },
+          {
+            "rule": "gehen seit + Dativ",
+            "exampleSentence": "Ich gehe seit einer Woche zur Arbeit.",
+            "translation": "I have been going to work for a week."
+          },
+          {
+            "rule": "gehen vor + Dativ",
+            "exampleSentence": "Er geht vor Angst weg.",
+            "translation": "He walks away out of fear."
+          },
+          {
+            "rule": "gehen an + Dativ",
+            "exampleSentence": "Wir gehen an dem Fluss entlang.",
+            "translation": "We are walking along the river."
+          },
+          {
+            "rule": "gehen bei + Dativ",
+            "exampleSentence": "Ich gehe bei meiner Großmutter vorbei.",
+            "translation": "I am passing by my grandmother's house."
+          },
+          {
+            "rule": "gehen gegen + Akkusativ",
+            "exampleSentence": "Das Schiff geht gegen den Wind.",
+            "translation": "The ship is going against the wind."
+          },
+          {
+            "rule": "gehen mit + Dativ",
+            "exampleSentence": "Sie geht mit ihrem Hund spazieren.",
+            "translation": "She is going for a walk with her dog."
+          },
+          {
+            "rule": "gehen ohne + Akkusativ",
+            "exampleSentence": "Er geht ohne seine Jacke aus dem Haus.",
+            "translation": "He is leaving the house without his jacket."
+          },
+          {
+            "rule": "gehen für + Akkusativ",
+            "exampleSentence": "Das geht für mich nicht.",
+            "translation": "That doesn't work for me."
+          }
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-06T21:55:31.834Z",
+        "endTime": "2026-01-06T21:55:35.056Z",
+        "durationMs": 3222
+      }
+    },
+    {
+      "testCase": {
+        "word": "aufstehen",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "verb"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "aufstehen",
+        "partOfSpeech": [
+          "verb"
+        ],
+        "mainTranslation": "to get up",
+        "additionalTranslations": [
+          "to stand up",
+          "to rise"
+        ],
+        "exampleSentences": [
+          "Ich muss jeden Morgen um sechs Uhr aufstehen.",
+          "Nach dem Aufstehen machte er sich einen Kaffee.",
+          "Sie stand vom Stuhl auf, um die Tür zu öffnen.",
+          "Die ganze Familie stand auf, als der König den Raum betrat."
+        ],
+        "collocations": [
+          {
+            "collocation": "früh aufstehen",
+            "translation": "to get up early"
+          },
+          {
+            "collocation": "spät aufstehen",
+            "translation": "to get up late"
+          },
+          {
+            "collocation": "schnell aufstehen",
+            "translation": "to get up quickly"
+          },
+          {
+            "collocation": "gerne aufstehen",
+            "translation": "to like getting up"
+          },
+          {
+            "collocation": "müssen aufstehen",
+            "translation": "to have to get up"
+          },
+          {
+            "collocation": "aufstehen und gehen",
+            "translation": "to get up and go"
+          },
+          {
+            "collocation": "den ganzen Tag aufstehen müssen",
+            "translation": "to have to get up all day"
+          }
+        ],
+        "synonyms": [
+          "sich erheben",
+          "aufkommen",
+          "aufwachen"
+        ],
+        "regular": "irregular",
+        "conjugation": "aufstehen, steht auf, stand auf, ist aufgestanden",
+        "separablePrefix": "auf",
+        "isReflexive": "non-reflexive",
+        "prepositions": [
+          {
+            "rule": "auf + Akkusativ",
+            "exampleSentence": "Ich stehe um 7 Uhr auf.",
+            "translation": "I get up at 7 o'clock."
+          }
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-06T21:55:35.056Z",
+        "endTime": "2026-01-06T21:55:36.761Z",
+        "durationMs": 1705
+      }
+    },
+    {
+      "testCase": {
+        "word": "gut",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "adjective"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "gut",
+        "partOfSpeech": [
+          "adjective"
+        ],
+        "mainTranslation": "good",
+        "additionalTranslations": [
+          "well"
+        ],
+        "exampleSentences": [
+          "Das Essen war sehr gut.",
+          "Er ist ein guter Freund.",
+          "Das ist eine gute Idee!",
+          "Sie singt gut.",
+          "Der Film hat mir gut gefallen."
+        ],
+        "collocations": [
+          {
+            "collocation": "jemandem gut tun",
+            "translation": "to do someone good"
+          },
+          {
+            "collocation": "sich gut verstehen mit",
+            "translation": "to get along well with"
+          },
+          {
+            "collocation": "etwas gut können",
+            "translation": "to be good at something"
+          },
+          {
+            "collocation": "das ist gut für mich",
+            "translation": "that's good for me"
+          },
+          {
+            "collocation": "gut aussehen",
+            "translation": "to look good"
+          },
+          {
+            "collocation": "gut gemacht",
+            "translation": "well done"
+          },
+          {
+            "collocation": "etwas gut finden",
+            "translation": "to like something / to approve of something"
+          }
+        ],
+        "synonyms": [
+          "prima",
+          "ausgezeichnet",
+          "hervorragend",
+          "sehr gut",
+          "ordentlich",
+          "anständig",
+          "tüchtig",
+          "passabel",
+          "annehmbar",
+          "richtig",
+          "fein",
+          "toll",
+          "super",
+          "klasse"
+        ],
+        "type": "qualitative",
+        "comparisonForms": {
+          "positive": "gut",
+          "comparative": "besser",
+          "superlative": "beste"
+        },
+        "prepositions": [
+          {
+            "rule": "gut in + Dativ",
+            "exampleSentence": "Sie ist gut in Mathematik.",
+            "translation": "She is good at mathematics."
+          },
+          {
+            "rule": "gut für + Akkusativ",
+            "exampleSentence": "Gemüse ist gut für die Gesundheit.",
+            "translation": "Vegetables are good for health."
+          },
+          {
+            "rule": "gut zu + Dativ",
+            "exampleSentence": "Er ist immer gut zu seinen Eltern.",
+            "translation": "He is always good to his parents."
+          }
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-06T21:55:36.761Z",
+        "endTime": "2026-01-06T21:55:38.952Z",
+        "durationMs": 2191
+      }
+    },
+    {
+      "testCase": {
+        "word": "ich",
+        "targetLanguage": "English",
+        "expectedPartOfSpeech": [
+          "personal pronoun"
+        ]
+      },
+      "success": true,
+      "response": {
+        "normalizedWord": "ich",
+        "partOfSpeech": [
+          "personal pronoun"
+        ],
+        "mainTranslation": "I",
+        "additionalTranslations": [],
+        "exampleSentences": [
+          "Ich gehe heute ins Kino.",
+          "Ich bin müde und möchte schlafen.",
+          "Ich verstehe nicht, was du meinst.",
+          "Für mich ist das keine Option.",
+          "Ich gebe dir gleich Bescheid."
+        ],
+        "collocations": [
+          {
+            "collocation": "ich bin",
+            "translation": "I am"
+          },
+          {
+            "collocation": "ich habe",
+            "translation": "I have"
+          },
+          {
+            "collocation": "ich weiß",
+            "translation": "I know"
+          },
+          {
+            "collocation": "ich denke",
+            "translation": "I think"
+          },
+          {
+            "collocation": "ich glaube",
+            "translation": "I believe"
+          },
+          {
+            "collocation": "ich möchte",
+            "translation": "I would like"
+          },
+          {
+            "collocation": "ich kann",
+            "translation": "I can"
+          },
+          {
+            "collocation": "ich gehe",
+            "translation": "I go"
+          }
+        ],
+        "synonyms": [],
+        "pronounType": "1st person singular",
+        "declensions": [
+          {
+            "case": "Nominativ",
+            "form": "ich",
+            "translation": "I",
+            "example": "Ich gehe nach Hause."
+          },
+          {
+            "case": "Akkusativ",
+            "form": "mich",
+            "translation": "me",
+            "example": "Er sieht mich."
+          },
+          {
+            "case": "Dativ",
+            "form": "mir",
+            "translation": "me",
+            "example": "Du gibst mir ein Buch."
+          }
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-06T21:55:38.952Z",
+        "endTime": "2026-01-06T21:55:40.789Z",
+        "durationMs": 1837
+      }
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "successful": 6,
+    "failed": 0,
+    "averageDurationMs": 2069
+  }
+}

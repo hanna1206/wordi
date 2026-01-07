@@ -8,7 +8,10 @@ export const buildNounGenderPrompt = (word: string): string => {
   The German word is "${word}"
   
   IMPORTANT: Focus on the standard, grammatically correct form of the noun.
-  If the word is not a noun or doesn't have a gender, return null.
+  If the word is not a noun or doesn't have a gender, return null. 
+  When a noun has article "das", it is neuter. 
+  When a word has article "der", it is masculine. 
+  When a word has article "die', it is feminine.
   `;
 };
 

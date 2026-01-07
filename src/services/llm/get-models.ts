@@ -1,7 +1,6 @@
 import { environment } from '@/config/environment.config';
 
-import { geminiFlash25Model } from './gemini-flash-2.5';
-import { geminiFlash3Model } from './gemini-flash-3';
+import { geminiFlash25LiteModel } from './gemini-flash-2.5-lite';
 import { gpt41Model } from './gpt-4.1';
 import { gpt41MiniModel } from './gpt-4.1-mini';
 
@@ -10,8 +9,8 @@ export const getModels = () => {
 
   if (provider === 'google') {
     return {
-      fast: geminiFlash25Model,
-      standard: geminiFlash3Model,
+      fast: geminiFlash25LiteModel,
+      standard: geminiFlash25LiteModel,
     };
   }
 
