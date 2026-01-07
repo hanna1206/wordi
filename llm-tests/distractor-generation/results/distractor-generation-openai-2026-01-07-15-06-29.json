@@ -1,0 +1,352 @@
+{
+  "metadata": {
+    "timestamp": "2026-01-07T15:06:29.906Z",
+    "provider": "openai",
+    "totalTests": 14,
+    "git": {
+      "branch": "develop",
+      "commitHash": "39dd08e",
+      "commitDate": "2026-01-07T15:29:47+01:00"
+    },
+    "environment": {
+      "nodeVersion": "v24.11.1",
+      "platform": "darwin"
+    }
+  },
+  "results": [
+    {
+      "testCase": {
+        "id": "noun-masculine-1",
+        "targetLanguageWord": "Tisch",
+        "nativeLanguageTranslation": "table",
+        "partOfSpeech": "noun",
+        "gender": "masculine",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "der Stuhl",
+          "der Tresen",
+          "der Schreibtisch"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:08.117Z",
+        "endTime": "2026-01-07T15:06:10.082Z",
+        "durationMs": 1965
+      }
+    },
+    {
+      "testCase": {
+        "id": "noun-masculine-2",
+        "targetLanguageWord": "Stuhl",
+        "nativeLanguageTranslation": "chair",
+        "partOfSpeech": "noun",
+        "gender": "masculine",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "der Sessel",
+          "der Hocker",
+          "der Tisch"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:10.082Z",
+        "endTime": "2026-01-07T15:06:12.092Z",
+        "durationMs": 2010
+      }
+    },
+    {
+      "testCase": {
+        "id": "noun-feminine-1",
+        "targetLanguageWord": "Lampe",
+        "nativeLanguageTranslation": "lamp",
+        "partOfSpeech": "noun",
+        "gender": "feminine",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "die Leuchte",
+          "die Laterne",
+          "die Glühbirne"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:12.093Z",
+        "endTime": "2026-01-07T15:06:14.279Z",
+        "durationMs": 2186
+      }
+    },
+    {
+      "testCase": {
+        "id": "noun-feminine-2",
+        "targetLanguageWord": "Tür",
+        "nativeLanguageTranslation": "door",
+        "partOfSpeech": "noun",
+        "gender": "feminine",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "die Pforte",
+          "die Klappe",
+          "die Luke"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:14.279Z",
+        "endTime": "2026-01-07T15:06:15.967Z",
+        "durationMs": 1688
+      }
+    },
+    {
+      "testCase": {
+        "id": "noun-neuter-1",
+        "targetLanguageWord": "Fenster",
+        "nativeLanguageTranslation": "window",
+        "partOfSpeech": "noun",
+        "gender": "neuter",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "das Fensterglas",
+          "das Fensterbrett",
+          "das Fensterkreuz"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:15.967Z",
+        "endTime": "2026-01-07T15:06:17.109Z",
+        "durationMs": 1142
+      }
+    },
+    {
+      "testCase": {
+        "id": "noun-neuter-2",
+        "targetLanguageWord": "Buch",
+        "nativeLanguageTranslation": "book",
+        "partOfSpeech": "noun",
+        "gender": "neuter",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "das Heft",
+          "das Buchstück",
+          "das Textbuch"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:17.110Z",
+        "endTime": "2026-01-07T15:06:18.896Z",
+        "durationMs": 1786
+      }
+    },
+    {
+      "testCase": {
+        "id": "verb-infinitive-1",
+        "targetLanguageWord": "spielen",
+        "nativeLanguageTranslation": "to play",
+        "partOfSpeech": "verb",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "spazieren",
+          "singen",
+          "spielen lassen"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:18.896Z",
+        "endTime": "2026-01-07T15:06:19.982Z",
+        "durationMs": 1086
+      }
+    },
+    {
+      "testCase": {
+        "id": "verb-infinitive-2",
+        "targetLanguageWord": "lesen",
+        "nativeLanguageTranslation": "to read",
+        "partOfSpeech": "verb",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "lernen",
+          "schreiben",
+          "vorlesen"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:19.982Z",
+        "endTime": "2026-01-07T15:06:21.717Z",
+        "durationMs": 1735
+      }
+    },
+    {
+      "testCase": {
+        "id": "verb-infinitive-3",
+        "targetLanguageWord": "schreiben",
+        "nativeLanguageTranslation": "to write",
+        "partOfSpeech": "verb",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "beschreiben",
+          "abschreiben",
+          "unterschreiben"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:21.717Z",
+        "endTime": "2026-01-07T15:06:22.916Z",
+        "durationMs": 1199
+      }
+    },
+    {
+      "testCase": {
+        "id": "adjective-1",
+        "targetLanguageWord": "groß",
+        "nativeLanguageTranslation": "big",
+        "partOfSpeech": "adjective",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "breit",
+          "riesig",
+          "stattlich"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:22.916Z",
+        "endTime": "2026-01-07T15:06:23.970Z",
+        "durationMs": 1054
+      }
+    },
+    {
+      "testCase": {
+        "id": "adjective-2",
+        "targetLanguageWord": "klein",
+        "nativeLanguageTranslation": "small",
+        "partOfSpeech": "adjective",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "winzig",
+          "gering",
+          "schmal"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:23.970Z",
+        "endTime": "2026-01-07T15:06:25.916Z",
+        "durationMs": 1946
+      }
+    },
+    {
+      "testCase": {
+        "id": "adjective-3",
+        "targetLanguageWord": "schnell",
+        "nativeLanguageTranslation": "fast",
+        "partOfSpeech": "adjective",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "rasch",
+          "flink",
+          "zügig"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:25.916Z",
+        "endTime": "2026-01-07T15:06:27.654Z",
+        "durationMs": 1738
+      }
+    },
+    {
+      "testCase": {
+        "id": "collocation-1",
+        "targetLanguageWord": "Guten Morgen",
+        "nativeLanguageTranslation": "good morning",
+        "partOfSpeech": "other",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "Guten Abend",
+          "Gute Nacht",
+          "Guten Tag"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:27.654Z",
+        "endTime": "2026-01-07T15:06:28.733Z",
+        "durationMs": 1079
+      }
+    },
+    {
+      "testCase": {
+        "id": "collocation-2",
+        "targetLanguageWord": "Auf Wiedersehen",
+        "nativeLanguageTranslation": "goodbye",
+        "partOfSpeech": "other",
+        "targetLanguage": "German",
+        "nativeLanguage": "English"
+      },
+      "success": true,
+      "response": {
+        "distractors": [
+          "Auf Wiederhören",
+          "Bis später",
+          "Auf Wiedersehen dann"
+        ]
+      },
+      "timing": {
+        "startTime": "2026-01-07T15:06:28.733Z",
+        "endTime": "2026-01-07T15:06:29.906Z",
+        "durationMs": 1173
+      }
+    }
+  ],
+  "summary": {
+    "total": 14,
+    "successful": 14,
+    "failed": 0,
+    "averageDurationMs": 1556.2142857142858
+  }
+}

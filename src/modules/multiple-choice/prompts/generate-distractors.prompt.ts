@@ -51,7 +51,6 @@ export const outputStructure = z.object({
         id: z.string().describe('The vocabulary item ID'),
         distractors: z
           .array(z.string())
-          .length(3)
           .describe('Exactly 3 distractors in the target language'),
       }),
     )
