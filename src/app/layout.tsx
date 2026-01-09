@@ -1,3 +1,4 @@
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { Open_Sans, Sofia_Sans_Condensed } from 'next/font/google';
 
@@ -42,6 +43,7 @@ const RootLayout = async ({
           <Toaster />
         </Provider>
         <FeedbackWidget />
+        <SpeedInsights />
       </body>
     </html>
   );
